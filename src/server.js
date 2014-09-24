@@ -2,5 +2,7 @@ var express = require('express');
 var app = express();
 
 var server = app.listen(3000,() => {
-    console.log(`My poop is so big ${server.address().port}`);
+    console.log(`Testing port: ${server.address().port}`);
 });
+
+require('./routes')(app, express);
