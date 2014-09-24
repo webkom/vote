@@ -1,0 +1,19 @@
+{
+  "name": "ads",
+  "version": "1.0.0",
+  "description": "Abakus Decision System",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tib&Juul",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.9.4",
+    "gulp": "^3.8.8",
+    "gulp-concat": "^2.4.1",
+    "gulp-express": "^0.1.0",
+    "gulp-sourcemaps": "^1.2.2",
+    "gulp-traceur": "^0.13.0"
+  }
+}
