@@ -2,8 +2,9 @@ var gulp        = require('gulp');
 var server      = require('gulp-express');
 var sourcemaps  = require('gulp-sourcemaps');
 var traceur     = require('gulp-traceur');
-var concat      = require('gulp-concat');
 var clean       = require('gulp-clean');
+var runSequence = require('run-sequence');
+
 
 var srcDir = 'src/**/*.js';
 var distDir = 'dist/';
@@ -28,8 +29,8 @@ gulp.task('clean', function () {
 });
 
 gulp.task('watch', function() {
-    gulp.watch(srcDir, ['clean', 'compile', 'server']);
+    gulp.watch(srcDir, runSequence('compile','server'));
 
 });
 
-gulp.task('default', ['clean', 'compile', 'server', 'watch']);
+gulp.task('default', runSequence('clean','compile','server', 'watch'));

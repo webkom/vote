@@ -1,6 +1,11 @@
 module.exports = (app, express) => {
+    var router = express.Router();
 
-    app.get('/*', (res, req) => {
-        console.log('This is frontend');
+    router.get('/', (res, req) => {
+        req.send('app');
     });
+
+    app.use('/*', router);
+
+
 };
