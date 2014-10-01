@@ -1,5 +1,7 @@
 exports = module.exports = (mongoose) => {
     return {
-        User: require('./user')('user', mongoose)
+        User: require('./user')('user', mongoose),
+        Election: require('./election')('election', mongoose),
+        Alternative: require('./alternative')('alternative', mongoose)
     };
 };
