@@ -4,6 +4,7 @@ var sourcemaps  = require('gulp-sourcemaps');
 var traceur     = require('gulp-traceur');
 var clean       = require('gulp-clean');
 var runSequence = require('run-sequence');
+var mocha       = require('gulp-mocha');
 
 
 var srcDir = 'src/**/*.js';
@@ -31,6 +32,13 @@ gulp.task('clean', function () {
 gulp.task('watch', function() {
     gulp.watch(srcDir, runSequence('compile','server'));
 
+});
+
+gulp.task('test', function () {
+    gulp.src(distDir+'test/**/*.js')
+        .pipe(mocha({
+            reporter: 'spec'
+        }));
 });
 
 gulp.task('default', runSequence('clean','compile','server', 'watch'));

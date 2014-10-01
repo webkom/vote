@@ -30,3 +30,4 @@ node_modules
 #Our shit
 .idea
 dist
+db
