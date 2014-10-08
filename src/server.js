@@ -17,7 +17,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 require('./modules/passport')(passport,models);
 
-
 require('./routes')(app, express, models);
 
 

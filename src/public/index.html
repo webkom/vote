@@ -15,12 +15,13 @@
 
     <!-- ANGULAR CUSTOM -->
     <script src="js/controllers/mainCtrl.js"></script>
-    <script src="js/controllers/voteCtrl.js"></script>
+    <script src="js/controllers/electionCtrl.js"></script>
     <script src="js/controllers/loginCtrl.js"></script>
+    <script src="js/controllers/electionsCtrl.js"></script>
     <script src="js/appRoutes.js"></script>
     <script src="js/app.js"></script>
 </head>
-<body ng-app="voteApp" ng-controller="voteController">
+<body ng-app="voteApp" ng-controller="mainController">
 <div class="container">
 
     <!-- HEADER -->
@@ -29,7 +30,7 @@
             <a class="navbar-brand" href="/">Home</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="/#/vote">Vote</a></li>
+            <li><a href="/#/elections">Vote</a></li>
             <li><a href="/#/login">Login</a></li>
         </ul>
     </nav>
