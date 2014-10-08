@@ -1,5 +1,5 @@
-module.exports = (app, express) => {
-    require('./api')(app, express);
+module.exports = (app, express, models) => {
+    require('./api')(app, express, models);
     require('./auth')(app, express);
     require('./app')(app, express);
 };
