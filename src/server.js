@@ -6,6 +6,8 @@ mongoose.connect('mongodb://localhost:27017/test');
 
 var models = require('./models')(mongoose);
 
+app.use(express.static(__dirname + '/public'));
+
 require('./routes')(app, express);
 
 var server = app.listen(3000,() => {

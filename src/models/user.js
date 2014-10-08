@@ -27,4 +27,5 @@ exports = module.exports = (collection, mongoose) => {
     };
 
     return mongoose.model(collection, schema);
+
 };

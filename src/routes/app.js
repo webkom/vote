@@ -1,11 +1,16 @@
+var path = require('path');
 module.exports = (app, express) => {
     var router = express.Router();
 
-    router.get('/', (res, req) => {
-        req.send('app');
+    router.get('/', (req, res) => {
+        res.sendFile(path.join(__dirname, '../public', 'index.html'));
     });
 
-    app.use('/*', router);
+    router.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, '../public', 'index.html'));
+    });
+
+    app.use('/', router)
 
 
 };

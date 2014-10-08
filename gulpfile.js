@@ -7,7 +7,9 @@ var runSequence = require('run-sequence');
 var mocha       = require('gulp-mocha');
 
 
-var srcDir = 'src/**/*.js';
+var srcDir = ['src/config/**/*.js', 'src/models/**/*.js', 'src/public/js/**/*.js',
+    'src/routes/**/*.js', 'src/test/**/*.js', 'src/*.js'];
+var srcStatic = ['src/**/*.html', 'src/**/*.css', 'src/public/libs/**/*.js'];
 var distDir = 'dist/';
 
 gulp.task('server', function () {
@@ -24,13 +26,18 @@ gulp.task('compile', function () {
         .pipe(gulp.dest(distDir));
 });
 
+gulp.task('moveFiles', function () {
+    return gulp.src(srcStatic, {base: './src/'})
+        .pipe(gulp.dest(distDir));
+});
+
 gulp.task('clean', function () {
     return gulp.src(distDir+'*')
         .pipe(clean())
 });
 
 gulp.task('watch', function() {
-    gulp.watch(srcDir, runSequence('compile','server'));
+    gulp.watch(srcDir, runSequence('compile','moveFiles','server'));
 
 });
 
@@ -41,4 +48,4 @@ gulp.task('test', function () {
         }));
 });
 
-gulp.task('default', runSequence('clean','compile','server', 'watch'));
+gulp.task('default', runSequence('compile','moveFiles', 'watch'));
