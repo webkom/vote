@@ -7,10 +7,23 @@ var runSequence = require('run-sequence');
 var mocha       = require('gulp-mocha');
 
 
-var srcDir = ['src/config/**/*.js', 'src/models/**/*.js', 'src/public/js/**/*.js',
-    'src/routes/**/*.js', 'src/test/**/*.js', 'src/modules/**/*.js','src/*.js'];
-var srcStatic = ['src/**/*.html', 'src/**/*.css', 'src/public/libs/**/*.js'];
+var srcDir = [
+    'src/config/**/*.js',
+    'src/models/**/*.js',
+    'src/public/js/**/*.js',
+    'src/routes/**/*.js',
+    'src/test/**/*.js',
+    'src/modules/**/*.js',
+    'src/*.js'
+];
+var srcStatic = [
+    'src/**/*.html',
+    'src/**/*.css',
+    'src/public/libs/**/*.js'
+];
 var distDir = 'dist/';
+
+
 
 gulp.task('server', function () {
     server.run({

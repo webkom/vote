@@ -1,18 +1,15 @@
-var passport    = require('../modules/passport');
+var passport = require('passport');
 
 module.exports = (app, express) => {
     var router = express.Router();
 
-    router.post('/login', (res, req) => {
-        console.log(req.post);
-        passport.authenticate('local', function(err, user, info) {
-            if (err) { return next(err); }
-            if (!user) { return res.send('NEI'); }
-            req.logIn(user, function(err) {
-                if (err) { return next(err); }
-                return res.send('HEI');
-            });
-        })
+    router.post('/login', (req, res) => {
+        passport.authenticate('local', (err, user, info) =>{
+            if (err) return res.send(err);
+            if (!user) return res.send({message: 'Incorrect password or username'});
+            req.logIn(user, err => { if (err) res.send(err) });
+            return res.send(user);
+        })(req, res);
     });
 
     app.use('/auth', router);

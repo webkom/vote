@@ -1,18 +1,19 @@
-var passport        = require("passport");
 var LocalStrategy   = require('passport-local').Strategy;
 
-exports = module.exports = (models) => {
+exports = module.exports = (passport,models) => {
+
+
     passport.serializeUser((user, done) => {
-        done(null, user.id); // attached to the session
+        done(null, user.username); // attached to the session
     });
 
-    passport.deserializeUser((id, done) => {
-        models.User.findById(id,(err, user) =>{
+    passport.deserializeUser((user, done) => {
+        models.User.findOne({ username: user.username },(err, user) =>{
             done(err, user);
         });
     });
 
-    passport.use(new LocalStrategy(
+    passport.use('local', new LocalStrategy(
         (username, password, done) => {
             models.User.findOne({ username: username }, (err, user)=> {
                 if (err) return done(err);
@@ -24,5 +25,8 @@ exports = module.exports = (models) => {
             });
         }
     ));
+
+
+
 
 };
