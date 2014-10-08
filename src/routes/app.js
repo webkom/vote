@@ -11,5 +11,4 @@ module.exports = (app, express) => {
 
     app.use('/', router)
 
-
 };

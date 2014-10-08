@@ -1,5 +1,3 @@
-var LocalStrategy   = require('passport-local').Strategy;
-var auth            = require('./auth');
 var passport        = require("passport");
 var LocalStrategy   = require('passport-local').Strategy;
 
@@ -14,10 +12,17 @@ exports = module.exports = (models) => {
         });
     });
 
-    passport.use('local-login', new LocalStrategy({
-        usernameField: 'username',
-        passwordField: 'password',
-        passReqToCallback : true
-    }, auth.locallogin));
+    passport.use(new LocalStrategy(
+        (username, password, done) => {
+            models.User.findOne({ username: username }, (err, user)=> {
+                if (err) return done(err);
+                if (!user) return done(null, false, { message: 'Incorrect username.' });
+                user.validPassword(password, (err, res)=>{
+                    if (!res) return done(null, false, { message: 'Incorrect password.' });
+                    return done(null, user);
+                });
+            });
+        }
+    ));
 
 };
