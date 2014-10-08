@@ -1,1 +1,1 @@
-var app = angular.module('voteApp', ['ngRoute', 'appRoutes', 'mainCtrl', 'adminCtrl', 'voteCtrl']);
+var app = angular.module('voteApp', ['ngRoute', 'appRoutes', 'mainCtrl', 'voteCtrl', 'loginCtrl']);

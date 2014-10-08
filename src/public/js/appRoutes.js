@@ -8,14 +8,14 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', (
             controller: 'mainController'
         })
 
-        .when('/pages/vote', {
-            templateUrl: 'views/vote.html',
-            controller: 'voteController'
+        .when('/login', {
+            templateUrl: 'views/login.html',
+            controller: 'loginController'
         })
 
-        .when('/pages/admin', {
-            templateUrl: 'views/admin.html',
-            controller: 'adminController'
+        .when('/vote', {
+            templateUrl: 'views/vote.html',
+            controller: 'voteController'
         })
 
         .otherwise({
