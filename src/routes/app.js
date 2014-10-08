@@ -1,4 +1,3 @@
-var path = require('path');
 module.exports = (app, express) => {
     var router = express.Router();
 

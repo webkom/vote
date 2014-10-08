@@ -1,12 +1,13 @@
-var bcrypt   = require('bcryptjs');
+var bcrypt = require('bcryptjs');
 var SALT_ROUNDS = 8;
 
-exports = module.exports = (collection, mongoose) => {
+module.exports = (collection, mongoose) => {
     var schema = mongoose.Schema({
         username: {
             type: String,
             required: true,
-            index: true
+            index: true,
+            unique: true
         },
         password: {
             type: String,
@@ -14,15 +15,20 @@ exports = module.exports = (collection, mongoose) => {
         }
     });
 
-    schema.methods.generateHash = (password, cb) =>{
-        bcrypt.hash(password, SALT_ROUNDS ,(err, hash)=>{
-            return cb(err,hash);
-        });
-    };
 
-    schema.methods.validPassword = (password, cb) =>{
-        bcrypt.compare(password, (err, res)=>{
-            return cb(err,res);
+    schema.pre('save', function (next){
+        var user = this;
+        bcrypt.genSalt(SALT_ROUNDS, (err, salt)=> {
+            bcrypt.hash(user.password, salt, (err, hash)=> {
+                user.password = hash;
+                next();
+            });
+        });
+    });
+
+    schema.methods.validPassword = function (password, cb) {
+        bcrypt.compare(password, this.password ,(err, res)=> {
+            return cb(err, res);
         });
     };
 

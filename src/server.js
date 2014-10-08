@@ -10,6 +10,10 @@ app.use(express.static(__dirname + '/public'));
 
 require('./routes')(app, express);
 
+
+require('./modules/passport')(models);
+
+
 var server = app.listen(3000,() => {
     console.log(`Running on port: ${server.address().port}`);
 });
