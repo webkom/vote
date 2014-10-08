@@ -13,6 +13,7 @@
   },
   "license": "ISC",
   "dependencies": {
+    "angular": "^1.2.23",
     "bcryptjs": "^2.0.2",
     "chai": "^1.9.2",
     "express": "^4.9.4",
