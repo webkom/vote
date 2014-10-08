@@ -23,7 +23,7 @@ module.exports = models => {
                 should.exist(usr);
                 usr.username.should.equal(testUser.username, 'retrieved username should match the saved username');
                 usr.password.should.not.equal(testUser.password, 'password should be hashed before save');
-                done();git
+                done();
             });
         });
         it('should be able to validate password', done => {
