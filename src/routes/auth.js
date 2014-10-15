@@ -7,8 +7,10 @@ module.exports = (app, express) => {
         passport.authenticate('local', (err, user, info) =>{
             if (err) return res.send(err);
             if (!user) return res.send({message: 'Incorrect password or username'});
-            req.logIn(user, err => { if (err) res.send(err) });
-            return res.send(user);
+            req.logIn(user, err => {
+                if (err) return res.send(err);
+                return res.send(user);
+            });
         })(req, res);
     });
 

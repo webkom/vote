@@ -7,8 +7,8 @@ exports = module.exports = (passport,models) => {
         done(null, user.username); // attached to the session
     });
 
-    passport.deserializeUser((user, done) => {
-        models.User.findOne({ username: user.username },(err, user) =>{
+    passport.deserializeUser((username, done) => {
+        models.User.findOne({ username: username},(err, user) =>{
             done(err, user);
         });
     });
