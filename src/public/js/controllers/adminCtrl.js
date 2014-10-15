@@ -5,6 +5,8 @@ angular.module('voteApp').controller('adminController', ($scope, $http, $window)
             success((data, status, headers, config) => {
                 if (! ('user' in data)) {
                     $window.location.href = "/";
+                } else {
+                    getElections();
                 }
             }).
             error((data, status, headers, config) => {
@@ -22,7 +24,5 @@ angular.module('voteApp').controller('adminController', ($scope, $http, $window)
     };
 
     isAuthenticated();
-
-    getElections();
 
 });
