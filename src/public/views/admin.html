@@ -1,10 +1,7 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
-
-</body>
-</html>
+<div class="jumbotron">
+    <ul>
+        <li ng-repeat="election in elections">
+            <a href="#/election/{{election._id}}">{{election.title}}</a>
+        </li>
+    </ul>
+</div>

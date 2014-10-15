@@ -13,14 +13,19 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider', ($route
             controller: 'loginController'
         })
 
-        .when('/elections', {
+        .when('/election', {
             templateUrl: 'views/elections.html',
+            controller: 'electionsController'
+        })
+
+        .when('/election/:param', {
+            templateUrl: 'views/election.html',
             controller: 'electionController'
         })
 
-        .when('/elections/:param', {
-            templateUrl: 'views/election.html',
-            controller: 'electionsController'
+        .when('/admin/election', {
+            templateUrl: 'views/admin.html',
+            controller: 'adminController'
         })
 
         .otherwise({
