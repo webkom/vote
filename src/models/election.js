@@ -15,5 +15,10 @@ exports = module.exports = (collection, mongoose) => {
         ]
     });
 
+    schema.methods.addAlternative = function(alternative){
+        if(this.alternatives) this.alternatives.push(alternative)
+        else this.alternatives = [alternative];
+    };
+
     return mongoose.model(collection, schema);
 };
