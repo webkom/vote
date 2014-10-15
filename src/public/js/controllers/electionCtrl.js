@@ -1,4 +1,4 @@
-angular.module('electionCtrl', []).controller('electionController', ($scope, $http) => {
+angular.module('voteApp').controller('electionController', ($scope, $http) => {
 
     var getElections = () => {
         $http({method: 'GET', url: '/api/election'}).

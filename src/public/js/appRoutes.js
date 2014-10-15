@@ -1,4 +1,4 @@
-angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', ($routeProvider) => {
+angular.module('voteApp').config(['$routeProvider', '$locationProvider', ($routeProvider) => {
 
     $routeProvider
 
