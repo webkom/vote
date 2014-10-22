@@ -1,7 +1,7 @@
 angular.module('electionsCtrl', []).controller('electionsController', ['$scope', '$http', '$routeParams', ($scope, $http, $routeParams) => {
 
     var getElection = () => {
-        $http({method: 'GET', url: '/api/elections/' + $routeParams.param}).
+        $http({method: 'GET', url: '/api/election/' + $routeParams.param}).
             success((data, status, headers, config) => {
                 $scope.election = data;
             }).
