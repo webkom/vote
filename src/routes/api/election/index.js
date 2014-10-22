@@ -27,5 +27,13 @@ module.exports = (router,models) => {
             });
         });
 
+    router.route('/isAuthenticated')
+
+        .get((req, res) => {
+            return res.json({user: req.user});
+        });
+
+    app.use('/api', router);
+
 };
 

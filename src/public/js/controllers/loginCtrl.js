@@ -1,4 +1,4 @@
-angular.module('loginCtrl', []).controller('loginController', ($scope, $http) => {
+angular.module('voteApp').controller('loginController', ($scope, $http) => {
 
     $scope.login = () => {
         $http({method: 'POST', data: {username: $scope.username, password: $scope.password}, url: '/auth/login'}).
