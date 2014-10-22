@@ -14,7 +14,7 @@ angular.module('voteApp').controller('adminController', ($scope, $http, $window)
     };
 
     var getElections = () => {
-        $http({method: 'GET', url: '/api/elections'}).
+        $http({method: 'GET', url: '/api/election'}).
             success((data, status, headers, config) => {
                 $scope.elections = data;
             }).

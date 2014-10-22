@@ -28,6 +28,11 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider', ($route
             controller: 'adminController'
         })
 
+        .when('/admin/election/:param', {
+            templateUrl: 'views/adminElection.html',
+            controller: 'adminElectionController'
+        })
+
         .otherwise({
             templateUrl: 'views/home.html',
             controller: 'mainController'
