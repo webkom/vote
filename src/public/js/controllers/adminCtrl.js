@@ -1,28 +1,39 @@
-angular.module('voteApp').controller('adminController', ($scope, $http, $window) => {
+var app = angular.module('voteApp');
 
-    var isAuthenticated = () => {
-        $http({method: 'GET', url: '/api/isAuthenticated'}).
-            success((data, status, headers, config) => {
-                if (! ('user' in data)) {
-                    $window.location.href = "/";
-                } else {
-                    getElections();
-                }
+app.service('adminService', function($http) {
+
+    this.isAuthenticated = function() {
+        return $http({method: 'GET', url: '/api/isAuthenticated'}).
+            success(function(data, status, headers, config) {
+                return (! ('user' in data));
             }).
-            error((data, status, headers, config) => {
+            error(function(data, status, headers, config) {
             });
     };
 
-    var getElections = () => {
-        $http({method: 'GET', url: '/api/election'}).
-            success((data, status, headers, config) => {
-                $scope.elections = data;
+    this.getElections = function() {
+        var promise = $http({method: 'GET', url: '/api/election'}).
+
+            success(function(data, status, headers, config) {
+                return data;
             }).
-            error((data, status, headers, config) => {
+            error(function(data, status, headers, config) {
+                return data;
             });
 
+        return promise;
     };
 
-    isAuthenticated();
+});
 
+app.controller('adminController', function($scope, $http, $window, adminService) {
+
+    if (adminService.isAuthenticated()) {
+        adminService.getElections().then(function(response) {
+            $scope.elections = response.data;
+        });
+        console.log($scope.elections);
+    } else {
+        $window.location.href = "/";
+    }
 });
