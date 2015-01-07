@@ -1,4 +1,4 @@
-angular.module('mainCtrl', []).controller('mainController', ($scope) => {
+angular.module('voteApp').controller('mainController', ($scope) => {
 
     $scope.tagline = 'Main';
 

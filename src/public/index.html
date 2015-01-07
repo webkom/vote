@@ -14,12 +14,16 @@
     <script src="libs/angular-route/angular-route.min.js"></script>
 
     <!-- ANGULAR CUSTOM -->
+    <script src="js/app.js"></script>
     <script src="js/controllers/mainCtrl.js"></script>
     <script src="js/controllers/electionCtrl.js"></script>
-    <script src="js/controllers/loginCtrl.js"></script>
     <script src="js/controllers/electionsCtrl.js"></script>
+    <script src="js/controllers/adminElectionCtrl.js"></script>
+    <script src="js/controllers/loginCtrl.js"></script>
+    <script src="js/controllers/adminCtrl.js"></script>
+    <script src="js/services/apiService.js"></script>
     <script src="js/appRoutes.js"></script>
-    <script src="js/app.js"></script>
+
 </head>
 <body ng-app="voteApp" ng-controller="mainController">
 <div class="container">
@@ -30,8 +34,9 @@
             <a class="navbar-brand" href="/">Home</a>
         </div>
         <ul class="nav navbar-nav">
-            <li><a href="/#/elections">Vote</a></li>
-            <li><a href="/#/login">Login</a></li>
+            <li><a href="/#/election">Avstemmninger</a></li>
+            <li><a href="/#/login">Log in</a></li>
+            <li><a href="/#/admin/election">Admin</a></li>
         </ul>
     </nav>
 

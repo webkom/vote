@@ -1,4 +1,4 @@
-angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', ($routeProvider) => {
+angular.module('voteApp').config(['$routeProvider', '$locationProvider', ($routeProvider) => {
 
     $routeProvider
 
@@ -13,14 +13,24 @@ angular.module('appRoutes', []).config(['$routeProvider', '$locationProvider', (
             controller: 'loginController'
         })
 
-        .when('/elections', {
+        .when('/election', {
             templateUrl: 'views/elections.html',
+            controller: 'electionsController'
+        })
+
+        .when('/election/:param', {
+            templateUrl: 'views/election.html',
             controller: 'electionController'
         })
 
-        .when('/elections/:param', {
-            templateUrl: 'views/election.html',
-            controller: 'electionsController'
+        .when('/admin/election', {
+            templateUrl: 'views/admin.html',
+            controller: 'adminController'
+        })
+
+        .when('/admin/election/:param', {
+            templateUrl: 'views/adminElection.html',
+            controller: 'adminElectionController'
         })
 
         .otherwise({

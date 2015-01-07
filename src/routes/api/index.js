@@ -6,6 +6,10 @@ module.exports = (app, express, models) => {
         req.send('api');
     });
 
+    router.get('/isAuthenticated', (req, res) => {
+            return res.json({user: req.user});
+        });
+
     require('./election')(router,models);
 
 
