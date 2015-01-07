@@ -23,8 +23,6 @@ var srcStatic = [
 ];
 var distDir = 'dist/';
 
-
-
 gulp.task('server', function () {
     server.run({
         file: distDir + 'server.js'
@@ -60,5 +58,3 @@ gulp.task('test', function () {
             reporter: 'spec'
         }));
 });
-
-gulp.task('default', runSequence('compile','moveFiles', 'watch'));

@@ -5,7 +5,7 @@ var chai = require('chai');
 var should = chai.should();
 var assert = chai.assert;
 
-module.exports = models => {
+module.exports = (models, app) => {
     describe("Auth", ()=> {
         var url = "http://localhost:3000";
         var testUser = {
@@ -22,8 +22,11 @@ module.exports = models => {
             models.User.remove({}, done);
         });
         it('should be usable', done=>{
-            //TODO: pls implement
-            done();
+            request(app)
+                .get('/api/election')
+                .set('Accept', 'application/json')
+                .expect('Content-Type', /json/)
+                .expect(200, done);
         });
     });
 };
