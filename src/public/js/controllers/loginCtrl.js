@@ -1,13 +1,8 @@
-angular.module('voteApp').controller('loginController', ($scope, $http) => {
+angular.module('voteApp').controller('loginController', ($scope, apiService) => {
 
     $scope.login = () => {
-        $http({method: 'POST', data: {username: $scope.username, password: $scope.password}, url: '/auth/login'}).
-            success((data, status, headers, config) => {
-                $scope.tagline = data;
-
-            }).
-            error((data, status, headers, config) => {
-                $scope.tagline = "nope";
-            });
-    };
+        apiService.login($scope.username, $scope.password).then(function (response) {
+            $scope.tagline = response.data;
+        });
+    }
 });

@@ -1,10 +1,9 @@
-angular.module('voteApp').controller('adminController', function($scope, $http, $window, adminService) {
+angular.module('voteApp').controller('adminController', function ($scope, $window, apiService) {
 
-    if (adminService.isAuthenticated()) {
-        adminService.getElections().then(function(response) {
+    if (apiService.isAuthenticated()) {
+        apiService.getElections().then(function (response) {
             $scope.elections = response.data;
         });
-        console.log($scope.elections);
     } else {
         $window.location.href = "/";
     }

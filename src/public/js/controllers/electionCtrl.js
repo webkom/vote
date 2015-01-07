@@ -1,17 +1,9 @@
-angular.module('voteApp').controller('electionController', ['$scope', '$http', '$routeParams', ($scope, $http, $routeParams) => {
+angular.module('voteApp').controller('electionController', ($scope, apiService) => {
 
-    var getElection = () => {
-        $http({method: 'GET', url: '/api/election/' + $routeParams.param}).
-            success((data, status, headers, config) => {
-                $scope.title = data['title'];
-                $scope.description = data['description'];
-                $scope.alternatives = data['alternatives'];
-            }).
-            error((data, status, headers, config) => {
-                $scope.title = data;
-            });
-
-    };
-
-    getElection();
-}]);
+    apiService.getElection().then(function (response) {
+        var data = response.data;
+        $scope.title = data['title'];
+        $scope.description = data['description'];
+        $scope.alternatives = data['alternatives'];
+    })
+});

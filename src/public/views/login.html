@@ -1,4 +1,4 @@
-<form class="form-group" ng-submit="login()">
+<form class="form-group" ng-submit="login($scope.username, $scope.password)">
     <label>Username</label>
     <input type="text" class="form-control" name="username" ng-model="username">
     <label>Password</label>
