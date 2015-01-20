@@ -1,3 +1,4 @@
+var async = require('async');
 exports = module.exports = function (collection, mongoose) {
     var schema = mongoose.Schema({
         description: {
@@ -19,14 +20,13 @@ exports = module.exports = function (collection, mongoose) {
 
     };
 
-    schema.methods.addVote = function (hash,cb){
-        new mongoose.model('vote')({
-            hash: hash,
-            alternative: this
-        }).save(function (err, vote){
-            if(err) return cb(err);
-            return cb(null, vote);
-        });
+    schema.methods.addVotes = function(votes, next){
+        var that = this;
+        async.each(votes, function(vote,cb){
+            that.votes.push(vote);
+            vote.save(cb);
+        }, next);
+
     };
 
     return mongoose.model(collection, schema);

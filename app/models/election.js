@@ -1,3 +1,4 @@
+var async = require('async');
 exports = module.exports = function (collection, mongoose){
     var schema = mongoose.Schema({
         title: {
@@ -15,10 +16,16 @@ exports = module.exports = function (collection, mongoose){
         ]
     });
 
-    schema.methods.addAlternative = function(alternative){
-        if(this.alternatives) this.alternatives.push(alternative)
-        else this.alternatives = [alternative];
+
+    schema.methods.addAlternatives = function(alternatives, next){
+        var that = this;
+        async.each(alternatives, function(alt,cb){
+            that.alternatives.push(alt);
+            alt.save(cb);
+        }, next);
+
     };
+
 
     return mongoose.model(collection, schema);
 };

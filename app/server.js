@@ -24,6 +24,10 @@ var server = app.listen(3000, function () {
     console.log("Running on port:" + server.address().port);
 });
 
+new models.User().save();
+new models.User().save();
+new models.User().save();
+
 
 module.exports.app = app;
 module.exports.db = models;

@@ -6,9 +6,9 @@ module.exports = function (router,models) {
             new models.Election({
                 'title':        req.body.title,
                 'description':  req.body.description
-            }).save(function (err) {
+            }).save(function (err, el) {
                 if (err) return res.send(err);
-                return res.json({ message: "Election created" });
+                return res.status(201).send(el);
             });
         })
 

@@ -6,7 +6,7 @@ var server = require('../../server')
     ,assert = chai.assert
     ,async = require('async');
 
-describe("User", function() {
+describe("User Model", function() {
     var testUser = {
         username: "test",
         password: "prompetiss"
@@ -43,7 +43,7 @@ describe("User", function() {
     });
 });
 
-describe("Election", function() {
+describe("Election Model", function() {
     var testElection = new db.Election({
         title: "test1",
         description: "prompetiss"
@@ -55,17 +55,11 @@ describe("Election", function() {
         description: 'asdadsadasd'
     });
 
-    testElection.addAlternative(testAlternative);
-    testElection.addAlternative(testAlternative2);
+    testElection.addAlternatives([testAlternative,testAlternative2]);
 
     before(function(done) {
-        testElection.save( function(err) {
-            should.not.exist(err);
-            testAlternative.save(function (err) {
-                should.not.exist(err);
-                testAlternative2.save(done);
-            });
-        });
+        testElection.save(done);
+
     });
     after(function(done) {
         db.Election.remove({}, function () {
@@ -87,7 +81,7 @@ describe("Election", function() {
     });
 });
 
-describe("Vote",function () {
+describe("Vote Model",function () {
     var testElection = new db.Election({
         title: "test1",
         description: "prompetiss"
@@ -96,7 +90,7 @@ describe("Vote",function () {
         description: 'asdadsad'
     });
 
-    testElection.addAlternative(testAlternative);
+    testElection.addAlternatives(testAlternative);
 
 
     var testVote = new db.Vote({
@@ -108,8 +102,7 @@ describe("Vote",function () {
         hash: 'asdadsadsadadad',
         alternative: testAlternative
     });
-    testAlternative.votes.push(testVote);
-    testAlternative.votes.push(testVote2);
+    testAlternative.addVotes([testVote,testVote2]);
 
 
     before(function(done) {

@@ -6,6 +6,10 @@ module.exports = function (app, express, models){
         req.send('api');
     });
 
-    require('./election/index')(router,models);
+    require('./election')(router,models);
+    require('./user')(router,models);
+    require('./alternative')(router,models);
+
+
 
 };
