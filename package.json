@@ -4,7 +4,7 @@
   "description": "Abakus Decision System",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp test"
   },
   "author": "Tib&Juul",
   "repository": {
@@ -24,6 +24,7 @@
     "gulp-clean": "^0.3.1",
     "gulp-express": "^0.1.0",
     "gulp-install": "^0.2.0",
+    "gulp-istanbul": "^0.5.0",
     "gulp-sourcemaps": "^1.2.2",
     "gulp-traceur": "^0.13.0",
     "method-override": "^2.2.0",
