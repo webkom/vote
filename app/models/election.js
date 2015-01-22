@@ -22,7 +22,9 @@ exports = module.exports = function (collection, mongoose){
         async.each(alternatives, function(alt,cb){
             that.alternatives.push(alt);
             alt.save(cb);
-        }, next);
+        }, function(){
+            that.save(next);
+        });
 
     };
 
