@@ -8,36 +8,53 @@ var request = require('supertest')
 describe("Alternatives API", function() {
     var testElection = new db.Election({
         title:        "aasasdadssdas",
-        description:  "asdasdsass"
+        description:  "testElection"
     });
 
     var testAlternative = new db.Alternative({
-        description: "acaaasss"
+        description: "testAlternative"
     });
 
     var testAlternative2 = new db.Alternative({
-        description: "adddsaaasss"
+        description: "testAlternative2"
     });
 
 
     before(function(done) {
         db.Alternative.remove({}, function(){
             db.Election.remove({}, function(){
-                testElection.addAlternatives([testAlternative], done);
+                testElection.save(done);
             });
         });
 
     });
-    after(function(done) {
-        db.Alternative.remove({}, function(){
-            db.Election.remove({}, done);
-        });
+    afterEach(function(done) {
+        db.Alternative.remove({}, done);
+
     });
 
-    it('should be able to create and get alternatives', function(done){
+    it('should be able to create multiple alternatives', function(done){
         request(app)
             .post('/api/election/'+testElection._id+'/alternatives')
-            .send(testAlternative2)
+            .send([testAlternative,testAlternative2])
+            .end(function (err,res){
+                should.not.exist(err, 'should be no errors on get election');
+                res.status.should.equal(201);
+                request(app)
+                    .get('/api/election/'+testElection._id+'/alternatives')
+                    .end(function (err,res){
+
+                        res.body[0].description.should.equal(testAlternative.description, 'should be the same as api result');
+                        res.body[1].description.should.equal(testAlternative2.description, 'should be the same as api result');
+                        done();
+                    });
+            });
+    });
+
+    it('should be able to create one alternative', function(done){
+        request(app)
+            .post('/api/election/'+testElection._id+'/alternatives')
+            .send(testAlternative)
             .end(function (err,res){
                 should.not.exist(err, 'should be no errors on get election');
                 res.status.should.equal(201);
@@ -45,7 +62,6 @@ describe("Alternatives API", function() {
                     .get('/api/election/'+testElection._id+'/alternatives')
                     .end(function (err,res){
                         res.body[0].description.should.equal(testAlternative.description, 'should be the same as api result');
-                        res.body[1].description.should.equal(testAlternative2.description, 'should be the same as api result');
                         done();
                     });
             });

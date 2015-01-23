@@ -16,7 +16,7 @@ module.exports = function (collection, mongoose) {
         },
         active: {
             type: Boolean,
-            default: false
+            default: true
         },
         admin:{
             type: Boolean,
