@@ -13,14 +13,21 @@ exports = module.exports = function (collection, mongoose){
             {
                 type: mongoose.Schema.Types.ObjectId, ref: 'alternative'
             }
+        ],
+        votes: [
+            {
+                type: mongoose.Schema.Types.ObjectId, ref: 'vote'
+            }
         ]
     });
 
 
     schema.methods.addAlternatives = function(alternatives, next){
         var that = this;
+        if (alternatives.constructor != Array) alternatives = [alternatives];
         async.each(alternatives, function(alt,cb){
             that.alternatives.push(alt);
+            alt.election = that._id;
             alt.save(cb);
         }, function(){
             that.save(next);

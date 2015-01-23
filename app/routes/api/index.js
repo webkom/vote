@@ -9,6 +9,9 @@ module.exports = function (app, express, models){
     require('./election')(router,models);
     require('./user')(router,models);
     require('./alternative')(router,models);
+    require('./vote')(router,models);
+
+
 
 
 

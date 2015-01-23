@@ -4,11 +4,6 @@ exports = module.exports = function (collection, mongoose) {
             type: String,
             required: true,
             index: true
-        },
-        alternative: {
-            type: mongoose.Schema.Types.ObjectId, ref: 'alternative',
-            required: true,
-            index: true
         }
     });
 
