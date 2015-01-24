@@ -3,6 +3,8 @@ var mongoose = require('mongoose');
 var User = require('./user');
 var Schema = mongoose.Schema;
 
+var USERNAME_LENGTH = 7;
+
 var userSchema = new Schema({
     username: {
         type: String,

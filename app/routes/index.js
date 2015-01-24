@@ -1,5 +1,4 @@
 var express = require('express');
-var path = require('path');
 var apiRoutes = require('./api');
 var authRoutes = require('./auth');
 
