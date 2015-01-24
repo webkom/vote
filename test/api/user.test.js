@@ -1,8 +1,9 @@
 var request = require('supertest');
 var chai = require('chai');
-var should = chai.should();
 var app = require('../../app');
 var User = require('../../app/models/user');
+
+chai.should();
 
 describe('User API', function() {
     var amount = 5;

@@ -1,9 +1,10 @@
 var request = require('supertest');
 var chai = require('chai');
-var should = chai.should();
 var app = require('../../app');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
+
+chai.should();
 
 describe('Alternatives API', function() {
     var testElection = new Election({
