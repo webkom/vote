@@ -1,16 +1,17 @@
-exports = module.exports = function (collection, mongoose) {
-    var schema = mongoose.Schema({
-        hash: {
-            type: String,
-            required: true,
-            index: true
-        },
-        alternative: {
-            type: mongoose.Schema.Types.ObjectId, ref: 'alternative',
-            required: true,
-            index: true
-        }
-    });
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
 
-    return mongoose.model(collection, schema);
-};
+var voteSchema = new Schema({
+    hash: {
+        type: String,
+        required: true,
+        index: true
+    },
+    alternative: {
+        type: Schema.Types.ObjectId, ref: 'Alternative',
+        required: true,
+        index: true
+    }
+});
+
+module.exports = mongoose.model('Vote', voteSchema);

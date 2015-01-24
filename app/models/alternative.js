@@ -1,33 +1,32 @@
 var async = require('async');
-exports = module.exports = function (collection, mongoose) {
-    var schema = mongoose.Schema({
-        description: {
-            type: String,
-            required: true
-        },
-        votes:[
-            {
-                type: mongoose.Schema.Types.ObjectId, ref: 'vote'
-            }
-        ]
+var mongoose = require('mongoose');
+var Vote = require('./vote');
+var Schema = mongoose.Schema;
+
+var alternativeSchema = new Schema({
+    description: {
+        type: String,
+        required: true
+    },
+    votes: [
+        {
+            type: Schema.Types.ObjectId, ref: 'Vote'
+        }
+    ]
+});
+
+alternativeSchema.methods.getVotes = function(cb) {
+    Vote.find({ alternative: this }, function (err, votes) {
+        if (err) return cb(err);
+        return cb(null, votes);
     });
-
-    schema.methods.getVotes = function(cb){
-        mongoose.model('vote').find({alternative:this}, function (err, votes){
-            if(err) return cb(err,null);
-            return cb(null,votes);
-        });
-
-    };
-
-    schema.methods.addVotes = function(votes, next){
-        var that = this;
-        async.each(votes, function(vote,cb){
-            that.votes.push(vote);
-            vote.save(cb);
-        }, next);
-
-    };
-
-    return mongoose.model(collection, schema);
 };
+
+alternativeSchema.methods.addVotes = function(votes, next) {
+    async.each(votes, function(vote, cb) {
+        this.votes.push(vote);
+        vote.save(cb);
+    }.bind(this), next);
+};
+
+module.exports = mongoose.model('Alternative', alternativeSchema);

@@ -1,15 +1,10 @@
-module.exports = function (app, express, models){
-    var router = express.Router();
-    app.use('/api',router);
+var express = require('express');
+var electionRoutes = require('./election');
+var userRoutes = require('./user');
 
-    router.get('/', function (res, req) {
-        req.send('api');
-    });
+var router = express.Router();
 
-    require('./election')(router,models);
-    require('./user')(router,models);
-    require('./alternative')(router,models);
+router.use('/election', electionRoutes);
+router.use('/user', userRoutes);
 
-
-
-};
+module.exports = router;
