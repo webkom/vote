@@ -1,6 +1,5 @@
 var bcrypt = require('bcryptjs');
 var mongoose = require('mongoose');
-var User = require('./user');
 var Schema = mongoose.Schema;
 
 var USERNAME_LENGTH = 7;
@@ -24,6 +23,18 @@ var userSchema = new Schema({
     }
 });
 
+userSchema.methods.validPassword = function(password, cb) {
+    bcrypt.compare(password, this.password, cb);
+};
+
+userSchema.statics.generateUsername = function() {
+    var username = '';
+    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    for (var i = 0; i < USERNAME_LENGTH; i++ )
+        username += possible.charAt(Math.floor(Math.random() * possible.length));
+    return username;
+};
+
 userSchema.pre('save', function(next) {
     var user = this;
 
@@ -44,16 +55,4 @@ userSchema.pre('save', function(next) {
 
 });
 
-userSchema.methods.validPassword = function(password, cb) {
-    bcrypt.compare(password, this.password, cb);
-};
-
-userSchema.statics.generateUsername = function() {
-    var username = '';
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < USERNAME_LENGTH; i++ )
-        username += possible.charAt(Math.floor(Math.random() * possible.length));
-    return username;
-};
-
-module.exports = mongoose.model('User', userSchema);
+var User = module.exports = mongoose.model('User', userSchema);
