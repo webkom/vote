@@ -1,1 +1,1 @@
-var app = angular.module('voteApp', ['ngRoute']);
+angular.module('voteApp', ['ngRoute']);

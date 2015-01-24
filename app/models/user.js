@@ -35,6 +35,8 @@ userSchema.statics.generateUsername = function() {
     return username;
 };
 
+var User = mongoose.model('User', userSchema);
+
 userSchema.pre('save', function(next) {
     var user = this;
 
@@ -52,7 +54,6 @@ userSchema.pre('save', function(next) {
     } else {
         next();
     }
-
 });
 
-var User = module.exports = mongoose.model('User', userSchema);
+module.exports = User;

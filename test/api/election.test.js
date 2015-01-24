@@ -3,7 +3,8 @@ var app = require('../../app');
 var chai = require('chai');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
-var should = chai.should();
+
+chai.should();
 
 describe('Election API', function() {
     var testElection = new Election({

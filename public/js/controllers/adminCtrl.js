@@ -5,6 +5,6 @@ angular.module('voteApp').controller('adminController', function ($scope, $windo
             $scope.elections = response.data;
         });
     } else {
-        $window.location.href = "/";
+        $window.location.href = '/';
     }
 });
