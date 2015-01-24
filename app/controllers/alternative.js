@@ -4,8 +4,8 @@ var Election = require('../models/election');
 exports.list = function(req, res) {
     Election.findById(req.params.election_id)
         .populate('alternatives')
-        .exec(function (err, election) {
-            if (err) return res.send(err);
+        .exec(function(err, election) {
+            if (err) return res.status(500).send(err);
             return res.json(election.alternatives);
         });
 };
@@ -13,16 +13,16 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
     Election.findById(req.params.election_id)
         .populate('alternatives')
-        .exec(function (err, election) {
-            if (err) return res.send(err);
+        .exec(function(err, election) {
+            if (err) return res.status(500).send(err);
 
             var alternative = new Alternative({
                 title: req.body.title,
                 description: req.body.description
             });
 
-            election.addAlternatives([alternative], function(err, election){
-                if (err) return res.send(err);
+            election.addAlternative(alternative, function(err, election) {
+                if (err) return res.status(500).send(err);
                 return res.status(201).send(election.alternatives);
             });
         });

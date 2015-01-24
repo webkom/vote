@@ -1,18 +1,18 @@
 var async = require('async');
 var User = require('../models/user');
 
-exports.retrieve = function (req, res) {
-    User.find({ admin: false }, function(err, users) {
-        if (err) return res.send(err);
+exports.retrieve = function(req, res) {
+    User.find({admin: false}, function(err, users) {
+        if (err) return res.status(500).send(err);
         return res.json(users);
     });
 };
 
-exports.create = function (req, res) {
+exports.create = function(req, res) {
     var i = 0;
     var users = [];
 
-    async.whilst(function(){
+    async.whilst(function() {
         return i < req.body.amount;
     }, function(cb) {
         User.create({}, function(err, user) {
@@ -21,7 +21,8 @@ exports.create = function (req, res) {
             users.push(user);
             cb();
         });
-    }, function() {
+    }, function(err) {
+        if (err) return res.status(500).send(err);
         return res.status(201).json(users);
     });
 };

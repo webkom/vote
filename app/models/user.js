@@ -3,7 +3,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var USERNAME_LENGTH = 7;
-
 var userSchema = new Schema({
     username: {
         type: String,
@@ -15,7 +14,7 @@ var userSchema = new Schema({
     },
     active: {
         type: Boolean,
-        default: false
+        default: true
     },
     admin: {
         type: Boolean,
@@ -30,7 +29,7 @@ userSchema.methods.validPassword = function(password, cb) {
 userSchema.statics.generateUsername = function() {
     var username = '';
     var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < USERNAME_LENGTH; i++ )
+    for (var i = 0; i < USERNAME_LENGTH; i++)
         username += possible.charAt(Math.floor(Math.random() * possible.length));
     return username;
 };
@@ -44,12 +43,11 @@ userSchema.pre('save', function(next) {
         user.username = User.generateUsername();
     }
 
-    if (typeof user.password !== 'undefined'){
-        bcrypt.genSalt(function (err, salt) {
-            bcrypt.hash(user.password, salt, function (err, hash) {
-                user.password = hash;
-                next();
-            });
+    if (typeof user.password !== 'undefined') {
+        bcrypt.hash(user.password, 5, function(err, hash) {
+            if (err) return next(err);
+            user.password = hash;
+            next();
         });
     } else {
         next();
