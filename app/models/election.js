@@ -1,4 +1,3 @@
-var async = require('async');
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
@@ -18,14 +17,17 @@ var electionSchema = new Schema({
     ]
 });
 
-electionSchema.methods.addAlternatives = function(alternatives, next) {
+
+electionSchema.methods.addAlternative = function(alternative, next) {
     var that = this;
-    async.each(alternatives, function(alt, cb) {
-        that.alternatives.push(alt);
-        alt.save(cb);
-    }, function() {
+    this.alternatives.push(alternative);
+    alternative.election = that._id;
+    alternative.save(function(err, res) {
+        if (err) return next(err);
         that.save(next);
     });
+
 };
+
 
 module.exports = mongoose.model('Election', electionSchema);

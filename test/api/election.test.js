@@ -24,7 +24,7 @@ describe('Election API', function() {
     before(function(done) {
         Alternative.remove({}, function() {
             Election.remove({}, function() {
-                testElection.addAlternatives([testAlternative], done);
+                testElection.addAlternative(testAlternative, done);
             });
         });
 
