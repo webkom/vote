@@ -17,8 +17,9 @@ node_modules: package.json
 jshint:
 	$(JSHINT) .
 
-test: jshint
+test: node_modules jshint
 	MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
+	$(ISTANBUL) report cobertura
 
 server:
 	@supervisor index
