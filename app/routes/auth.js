@@ -12,6 +12,14 @@ module.exports = function (app, express) {
         })(req, res);
     });
 
+    router.post('/isAuthenticated', function (req, res){
+        if (req.user) {
+            res.json({isAuthenticated: "true"});
+        } else {
+            res.json({isAuthenticated: "false"});
+        }
+         });
+
     app.use('/auth', router);
 
 

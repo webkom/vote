@@ -33,6 +33,11 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider', functio
             controller: 'adminElectionController'
         })
 
+        .when('/create_user', {
+            templateUrl: 'views/createUser.html',
+            controller: 'createUserController'
+        })
+
         .otherwise({
             templateUrl: 'views/home.html',
             controller: 'mainController'

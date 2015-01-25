@@ -1,9 +1,9 @@
 angular.module('voteApp').service('apiService', function ($http, $routeParams) {
 
     this.isAuthenticated = function () {
-        return $http({method: 'GET', url: '/api/isAuthenticated'}).
+        return $http({method: 'POST', url: '/auth/isAuthenticated'}).
             success(function (data, status, headers, config) {
-                return (!('user' in data));
+                return data;
             }).
             error(function (data, status, headers, config) {
             });

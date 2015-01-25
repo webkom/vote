@@ -1,0 +1,12 @@
+<form class="form-group" ng-submit="createUser(user)">
+    <label>Brukernavn</label>
+    <input type="text" class="form-control" name="username" placeholder="Skriv inn brukernavn" ng-model="user.username">
+    <label>Password</label>
+    <input type="password" class="form-control" name="password" placeholder="Skriv inn ønsket passord" ng-model="user.password">
+    <label>Password</label>
+    <input type="password" class="form-control" name="confirmPassword" placeholder="Bekreft passord" ng-model="user.confirmPassword">
+    <br>
+    <button type="submit" id="submit" value="Submit" >Submit</button>
+</form>
+
+<p>{{formFeedback}}</p>

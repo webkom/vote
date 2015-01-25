@@ -17,3 +17,5 @@ gulp.task('test', function () {
             reporter: 'spec'
         }));
 });
+
+gulp.task('default', ['server']);
