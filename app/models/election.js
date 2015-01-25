@@ -1,24 +1,33 @@
-exports = module.exports = function (collection, mongoose){
-    var schema = mongoose.Schema({
-        title: {
-            type: String,
-            required: true,
-            index: true
-        },
-        description: {
-            type: String
-        },
-        alternatives: [
-            {
-                type: mongoose.Schema.Types.ObjectId, ref: 'alternative'
-            }
-        ]
+var mongoose = require('mongoose');
+var Schema = mongoose.Schema;
+
+var electionSchema = new Schema({
+    title: {
+        type: String,
+        required: true,
+        index: true
+    },
+    description: {
+        type: String
+    },
+    alternatives: [
+        {
+            type: Schema.Types.ObjectId, ref: 'Alternative'
+        }
+    ]
+});
+
+
+electionSchema.methods.addAlternative = function(alternative, next) {
+    var that = this;
+    this.alternatives.push(alternative);
+    alternative.election = that._id;
+    alternative.save(function(err, res) {
+        if (err) return next(err);
+        that.save(next);
     });
 
-    schema.methods.addAlternative = function(alternative){
-        if(this.alternatives) this.alternatives.push(alternative)
-        else this.alternatives = [alternative];
-    };
-
-    return mongoose.model(collection, schema);
 };
+
+
+module.exports = mongoose.model('Election', electionSchema);

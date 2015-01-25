@@ -1,11 +1,13 @@
-module.exports = function (app, express, models){
-    var router = express.Router();
-    app.use('/api',router);
+var express = require('express');
+var electionRoutes = require('./election');
+var userRoutes = require('./user');
+var voteRoutes = require('./vote');
 
-    router.get('/', function (res, req) {
-        req.send('api');
-    });
+var router = express.Router();
 
-    require('./election/index')(router,models);
+router.use('/election', electionRoutes);
+router.use('/user', userRoutes);
+router.use('/alternative', electionRoutes);
+router.use('/vote', voteRoutes);
 
-};
+module.exports = router;

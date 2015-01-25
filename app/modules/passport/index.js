@@ -1,32 +1,28 @@
-var LocalStrategy   = require('passport-local').Strategy;
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+var User = require('../../models/user');
 
-exports = module.exports = function (passport,models) {
-
-
-    passport.serializeUser(function (user, done){
+module.exports = function() {
+    passport.serializeUser(function(user, done) {
         done(null, user.username); // attached to the session
     });
 
-    passport.deserializeUser(function (user, done) {
-        models.User.findOne({ username: user.username },function (err, user) {
+    passport.deserializeUser(function(user, done) {
+        User.findOne({username: user.username}, function(err, user) {
             done(err, user);
         });
     });
 
     passport.use('local', new LocalStrategy(
-        function (username, password, done) {
-            models.User.findOne({ username: username }, function (err, user) {
+        function(username, password, done) {
+            User.findOne({username: username}, function(err, user) {
                 if (err) return done(err);
-                if (!user) return done(null, false, { message: 'Incorrect username.' });
-                user.validPassword(password, function (err, res){
-                    if (!res) return done(null, false, { message: 'Incorrect password.' });
+                if (!user) return done(null, false, {message: 'Incorrect username.'});
+                user.validPassword(password, function(err, res) {
+                    if (!res) return done(null, false, {message: 'Incorrect password.'});
                     return done(null, user);
                 });
             });
         }
     ));
-
-
-
-
 };

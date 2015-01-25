@@ -1,33 +1,57 @@
-exports = module.exports = function (collection, mongoose) {
-    var schema = mongoose.Schema({
-        description: {
-            type: String,
-            required: true
-        },
-        votes:[
-            {
-                type: mongoose.Schema.Types.ObjectId, ref: 'vote'
-            }
-        ]
+var bcrypt = require('bcryptjs');
+var mongoose = require('mongoose');
+var Vote = require('./vote');
+var User = require('./user');
+var async = require('async');
+
+var Schema = mongoose.Schema;
+
+var alternativeSchema = new Schema({
+    description: {
+        type: String,
+        required: true
+    },
+    votes: [
+        {
+            type: Schema.Types.ObjectId, ref: 'Vote'
+        }
+    ],
+    election: {
+        type: Schema.Types.ObjectId, ref: 'Election',
+        required: true
+    }
+});
+
+alternativeSchema.methods.addVote = function(username, next) {
+    var that = this;
+    User.findOne({username: username}, function(err, user) {
+        if (err) return next(err);
+        if (!user) return next({'message': 'No user with that username'});
+        if (!user.active) return next({'message': 'User not active'});
+        Vote.find({election: that.election}, function(err, votes) {
+            if (err) return next(err);
+            var voted;
+            async.each(votes, function(vote, cb) {
+                bcrypt.compare(user.username, vote.hash, function(err, res) {
+                    if (err) return cb(err);
+                    if (res) voted = true;
+                    cb();
+                });
+            }, function(err) {
+                if (err) return next(err);
+                if (voted) return next({'message': 'Already voted'});
+                bcrypt.hash(user.username, 5, function(err, hash) {
+                    if (err) return next(err);
+                    var vote = new Vote({hash: hash, election: that.election});
+                    that.votes.push(vote);
+                    vote.save(function(err, vote) {
+                        if (err) return next(err);
+                        that.save(next);
+                    });
+                });
+            });
+        });
     });
-
-    schema.methods.getVotes = function(cb){
-        mongoose.model('vote').find({alternative:this}, function (err, votes){
-            if(err) return cb(err,null);
-            return cb(null,votes);
-        });
-
-    };
-
-    schema.methods.addVote = function (hash,cb){
-        new mongoose.model('vote')({
-            hash: hash,
-            alternative: this
-        }).save(function (err, vote){
-            if(err) return cb(err);
-            return cb(null, vote);
-        });
-    };
-
-    return mongoose.model(collection, schema);
 };
+
+module.exports = mongoose.model('Alternative', alternativeSchema);
