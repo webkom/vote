@@ -27,9 +27,9 @@ describe('Auth API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) done(err);
-                should.exist(res.body.username,'should return a cardkey');
+                should.exist(res.body.username, 'should return a cardkey');
                 res.body.password.should.not.equal(testUser.password, 'password should be hashed');
-                User.findOne({username: testUser.username}, function(err, usr) {
+                User.findOne({ username: testUser.username }, function(err, usr) {
                     res.body.password.should.equal(usr.password, 'db password hash should be the same as api result');
                     done();
                 });

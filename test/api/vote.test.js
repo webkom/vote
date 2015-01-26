@@ -10,7 +10,8 @@ chai.should();
 describe('Vote API', function() {
     var testElection = new Election({
         title: 'aasasdadssdas',
-        description: 'testElection'
+        description: 'testElection',
+        active: true
     });
 
     var testAlternative = new Alternative({
@@ -22,6 +23,14 @@ describe('Vote API', function() {
     });
     var users;
 
+    var testAlternative3 = new Alternative({
+        description: 'testAlternative3'
+    });
+    var inactiveElection = new Election({
+        title: 'aasasdadssdas',
+        description: 'inactiveElection'
+    });
+
 
     before(function(done) {
         Alternative.remove({}, function() {
@@ -29,13 +38,16 @@ describe('Vote API', function() {
                 User.remove({}, function() {
                     testElection.addAlternative(testAlternative, function(err, res) {
                         testElection.addAlternative(testAlternative2, function(err, res) {
-                            request(app)
-                                .post('/api/user/create')
-                                .send({amount: 5})
-                                .end(function(err, res) {
-                                    users = res.body;
-                                    done();
-                                });
+                            inactiveElection.addAlternative(testAlternative3, function(err, res) {
+                                request(app)
+                                    .post('/api/user/create')
+                                    .send({ amount: 5 })
+                                    .end(function(err, res) {
+                                        users = res.body;
+                                        done();
+                                    });
+                            });
+
                         });
                     });
                 });
@@ -74,7 +86,7 @@ describe('Vote API', function() {
             .send(users[0])
             .end(function(err, res) {
                 if (err) return done(err);
-                Alternative.find({})
+                Alternative.find({ election: testAlternative.election })
                     .populate('votes')
                     .exec(function(err, alternatives) {
                         alternatives[1].votes.length.should.equal(1, 'only one vote should exist');
@@ -84,7 +96,7 @@ describe('Vote API', function() {
     });
 
     it('should not be able to vote with inactive user', function(done) {
-        User.findOne({username: users[1].username}, function(err, usr) {
+        User.findOne({ username: users[1].username }, function(err, usr) {
             usr.active = false;
             usr.save(function() {
                 request(app)
@@ -105,4 +117,19 @@ describe('Vote API', function() {
 
     });
 
+    it('should not be able to vote on a deactivated election', function(done) {
+        request(app)
+            .post('/api/vote/' + testAlternative3._id)
+            .send(users[1])
+            .end(function(err, res) {
+                if (err) return done(err);
+                Alternative.find({ election: testAlternative3.election })
+                    .populate('votes')
+                    .exec(function(err, alternatives) {
+                        alternatives[0].votes.length.should.equal(0, 'no vote should be added');
+                        done();
+                    });
+            });
+
+    });
 });

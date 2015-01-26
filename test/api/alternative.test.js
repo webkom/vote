@@ -8,8 +8,8 @@ chai.should();
 
 describe('Alternatives API', function() {
     var testElection = new Election({
-        title:        'test election',
-        description:  'test election description'
+        title: 'test election',
+        description: 'test election description'
     });
 
     var testAlternative = new Alternative({

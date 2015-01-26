@@ -15,4 +15,8 @@ router.route('/:election_id/alternatives')
     .get(alternative.list)
     .post(alternative.create);
 
+router.post('/:election_id/activate', election.activate);
+
+router.post('/:election_id/deactivate', election.deactivate);
+
 module.exports = router;
