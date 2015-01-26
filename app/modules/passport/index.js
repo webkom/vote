@@ -18,9 +18,13 @@ module.exports = function() {
             User.findOne({ username: username }, function(err, user) {
                 if (err) return done(err);
                 if (!user) return done(null, false, { message: 'Incorrect username.' });
-                user.validPassword(password, function(err, res) {
+                user.validPassword(password)
+                .then(function(res) {
                     if (!res) return done(null, false, { message: 'Incorrect password.' });
                     return done(null, user);
+                })
+                .catch(function(err) {
+                    done(err);
                 });
             });
         }

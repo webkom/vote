@@ -20,19 +20,20 @@ describe('Election API', function() {
         description: 'aaaaaaasss'
     });
 
-
-    before(function(done) {
-        Alternative.remove({}, function() {
-            Election.remove({}, function() {
-                testElection.addAlternative(testAlternative, done);
-            });
+    before(function() {
+        return Alternative.removeAsync({})
+        .then(function() {
+            return Election.removeAsync({});
+        })
+        .then(function() {
+            return testElection.addAlternative(testAlternative);
         });
-
     });
 
-    after(function(done) {
-        Alternative.remove({}, function() {
-            Election.remove({}, done);
+    after(function() {
+        return Alternative.removeAsync({})
+        .then(function() {
+            return Election.removeAsync({});
         });
     });
 

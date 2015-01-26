@@ -1,31 +1,38 @@
 var Election = require('../models/election');
 
 exports.create = function(req, res) {
-    Election.create({
+    return Election.createAsync({
         title: req.body.title,
         description: req.body.description
-    }, function(err, election) {
-        if (err) return res.status(500).send(err);
+    }).then(function(election) {
         return res.status(201).json(election);
+    }).catch(function(err) {
+        res.status(500).json(err);
     });
 };
 
 exports.list = function(req, res) {
-    Election.find()
+    return Election.find()
         .populate('alternatives')
-        .exec(function(err, elections) {
-            if (err) return res.status(500).send(err);
+        .execAsync()
+        .then(function(elections) {
             return res.status(200).json(elections);
+        })
+        .catch(function(err) {
+            res.status(500).send(err);
         });
 };
 
 exports.retrieve = function(req, res) {
-    Election.findById(req.params.election_id)
+    return Election.findById(req.params.election_id)
         .populate('alternatives')
-        .exec(function(err, election) {
+        .execAsync()
+        .then(function(election) {
             if (!election) return res.status(404).send({ message: 'Election not found' });
-            if (err) return res.status(500).send(err);
             return res.status(200).json(election);
+        })
+        .catch(function(err) {
+            res.status(500).send(err);
         });
 };
 
