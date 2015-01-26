@@ -1,9 +1,8 @@
-var bcrypt = require('bcryptjs');
+var crypto = require('crypto');
 var mongoose = require('mongoose');
 var Vote = require('./vote');
 var User = require('./user');
-var async = require('async');
-
+var Election = require('../models/election');
 var Schema = mongoose.Schema;
 
 var alternativeSchema = new Schema({
@@ -24,34 +23,35 @@ var alternativeSchema = new Schema({
 
 alternativeSchema.methods.addVote = function(username, next) {
     var that = this;
-    User.findOne({username: username}, function(err, user) {
+    User.findOne({ username: username }, function(err, user) {
         if (err) return next(err);
-        if (!user) return next({'message': 'No user with that username'});
-        if (!user.active) return next({'message': 'User not active'});
-        Vote.find({election: that.election}, function(err, votes) {
+        if (!user) return next({ message: 'No user with that username' });
+        if (!user.active) return next({ message: 'User not active' });
+        Election.findById(that.election, function(err, election) {
             if (err) return next(err);
-            var voted;
-            async.each(votes, function(vote, cb) {
-                bcrypt.compare(user.username, vote.hash, function(err, res) {
-                    if (err) return cb(err);
-                    if (res) voted = true;
-                    cb();
-                });
-            }, function(err) {
+            if (!election.active) return next({ message: 'Election not active' });
+
+            var appSecret = process.env.APP_SECRET || 'dev_secret';
+            var hash = crypto.createHash('sha512');
+            hash.setEncoding('hex');
+            hash.write(user.username);
+            hash.write(appSecret);
+            hash.end();
+            var voteHash = hash.read();
+
+            Vote.find({ election: that.election, hash: voteHash }, function(err, votes) {
                 if (err) return next(err);
-                if (voted) return next({'message': 'Already voted'});
-                bcrypt.hash(user.username, 5, function(err, hash) {
+                if (votes.length > 0) return next({ message: 'Already voted' });
+                var vote = new Vote({ hash: voteHash, election: that.election });
+                that.votes.push(vote);
+                vote.save(function(err, vote) {
                     if (err) return next(err);
-                    var vote = new Vote({hash: hash, election: that.election});
-                    that.votes.push(vote);
-                    vote.save(function(err, vote) {
-                        if (err) return next(err);
-                        that.save(next);
-                    });
+                    that.save(next);
                 });
             });
         });
     });
+
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);

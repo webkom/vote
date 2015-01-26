@@ -14,7 +14,11 @@ var electionSchema = new Schema({
         {
             type: Schema.Types.ObjectId, ref: 'Alternative'
         }
-    ]
+    ],
+    active: {
+        type: Boolean,
+        default: false
+    }
 });
 
 

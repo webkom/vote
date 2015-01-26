@@ -9,7 +9,7 @@ describe('User API', function() {
     var amount = 5;
 
     before(function(done) {
-        User.remove({},done);
+        User.remove({}, done);
     });
 
     after(function(done) {
@@ -33,7 +33,7 @@ describe('User API', function() {
     it('should be able to get users', function(done) {
         request(app)
             .get('/api/user')
-            .end(function(err,res) {
+            .end(function(err, res) {
                 if (err) done(err);
                 res.body.length.should.equal(amount, 'should be the correct amount of users returned from api');
                 done();

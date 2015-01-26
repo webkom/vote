@@ -2,7 +2,7 @@ var async = require('async');
 var User = require('../models/user');
 
 exports.retrieve = function(req, res) {
-    User.find({admin: false}, function(err, users) {
+    User.find({ admin: false }, function(err, users) {
         if (err) return res.status(500).send(err);
         return res.json(users);
     });
