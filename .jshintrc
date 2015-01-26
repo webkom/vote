@@ -2,6 +2,7 @@
     "bitwise"       : false,     // true: Prohibit bitwise operators (&, |, ^, etc.)
     "curly"         : false,     // true: Require {} for every new block or scope
     "indent"        : 2,        // {int} Number of spaces to use for indentation
+  //  "maxlen"        : 100,
     "latedef"       : true,    // true: Require variables/functions to be defined before being used
     "quotmark"      : "single",    // Quotation mark consistency:
                                 //   false    : do nothing (default)
