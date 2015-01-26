@@ -1,5 +1,6 @@
-var bcrypt = require('bcryptjs');
-var mongoose = require('mongoose');
+var Bluebird = require('bluebird');
+var bcrypt = Bluebird.promisifyAll(require('bcryptjs'));
+var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Schema = mongoose.Schema;
 
 var USERNAME_LENGTH = 7;
@@ -22,8 +23,8 @@ var userSchema = new Schema({
     }
 });
 
-userSchema.methods.validPassword = function(password, cb) {
-    bcrypt.compare(password, this.password, cb);
+userSchema.methods.validPassword = function(password) {
+    return bcrypt.compareAsync(password, this.password);
 };
 
 userSchema.statics.generateUsername = function() {
@@ -37,18 +38,16 @@ userSchema.statics.generateUsername = function() {
 var User = mongoose.model('User', userSchema);
 
 userSchema.pre('save', function(next) {
-    var user = this;
-
-    if (typeof user.username === 'undefined') {
-        user.username = User.generateUsername();
+    if (!this.username) {
+        this.username = User.generateUsername();
     }
 
-    if (typeof user.password !== 'undefined') {
-        bcrypt.hash(user.password, 5, function(err, hash) {
-            if (err) return next(err);
-            user.password = hash;
-            next();
-        });
+    if (this.password) {
+        return bcrypt.hashAsync(this.password, 5).bind(this)
+            .then(function(hash) {
+                this.password = hash;
+            })
+            .nodeify(next);
     } else {
         next();
     }

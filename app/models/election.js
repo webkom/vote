@@ -1,4 +1,5 @@
-var mongoose = require('mongoose');
+var Bluebird = require('bluebird');
+var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Schema = mongoose.Schema;
 
 var electionSchema = new Schema({
@@ -21,16 +22,13 @@ var electionSchema = new Schema({
     }
 });
 
-
-electionSchema.methods.addAlternative = function(alternative, next) {
-    var that = this;
+electionSchema.methods.addAlternative = function(alternative) {
     this.alternatives.push(alternative);
-    alternative.election = that._id;
-    alternative.save(function(err, res) {
-        if (err) return next(err);
-        that.save(next);
-    });
-
+    alternative.election = this._id;
+    return alternative.saveAsync().bind(this)
+        .then(function() {
+            return this.saveAsync();
+        });
 };
 
 

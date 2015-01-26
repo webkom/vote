@@ -33,34 +33,43 @@ describe('Vote API', function() {
 
 
     before(function(done) {
-        Alternative.remove({}, function() {
-            Election.remove({}, function() {
-                User.remove({}, function() {
-                    testElection.addAlternative(testAlternative, function(err, res) {
-                        testElection.addAlternative(testAlternative2, function(err, res) {
-                            inactiveElection.addAlternative(testAlternative3, function(err, res) {
-                                request(app)
-                                    .post('/api/user/create')
-                                    .send({ amount: 5 })
-                                    .end(function(err, res) {
-                                        users = res.body;
-                                        done();
-                                    });
-                            });
-
-                        });
-                    });
+        return Alternative.removeAsync({})
+        .then(function() {
+            return Election.removeAsync({});
+        })
+        .then(function() {
+            return User.removeAsync({});
+        })
+        .then(function() {
+            return testElection.addAlternative(testAlternative);
+        })
+        .then(function() {
+            return testElection.addAlternative(testAlternative2);
+        })
+        .then(function() {
+            return inactiveElection.addAlternative(testAlternative3);
+        })
+        .then(function() {
+            request(app)
+                .post('/api/user/create')
+                .send({ amount: 5 })
+                .end(function(err, res) {
+                    users = res.body;
+                    done();
                 });
-
-            });
+        })
+        .catch(function(err) {
+            done(err);
         });
-
     });
-    after(function(done) {
-        Alternative.remove({}, function() {
-            User.remove({}, function() {
-                Election.remove({}, done);
-            });
+
+    after(function() {
+        return Alternative.removeAsync({})
+        .then(function() {
+            return User.removeAsync({});
+        })
+        .then(function() {
+            return Election.removeAsync({});
         });
     });
 
