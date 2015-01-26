@@ -43,10 +43,13 @@ describe('Vote API', function() {
         .then(function() {
             return testElection.addAlternative(testAlternative);
         })
-        .then(function(result) {
+        .then(function() {
             return testElection.addAlternative(testAlternative2);
         })
-        .then(function(result) {
+        .then(function() {
+            return inactiveElection.addAlternative(testAlternative3);
+        })
+        .then(function() {
             request(app)
                 .post('/api/user/create')
                 .send({ amount: 5 })

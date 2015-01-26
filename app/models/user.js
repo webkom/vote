@@ -38,20 +38,16 @@ userSchema.statics.generateUsername = function() {
 var User = mongoose.model('User', userSchema);
 
 userSchema.pre('save', function(next) {
-
-    if (typeof this.username === 'undefined') {
+    if (!this.username) {
         this.username = User.generateUsername();
     }
 
-    if (typeof this.password !== 'undefined') {
+    if (this.password) {
         return bcrypt.hashAsync(this.password, 5).bind(this)
             .then(function(hash) {
                 this.password = hash;
-                next();
             })
-            .catch(function(err) {
-                next(err);
-            });
+            .nodeify(next);
     } else {
         next();
     }

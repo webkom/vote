@@ -8,25 +8,20 @@ module.exports = function() {
     });
 
     passport.deserializeUser(function(user, done) {
-        User.findOne({ username: user.username }, function(err, user) {
-            done(err, user);
-        });
+        return User.findOneAsync({username: user.username}).nodeify(done);
     });
 
     passport.use('local', new LocalStrategy(
         function(username, password, done) {
-            User.findOne({ username: username }, function(err, user) {
-                if (err) return done(err);
-                if (!user) return done(null, false, { message: 'Incorrect username.' });
-                user.validPassword(password)
-                .then(function(res) {
-                    if (!res) return done(null, false, { message: 'Incorrect password.' });
-                    return done(null, user);
-                })
-                .catch(function(err) {
-                    done(err);
+            return User.findOneAsync({username: username})
+                .then(function(user) {
+                    if (!user) return done(null, false, { message: 'Incorrect username.' });
+                    return user.validPassword(password)
+                        .then(function(res) {
+                            if (!res) return done(null, false, { message: 'Incorrect password.' });
+                            return user;
+                        }).nodeify(done);
                 });
-            });
         }
     ));
 };
