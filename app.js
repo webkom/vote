@@ -4,6 +4,7 @@ var bodyParser      = require('body-parser');
 var passport        = require('passport');
 var path            = require('path');
 var router          = require('./app/routes');
+var User            = require('./app/models/user');
 
 var app = express();
 
@@ -21,7 +22,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-var User = require('./app/models/user');
 passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
