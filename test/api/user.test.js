@@ -8,12 +8,12 @@ chai.should();
 describe('User API', function() {
     var amount = 5;
 
-    before(function(done) {
-        User.remove({},done);
+    before(function() {
+        return User.removeAsync({});
     });
 
-    after(function(done) {
-        User.remove({}, done);
+    after(function() {
+        return User.removeAsync({});
     });
 
     it('should be able to create users', function(done) {
@@ -23,9 +23,13 @@ describe('User API', function() {
             .end(function(err, res) {
                 if (err) done(err);
                 res.status.should.equal(201);
-                User.find({}, function(err, res) {
-                    res.length.should.equal(amount, 'should be the correct amount of users in db');
+                User.findAsync({})
+                .then(function(result) {
+                    result.length.should.equal(amount, 'should be the correct amount of users in db');
                     done();
+                })
+                .catch(function(err) {
+                    done(err);
                 });
             });
     });
@@ -33,7 +37,7 @@ describe('User API', function() {
     it('should be able to get users', function(done) {
         request(app)
             .get('/api/user')
-            .end(function(err,res) {
+            .end(function(err, res) {
                 if (err) done(err);
                 res.body.length.should.equal(amount, 'should be the correct amount of users returned from api');
                 done();

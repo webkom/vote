@@ -1,8 +1,11 @@
-var bcrypt = require('bcryptjs');
+var crypto = require('crypto');
 var mongoose = require('mongoose');
+var Bluebird = require('bluebird');
+var mongoose = Bluebird.promisifyAll(require('mongoose'));
+
+var Election = require('./election');
 var Vote = require('./vote');
 var User = require('./user');
-var async = require('async');
 
 var Schema = mongoose.Schema;
 
@@ -22,36 +25,49 @@ var alternativeSchema = new Schema({
     }
 });
 
-alternativeSchema.methods.addVote = function(username, next) {
+alternativeSchema.methods.addVote = function(username) {
     var that = this;
-    User.findOne({username: username}, function(err, user) {
-        if (err) return next(err);
-        if (!user) return next({'message': 'No user with that username'});
-        if (!user.active) return next({'message': 'User not active'});
-        Vote.find({election: that.election}, function(err, votes) {
-            if (err) return next(err);
-            var voted;
-            async.each(votes, function(vote, cb) {
-                bcrypt.compare(user.username, vote.hash, function(err, res) {
-                    if (err) return cb(err);
-                    if (res) voted = true;
-                    cb();
-                });
-            }, function(err) {
-                if (err) return next(err);
-                if (voted) return next({'message': 'Already voted'});
-                bcrypt.hash(user.username, 5, function(err, hash) {
-                    if (err) return next(err);
-                    var vote = new Vote({hash: hash, election: that.election});
-                    that.votes.push(vote);
-                    vote.save(function(err, vote) {
-                        if (err) return next(err);
-                        that.save(next);
-                    });
-                });
+
+    return User.findOneAsync({ username: username })
+    .then(function(user) {
+        if (!user) throw new Error('No user with that username');
+        if (!user.active) throw new Error('User not active');
+
+        return Election.findByIdAsync(that.election)
+        .then(function(election) {
+            if (!election.active) throw new Error('Election not active');
+
+            var appSecret = process.env.APP_SECRET || 'dev_secret';
+            var hash = crypto.createHash('sha512');
+            hash.setEncoding('hex');
+            hash.write(user.username);
+            hash.write(appSecret);
+            hash.end();
+            var voteHash = hash.read();
+
+            return Vote.findAsync({ election: that.election, hash: voteHash })
+            .then(function(votes) {
+                if (votes.length) throw new Error('Already voted');
+                var vote = new Vote({ hash: voteHash, election: that.election });
+                that.votes.push(vote);
+                return vote.saveAsync();
             });
         });
+    })
+    .then(function() {
+        return that.saveAsync();
     });
+};
+
+alternativeSchema.methods.getVotes = function() {
+    return Vote.findAsync({ alternative: this });
+};
+
+alternativeSchema.methods.addVotes = function(votes, next) {
+    return Bluebird.map(votes, function(vote) {
+        this.votes.push(vote);
+        return vote.saveAsync();
+    }.bind(this));
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);

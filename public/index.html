@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <base href="/">
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
     <title>Abavote</title>
 
     <!-- CSS -->
     <link rel="stylesheet" href="libs/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="styles/main.css">
 
     <!-- JS -->
     <script src="libs/angular/angular.min.js"></script>
@@ -27,15 +32,11 @@
 
 </head>
 <body ng-app="voteApp" ng-controller="mainController">
-<div class="container">
 
     <!-- HEADER -->
-    <nav class="navbar navbar-inverse">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">Home</a>
-        </div>
+    <nav class="navbar navbar-fixed-top">
         <ul class="nav navbar-nav">
-            <li><a href="/#/login">Logg in</a></li>
+            <li><a href="/#/login">Log in</a></li>
             <li><a href="/#/create_user">Lag bruker</a></li>
             <li><a href="/#/election" ng-show="authenticated">Avstemmninger</a></li>
             <li><a href="/#/admin/election" ng-show="authenticated">Admin</a></li>
@@ -43,8 +44,7 @@
     </nav>
 
     <!-- ANGULAR DYNAMIC CONTENT -->
-    <div ng-view></div>
+    <div ng-view class="container"></div>
 
-</div>
 </body>
 </html>

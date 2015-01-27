@@ -8,8 +8,8 @@ chai.should();
 
 describe('Alternatives API', function() {
     var testElection = new Election({
-        title:        'test election',
-        description:  'test election description'
+        title: 'test election',
+        description: 'test election description'
     });
 
     var testAlternative = new Alternative({
@@ -21,17 +21,20 @@ describe('Alternatives API', function() {
     });
 
 
-    before(function(done) {
-        Alternative.remove({}, function() {
-            Election.remove({}, function() {
-                testElection.addAlternative(testAlternative, done);
-            });
+    before(function() {
+        return Alternative.removeAsync({})
+        .then(function() {
+            return Election.removeAsync({});
+        })
+        .then(function() {
+            return testElection.addAlternative(testAlternative);
         });
-
     });
-    after(function(done) {
-        Alternative.remove({}, function() {
-            Election.remove({}, done);
+
+    after(function() {
+        return Alternative.removeAsync({})
+        .then(function() {
+            return Election.removeAsync({});
         });
     });
 

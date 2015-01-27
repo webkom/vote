@@ -2,28 +2,33 @@ var Alternative = require('../models/alternative');
 var Election = require('../models/election');
 
 exports.list = function(req, res) {
-    Election.findById(req.params.election_id)
+    return Election.findById(req.params.election_id)
         .populate('alternatives')
-        .exec(function(err, election) {
-            if (err) return res.status(500).send(err);
+        .execAsync()
+        .then(function(election) {
             return res.json(election.alternatives);
+        })
+        .catch(function(err) {
+            res.status(500).json(err);
         });
 };
 
 exports.create = function(req, res) {
-    Election.findById(req.params.election_id)
+    return Election.findById(req.params.election_id)
         .populate('alternatives')
-        .exec(function(err, election) {
-            if (err) return res.status(500).send(err);
-
+        .execAsync()
+        .then(function(election) {
             var alternative = new Alternative({
                 title: req.body.title,
                 description: req.body.description
             });
 
-            election.addAlternative(alternative, function(err, election) {
-                if (err) return res.status(500).send(err);
-                return res.status(201).send(election.alternatives);
-            });
+            return election.addAlternative(alternative);
+        })
+        .spread(function(election) {
+            return res.status(201).send(election.alternatives);
+        })
+        .catch(function(err) {
+            res.status(500).send(err);
         });
 };

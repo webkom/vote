@@ -31,3 +31,5 @@ node_modules
 .idea
 dist
 db
+
+public/styles/*.css
