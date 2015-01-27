@@ -8,8 +8,8 @@ var voteSchema = new Schema({
         required: true,
         index: true
     },
-    election: {
-        type: Schema.Types.ObjectId, ref: 'Election',
+    alternative: {
+        type: Schema.Types.ObjectId, ref: 'Alternative',
         required: true
     }
 });

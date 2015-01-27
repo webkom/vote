@@ -23,10 +23,10 @@ exports.create = function(req, res) {
                 description: req.body.description
             });
 
-            return election.addAlternative(alternative);
-        })
-        .spread(function(election) {
-            return res.status(201).send(election.alternatives);
+            return election.addAlternative(alternative)
+            .then(function() {
+                return res.status(201).send(alternative);
+            });
         })
         .catch(function(err) {
             res.status(500).send(err);

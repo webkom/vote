@@ -1,144 +1,135 @@
+var Bluebird = require('bluebird');
 var request = require('supertest');
+var passportStub = require('passport-stub');
+var chai = require('chai');
 var app = require('../../app');
 var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var User = require('../../app/models/user');
-var chai = require('chai');
+var Vote = require('../../app/models/vote');
+
 chai.should();
 
-
 describe('Vote API', function() {
-    var testElection = new Election({
-        title: 'aasasdadssdas',
-        description: 'testElection',
+    passportStub.install(app);
+
+    var activeElectionData = {
+        title: 'activeElection',
+        description: 'test election',
         active: true
-    });
+    };
 
-    var testAlternative = new Alternative({
-        description: 'testAlternative'
-    });
+    var inactiveElectionData = {
+        title: 'inactiveElection',
+        description: 'inactive election'
+    };
 
-    var testAlternative2 = new Alternative({
-        description: 'testAlternative2'
-    });
-    var users;
+    var activeData = {
+        description: 'active election alt'
+    };
 
-    var testAlternative3 = new Alternative({
-        description: 'testAlternative3'
-    });
-    var inactiveElection = new Election({
-        title: 'aasasdadssdas',
-        description: 'inactiveElection'
-    });
+    var inactiveData = {
+        description: 'inactive election alt'
+    };
 
+    var testUser = {
+        username: 'testUser',
+        password: 'password'
+    };
 
-    before(function(done) {
-        return Alternative.removeAsync({})
+    beforeEach(function() {
+        return Bluebird.all([
+            Election.removeAsync({}),
+            Alternative.removeAsync({}),
+            User.removeAsync({}),
+            Vote.removeAsync({})
+        ]).bind(this)
         .then(function() {
-            return Election.removeAsync({});
+            return Election.createAsync(activeElectionData, inactiveElectionData);
         })
-        .then(function() {
-            return User.removeAsync({});
-        })
-        .then(function() {
-            return testElection.addAlternative(testAlternative);
-        })
-        .then(function() {
-            return testElection.addAlternative(testAlternative2);
-        })
-        .then(function() {
-            return inactiveElection.addAlternative(testAlternative3);
-        })
-        .then(function() {
-            request(app)
-                .post('/api/user/create')
-                .send({ amount: 5 })
-                .end(function(err, res) {
-                    users = res.body;
-                    done();
-                });
-        })
-        .catch(function(err) {
-            done(err);
-        });
-    });
+        .spread(function(activeCreated, inactiveCreated) {
+            this.activeElection = activeCreated;
+            this.inactiveElection = inactiveCreated;
 
-    after(function() {
-        return Alternative.removeAsync({})
-        .then(function() {
-            return User.removeAsync({});
+            activeData.election = this.activeElection;
+            inactiveData.election = this.inactiveElection;
+            this.activeAlternative = new Alternative(activeData);
+            this.inactiveAlternative = new Alternative(inactiveData);
+
+            return Bluebird.all([
+                this.activeElection.addAlternative(this.activeAlternative),
+                this.inactiveElection.addAlternative(this.inactiveAlternative)
+            ]);
         })
         .then(function() {
-            return Election.removeAsync({});
+            return User.registerAsync(testUser, testUser.password);
+        })
+        .then(function(user) {
+            this.user = user;
+            passportStub.login(user);
         });
     });
 
     it('should be able to vote on alternative', function(done) {
         request(app)
-            .post('/api/vote/' + testAlternative._id)
-            .send(users[0])
+            .post('/api/vote/' + this.activeAlternative.id)
             .end(function(err, res) {
                 if (err) return done(err);
-                request(app)
-                    .get('/api/vote/' + testAlternative._id)
-                    .end(function(err, res) {
-                        console.log();
-                        res.body.length.should.equal(1, 'one vote should exist');
+                Vote.findAsync({ alternative: this.activeAlternative.id })
+                    .then(function(votes) {
+                        votes.length.should.equal(1);
                         done();
-                    });
-            });
+                    }).catch(done);
+            }.bind(this));
     });
 
     it('should be able to vote only once', function(done) {
-        request(app)
-            .post('/api/vote/' + testAlternative._id)
-            .send(users[0])
-            .end(function(err, res) {
-                if (err) return done(err);
-                Alternative.find({ election: testAlternative.election })
-                    .populate('votes')
-                    .exec(function(err, alternatives) {
-                        alternatives[1].votes.length.should.equal(1, 'only one vote should exist');
-                        done();
-                    });
+        this.activeAlternative.addVote(this.user.username).bind(this)
+            .then(function() {
+                request(app)
+                    .post('/api/vote/' + this.activeAlternative.id)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        Vote.findAsync({ alternative: this.activeAlternative.id })
+                            .then(function(votes) {
+                                votes.length.should.equal(1);
+                                done();
+                            }).catch(done);
+                    }.bind(this));
             });
     });
 
     it('should not be able to vote with inactive user', function(done) {
-        User.findOne({ username: users[1].username }, function(err, usr) {
-            usr.active = false;
-            usr.save(function() {
+        this.user.active = false;
+        this.user.saveAsync().bind(this)
+            .then(function() {
                 request(app)
-                    .post('/api/vote/' + testAlternative2._id)
-                    .send(users[1])
+                    .post('/api/vote/' + this.activeAlternative.id)
                     .end(function(err, res) {
                         if (err) return done(err);
-                        Alternative.find({})
-                            .populate('votes')
-                            .exec(function(err, alternatives) {
-                                alternatives[0].votes.length.should.equal(0, 'no vote should be added');
+                        Vote.findAsync({ alternative: this.activeAlternative.id })
+                            .then(function(votes) {
+                                votes.length.should.equal(0, 'no vote should be added');
                                 done();
-                            });
-                    });
+                            }).catch(done);
+                    }.bind(this));
             });
-
-        });
 
     });
 
     it('should not be able to vote on a deactivated election', function(done) {
+
         request(app)
-            .post('/api/vote/' + testAlternative3._id)
-            .send(users[1])
+            .post('/api/vote/' + this.inactiveAlternative.id)
+            .send(testUser)
             .end(function(err, res) {
                 if (err) return done(err);
-                Alternative.find({ election: testAlternative3.election })
-                    .populate('votes')
-                    .exec(function(err, alternatives) {
-                        alternatives[0].votes.length.should.equal(0, 'no vote should be added');
+                Vote.findAsync({ election: this.inactiveElection.id })
+                    .then(function(votes) {
+                        votes.length.should.equal(0, 'no vote should be added');
                         done();
-                    });
-            });
+                    }).catch(done);
+            }.bind(this));
 
     });
 });

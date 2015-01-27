@@ -10,16 +10,13 @@ describe('Auth API', function() {
         password: 'test121312313'
     };
 
-    before(function() {
+    beforeEach(function() {
         return User.removeAsync({})
         .then(function() {
             return User.registerAsync(testUser, testUser.password);
         });
     });
 
-    after(function() {
-        return User.removeAsync({});
-    });
 
     it('should be able to authenticate users', function(done) {
         request(app)
