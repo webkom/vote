@@ -23,22 +23,12 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider', functio
             controller: 'electionController'
         })
 
-        .when('/admin/election', {
-            templateUrl: 'views/admin.html',
-            controller: 'adminController'
-        })
-
-        .when('/admin/election/:param', {
-            templateUrl: 'views/adminElection.html',
-            controller: 'adminElectionController'
-        })
-
         .when('/create_user', {
             templateUrl: 'views/createUser.html',
             controller: 'createUserController'
         })
 
-        .when('/admin/create_election', {
+        .when('/create_election', {
             templateUrl: 'views/createElection.html',
             controller: 'createElectionController'
         })
