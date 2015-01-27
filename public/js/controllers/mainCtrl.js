@@ -6,7 +6,7 @@ angular.module('voteApp').controller('mainController', function($scope, apiServi
     $scope.authenticated = false;
 
     apiService.isAuthenticated().then(function (response) {
-        $scope.authenticated = (response.data.isAuthenticated === "sdftest");
+        $scope.authenticated = (response.data.isAuthenticated === 'sdftest');
     });
 
 });

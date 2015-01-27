@@ -16,12 +16,10 @@ router.post('/login', function(req, res) {
 
 router.post('/isAuthenticated', function (req, res){
     if (req.user) {
-        res.json({isAuthenticated: "true"});
+        res.json({isAuthenticated: 'true'});
     } else {
-        res.json({isAuthenticated: "false"});
+        res.json({isAuthenticated: 'false'});
     }
      });
-
-app.use('/auth', router);
 
 module.exports = router;
