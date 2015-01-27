@@ -13,7 +13,7 @@ describe('Auth API', function() {
     before(function() {
         return User.removeAsync({})
         .then(function() {
-            return User.createAsync(testUser);
+            return User.registerAsync(testUser, testUser.password);
         });
     });
 
@@ -28,16 +28,9 @@ describe('Auth API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) done(err);
-                should.exist(res.body.username, 'should return a cardkey');
-                res.body.password.should.not.equal(testUser.password, 'password should be hashed');
-                User.findOneAsync({username: testUser.username})
-                .then(function(user) {
-                    res.body.password.should.equal(user.password, 'db password hash should be the same as api result');
-                    done();
-                })
-                .catch(function(err) {
-                    done(err);
-                });
+                should.exist(res.body.username, 'should return a username');
+                should.not.exist(res.body.password, 'password should not be returned');
+                done();
             });
     });
 });
