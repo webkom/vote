@@ -1,0 +1,15 @@
+<ul>
+    <li ng-repeat="alternative in alternatives">
+        <p>{{alternative.description}}</p>
+    </li>
+</ul>
+
+
+<form class="form-group" ng-submit="addAlternative(alternative)">
+    <label>Alternative</label>
+    <input type="text" class="form-control" name="alternative" placeholder="Skriv inn alternativ" ng-model="alternative.title">
+    <br>
+    <button type="submit" id="submit" value="Submit" >Submit</button>
+</form>
+
+<p>{{formFeedback}}</p>

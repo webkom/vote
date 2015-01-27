@@ -38,6 +38,16 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider', functio
             controller: 'createUserController'
         })
 
+        .when('/admin/create_election', {
+            templateUrl: 'views/createElection.html',
+            controller: 'createElectionController'
+        })
+
+        .when('/election/:param/edit', {
+            templateUrl: 'views/editElection.html',
+            controller: 'editElectionController'
+        })
+
         .otherwise({
             templateUrl: 'views/home.html',
             controller: 'mainController'

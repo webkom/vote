@@ -28,6 +28,8 @@
     <script src="js/controllers/loginCtrl.js"></script>
     <script src="js/controllers/adminCtrl.js"></script>
     <script src="js/controllers/createUserCtrl.js"></script>
+    <script src="js/controllers/createElectionCtrl.js"></script>
+    <script src="js/controllers/editElectionCtrl.js"></script>
     <script src="js/appRoutes.js"></script>
 
 </head>
@@ -38,8 +40,9 @@
         <ul class="nav navbar-nav">
             <li><a href="/#/login">Log in</a></li>
             <li><a href="/#/create_user">Lag bruker</a></li>
-            <li><a href="/#/election" ng-show="authenticated">Avstemmninger</a></li>
+            <li><a href="/#/election">Avstemmninger</a></li>
             <li><a href="/#/admin/election" ng-show="authenticated">Admin</a></li>
+            <li><a href="/#/admin/create_election">CreateElection</a></li>
         </ul>
     </nav>
 

@@ -16,8 +16,10 @@ router.post('/login', function(req, res) {
 
 router.post('/isAuthenticated', function (req, res){
     if (req.user) {
+        //res.status(200).send();
         res.json({isAuthenticated: 'true'});
     } else {
+        //res.status(401).send();
         res.json({isAuthenticated: 'false'});
     }
      });
