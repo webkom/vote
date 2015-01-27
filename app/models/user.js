@@ -1,9 +1,9 @@
+var _ = require('lodash');
 var Bluebird = require('bluebird');
-var bcrypt = Bluebird.promisifyAll(require('bcryptjs'));
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
+var passportLocalMongoose = require('passport-local-mongoose');
+var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-var USERNAME_LENGTH = 7;
 var userSchema = new Schema({
     username: {
         type: String,
@@ -23,34 +23,11 @@ var userSchema = new Schema({
     }
 });
 
-userSchema.methods.validPassword = function(password) {
-    return bcrypt.compareAsync(password, this.password);
+userSchema.methods.getCleanUser = function() {
+    var user = _.omit(this.toObject(), 'password', 'hash', 'salt');
+    return user;
 };
 
-userSchema.statics.generateUsername = function() {
-    var username = '';
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    for (var i = 0; i < USERNAME_LENGTH; i++)
-        username += possible.charAt(Math.floor(Math.random() * possible.length));
-    return username;
-};
+userSchema.plugin(passportLocalMongoose);
 
-var User = mongoose.model('User', userSchema);
-
-userSchema.pre('save', function(next) {
-    if (!this.username) {
-        this.username = User.generateUsername();
-    }
-
-    if (this.password) {
-        return bcrypt.hashAsync(this.password, 5).bind(this)
-            .then(function(hash) {
-                this.password = hash;
-            })
-            .nodeify(next);
-    } else {
-        next();
-    }
-});
-
-module.exports = User;
+module.exports = Bluebird.promisifyAll(mongoose.model('User', userSchema));
