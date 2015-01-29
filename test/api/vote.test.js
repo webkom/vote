@@ -7,8 +7,7 @@ var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
-
-chai.should();
+var should = chai.should();
 
 describe('Vote API', function() {
     passportStub.install(app);
@@ -75,6 +74,11 @@ describe('Vote API', function() {
             .post('/api/vote/' + this.activeAlternative.id)
             .end(function(err, res) {
                 if (err) return done(err);
+
+                var vote = res.body;
+                vote.alternative.should.equal(this.activeAlternative.id);
+                should.exist(vote.hash);
+
                 Vote.findAsync({ alternative: this.activeAlternative.id })
                     .then(function(votes) {
                         votes.length.should.equal(1);
@@ -107,6 +111,7 @@ describe('Vote API', function() {
                     .post('/api/vote/' + this.activeAlternative.id)
                     .end(function(err, res) {
                         if (err) return done(err);
+
                         Vote.findAsync({ alternative: this.activeAlternative.id })
                             .then(function(votes) {
                                 votes.length.should.equal(0, 'no vote should be added');
@@ -114,14 +119,11 @@ describe('Vote API', function() {
                             }).catch(done);
                     }.bind(this));
             });
-
     });
 
     it('should not be able to vote on a deactivated election', function(done) {
-
         request(app)
             .post('/api/vote/' + this.inactiveAlternative.id)
-            .send(testUser)
             .end(function(err, res) {
                 if (err) return done(err);
                 Vote.findAsync({ election: this.inactiveElection.id })
@@ -130,6 +132,21 @@ describe('Vote API', function() {
                         done();
                     }).catch(done);
             }.bind(this));
+    });
 
+    it('should be able to list votes for an alternative', function(done) {
+        this.activeAlternative.addVote(this.user.username).bind(this)
+            .then(function() {
+                request(app)
+                    .get('/api/vote/' + this.activeAlternative.id)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var votes = res.body;
+                        votes.length.should.equal(1);
+                        votes[0].alternative.should.equal(this.activeAlternative.id);
+                        should.exist(votes[0].hash);
+                        done();
+                    }.bind(this));
+            }).catch(done);
     });
 });
