@@ -1,8 +1,7 @@
-var Bluebird = require('bluebird');
 var User = require('../models/user');
 
-exports.retrieve = function(req, res) {
-    return User.findAsync({ admin: false })
+exports.list = function(req, res) {
+    return User.findAsync({ admin: false }, 'username admin active')
         .then(function(users) {
             return res.json(users);
         })
@@ -11,18 +10,13 @@ exports.retrieve = function(req, res) {
         });
 };
 
-exports.create = function(req, res) {
-    var promises = [];
-
-    for (var i = 0; i < req.body.amount; i++) {
-        promises.push(User.createAsync({}));
-    }
-
-    return Bluebird.all(promises)
-        .then(function(users) {
-            return res.status(201).json(users);
+exports.register = function(req, res) {
+    var user = new User(req.body);
+    User.registerAsync(user, req.body.password)
+        .then(function(createdUser) {
+            return res.status(201).json(createdUser.getCleanUser());
         })
         .catch(function(err) {
-            res.status(500).json(err);
+            return res.status(500).json(err);
         });
 };

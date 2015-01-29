@@ -28,7 +28,7 @@ endif
 
 
 test: node_modules jshint public/styles/main.css
-	MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
+	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
 	$(ISTANBUL) report cobertura
 
 server:

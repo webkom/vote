@@ -14,11 +14,6 @@ var alternativeSchema = new Schema({
         type: String,
         required: true
     },
-    votes: [
-        {
-            type: Schema.Types.ObjectId, ref: 'Vote'
-        }
-    ],
     election: {
         type: Schema.Types.ObjectId, ref: 'Election',
         required: true
@@ -45,29 +40,18 @@ alternativeSchema.methods.addVote = function(username) {
             hash.end();
             var voteHash = hash.read();
 
-            return Vote.findAsync({ election: that.election, hash: voteHash })
+            return Vote.findAsync({ alternative: that.id, hash: voteHash })
             .then(function(votes) {
                 if (votes.length) throw new Error('Already voted');
-                var vote = new Vote({ hash: voteHash, election: that.election });
-                that.votes.push(vote);
+                var vote = new Vote({ hash: voteHash, alternative: that.id });
                 return vote.saveAsync();
             });
         });
-    })
-    .then(function() {
-        return that.saveAsync();
     });
 };
 
 alternativeSchema.methods.getVotes = function() {
     return Vote.findAsync({ alternative: this });
-};
-
-alternativeSchema.methods.addVotes = function(votes, next) {
-    return Bluebird.map(votes, function(vote) {
-        this.votes.push(vote);
-        return vote.saveAsync();
-    }.bind(this));
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);
