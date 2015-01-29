@@ -72,6 +72,8 @@ describe('Vote API', function() {
     it('should be able to vote on alternative', function(done) {
         request(app)
             .post('/api/vote/' + this.activeAlternative.id)
+            .expect(201)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
 
@@ -92,6 +94,8 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .post('/api/vote/' + this.activeAlternative.id)
+                    .expect(400)
+                    .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
                         Vote.findAsync({ alternative: this.activeAlternative.id })
@@ -109,6 +113,8 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .post('/api/vote/' + this.activeAlternative.id)
+                    .expect(403)
+                    .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
 
@@ -124,6 +130,8 @@ describe('Vote API', function() {
     it('should not be able to vote on a deactivated election', function(done) {
         request(app)
             .post('/api/vote/' + this.inactiveAlternative.id)
+            .expect(400)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 Vote.findAsync({ election: this.inactiveElection.id })
@@ -139,6 +147,8 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .get('/api/vote/' + this.activeAlternative.id)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
                         var votes = res.body;

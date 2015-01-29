@@ -21,9 +21,10 @@ describe('Auth API', function() {
         request(app)
             .post('/auth/login')
             .send(testUser)
+            .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
-                if (err) done(err);
+                if (err) return done(err);
                 should.exist(res.body.username, 'should return a username');
                 should.not.exist(res.body.password, 'password should not be returned');
                 done();

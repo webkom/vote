@@ -17,23 +17,23 @@ describe('User API', function() {
     it('should be able to create user', function(done) {
         request(app)
             .post('/auth/register')
+            .expect(201)
+            .expect('Content-Type', /json/)
             .send(testUserData)
             .end(function(err, res) {
-                if (err) done(err);
+                if (err) return done(err);
                 res.status.should.equal(201);
 
                 var createdUser = res.body;
                 createdUser.active.should.equal(true);
                 createdUser.admin.should.equal(false);
 
-                User.findOneAsync({ username: testUserData.username })
+                return User.findOneAsync({ username: testUserData.username })
                 .then(function(user) {
                     createdUser.username.should.equal(user.username);
                     done();
                 })
-                .catch(function(err) {
-                    done(err);
-                });
+                .catch(done);
             });
     });
 
@@ -42,6 +42,8 @@ describe('User API', function() {
             .then(function(user) {
                 request(app)
                     .get('/api/user')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
                         var createdUser = res.body[0];

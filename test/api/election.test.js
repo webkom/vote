@@ -43,6 +43,8 @@ describe('Election API', function() {
         request(app)
             .post('/api/election')
             .send(inactiveElectionData)
+            .expect(201)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.status.should.equal(201);
@@ -56,6 +58,8 @@ describe('Election API', function() {
     it('should be able to get all elections', function(done) {
         request(app)
             .get('/api/election')
+            .expect(200)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body[0].title.should.equal(this.activeElection.title, 'db election title hash should be the same as api result');
@@ -68,6 +72,8 @@ describe('Election API', function() {
     it('should be able to get an election and its alternatives', function(done) {
         request(app)
             .get('/api/election/' + this.activeElection.id)
+            .expect(200)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.title.should.equal(this.activeElection.title, 'db election title hash should be the same as api result');
@@ -84,6 +90,8 @@ describe('Election API', function() {
             .then(function(election) {
                 request(app)
                     .post('/api/election/' + election.id + '/activate')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
                         res.body.description.should.equal(election.description);
@@ -96,6 +104,8 @@ describe('Election API', function() {
     it('should be able to deactivate an election', function(done) {
         request(app)
             .post('/api/election/' + this.activeElection.id + '/deactivate')
+            .expect(200)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.active.should.equal(false, 'db election should not be active');

@@ -41,6 +41,8 @@ describe('Alternatives API', function() {
     it('should be able to get alternatives', function(done) {
         request(app)
             .get('/api/election/' + this.election.id + '/alternatives')
+            .expect(200)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.length.should.equal(1);
@@ -53,6 +55,8 @@ describe('Alternatives API', function() {
         request(app)
             .post('/api/election/' + this.election.id + '/alternatives')
             .send(testAlternativeData)
+            .expect(201)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.description.should.equal(testAlternativeData.description);
