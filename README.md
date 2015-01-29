@@ -12,3 +12,6 @@ npm install
 ```bash
 make test
 ```
+
+ --------
+  MIT © webkom, Abakus Linjeforening

@@ -45,5 +45,3 @@ endif
 
 .PHONY: server install test jshint production
 
---------
-MIT © webkom, Abakus Linjeforening
