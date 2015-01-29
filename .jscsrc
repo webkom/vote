@@ -1,0 +1,8 @@
+{
+    "preset": "airbnb",
+    "excludeFiles": ["node_modules/**", "coverage/**", "public/libs/**"],
+    "validateIndentation": 4,
+    "disallowMultipleVarDecl": true,
+    "requireMultipleVarDecl": null,
+    "safeContextKeyword": ["that"]
+}

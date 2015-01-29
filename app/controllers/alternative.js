@@ -2,7 +2,7 @@ var Alternative = require('../models/alternative');
 var Election = require('../models/election');
 
 exports.list = function(req, res) {
-    return Election.findById(req.params.election_id)
+    return Election.findById(req.params.electionId)
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
@@ -14,7 +14,7 @@ exports.list = function(req, res) {
 };
 
 exports.create = function(req, res) {
-    return Election.findById(req.params.election_id)
+    return Election.findById(req.params.electionId)
         .populate('alternatives')
         .execAsync()
         .then(function(election) {

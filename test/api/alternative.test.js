@@ -21,7 +21,6 @@ describe('Alternatives API', function() {
         description: 'test alternative 2'
     };
 
-
     beforeEach(function() {
         return Bluebird.all([
             Election.removeAsync({}),

@@ -2,6 +2,7 @@ BIN = node_modules/.bin
 MOCHA = $(BIN)/_mocha
 ISTANBUL = $(BIN)/istanbul
 JSHINT = $(BIN)/jshint
+JSCS = $(BIN)/jscs
 STYLUS = $(BIN)/stylus
 
 HOSTNAME = $(shell hostname -f)
@@ -19,6 +20,9 @@ node_modules: package.json
 jshint:
 	$(JSHINT) .
 
+jscs:
+	$(JSCS) app public/js test
+
 public/styles/main.css: node_modules $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
 	$(STYLUS) --compress --include node_modules/nib/lib < public/styles/main.styl > public/styles/main.css
@@ -27,7 +31,7 @@ else
 endif
 
 
-test: node_modules jshint public/styles/main.css
+test: node_modules jshint jscs public/styles/main.css
 	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
 	$(ISTANBUL) report cobertura
 
@@ -43,4 +47,4 @@ else
 	@echo "Not in a production environment!"
 endif
 
-.PHONY: server install test jshint production
+.PHONY: server install test jshint jscs production

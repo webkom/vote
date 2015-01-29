@@ -8,15 +8,15 @@ router.route('/')
     .post(election.create)
     .get(election.list);
 
-router.route('/:election_id')
+router.route('/:electionId')
     .get(election.retrieve);
 
-router.route('/:election_id/alternatives')
+router.route('/:electionId/alternatives')
     .get(alternative.list)
     .post(alternative.create);
 
-router.post('/:election_id/activate', election.activate);
+router.post('/:electionId/activate', election.activate);
 
-router.post('/:election_id/deactivate', election.deactivate);
+router.post('/:electionId/deactivate', election.deactivate);
 
 module.exports = router;
