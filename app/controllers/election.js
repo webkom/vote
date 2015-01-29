@@ -24,7 +24,7 @@ exports.list = function(req, res) {
 };
 
 exports.retrieve = function(req, res) {
-    return Election.findById(req.params.election_id)
+    return Election.findById(req.params.electionId)
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
@@ -37,7 +37,7 @@ exports.retrieve = function(req, res) {
 };
 
 exports.activate = function(req, res) {
-    Election.findById(req.params.election_id)
+    Election.findById(req.params.electionId)
         .exec(function(err, election) {
             if (!election) return res.status(404).send({ message: 'Election not found' });
             election.active = true;
@@ -49,7 +49,7 @@ exports.activate = function(req, res) {
 };
 
 exports.deactivate = function(req, res) {
-    Election.findById(req.params.election_id)
+    Election.findById(req.params.electionId)
         .exec(function(err, election) {
             if (!election) return res.status(404).send({ message: 'Election not found' });
             election.active = false;

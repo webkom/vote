@@ -1,7 +1,7 @@
 var Alternative = require('../models/alternative');
 
 exports.create = function(req, res) {
-    return Alternative.findById(req.params.alternative_id)
+    return Alternative.findById(req.params.alternativeId)
         .populate('votes')
         .execAsync()
         .then(function(alternative) {
@@ -16,7 +16,7 @@ exports.create = function(req, res) {
 };
 
 exports.list = function(req, res) {
-    return Alternative.findById(req.params.alternative_id)
+    return Alternative.findById(req.params.alternativeId)
         .populate('votes')
         .execAsync()
         .then(function(alternative) {

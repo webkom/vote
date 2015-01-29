@@ -31,5 +31,4 @@ electionSchema.methods.addAlternative = function(alternative) {
         });
 };
 
-
 module.exports = mongoose.model('Election', electionSchema);

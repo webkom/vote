@@ -17,7 +17,6 @@ describe('Auth API', function() {
         });
     });
 
-
     it('should be able to authenticate users', function(done) {
         request(app)
             .post('/auth/login')
