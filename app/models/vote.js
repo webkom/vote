@@ -22,7 +22,7 @@ voteSchema.statics.findByHash = Bluebird.method(function(hash, user) {
 
     var checkHash = createHash(user.username);
 
-    if (hash !== checkHash) throw new errors.InvalidHashError();
+    if (hash !== checkHash) throw new errors.NotFoundError('vote');
 
     return this.findOneAsync({ hash: hash });
 });

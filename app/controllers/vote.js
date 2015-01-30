@@ -1,22 +1,29 @@
+var mongoose = require('mongoose');
 var Alternative = require('../models/alternative');
 var Vote = require('../models/vote');
 var errors = require('../errors');
 
 exports.create = function(req, res) {
-    return Alternative.findById(req.params.alternativeId)
+    var alternativeId = req.get('Alternative-Id');
+    if (!alternativeId) {
+        var error = new errors.MissingHeaderError('Alternative-Id');
+        return errors.handleError(res, error);
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(alternativeId)) {
+        var idError = new errors.NotFoundError('alternative');
+        return errors.handleError(res, idError);
+    }
+
+    return Alternative.findById(alternativeId)
         .populate('votes')
         .execAsync()
         .then(function(alternative) {
+            if (!alternative) throw new errors.NotFoundError('alternative');
             return alternative.addVote(req.user);
         })
         .spread(function(vote) {
             return res.status(201).send(vote);
-        })
-        .catch(errors.InactiveUserError, function(err) {
-            return errors.handleError(res, err);
-        })
-        .catch(errors.VoteError, function(err) {
-            return errors.handleError(res, err);
         })
         .catch(function(err) {
             return errors.handleError(res, err);

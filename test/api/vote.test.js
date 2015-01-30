@@ -74,9 +74,39 @@ describe('Vote API', function() {
         });
     });
 
+    it('should not be possible to vote with a bad Alternative-Id header', function(done) {
+        request(app)
+            .post('/api/vote')
+            .set('Alternative-Id', 'bad alternative')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(404);
+                error.message.should.equal('Couldn\'t find alternative.');
+                done();
+            });
+    });
+
+    it('should not be possible to vote without Alternative-Id header', function(done) {
+        request(app)
+            .post('/api/vote')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(400);
+                error.message.should.equal('Missing header Alternative-Id.');
+                done();
+            });
+    });
+
     it('should be able to vote on alternative', function(done) {
         request(app)
-            .post('/api/vote/' + this.activeAlternative.id)
+            .post('/api/vote')
+            .set('Alternative-Id', this.activeAlternative.id)
             .expect(201)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -98,7 +128,8 @@ describe('Vote API', function() {
         this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
-                    .post('/api/vote/' + this.activeAlternative.id)
+                    .post('/api/vote')
+                    .set('Alternative-Id', this.activeAlternative.id)
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -120,7 +151,8 @@ describe('Vote API', function() {
     it('should not be possible to vote without logging in', function(done) {
         passportStub.logout();
         request(app)
-            .post('/api/vote/' + this.activeAlternative.id)
+            .post('/api/vote')
+            .set('Alternative-Id', this.activeAlternative.id)
             .expect(401)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -138,7 +170,8 @@ describe('Vote API', function() {
         this.user.saveAsync().bind(this)
             .then(function() {
                 request(app)
-                    .post('/api/vote/' + this.activeAlternative.id)
+                    .post('/api/vote')
+                    .set('Alternative-Id', this.activeAlternative.id)
                     .expect(403)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -159,7 +192,8 @@ describe('Vote API', function() {
 
     it('should not be able to vote on a deactivated election', function(done) {
         request(app)
-            .post('/api/vote/' + this.inactiveAlternative.id)
+            .post('/api/vote')
+            .set('Alternative-Id', this.inactiveAlternative.id)
             .expect(400)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -246,7 +280,7 @@ describe('Vote API', function() {
                     .end(function(err, res) {
                         if (err) return done(err);
                         var error = res.body;
-                        error.message.should.equal('Couldn\'t find a vote with the given hash');
+                        error.message.should.equal('Couldn\'t find vote.');
                         error.status.should.equal(404);
                         done();
                     });

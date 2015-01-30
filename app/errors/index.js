@@ -34,14 +34,23 @@ PermissionError.prototype = Object.create(Error.prototype);
 PermissionError.prototype.constructor = PermissionError;
 exports.PermissionError = PermissionError;
 
-function InvalidHashError() {
-    this.name = 'InvalidHashError';
-    this.message = 'Couldn\'t find a vote with the given hash';
+function MissingHeaderError(header) {
+    this.name = 'MissingHeaderError';
+    this.message = 'Missing header ' + header + '.';
+    this.statusCode = 400;
+}
+MissingHeaderError.prototype = Object.create(Error.prototype);
+MissingHeaderError.prototype.constructor = MissingHeaderError;
+exports.MissingHeaderError = MissingHeaderError;
+
+function NotFoundError(type) {
+    this.name = 'NotFoundError';
+    this.message = 'Couldn\'t find ' + type + '.';
     this.statusCode = 404;
 }
-InvalidHashError.prototype = Object.create(Error.prototype);
-InvalidHashError.prototype.constructor = InvalidHashError;
-exports.InvalidHashError = InvalidHashError;
+NotFoundError.prototype = Object.create(Error.prototype);
+NotFoundError.prototype.constructor = NotFoundError;
+exports.NotFoundError = NotFoundError;
 
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {
