@@ -90,7 +90,7 @@ describe('Vote API', function() {
     });
 
     it('should be able to vote only once', function(done) {
-        this.activeAlternative.addVote(this.user.username).bind(this)
+        this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .post('/api/vote/' + this.activeAlternative.id)
@@ -157,7 +157,7 @@ describe('Vote API', function() {
     });
 
     it('should be able to list votes for an alternative', function(done) {
-        this.activeAlternative.addVote(this.user.username).bind(this)
+        this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .get('/api/vote/' + this.activeAlternative.id)

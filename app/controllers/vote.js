@@ -7,7 +7,7 @@ exports.create = function(req, res) {
         .populate('votes')
         .execAsync()
         .then(function(alternative) {
-            return alternative.addVote(req.user.username);
+            return alternative.addVote(req.user);
         })
         .spread(function(vote) {
             return res.status(201).send(vote);
