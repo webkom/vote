@@ -17,16 +17,13 @@ describe('Vote API', function() {
         description: 'test election',
         active: true
     };
-
     var inactiveElectionData = {
         title: 'inactiveElection',
         description: 'inactive election'
     };
-
     var activeData = {
         description: 'active election alt'
     };
-
     var inactiveData = {
         description: 'inactive election alt'
     };
@@ -34,11 +31,11 @@ describe('Vote API', function() {
     var testUser = {
         username: 'testUser'
     };
-
     var adminUser = {
         username: 'admin',
         admin: true
     };
+    var testPassword = 'password';
 
     beforeEach(function() {
         return Bluebird.all([
@@ -65,10 +62,14 @@ describe('Vote API', function() {
             ]);
         })
         .then(function() {
-            return User.registerAsync(testUser, 'password');
+            return Bluebird.all([
+                User.registerAsync(testUser, testPassword),
+                User.registerAsync(adminUser, testPassword)
+            ]);
         })
-        .then(function(user) {
+        .spread(function(user, adminUser) {
             this.user = user;
+            this.adminUser = adminUser;
             passportStub.login(user);
         });
     });
@@ -177,11 +178,8 @@ describe('Vote API', function() {
     });
 
     it('should be able to list votes', function(done) {
-        User.registerAsync(adminUser, 'admin').bind(this)
-            .then(function(admin) {
-                passportStub.login(admin);
-                return this.activeAlternative.addVote(this.user);
-            })
+        passportStub.login(this.adminUser);
+        return this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .get('/api/vote/' + this.activeAlternative.id)
@@ -213,6 +211,43 @@ describe('Vote API', function() {
                         error.message.should.equal('You need to be an admin to access this resource.');
                         error.status.should.equal(403);
 
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should be possible to retrieve a vote', function(done) {
+        return this.activeAlternative.addVote(this.user)
+            .spread(function(vote) {
+                request(app)
+                    .get('/api/vote')
+                    .set('Vote-Hash', vote.hash)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+
+                        var receivedVote = res.body;
+                        receivedVote.alternative.should.equal(String(vote.alternative));
+                        receivedVote.hash.should.equal(vote.hash);
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should not be possible to retrieve others\' votes', function(done) {
+        return this.activeAlternative.addVote(this.adminUser)
+            .spread(function(vote) {
+                request(app)
+                    .get('/api/vote')
+                    .set('Vote-Hash', vote.hash)
+                    .expect(404)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var error = res.body;
+                        error.message.should.equal('Couldn\'t find a vote with the given hash');
+                        error.status.should.equal(404);
                         done();
                     });
             }).catch(done);

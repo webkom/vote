@@ -1,6 +1,7 @@
 function InactiveUserError(username) {
     this.name = 'InactiveUserError';
     this.message = 'Can\'t vote with an inactive user: ' + username;
+    this.statusCode = 403;
 }
 InactiveUserError.prototype = Object.create(Error.prototype);
 InactiveUserError.prototype.constructor = InactiveUserError;
@@ -9,6 +10,7 @@ exports.InactiveUserError = InactiveUserError;
 function VoteError(message) {
     this.name = 'VoteError';
     this.message = message || 'Error during voting process.';
+    this.statusCode = 400;
 }
 VoteError.prototype = Object.create(Error.prototype);
 VoteError.prototype.constructor = VoteError;
@@ -31,6 +33,15 @@ function PermissionError() {
 PermissionError.prototype = Object.create(Error.prototype);
 PermissionError.prototype.constructor = PermissionError;
 exports.PermissionError = PermissionError;
+
+function InvalidHashError() {
+    this.name = 'InvalidHashError';
+    this.message = 'Couldn\'t find a vote with the given hash';
+    this.statusCode = 404;
+}
+InvalidHashError.prototype = Object.create(Error.prototype);
+InvalidHashError.prototype.constructor = InvalidHashError;
+exports.InvalidHashError = InvalidHashError;
 
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {

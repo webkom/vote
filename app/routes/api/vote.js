@@ -6,6 +6,9 @@ var vote = require('../../controllers/vote');
 
 var router = express.Router();
 
+router.route('/')
+  .get(ensureAuthenticated, vote.retrieve);
+
 router.route('/:alternativeId')
     .get(ensureAdmin, vote.list)
     .post(ensureAuthenticated, vote.create);
