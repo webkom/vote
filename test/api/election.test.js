@@ -85,6 +85,19 @@ describe('Election API', function() {
             }.bind(this));
     });
 
+    it('should get 404 when retrieving alternatives for bad elections', function(done) {
+        request(app)
+            .get('/api/election/badelection')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                done();
+            });
+    });
+
     it('should be able to activate an election', function(done) {
         Election.createAsync(inactiveElectionData)
             .then(function(election) {
@@ -101,6 +114,19 @@ describe('Election API', function() {
             });
     });
 
+    it('should get 404 when activating missing elections', function(done) {
+        request(app)
+            .post('/api/election/badelection/activate')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                done();
+            });
+    });
+
     it('should be able to deactivate an election', function(done) {
         request(app)
             .post('/api/election/' + this.activeElection.id + '/deactivate')
@@ -109,6 +135,19 @@ describe('Election API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.active.should.equal(false, 'db election should not be active');
+                done();
+            });
+    });
+
+    it('should get 404 when deactivating missing elections', function(done) {
+        request(app)
+            .post('/api/election/badelection/deactivate')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
                 done();
             });
     });

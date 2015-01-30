@@ -7,6 +7,7 @@ exports.list = function(req, res) {
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
             return res.json(election.alternatives);
         })
         .catch(function(err) {
@@ -19,6 +20,8 @@ exports.create = function(req, res) {
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
+
             var alternative = new Alternative({
                 title: req.body.title,
                 description: req.body.description

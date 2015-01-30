@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var Election = require('../models/election');
 var errors = require('../errors');
 
@@ -29,8 +30,10 @@ exports.retrieve = function(req, res) {
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
-            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
             return res.status(200).json(election);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -40,12 +43,15 @@ exports.retrieve = function(req, res) {
 exports.activate = function(req, res) {
     Election.findByIdAsync(req.params.electionId)
         .then(function(election) {
-            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
+            if (!election) throw new errors.NotFoundError('election');
             election.active = true;
             return election.saveAsync();
         })
         .spread(function(election) {
             return res.status(200).json(election);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -55,12 +61,15 @@ exports.activate = function(req, res) {
 exports.deactivate = function(req, res) {
     Election.findByIdAsync(req.params.electionId)
         .then(function(election) {
-            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
+            if (!election) throw new errors.NotFoundError('election');
             election.active = false;
             return election.saveAsync();
         })
         .spread(function(election) {
             return res.status(200).json(election);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);

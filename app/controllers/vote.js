@@ -10,11 +10,6 @@ exports.create = function(req, res) {
         return errors.handleError(res, error);
     }
 
-    if (!mongoose.Types.ObjectId.isValid(alternativeId)) {
-        var idError = new errors.NotFoundError('alternative');
-        return errors.handleError(res, idError);
-    }
-
     return Alternative.findById(alternativeId)
         .populate('votes')
         .execAsync()
@@ -24,6 +19,9 @@ exports.create = function(req, res) {
         })
         .spread(function(vote) {
             return res.status(201).send(vote);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('alternative');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
