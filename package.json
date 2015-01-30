@@ -41,6 +41,8 @@
     "jshint": "^2.6.0",
     "mocha": "^2.1.0",
     "mockgoose": "^1.10.7",
+    "sinon": "^1.12.2",
+    "sinon-chai": "^2.6.0",
     "supertest": "^0.14.0"
   }
 }
