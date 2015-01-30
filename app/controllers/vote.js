@@ -1,5 +1,6 @@
 var Alternative = require('../models/alternative');
 var Vote = require('../models/vote');
+var errors = require('../errors');
 
 exports.create = function(req, res) {
     return Alternative.findById(req.params.alternativeId)
@@ -11,8 +12,14 @@ exports.create = function(req, res) {
         .spread(function(vote) {
             return res.status(201).send(vote);
         })
+        .catch(errors.InactiveUserError, function(err) {
+            return errors.handleError(res, err, 403);
+        })
+        .catch(errors.VoteError, function(err) {
+            return errors.handleError(res, err, 400);
+        })
         .catch(function(err) {
-            res.status(500).json(err);
+            return errors.handleError(res, err);
         });
 };
 
@@ -22,6 +29,6 @@ exports.list = function(req, res) {
             return res.send(votes);
         })
         .catch(function(err) {
-            res.status(500).json(err);
+            return errors.handleError(res, err);
         });
 };

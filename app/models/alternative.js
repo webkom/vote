@@ -5,6 +5,7 @@ var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Election = require('./election');
 var Vote = require('./vote');
 var User = require('./user');
+var errors = require('../errors');
 
 var Schema = mongoose.Schema;
 
@@ -24,12 +25,12 @@ alternativeSchema.methods.addVote = function(username) {
 
     return User.findOneAsync({ username: username })
     .then(function(user) {
-        if (!user) throw new Error('No user with that username');
-        if (!user.active) throw new Error('User not active');
+        if (!user) throw new Error('Can\'t find any users with username ' + username);
+        if (!user.active) throw new errors.InactiveUserError(username);
 
         return Election.findByIdAsync(that.election)
         .then(function(election) {
-            if (!election.active) throw new Error('Election not active');
+            if (!election.active) throw new errors.VoteError('Can\'t vote on an inactive election.');
 
             var appSecret = process.env.APP_SECRET || 'dev_secret';
             var hash = crypto.createHash('sha512');
@@ -41,7 +42,7 @@ alternativeSchema.methods.addVote = function(username) {
 
             return Vote.findAsync({ alternative: that.id, hash: voteHash })
             .then(function(votes) {
-                if (votes.length) throw new Error('Already voted');
+                if (votes.length) throw new errors.VoteError('You can only vote once per election.');
                 var vote = new Vote({ hash: voteHash, alternative: that.id });
                 return vote.saveAsync();
             });

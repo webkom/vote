@@ -1,4 +1,5 @@
 var User = require('../models/user');
+var errors = require('../errors');
 
 exports.list = function(req, res) {
     return User.findAsync({ admin: false }, 'username admin active')
@@ -6,7 +7,7 @@ exports.list = function(req, res) {
             return res.json(users);
         })
         .catch(function(err) {
-            res.status(500).send(err);
+            return errors.handleError(res, err);
         });
 };
 
@@ -17,6 +18,6 @@ exports.register = function(req, res) {
             return res.status(201).json(createdUser.getCleanUser());
         })
         .catch(function(err) {
-            return res.status(500).json(err);
+            return errors.handleError(res, err);
         });
 };

@@ -1,4 +1,5 @@
 var Election = require('../models/election');
+var errors = require('../errors');
 
 exports.create = function(req, res) {
     return Election.createAsync({
@@ -7,7 +8,7 @@ exports.create = function(req, res) {
     }).then(function(election) {
         return res.status(201).json(election);
     }).catch(function(err) {
-        res.status(500).json(err);
+        return errors.handleError(res, err);
     });
 };
 
@@ -19,7 +20,7 @@ exports.list = function(req, res) {
             return res.status(200).json(elections);
         })
         .catch(function(err) {
-            res.status(500).send(err);
+            return errors.handleError(res, err);
         });
 };
 
@@ -28,34 +29,40 @@ exports.retrieve = function(req, res) {
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
-            if (!election) return res.status(404).send({ message: 'Election not found' });
+            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
             return res.status(200).json(election);
         })
         .catch(function(err) {
-            res.status(500).send(err);
+            return errors.handleError(res, err);
         });
 };
 
 exports.activate = function(req, res) {
-    Election.findById(req.params.electionId)
-        .exec(function(err, election) {
-            if (!election) return res.status(404).send({ message: 'Election not found' });
+    Election.findByIdAsync(req.params.electionId)
+        .then(function(election) {
+            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
             election.active = true;
-            election.save(function(err, election) {
-                if (err) return res.status(500).send(err);
-                return res.status(200).json(election);
-            });
+            return election.saveAsync();
+        })
+        .spread(function(election) {
+            return res.status(200).json(election);
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
         });
 };
 
 exports.deactivate = function(req, res) {
-    Election.findById(req.params.electionId)
-        .exec(function(err, election) {
-            if (!election) return res.status(404).send({ message: 'Election not found' });
+    Election.findByIdAsync(req.params.electionId)
+        .then(function(election) {
+            if (!election) return errors.handleError(res, new Error('Election not found'), 404);
             election.active = false;
-            election.save(function(err, election) {
-                if (err) return res.status(500).send(err);
-                return res.status(200).json(election);
-            });
+            return election.saveAsync();
+        })
+        .spread(function(election) {
+            return res.status(200).json(election);
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
         });
 };

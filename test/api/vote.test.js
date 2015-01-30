@@ -98,6 +98,11 @@ describe('Vote API', function() {
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
+
+                        var error = res.body;
+                        error.message.should.equal('You can only vote once per election.');
+                        error.status.should.equal(400);
+
                         Vote.findAsync({ alternative: this.activeAlternative.id })
                             .then(function(votes) {
                                 votes.length.should.equal(1);
@@ -118,6 +123,10 @@ describe('Vote API', function() {
                     .end(function(err, res) {
                         if (err) return done(err);
 
+                        var error = res.body;
+                        error.message.should.equal('Can\'t vote with an inactive user: ' + this.user.username);
+                        error.status.should.equal(403);
+
                         Vote.findAsync({ alternative: this.activeAlternative.id })
                             .then(function(votes) {
                                 votes.length.should.equal(0, 'no vote should be added');
@@ -134,6 +143,11 @@ describe('Vote API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
+
+                var error = res.body;
+                error.message.should.equal('Can\'t vote on an inactive election.');
+                error.status.should.equal(400);
+
                 Vote.findAsync({ election: this.inactiveElection.id })
                     .then(function(votes) {
                         votes.length.should.equal(0, 'no vote should be added');
