@@ -2,10 +2,9 @@ var crypto = require('crypto');
 var mongoose = require('mongoose');
 var Bluebird = require('bluebird');
 var mongoose = Bluebird.promisifyAll(require('mongoose'));
-
 var Election = require('./election');
 var Vote = require('./vote');
-var User = require('./user');
+var errors = require('../errors');
 
 var Schema = mongoose.Schema;
 
@@ -20,32 +19,27 @@ var alternativeSchema = new Schema({
     }
 });
 
-alternativeSchema.methods.addVote = function(username) {
-    var that = this;
+alternativeSchema.methods.addVote = function(user) {
+    if (!user) throw new Error('Can\'t vote without a user');
+    if (!user.active) throw new errors.InactiveUserError(user.username);
 
-    return User.findOneAsync({ username: username })
-    .then(function(user) {
-        if (!user) throw new Error('No user with that username');
-        if (!user.active) throw new Error('User not active');
+    return Election.findByIdAsync(this.election).bind(this)
+    .then(function(election) {
+        if (!election.active) throw new errors.VoteError('Can\'t vote on an inactive election.');
 
-        return Election.findByIdAsync(that.election)
-        .then(function(election) {
-            if (!election.active) throw new Error('Election not active');
+        var appSecret = process.env.APP_SECRET || 'dev_secret';
+        var hash = crypto.createHash('sha512');
+        hash.setEncoding('hex');
+        hash.write(user.username);
+        hash.write(appSecret);
+        hash.end();
+        var voteHash = hash.read();
 
-            var appSecret = process.env.APP_SECRET || 'dev_secret';
-            var hash = crypto.createHash('sha512');
-            hash.setEncoding('hex');
-            hash.write(user.username);
-            hash.write(appSecret);
-            hash.end();
-            var voteHash = hash.read();
-
-            return Vote.findAsync({ alternative: that.id, hash: voteHash })
-            .then(function(votes) {
-                if (votes.length) throw new Error('Already voted');
-                var vote = new Vote({ hash: voteHash, alternative: that.id });
-                return vote.saveAsync();
-            });
+        return Vote.findAsync({ alternative: this.id, hash: voteHash }).bind(this)
+        .then(function(votes) {
+            if (votes.length) throw new errors.VoteError('You can only vote once per election.');
+            var vote = new Vote({ hash: voteHash, alternative: this.id });
+            return vote.saveAsync();
         });
     });
 };

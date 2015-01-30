@@ -11,12 +11,12 @@ router.route('/')
 router.route('/:electionId')
     .get(election.retrieve);
 
-router.route('/:electionId/alternatives')
-    .get(alternative.list)
-    .post(alternative.create);
-
 router.post('/:electionId/activate', election.activate);
 
 router.post('/:electionId/deactivate', election.deactivate);
+
+router.route('/:electionId/alternatives')
+    .get(alternative.list)
+    .post(alternative.create);
 
 module.exports = router;

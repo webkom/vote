@@ -1,5 +1,6 @@
 var Alternative = require('../models/alternative');
 var Election = require('../models/election');
+var errors = require('../errors');
 
 exports.list = function(req, res) {
     return Election.findById(req.params.electionId)
@@ -9,7 +10,7 @@ exports.list = function(req, res) {
             return res.json(election.alternatives);
         })
         .catch(function(err) {
-            res.status(500).json(err);
+            return errors.handleError(res, err);
         });
 };
 
@@ -29,6 +30,6 @@ exports.create = function(req, res) {
             });
         })
         .catch(function(err) {
-            res.status(500).send(err);
+            return errors.handleError(res, err);
         });
 };
