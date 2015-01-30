@@ -32,8 +32,12 @@ describe('Vote API', function() {
     };
 
     var testUser = {
-        username: 'testUser',
-        password: 'password'
+        username: 'testUser'
+    };
+
+    var adminUser = {
+        username: 'admin',
+        admin: true
     };
 
     beforeEach(function() {
@@ -61,7 +65,7 @@ describe('Vote API', function() {
             ]);
         })
         .then(function() {
-            return User.registerAsync(testUser, testUser.password);
+            return User.registerAsync(testUser, 'password');
         })
         .then(function(user) {
             this.user = user;
@@ -112,6 +116,22 @@ describe('Vote API', function() {
             });
     });
 
+    it('should not be possible to vote without logging in', function(done) {
+        passportStub.logout();
+        request(app)
+            .post('/api/vote/' + this.activeAlternative.id)
+            .expect(401)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+
+                var error = res.body;
+                error.status.should.equal(401);
+                error.message.should.equal('You need to be logged in to access this resource.');
+                done();
+            });
+    });
+
     it('should not be able to vote with inactive user', function(done) {
         this.user.active = false;
         this.user.saveAsync().bind(this)
@@ -156,8 +176,12 @@ describe('Vote API', function() {
             }.bind(this));
     });
 
-    it('should be able to list votes for an alternative', function(done) {
-        this.activeAlternative.addVote(this.user).bind(this)
+    it('should be able to list votes', function(done) {
+        User.registerAsync(adminUser, 'admin').bind(this)
+            .then(function(admin) {
+                passportStub.login(admin);
+                return this.activeAlternative.addVote(this.user);
+            })
             .then(function() {
                 request(app)
                     .get('/api/vote/' + this.activeAlternative.id)
@@ -169,8 +193,28 @@ describe('Vote API', function() {
                         votes.length.should.equal(1);
                         votes[0].alternative.should.equal(this.activeAlternative.id);
                         should.exist(votes[0].hash);
+
                         done();
                     }.bind(this));
+            }).catch(done);
+    });
+
+    it('should only be able to list votes as admin', function(done) {
+        return this.activeAlternative.addVote(this.user).bind(this)
+            .then(function() {
+                request(app)
+                    .get('/api/vote/' + this.activeAlternative.id)
+                    .expect(403)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+
+                        var error = res.body;
+                        error.message.should.equal('You need to be an admin to access this resource.');
+                        error.status.should.equal(403);
+
+                        done();
+                    });
             }).catch(done);
     });
 });

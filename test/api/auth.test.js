@@ -10,6 +10,11 @@ describe('Auth API', function() {
         password: 'test121312313'
     };
 
+    var badTestUser = {
+        username: 'test',
+        password: 'notthecorrectpw'
+    };
+
     beforeEach(function() {
         return User.removeAsync({})
         .then(function() {
@@ -27,6 +32,17 @@ describe('Auth API', function() {
                 if (err) return done(err);
                 should.exist(res.body.username, 'should return a username');
                 should.not.exist(res.body.password, 'password should not be returned');
+                done();
+            });
+    });
+
+    it('should deny users with bad credentials', function(done) {
+        request(app)
+            .post('/auth/login')
+            .send(badTestUser)
+            .expect(401)
+            .end(function(err, res) {
+                if (err) return done(err);
                 done();
             });
     });
