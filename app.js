@@ -1,6 +1,9 @@
 var express         = require('express');
 var mongoose        = require('mongoose');
 var bodyParser      = require('body-parser');
+var cookieParser    = require('cookie-parser');
+var session         = require('express-session');
+var MongoStore      = require('connect-mongo')(session);
 var passport        = require('passport');
 var path            = require('path');
 var router          = require('./app/routes');
@@ -18,6 +21,17 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+app.use(session({
+  cookie: { maxAge : 1000*3600*24*30*3 }, // Three months
+  secret: process.env.COOKIE_SECRET || 'localsecret',
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection
+  }),
+  saveUninitialized: true,
+  resave: false
+}));
 
 app.use(passport.initialize());
 app.use(passport.session());
