@@ -1,4 +1,5 @@
 var Bluebird = require('bluebird');
+var ObjectId = require('mongoose').Types.ObjectId;
 var request = require('supertest');
 var passportStub = require('passport-stub');
 var chai = require('chai');
@@ -7,6 +8,8 @@ var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
+var helpers = require('./helpers');
+var testGet404 = helpers.testGet404;
 var should = chai.should();
 
 describe('Vote API', function() {
@@ -80,10 +83,25 @@ describe('Vote API', function() {
         });
     });
 
-    it('should not be possible to vote with an invalid alternativeId', function(done) {
+    it('should not be possible to vote with an invalid ObjectId as alternativeId', function(done) {
         request(app)
             .post('/api/vote')
             .send(votePayload('bad alternative'))
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(404);
+                error.message.should.equal('Couldn\'t find alternative.');
+                done();
+            });
+    });
+
+    it('should not be possible to vote with a nonexistent alternativeId', function(done) {
+        request(app)
+            .post('/api/vote')
+            .send(votePayload(new ObjectId()))
             .expect(404)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -215,6 +233,17 @@ describe('Vote API', function() {
                         done();
                     }).catch(done);
             }.bind(this));
+    });
+
+    it('should get 404 when listing votes with a nonexistent alternativeId', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testGet404('/api/vote/' + badId, 'alternative', done);
+    });
+
+    it('should get 404 when listing votes with an invalid alternativeId', function(done) {
+        passportStub.login(this.adminUser);
+        testGet404('/api/vote/badid', 'alternative', done);
     });
 
     it('should be able to list votes', function(done) {

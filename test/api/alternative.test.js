@@ -1,9 +1,13 @@
 var Bluebird = require('bluebird');
 var request = require('supertest');
+var ObjectId = require('mongoose').Types.ObjectId;
 var chai = require('chai');
 var app = require('../../app');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
+var helpers = require('./helpers');
+var testGet404 = helpers.testGet404;
+var testPost404 = helpers.testPost404;
 
 chai.should();
 
@@ -51,6 +55,15 @@ describe('Alternatives API', function() {
             }.bind(this));
     });
 
+    it('should get 404 when listing alternatives for invalid electionIds', function(done) {
+        testGet404('/api/election/badid/alternatives', 'election', done);
+    });
+
+    it('should get 404 when listing alternatives for nonexistent electionIds', function(done) {
+        var badId = new ObjectId();
+        testGet404('/api/election/' + badId + '/alternatives', 'election', done);
+    });
+
     it('should be able to create alternatives', function(done) {
         request(app)
             .post('/api/election/' + this.election.id + '/alternatives')
@@ -65,4 +78,12 @@ describe('Alternatives API', function() {
             });
     });
 
+    it('should get 404 when creating alternatives for invalid electionIds', function(done) {
+        testPost404('/api/election/badid/alternatives', 'election', done);
+    });
+
+    it('should get 404 when creating alternatives for nonexistent electionIds', function(done) {
+        var badId = new ObjectId();
+        testPost404('/api/election/' + badId + '/alternatives', 'election', done);
+    });
 });

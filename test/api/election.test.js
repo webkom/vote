@@ -1,9 +1,14 @@
 var Bluebird = require('bluebird');
+var ObjectId = require('mongoose').Types.ObjectId;
 var request = require('supertest');
 var app = require('../../app');
 var chai = require('chai');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
+var helpers = require('./helpers');
+var testPost404 = helpers.testPost404;
+var testGet404 = helpers.testGet404;
+
 chai.should();
 
 describe('Election API', function() {
@@ -85,17 +90,14 @@ describe('Election API', function() {
             }.bind(this));
     });
 
-    it('should get 404 when retrieving alternatives for bad elections', function(done) {
-        request(app)
-            .get('/api/election/badelection')
-            .expect(404)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.message.should.equal('Couldn\'t find election.');
-                done();
-            });
+    it('should get 404 for missing elections', function(done) {
+        var badId = new ObjectId();
+        console.log('her', badId, this.activeElection.id);
+        testGet404('/api/election/' + badId, 'election', done);
+    });
+
+    it('should get 404 when retrieving alternatives with an invalid ObjectId', function(done) {
+        testGet404('/api/election/badelection', 'election', done);
     });
 
     it('should be able to activate an election', function(done) {
@@ -114,17 +116,13 @@ describe('Election API', function() {
             });
     });
 
-    it('should get 404 when activating missing elections', function(done) {
-        request(app)
-            .post('/api/election/badelection/activate')
-            .expect(404)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.message.should.equal('Couldn\'t find election.');
-                done();
-            });
+    it('should get 404 when activating a missing election', function(done) {
+        var badId = new ObjectId();
+        testPost404('/api/election/' + badId + '/activate', 'election', done);
+    });
+
+    it('should get 404 when activating an election with an invalid ObjectId', function(done) {
+        testPost404('/api/election/badid/activate', 'election', done);
     });
 
     it('should be able to deactivate an election', function(done) {
@@ -139,16 +137,12 @@ describe('Election API', function() {
             });
     });
 
-    it('should get 404 when deactivating missing elections', function(done) {
-        request(app)
-            .post('/api/election/badelection/deactivate')
-            .expect(404)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.message.should.equal('Couldn\'t find election.');
-                done();
-            });
+    it('should get 404 when deactivating a missing election', function(done) {
+        var badId = new ObjectId();
+        testPost404('/api/election/' + badId + '/deactivate', 'election', done);
+    });
+
+    it('should get 404 when deactivating an election with an invalid ObjectId', function(done) {
+        testPost404('/api/election/badid/deactivate', 'election', done);
     });
 });

@@ -29,9 +29,16 @@ exports.create = function(req, res) {
 };
 
 exports.list = function(req, res) {
-    return Vote.findAsync({ alternative: req.params.alternativeId })
+    return Alternative.findByIdAsync(req.params.alternativeId)
+        .then(function(alternative) {
+            if (!alternative) throw new errors.NotFoundError('alternative');
+            return Vote.findAsync({ alternative: alternative.id });
+        })
         .then(function(votes) {
             return res.send(votes);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('alternative');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
