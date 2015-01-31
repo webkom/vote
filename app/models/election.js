@@ -26,8 +26,8 @@ electionSchema.methods.addAlternative = function(alternative) {
     this.alternatives.push(alternative);
     alternative.election = this._id;
     return alternative.saveAsync().bind(this)
-        .then(function() {
-            return this.saveAsync();
+        .spread(function(savedAlternative) {
+            return this.saveAsync().return(savedAlternative);
         });
 };
 

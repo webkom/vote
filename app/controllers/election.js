@@ -30,6 +30,7 @@ exports.retrieve = function(req, res) {
         .populate('alternatives')
         .execAsync()
         .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
             return res.status(200).json(election);
         })
         .catch(mongoose.Error.CastError, function(err) {
