@@ -92,7 +92,6 @@ describe('Election API', function() {
 
     it('should get 404 for missing elections', function(done) {
         var badId = new ObjectId();
-        console.log('her', badId, this.activeElection.id);
         testGet404('/api/election/' + badId, 'election', done);
     });
 

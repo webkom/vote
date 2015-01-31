@@ -28,23 +28,6 @@ exports.create = function(req, res) {
         });
 };
 
-exports.list = function(req, res) {
-    return Alternative.findByIdAsync(req.params.alternativeId)
-        .then(function(alternative) {
-            if (!alternative) throw new errors.NotFoundError('alternative');
-            return Vote.findAsync({ alternative: alternative.id });
-        })
-        .then(function(votes) {
-            return res.send(votes);
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('alternative');
-        })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
-};
-
 exports.retrieve = function(req, res) {
     var hash = req.get('Vote-Hash');
     return Vote.findByHash(hash, req.user)

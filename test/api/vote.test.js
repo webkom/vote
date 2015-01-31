@@ -235,56 +235,6 @@ describe('Vote API', function() {
             }.bind(this));
     });
 
-    it('should get 404 when listing votes with a nonexistent alternativeId', function(done) {
-        passportStub.login(this.adminUser);
-        var badId = new ObjectId();
-        testGet404('/api/vote/' + badId, 'alternative', done);
-    });
-
-    it('should get 404 when listing votes with an invalid alternativeId', function(done) {
-        passportStub.login(this.adminUser);
-        testGet404('/api/vote/badid', 'alternative', done);
-    });
-
-    it('should be able to list votes', function(done) {
-        passportStub.login(this.adminUser);
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .then(function() {
-                request(app)
-                    .get('/api/vote/' + this.activeAlternative.id)
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        var votes = res.body;
-                        votes.length.should.equal(1);
-                        votes[0].alternative.should.equal(this.activeAlternative.id);
-                        should.exist(votes[0].hash);
-
-                        done();
-                    }.bind(this));
-            }).catch(done);
-    });
-
-    it('should only be able to list votes as admin', function(done) {
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .then(function() {
-                request(app)
-                    .get('/api/vote/' + this.activeAlternative.id)
-                    .expect(403)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-
-                        var error = res.body;
-                        error.message.should.equal('You need to be an admin to access this resource.');
-                        error.status.should.equal(403);
-
-                        done();
-                    });
-            }).catch(done);
-    });
-
     it('should be possible to retrieve a vote', function(done) {
         return this.activeAlternative.addVote(this.user)
             .spread(function(vote) {
@@ -320,5 +270,58 @@ describe('Vote API', function() {
                         done();
                     });
             }).catch(done);
+    });
+
+    it('should be possible to sum votes', function(done) {
+        passportStub.login(this.adminUser);
+        var newAlternative = new Alternative({ description: 'other alternative' });
+        this.activeElection.addAlternative(newAlternative).bind(this)
+            .then(function() {
+                return Bluebird.all([
+                    newAlternative.addVote(this.user),
+                    this.activeAlternative.addVote(this.adminUser)
+                ]);
+            })
+            .then(function() {
+                request(app)
+                    .get('/api/election/' + this.activeElection.id + '/votes')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var alternatives = res.body;
+                        alternatives.length.should.equal(2);
+                        alternatives[0].votes.should.equal(1);
+                        alternatives[1].votes.should.equal(1);
+                        done();
+                    });
+            })
+            .catch(done);
+    });
+
+    it('should not be possible to sum votes without being admin', function(done) {
+        passportStub.login(this.user);
+        request(app)
+            .get('/api/election/' + this.activeElection.id + '/votes')
+            .expect(403)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(403);
+                error.message.should.equal('You need to be an admin to access this resource.');
+                done();
+            });
+    });
+
+    it('should get 404 when summing votes for invalid electionIds', function(done) {
+        passportStub.login(this.adminUser);
+        testGet404('/api/election/badid/votes', 'election', done);
+    });
+
+    it('should get 404 when summing votes for nonexistent electionIds', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testGet404('/api/election/' + badId + '/votes', 'election', done);
     });
 });
