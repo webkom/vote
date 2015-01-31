@@ -10,6 +10,8 @@ var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
+var testAdminResourceGet = helpers.testAdminResourceGet;
+var createUsers = helpers.createUsers;
 var should = chai.should();
 
 describe('Vote API', function() {
@@ -30,15 +32,6 @@ describe('Vote API', function() {
     var inactiveData = {
         description: 'inactive election alt'
     };
-
-    var testUser = {
-        username: 'testUser'
-    };
-    var adminUser = {
-        username: 'admin',
-        admin: true
-    };
-    var testPassword = 'password';
 
     function votePayload(alternativeId) {
         return {
@@ -71,10 +64,7 @@ describe('Vote API', function() {
             ]);
         })
         .then(function() {
-            return Bluebird.all([
-                User.registerAsync(testUser, testPassword),
-                User.registerAsync(adminUser, testPassword)
-            ]);
+            return createUsers();
         })
         .spread(function(user, adminUser) {
             this.user = user;
@@ -301,17 +291,7 @@ describe('Vote API', function() {
 
     it('should not be possible to sum votes without being admin', function(done) {
         passportStub.login(this.user);
-        request(app)
-            .get('/api/election/' + this.activeElection.id + '/votes')
-            .expect(403)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.status.should.equal(403);
-                error.message.should.equal('You need to be an admin to access this resource.');
-                done();
-            });
+        testAdminResourceGet('/api/election/' + this.activeElection.id + '/votes', done);
     });
 
     it('should get 404 when summing votes for invalid electionIds', function(done) {

@@ -7,19 +7,19 @@ var ensureAdmin = helpers.ensureAdmin;
 var router = express.Router();
 
 router.route('/')
-    .post(election.create)
+    .post(ensureAdmin, election.create)
     .get(election.list);
 
 router.route('/:electionId')
     .get(election.retrieve);
 
-router.post('/:electionId/activate', election.activate);
+router.post('/:electionId/activate', ensureAdmin, election.activate);
 
-router.post('/:electionId/deactivate', election.deactivate);
+router.post('/:electionId/deactivate', ensureAdmin, election.deactivate);
 
 router.route('/:electionId/alternatives')
     .get(alternative.list)
-    .post(alternative.create);
+    .post(ensureAdmin, alternative.create);
 
 router.get('/:electionId/votes', ensureAdmin, election.sumVotes);
 
