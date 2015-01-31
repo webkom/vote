@@ -1,10 +1,10 @@
-var crypto = require('crypto');
 var mongoose = require('mongoose');
 var Bluebird = require('bluebird');
 var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Election = require('./election');
 var Vote = require('./vote');
 var errors = require('../errors');
+var createHash = require('./helpers').createHash;
 
 var Schema = mongoose.Schema;
 
@@ -27,14 +27,7 @@ alternativeSchema.methods.addVote = function(user) {
     .then(function(election) {
         if (!election.active) throw new errors.VoteError('Can\'t vote on an inactive election.');
 
-        var appSecret = process.env.APP_SECRET || 'dev_secret';
-        var hash = crypto.createHash('sha512');
-        hash.setEncoding('hex');
-        hash.write(user.username);
-        hash.write(appSecret);
-        hash.end();
-        var voteHash = hash.read();
-
+        var voteHash = createHash(user.username);
         return Vote.findAsync({ alternative: this.id, hash: voteHash }).bind(this)
         .then(function(votes) {
             if (votes.length) throw new errors.VoteError('You can only vote once per election.');

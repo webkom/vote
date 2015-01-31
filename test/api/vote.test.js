@@ -1,4 +1,5 @@
 var Bluebird = require('bluebird');
+var ObjectId = require('mongoose').Types.ObjectId;
 var request = require('supertest');
 var passportStub = require('passport-stub');
 var chai = require('chai');
@@ -7,6 +8,8 @@ var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
+var helpers = require('./helpers');
+var testGet404 = helpers.testGet404;
 var should = chai.should();
 
 describe('Vote API', function() {
@@ -17,16 +20,13 @@ describe('Vote API', function() {
         description: 'test election',
         active: true
     };
-
     var inactiveElectionData = {
         title: 'inactiveElection',
         description: 'inactive election'
     };
-
     var activeData = {
         description: 'active election alt'
     };
-
     var inactiveData = {
         description: 'inactive election alt'
     };
@@ -34,11 +34,17 @@ describe('Vote API', function() {
     var testUser = {
         username: 'testUser'
     };
-
     var adminUser = {
         username: 'admin',
         admin: true
     };
+    var testPassword = 'password';
+
+    function votePayload(alternativeId) {
+        return {
+            alternativeId: alternativeId
+        };
+    }
 
     beforeEach(function() {
         return Bluebird.all([
@@ -65,17 +71,66 @@ describe('Vote API', function() {
             ]);
         })
         .then(function() {
-            return User.registerAsync(testUser, 'password');
+            return Bluebird.all([
+                User.registerAsync(testUser, testPassword),
+                User.registerAsync(adminUser, testPassword)
+            ]);
         })
-        .then(function(user) {
+        .spread(function(user, adminUser) {
             this.user = user;
+            this.adminUser = adminUser;
             passportStub.login(user);
         });
     });
 
+    it('should not be possible to vote with an invalid ObjectId as alternativeId', function(done) {
+        request(app)
+            .post('/api/vote')
+            .send(votePayload('bad alternative'))
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(404);
+                error.message.should.equal('Couldn\'t find alternative.');
+                done();
+            });
+    });
+
+    it('should not be possible to vote with a nonexistent alternativeId', function(done) {
+        request(app)
+            .post('/api/vote')
+            .send(votePayload(new ObjectId()))
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(404);
+                error.message.should.equal('Couldn\'t find alternative.');
+                done();
+            });
+    });
+
+    it('should not be possible to vote without an alternativeId in the payload', function(done) {
+        request(app)
+            .post('/api/vote')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(400);
+                error.message.should.equal('Missing property alternativeId from payload.');
+                done();
+            });
+    });
+
     it('should be able to vote on alternative', function(done) {
         request(app)
-            .post('/api/vote/' + this.activeAlternative.id)
+            .post('/api/vote')
+            .send(votePayload(this.activeAlternative.id))
             .expect(201)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -97,7 +152,8 @@ describe('Vote API', function() {
         this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
-                    .post('/api/vote/' + this.activeAlternative.id)
+                    .post('/api/vote')
+                    .send(votePayload(this.activeAlternative.id))
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -119,7 +175,8 @@ describe('Vote API', function() {
     it('should not be possible to vote without logging in', function(done) {
         passportStub.logout();
         request(app)
-            .post('/api/vote/' + this.activeAlternative.id)
+            .post('/api/vote')
+            .send(votePayload(this.activeAlternative.id))
             .expect(401)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -137,7 +194,8 @@ describe('Vote API', function() {
         this.user.saveAsync().bind(this)
             .then(function() {
                 request(app)
-                    .post('/api/vote/' + this.activeAlternative.id)
+                    .post('/api/vote')
+                    .send(votePayload(this.activeAlternative.id))
                     .expect(403)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -158,7 +216,8 @@ describe('Vote API', function() {
 
     it('should not be able to vote on a deactivated election', function(done) {
         request(app)
-            .post('/api/vote/' + this.inactiveAlternative.id)
+            .post('/api/vote')
+            .send(votePayload(this.inactiveAlternative.id))
             .expect(400)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -176,12 +235,20 @@ describe('Vote API', function() {
             }.bind(this));
     });
 
+    it('should get 404 when listing votes with a nonexistent alternativeId', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testGet404('/api/vote/' + badId, 'alternative', done);
+    });
+
+    it('should get 404 when listing votes with an invalid alternativeId', function(done) {
+        passportStub.login(this.adminUser);
+        testGet404('/api/vote/badid', 'alternative', done);
+    });
+
     it('should be able to list votes', function(done) {
-        User.registerAsync(adminUser, 'admin').bind(this)
-            .then(function(admin) {
-                passportStub.login(admin);
-                return this.activeAlternative.addVote(this.user);
-            })
+        passportStub.login(this.adminUser);
+        return this.activeAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .get('/api/vote/' + this.activeAlternative.id)
@@ -213,6 +280,43 @@ describe('Vote API', function() {
                         error.message.should.equal('You need to be an admin to access this resource.');
                         error.status.should.equal(403);
 
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should be possible to retrieve a vote', function(done) {
+        return this.activeAlternative.addVote(this.user)
+            .spread(function(vote) {
+                request(app)
+                    .get('/api/vote')
+                    .set('Vote-Hash', vote.hash)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+
+                        var receivedVote = res.body;
+                        receivedVote.alternative.should.equal(String(vote.alternative));
+                        receivedVote.hash.should.equal(vote.hash);
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should not be possible to retrieve others\' votes', function(done) {
+        return this.activeAlternative.addVote(this.adminUser)
+            .spread(function(vote) {
+                request(app)
+                    .get('/api/vote')
+                    .set('Vote-Hash', vote.hash)
+                    .expect(404)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var error = res.body;
+                        error.message.should.equal('Couldn\'t find vote.');
+                        error.status.should.equal(404);
                         done();
                     });
             }).catch(done);

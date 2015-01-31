@@ -1,6 +1,7 @@
 function InactiveUserError(username) {
     this.name = 'InactiveUserError';
     this.message = 'Can\'t vote with an inactive user: ' + username;
+    this.statusCode = 403;
 }
 InactiveUserError.prototype = Object.create(Error.prototype);
 InactiveUserError.prototype.constructor = InactiveUserError;
@@ -9,6 +10,7 @@ exports.InactiveUserError = InactiveUserError;
 function VoteError(message) {
     this.name = 'VoteError';
     this.message = message || 'Error during voting process.';
+    this.statusCode = 400;
 }
 VoteError.prototype = Object.create(Error.prototype);
 VoteError.prototype.constructor = VoteError;
@@ -31,6 +33,33 @@ function PermissionError() {
 PermissionError.prototype = Object.create(Error.prototype);
 PermissionError.prototype.constructor = PermissionError;
 exports.PermissionError = PermissionError;
+
+function InvalidPayloadError(property) {
+    this.name = 'InvalidPayloadError';
+    this.message = 'Missing property ' + property + ' from payload.';
+    this.statusCode = 400;
+}
+InvalidPayloadError.prototype = Object.create(Error.prototype);
+InvalidPayloadError.prototype.constructor = InvalidPayloadError;
+exports.InvalidPayloadError = InvalidPayloadError;
+
+function MissingHeaderError(header) {
+    this.name = 'MissingHeaderError';
+    this.message = 'Missing header ' + header + '.';
+    this.statusCode = 400;
+}
+MissingHeaderError.prototype = Object.create(Error.prototype);
+MissingHeaderError.prototype.constructor = MissingHeaderError;
+exports.MissingHeaderError = MissingHeaderError;
+
+function NotFoundError(type) {
+    this.name = 'NotFoundError';
+    this.message = 'Couldn\'t find ' + type + '.';
+    this.statusCode = 404;
+}
+NotFoundError.prototype = Object.create(Error.prototype);
+NotFoundError.prototype.constructor = NotFoundError;
+exports.NotFoundError = NotFoundError;
 
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {
