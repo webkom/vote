@@ -37,6 +37,12 @@ describe('Vote API', function() {
     };
     var testPassword = 'password';
 
+    function votePayload(alternativeId) {
+        return {
+            alternativeId: alternativeId
+        };
+    }
+
     beforeEach(function() {
         return Bluebird.all([
             Election.removeAsync({}),
@@ -74,10 +80,10 @@ describe('Vote API', function() {
         });
     });
 
-    it('should not be possible to vote with a bad Alternative-Id header', function(done) {
+    it('should not be possible to vote with an invalid alternativeId', function(done) {
         request(app)
             .post('/api/vote')
-            .set('Alternative-Id', 'bad alternative')
+            .send(votePayload('bad alternative'))
             .expect(404)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -89,7 +95,7 @@ describe('Vote API', function() {
             });
     });
 
-    it('should not be possible to vote without Alternative-Id header', function(done) {
+    it('should not be possible to vote without an alternativeId in the payload', function(done) {
         request(app)
             .post('/api/vote')
             .expect(400)
@@ -98,7 +104,7 @@ describe('Vote API', function() {
                 if (err) return done(err);
                 var error = res.body;
                 error.status.should.equal(400);
-                error.message.should.equal('Missing header Alternative-Id.');
+                error.message.should.equal('Missing property alternativeId from payload.');
                 done();
             });
     });
@@ -106,7 +112,7 @@ describe('Vote API', function() {
     it('should be able to vote on alternative', function(done) {
         request(app)
             .post('/api/vote')
-            .set('Alternative-Id', this.activeAlternative.id)
+            .send(votePayload(this.activeAlternative.id))
             .expect(201)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -129,7 +135,7 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .post('/api/vote')
-                    .set('Alternative-Id', this.activeAlternative.id)
+                    .send(votePayload(this.activeAlternative.id))
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -152,7 +158,7 @@ describe('Vote API', function() {
         passportStub.logout();
         request(app)
             .post('/api/vote')
-            .set('Alternative-Id', this.activeAlternative.id)
+            .send(votePayload(this.activeAlternative.id))
             .expect(401)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -171,7 +177,7 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .post('/api/vote')
-                    .set('Alternative-Id', this.activeAlternative.id)
+                    .send(votePayload(this.activeAlternative.id))
                     .expect(403)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -193,7 +199,7 @@ describe('Vote API', function() {
     it('should not be able to vote on a deactivated election', function(done) {
         request(app)
             .post('/api/vote')
-            .set('Alternative-Id', this.inactiveAlternative.id)
+            .send(votePayload(this.inactiveAlternative.id))
             .expect(400)
             .expect('Content-Type', /json/)
             .end(function(err, res) {

@@ -4,9 +4,9 @@ var Vote = require('../models/vote');
 var errors = require('../errors');
 
 exports.create = function(req, res) {
-    var alternativeId = req.get('Alternative-Id');
+    var alternativeId = req.body.alternativeId;
     if (!alternativeId) {
-        var error = new errors.MissingHeaderError('Alternative-Id');
+        var error = new errors.InvalidPayloadError('alternativeId');
         return errors.handleError(res, error);
     }
 

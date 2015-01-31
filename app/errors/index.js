@@ -34,6 +34,15 @@ PermissionError.prototype = Object.create(Error.prototype);
 PermissionError.prototype.constructor = PermissionError;
 exports.PermissionError = PermissionError;
 
+function InvalidPayloadError(property) {
+    this.name = 'InvalidPayloadError';
+    this.message = 'Missing property ' + property + ' from payload.';
+    this.statusCode = 400;
+}
+InvalidPayloadError.prototype = Object.create(Error.prototype);
+InvalidPayloadError.prototype.constructor = InvalidPayloadError;
+exports.InvalidPayloadError = InvalidPayloadError;
+
 function MissingHeaderError(header) {
     this.name = 'MissingHeaderError';
     this.message = 'Missing header ' + header + '.';
