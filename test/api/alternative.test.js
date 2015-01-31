@@ -1,3 +1,4 @@
+var Bluebird = require('bluebird');
 var request = require('supertest');
 var chai = require('chai');
 var app = require('../../app');
@@ -7,52 +8,61 @@ var Alternative = require('../../app/models/alternative');
 chai.should();
 
 describe('Alternatives API', function() {
-    var testElection = new Election({
+    var testElectionData = {
         title: 'test election',
         description: 'test election description'
-    });
+    };
 
-    var testAlternative = new Alternative({
+    var createdAlternativeData = {
         description: 'test alternative 1'
-    });
+    };
 
-    var testAlternative2 = new Alternative({
+    var testAlternativeData = {
         description: 'test alternative 2'
-    });
+    };
 
-
-    before(function() {
-        return Alternative.removeAsync({})
+    beforeEach(function() {
+        return Bluebird.all([
+            Election.removeAsync({}),
+            Alternative.removeAsync({})
+        ]).bind(this)
         .then(function() {
-            return Election.removeAsync({});
+            var election = new Election(testElectionData);
+            return election.saveAsync();
         })
-        .then(function() {
-            return testElection.addAlternative(testAlternative);
+        .spread(function(election) {
+            this.election = election;
+            createdAlternativeData.election = election.id;
+            this.alternative = new Alternative(createdAlternativeData);
+            return election.addAlternative(this.alternative);
         });
     });
 
-    after(function() {
-        return Alternative.removeAsync({})
-        .then(function() {
-            return Election.removeAsync({});
-        });
-    });
-
-    it('should be able to create and get alternatives', function(done) {
+    it('should be able to get alternatives', function(done) {
         request(app)
-            .post('/api/election/' + testElection._id + '/alternatives')
-            .send(testAlternative2)
+            .get('/api/election/' + this.election.id + '/alternatives')
+            .expect(200)
+            .expect('Content-Type', /json/)
             .end(function(err, res) {
-                if (err) done(err);
+                if (err) return done(err);
+                res.body.length.should.equal(1);
+                res.body[0].description.should.equal(this.alternative.description, 'should be the same as api result');
+                done();
+            }.bind(this));
+    });
+
+    it('should be able to create alternatives', function(done) {
+        request(app)
+            .post('/api/election/' + this.election.id + '/alternatives')
+            .send(testAlternativeData)
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.description.should.equal(testAlternativeData.description);
                 res.status.should.equal(201);
-                request(app)
-                    .get('/api/election/' + testElection._id + '/alternatives')
-                    .end(function(err, res) {
-                        if (err) done(err);
-                        res.body[0].description.should.equal(testAlternative.description, 'should be the same as api result');
-                        res.body[1].description.should.equal(testAlternative2.description, 'should be the same as api result');
-                        done();
-                    });
+                done();
             });
     });
+
 });

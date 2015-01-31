@@ -1,4 +1,4 @@
-angular.module('voteApp').config(['$routeProvider', '$locationProvider', function ($routeProvider) {
+angular.module('voteApp').config(['$routeProvider', '$locationProvider', function($routeProvider) {
 
     $routeProvider
 

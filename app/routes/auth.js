@@ -1,17 +1,18 @@
 var express = require('express');
 var passport = require('passport');
+var user = require('../controllers/user');
 
 var router = express.Router();
 
-router.post('/login', function(req, res) {
-    passport.authenticate('local', function(err, user, info) {
-        if (err) return res.status(500).send(err);
-        if (!user) return res.send({ message: 'Incorrect password or username' });
-        req.logIn(user, function(err) {
-            if (err) res.send(err);
-            return res.send(user);
-        });
-    })(req, res);
+router.post('/register', user.register);
+
+router.post('/login', passport.authenticate('local'), function(req, res) {
+    res.send(req.user.getCleanUser());
+});
+
+router.get('/logout', function(req, res) {
+    req.logout();
+    res.redirect('/');
 });
 
 module.exports = router;
