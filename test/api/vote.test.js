@@ -226,10 +226,10 @@ describe('Vote API', function() {
     });
 
     it('should be possible to retrieve a vote', function(done) {
-        return this.activeAlternative.addVote(this.user)
+        return this.activeAlternative.addVote(this.user).bind(this)
             .spread(function(vote) {
                 request(app)
-                    .get('/api/vote')
+                    .get('/api/vote/' + this.activeElection.id)
                     .set('Vote-Hash', vote.hash)
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -245,10 +245,10 @@ describe('Vote API', function() {
     });
 
     it('should not be possible to retrieve others\' votes', function(done) {
-        return this.activeAlternative.addVote(this.adminUser)
+        return this.activeAlternative.addVote(this.adminUser).bind(this)
             .spread(function(vote) {
                 request(app)
-                    .get('/api/vote')
+                    .get('/api/vote/' + this.activeElection.id)
                     .set('Vote-Hash', vote.hash)
                     .expect(404)
                     .expect('Content-Type', /json/)
@@ -260,6 +260,51 @@ describe('Vote API', function() {
                         done();
                     });
             }).catch(done);
+    });
+
+    it('should return 400 when retrieving votes without header', function(done) {
+        request(app)
+            .get('/api/vote/' + this.activeElection.id)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Missing header Vote-Hash.');
+                error.status.should.equal(400);
+                done();
+            });
+    });
+
+    it('should return 404 for invalid electionIds', function(done) {
+        request(app)
+            .get('/api/vote/badid')
+            .set('Vote-Hash', 'something')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                error.status.should.equal(404);
+                done();
+            });
+    });
+
+    it('should return 404 for nonexistent electionIds', function(done) {
+        var badId = new ObjectId();
+        request(app)
+            .get('/api/vote/' + badId)
+            .set('Vote-Hash', 'something')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                error.status.should.equal(404);
+                done();
+            });
     });
 
     it('should be possible to sum votes', function(done) {

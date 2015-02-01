@@ -17,10 +17,8 @@ var voteSchema = new Schema({
     }
 });
 
-voteSchema.statics.findByHash = Bluebird.method(function(hash, user) {
-    if (!hash || !user) throw new errors.VoteError('Need a hash and a user to retrieve a vote');
-
-    var checkHash = createHash(user.username);
+voteSchema.statics.findByHash = Bluebird.method(function(hash, username, electionId) {
+    var checkHash = createHash(username, electionId);
 
     if (hash !== checkHash) throw new errors.NotFoundError('vote');
 

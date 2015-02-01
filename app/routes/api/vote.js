@@ -5,8 +5,7 @@ var vote = require('../../controllers/vote');
 
 var router = express.Router();
 
-router.route('/')
-    .get(ensureAuthenticated, vote.retrieve)
-    .post(ensureAuthenticated, vote.create);
+router.post('/', ensureAuthenticated, vote.create);
+router.get('/:electionId', ensureAuthenticated, vote.retrieve);
 
 module.exports = router;
