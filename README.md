@@ -13,5 +13,5 @@ npm install
 make test
 ```
 
---------
-MIT © webkom, Abakus Linjeforening
+ --------
+  MIT © webkom, Abakus Linjeforening

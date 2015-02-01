@@ -47,4 +47,6 @@ else
 	@echo "Not in a production environment!"
 endif
 
+
 .PHONY: server install test jshint jscs production
+

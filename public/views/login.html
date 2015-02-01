@@ -3,14 +3,14 @@
         <form ng-submit="login($scope.username, $scope.password)">
             <div class="form-group">
                 <label for="password">Username</label>
-                <input type="text" class="form-control" name="username" ng-model="username">
+                <input type="text" class="form-control" name="username" ng-model="username" placeholder="Skriv inn brukernavn">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" name="password" ng-model="password">
+                <input type="password" class="form-control" name="password" ng-model="password" placeholder="Skriv inn passord">
             </div>
             <button type="submit" id="submit" class="btn" value="Submit" >Submit</button>
         </form>
     </div>
 </div>
-<p>{{tagline}}</p>
+<p>{{formFeedback}}</p>

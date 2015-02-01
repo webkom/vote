@@ -1,5 +1,6 @@
-angular.module('voteApp').controller('mainController', function($scope) {
 
-    $scope.tagline = 'Main';
+angular.module('voteApp').controller('mainController', function($scope, apiService) {
+
+    $scope.authenticated = apiService.user.admin;
 
 });

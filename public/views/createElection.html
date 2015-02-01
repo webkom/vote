@@ -1,0 +1,14 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
+        <form class="form-group" ng-submit="createElection(election)">
+            <label>Tittel</label>
+            <input type="text" class="form-control" name="title" placeholder="Skriv inn tittel" ng-model="election.title">
+            <label>Beskrivelse</label>
+            <input type="text" class="form-control" name="beskrivelse" placeholder="Skriv inn beskrivelse" ng-model="election.description">
+            <br>
+            <button type="submit" id="submit" class="btn" value="Submit" >Submit</button>
+        </form>
+    </div>
+</div>
+
+<p>{{formFeedback}}</p>

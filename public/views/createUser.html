@@ -1,0 +1,18 @@
+<div class="row">
+    <div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
+        <form class="form-group" ng-submit="createUser(user)">
+            <label>Kortnummer</label>
+            <input type="text" class="form-control" name="cardNr" placeholder="Skriv inn kortnummer" ng-model="user.cardNumber">
+            <label>Brukernavn</label>
+            <input type="text" class="form-control" name="username" placeholder="Skriv inn brukernavn" ng-model="user.username">
+            <label>Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Skriv inn ønsket passord" ng-model="user.password">
+            <label>Password</label>
+            <input type="password" class="form-control" name="confirmPassword" placeholder="Bekreft passord" ng-model="user.confirmPassword">
+            <br>
+            <button type="submit" id="submit" class="btn" value="Submit" >Submit</button>
+        </form>
+    </div>
+</div>
+
+<p>{{formFeedback}}</p>
