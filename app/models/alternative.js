@@ -37,8 +37,4 @@ alternativeSchema.methods.addVote = function(user) {
     });
 };
 
-alternativeSchema.methods.getVotes = function() {
-    return Vote.findAsync({ alternative: this });
-};
-
 module.exports = mongoose.model('Alternative', alternativeSchema);
