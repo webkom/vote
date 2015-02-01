@@ -53,6 +53,7 @@ describe('User API', function() {
 
                 return User.findOneAsync({ username: testUserData.username })
                 .then(function(user) {
+                    should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
                 }).nodeify(done);
             });

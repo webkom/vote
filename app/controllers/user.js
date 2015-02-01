@@ -13,6 +13,7 @@ exports.list = function(req, res) {
 
 exports.create = function(req, res) {
     var user = new User(req.body);
+
     User.registerAsync(user, req.body.password)
         .then(function(createdUser) {
             return res.status(201).json(createdUser.getCleanUser());
