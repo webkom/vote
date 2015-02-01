@@ -1,4 +1,5 @@
 var request = require('supertest');
+var mongoose = require('mongoose');
 var chai = require('chai');
 var app = require('../../app');
 var should = chai.should();
@@ -48,15 +49,33 @@ describe('Auth API', function() {
     });
 
     it('should be possible to logout', function(done) {
-        request(app)
-            .post('/auth/logout')
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.body.message.should.equal('Successfully logged out.');
-                res.body.status.should.equal(200);
-                done();
-            });
+        var sessions = mongoose.connection.db.collection('sessions');
+
+        sessions.drop(function(err) {
+            if (err) return done(err);
+            var agent = request.agent(app);
+
+            agent
+                .post('/auth/login')
+                .send(testUser)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    agent
+                        .post('/auth/logout')
+                        .expect(200)
+                        .expect('Content-Type', /json/)
+                        .end(function(err, res) {
+                            if (err) return done(err);
+                            res.body.message.should.equal('Successfully logged out.');
+                            res.body.status.should.equal(200);
+                            sessions
+                                .find({})
+                                .toArray(function(err, sessions) {
+                                    sessions.length.should.equal(0);
+                                    done();
+                                });
+                        });
+                });
+        });
     });
 });
