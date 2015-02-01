@@ -25,16 +25,29 @@ exports.list = function(req, res) {
         });
 };
 
-exports.retrieve = function(req, res) {
-    return Election.findById(req.params.electionId)
-        .populate('alternatives')
+var retrieveOr404 = exports.retrieveOr404 = function(req, res, populate) {
+    function retrieve() {
+        if (populate) {
+            return Election.findById(req.params.electionId).populate(populate);
+        }
+        return Election.findById(req.params.electionId);
+    }
+
+    return retrieve()
         .execAsync()
         .then(function(election) {
             if (!election) throw new errors.NotFoundError('election');
-            return res.status(200).json(election);
+            return election;
         })
         .catch(mongoose.Error.CastError, function(err) {
             throw new errors.NotFoundError('election');
+        });
+};
+
+exports.retrieve = function(req, res) {
+    return retrieveOr404(req, res, 'alternatives')
+        .then(function(election) {
+            return res.status(200).json(election);
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -42,17 +55,13 @@ exports.retrieve = function(req, res) {
 };
 
 exports.activate = function(req, res) {
-    Election.findByIdAsync(req.params.electionId)
+    return retrieveOr404(req, res)
         .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
             election.active = true;
             return election.saveAsync();
         })
         .spread(function(election) {
             return res.status(200).json(election);
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -60,17 +69,13 @@ exports.activate = function(req, res) {
 };
 
 exports.deactivate = function(req, res) {
-    Election.findByIdAsync(req.params.electionId)
+    return retrieveOr404(req, res)
         .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
             election.active = false;
             return election.saveAsync();
         })
         .spread(function(election) {
             return res.status(200).json(election);
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -78,16 +83,12 @@ exports.deactivate = function(req, res) {
 };
 
 exports.sumVotes = function(req, res) {
-    Election.findByIdAsync(req.params.electionId)
+    return retrieveOr404(req, res)
         .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
             return election.sumVotes();
         })
         .then(function(alternatives) {
             return res.json(alternatives);
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
@@ -95,9 +96,8 @@ exports.sumVotes = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-    Election.findByIdAsync(req.params.electionId)
+    return retrieveOr404(req, res)
         .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
             if (election.active) {
                 throw new errors.DeleteError('Cannot delete an active election.');
             }
@@ -108,9 +108,6 @@ exports.delete = function(req, res) {
                 message: 'Election deleted.',
                 status: 200
             });
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
         })
         .catch(function(err) {
             return errors.handleError(res, err);
