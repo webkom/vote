@@ -10,9 +10,12 @@ router.post('/login', passport.authenticate('local'), function(req, res) {
     res.send(req.user.getCleanUser());
 });
 
-router.get('/logout', function(req, res) {
+router.post('/logout', function(req, res) {
     req.logout();
-    res.redirect('/');
+    res.status(200).json({
+        message: 'Successfully logged out.',
+        status: 200
+    });
 });
 
 module.exports = router;

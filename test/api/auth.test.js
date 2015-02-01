@@ -46,4 +46,17 @@ describe('Auth API', function() {
                 done();
             });
     });
+
+    it('should be possible to logout', function(done) {
+        request(app)
+            .post('/auth/logout')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.message.should.equal('Successfully logged out.');
+                res.body.status.should.equal(200);
+                done();
+            });
+    });
 });
