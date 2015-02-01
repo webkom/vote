@@ -26,6 +26,9 @@ exports.create = function(req, res) {
         .then(function(alternative) {
             return res.status(201).send(alternative);
         })
+        .catch(mongoose.Error.ValidationError, function(err) {
+            throw new errors.ValidationError(err.errors);
+        })
         .catch(function(err) {
             return errors.handleError(res, err);
         });

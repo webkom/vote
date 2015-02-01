@@ -20,6 +20,7 @@ describe('handleError', function() {
         var testError = new Error('test error');
         errors.handleError(res, testError);
         stub.should.have.been.calledWith({
+            name: 'Error',
             status: 500,
             message: 'test error'
         });
@@ -29,6 +30,7 @@ describe('handleError', function() {
         var testError = new errors.VoteError();
         errors.handleError(res, testError, 417);
         stub.should.have.been.calledWith({
+            name: 'VoteError',
             status: 417,
             message: testError.message
         });

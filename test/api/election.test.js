@@ -87,6 +87,23 @@ describe('Election API', function() {
             });
     });
 
+    it('should return 400 when creating elections without required fields', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/election')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('ValidationError');
+                error.status.should.equal(400);
+                error.errors.title.path.should.equal('title');
+                error.errors.title.type.should.equal('required');
+                done();
+            });
+    });
+
     it('should only be possible to create elections as admin', function(done) {
         passportStub.login(this.user);
         testAdminResourcePost('/api/election', done);

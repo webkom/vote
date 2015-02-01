@@ -12,8 +12,8 @@ var voteSchema = new Schema({
         index: true
     },
     alternative: {
-        type: Schema.Types.ObjectId, ref: 'Alternative',
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'Alternative'
     }
 });
 

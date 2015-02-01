@@ -64,6 +64,21 @@ describe('User API', function() {
         testAdminResourcePost('/api/user', done);
     });
 
+    it('should return 400 when creating users without required fields', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/user')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('InvalidRegistrationError');
+                error.status.should.equal(400);
+                done();
+            });
+    });
+
     it('should be able to get users', function(done) {
         passportStub.login(this.adminUser);
         request(app)

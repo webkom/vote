@@ -8,6 +8,8 @@ exports.create = function(req, res) {
         description: req.body.description
     }).then(function(election) {
         return res.status(201).json(election);
+    }).catch(mongoose.Error.ValidationError, function(err) {
+        throw new errors.ValidationError(err.errors);
     }).catch(function(err) {
         return errors.handleError(res, err);
     });

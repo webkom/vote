@@ -19,6 +19,12 @@ exports.create = function(req, res) {
             return res.status(201).json(createdUser.getCleanUser());
         })
         .catch(function(err) {
+            if (err.name === 'BadRequestError') {
+                throw new errors.InvalidRegistrationError(err.message);
+            }
+            throw err;
+        })
+        .catch(function(err) {
             return errors.handleError(res, err);
         });
 };
