@@ -27,7 +27,7 @@ alternativeSchema.methods.addVote = function(user) {
     .then(function(election) {
         if (!election.active) throw new errors.VoteError('Can\'t vote on an inactive election.');
 
-        var voteHash = createHash(user.username);
+        var voteHash = createHash(user.username, this.election);
         return Vote.findAsync({ alternative: this.id, hash: voteHash }).bind(this)
         .then(function(votes) {
             if (votes.length) throw new errors.VoteError('You can only vote once per election.');
@@ -35,10 +35,6 @@ alternativeSchema.methods.addVote = function(user) {
             return vote.saveAsync();
         });
     });
-};
-
-alternativeSchema.methods.getVotes = function() {
-    return Vote.findAsync({ alternative: this });
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);

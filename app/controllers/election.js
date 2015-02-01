@@ -76,3 +76,20 @@ exports.deactivate = function(req, res) {
             return errors.handleError(res, err);
         });
 };
+
+exports.sumVotes = function(req, res) {
+    Election.findByIdAsync(req.params.electionId)
+        .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
+            return election.sumVotes();
+        })
+        .then(function(alternatives) {
+            return res.json(alternatives);
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
+        });
+};

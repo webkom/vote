@@ -10,6 +10,8 @@ var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
+var testAdminResourceGet = helpers.testAdminResourceGet;
+var createUsers = helpers.createUsers;
 var should = chai.should();
 
 describe('Vote API', function() {
@@ -30,15 +32,6 @@ describe('Vote API', function() {
     var inactiveData = {
         description: 'inactive election alt'
     };
-
-    var testUser = {
-        username: 'testUser'
-    };
-    var adminUser = {
-        username: 'admin',
-        admin: true
-    };
-    var testPassword = 'password';
 
     function votePayload(alternativeId) {
         return {
@@ -71,10 +64,7 @@ describe('Vote API', function() {
             ]);
         })
         .then(function() {
-            return Bluebird.all([
-                User.registerAsync(testUser, testPassword),
-                User.registerAsync(adminUser, testPassword)
-            ]);
+            return createUsers();
         })
         .spread(function(user, adminUser) {
             this.user = user;
@@ -235,61 +225,11 @@ describe('Vote API', function() {
             }.bind(this));
     });
 
-    it('should get 404 when listing votes with a nonexistent alternativeId', function(done) {
-        passportStub.login(this.adminUser);
-        var badId = new ObjectId();
-        testGet404('/api/vote/' + badId, 'alternative', done);
-    });
-
-    it('should get 404 when listing votes with an invalid alternativeId', function(done) {
-        passportStub.login(this.adminUser);
-        testGet404('/api/vote/badid', 'alternative', done);
-    });
-
-    it('should be able to list votes', function(done) {
-        passportStub.login(this.adminUser);
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .then(function() {
-                request(app)
-                    .get('/api/vote/' + this.activeAlternative.id)
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        var votes = res.body;
-                        votes.length.should.equal(1);
-                        votes[0].alternative.should.equal(this.activeAlternative.id);
-                        should.exist(votes[0].hash);
-
-                        done();
-                    }.bind(this));
-            }).catch(done);
-    });
-
-    it('should only be able to list votes as admin', function(done) {
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .then(function() {
-                request(app)
-                    .get('/api/vote/' + this.activeAlternative.id)
-                    .expect(403)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-
-                        var error = res.body;
-                        error.message.should.equal('You need to be an admin to access this resource.');
-                        error.status.should.equal(403);
-
-                        done();
-                    });
-            }).catch(done);
-    });
-
     it('should be possible to retrieve a vote', function(done) {
-        return this.activeAlternative.addVote(this.user)
+        return this.activeAlternative.addVote(this.user).bind(this)
             .spread(function(vote) {
                 request(app)
-                    .get('/api/vote')
+                    .get('/api/vote/' + this.activeElection.id)
                     .set('Vote-Hash', vote.hash)
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -305,10 +245,10 @@ describe('Vote API', function() {
     });
 
     it('should not be possible to retrieve others\' votes', function(done) {
-        return this.activeAlternative.addVote(this.adminUser)
+        return this.activeAlternative.addVote(this.adminUser).bind(this)
             .spread(function(vote) {
                 request(app)
-                    .get('/api/vote')
+                    .get('/api/vote/' + this.activeElection.id)
                     .set('Vote-Hash', vote.hash)
                     .expect(404)
                     .expect('Content-Type', /json/)
@@ -320,5 +260,93 @@ describe('Vote API', function() {
                         done();
                     });
             }).catch(done);
+    });
+
+    it('should return 400 when retrieving votes without header', function(done) {
+        request(app)
+            .get('/api/vote/' + this.activeElection.id)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Missing header Vote-Hash.');
+                error.status.should.equal(400);
+                done();
+            });
+    });
+
+    it('should return 404 for invalid electionIds', function(done) {
+        request(app)
+            .get('/api/vote/badid')
+            .set('Vote-Hash', 'something')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                error.status.should.equal(404);
+                done();
+            });
+    });
+
+    it('should return 404 for nonexistent electionIds', function(done) {
+        var badId = new ObjectId();
+        request(app)
+            .get('/api/vote/' + badId)
+            .set('Vote-Hash', 'something')
+            .expect(404)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.message.should.equal('Couldn\'t find election.');
+                error.status.should.equal(404);
+                done();
+            });
+    });
+
+    it('should be possible to sum votes', function(done) {
+        passportStub.login(this.adminUser);
+        var newAlternative = new Alternative({ description: 'other alternative' });
+        this.activeElection.addAlternative(newAlternative).bind(this)
+            .then(function() {
+                return Bluebird.all([
+                    newAlternative.addVote(this.user),
+                    this.activeAlternative.addVote(this.adminUser)
+                ]);
+            })
+            .then(function() {
+                request(app)
+                    .get('/api/election/' + this.activeElection.id + '/votes')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var alternatives = res.body;
+                        alternatives.length.should.equal(2);
+                        alternatives[0].votes.should.equal(1);
+                        alternatives[1].votes.should.equal(1);
+                        done();
+                    });
+            })
+            .catch(done);
+    });
+
+    it('should not be possible to sum votes without being admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/election/' + this.activeElection.id + '/votes', done);
+    });
+
+    it('should get 404 when summing votes for invalid electionIds', function(done) {
+        passportStub.login(this.adminUser);
+        testGet404('/api/election/badid/votes', 'election', done);
+    });
+
+    it('should get 404 when summing votes for nonexistent electionIds', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testGet404('/api/election/' + badId + '/votes', 'election', done);
     });
 });

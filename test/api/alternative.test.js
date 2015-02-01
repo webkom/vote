@@ -1,17 +1,22 @@
 var Bluebird = require('bluebird');
+var passportStub = require('passport-stub');
 var request = require('supertest');
 var ObjectId = require('mongoose').Types.ObjectId;
 var chai = require('chai');
 var app = require('../../app');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
+var User = require('../../app/models/user');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
 var testPost404 = helpers.testPost404;
-
+var testAdminResourcePost = helpers.testAdminResourcePost;
+var createUsers = helpers.createUsers;
 chai.should();
 
 describe('Alternatives API', function() {
+    passportStub.install(app);
+
     var testElectionData = {
         title: 'test election',
         description: 'test election description'
@@ -26,9 +31,11 @@ describe('Alternatives API', function() {
     };
 
     beforeEach(function() {
+        passportStub.logout();
         return Bluebird.all([
             Election.removeAsync({}),
-            Alternative.removeAsync({})
+            Alternative.removeAsync({}),
+            User.removeAsync({})
         ]).bind(this)
         .then(function() {
             var election = new Election(testElectionData);
@@ -39,6 +46,13 @@ describe('Alternatives API', function() {
             createdAlternativeData.election = election.id;
             this.alternative = new Alternative(createdAlternativeData);
             return election.addAlternative(this.alternative);
+        })
+        .then(function() {
+            return createUsers();
+        })
+        .spread(function(user, adminUser) {
+            this.user = user;
+            this.adminUser = adminUser;
         });
     });
 
@@ -65,6 +79,7 @@ describe('Alternatives API', function() {
     });
 
     it('should be able to create alternatives', function(done) {
+        passportStub.login(this.adminUser);
         request(app)
             .post('/api/election/' + this.election.id + '/alternatives')
             .send(testAlternativeData)
@@ -79,11 +94,18 @@ describe('Alternatives API', function() {
     });
 
     it('should get 404 when creating alternatives for invalid electionIds', function(done) {
+        passportStub.login(this.adminUser);
         testPost404('/api/election/badid/alternatives', 'election', done);
     });
 
     it('should get 404 when creating alternatives for nonexistent electionIds', function(done) {
+        passportStub.login(this.adminUser);
         var badId = new ObjectId();
         testPost404('/api/election/' + badId + '/alternatives', 'election', done);
+    });
+
+    it('should only be possible to create alternatives as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourcePost('/api/election/' + this.election.id + '/alternatives', done);
     });
 });
