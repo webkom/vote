@@ -23,6 +23,18 @@ var electionSchema = new Schema({
     }
 });
 
+electionSchema.pre('remove', function(next) {
+    // Use mongoose.model getter to avoid circular dependencies
+    return mongoose.model('Alternative').findAsync(this.alternatives)
+        .then(function(alternatives) {
+            return Bluebird.map(alternatives, function(alternative) {
+                // Have to call remove on each document to activate Alternative's
+                // remove-middleware
+                return alternative.removeAsync();
+            });
+        }).nodeify(next);
+});
+
 electionSchema.methods.sumVotes = function() {
     return Bluebird.map(this.alternatives, function(alternativeId) {
         return Vote.findAsync({ alternative: alternativeId })

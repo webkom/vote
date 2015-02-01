@@ -7,11 +7,14 @@ var chai = require('chai');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
 var User = require('../../app/models/user');
+var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 var testPost404 = helpers.testPost404;
 var testGet404 = helpers.testGet404;
+var testDelete404 = helpers.testDelete404;
 var createUsers = helpers.createUsers;
 var testAdminResourcePost = helpers.testAdminResourcePost;
+var testAdminResourceDelete = helpers.testAdminResourceDelete;
 
 chai.should();
 
@@ -39,6 +42,7 @@ describe('Election API', function() {
         return Bluebird.all([
             Election.removeAsync({}),
             Alternative.removeAsync({}),
+            Vote.removeAsync({}),
             User.removeAsync({})
         ]).bind(this)
         .then(function() {
@@ -182,4 +186,69 @@ describe('Election API', function() {
         testAdminResourcePost('/api/election/' + this.activeElection.id + '/deactivate', done);
     });
 
+    it('should be possible to delete elections', function(done) {
+        passportStub.login(this.adminUser);
+
+        var vote = new Vote({
+            alternative: this.alternative.id,
+            hash: 'thisisahash'
+        });
+
+        this.activeElection.active = false;
+
+        return Bluebird.all([
+            vote.saveAsync(),
+            this.activeElection.saveAsync()
+        ]).bind(this).then(function() {
+                request(app)
+                    .delete('/api/election/' + this.activeElection.id)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        res.body.message.should.equal('Election deleted.');
+                        res.body.status.should.equal(200);
+                        return Bluebird.all([
+                            Election.findAsync({}),
+                            Alternative.findAsync({}),
+                            Vote.findAsync({})
+                        ]).spread(function(elections, alternatives, votes) {
+                            elections.length.should.equal(0);
+                            alternatives.length.should.equal(0);
+                            votes.length.should.equal(0);
+                        }).nodeify(done);
+                    });
+            }).catch(done);
+    });
+
+    it('should not be possible to delete active elections', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .delete('/api/election/' + this.activeElection.id)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.status.should.equal(400);
+                error.message.should.equal('Cannot delete an active election.');
+                done();
+            });
+    });
+
+    it('should only be possible to delete elections as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceDelete('/api/election/badid', done);
+    });
+
+    it('should get 404 when deleting elections with invalid ObjectIds', function(done) {
+        passportStub.login(this.adminUser);
+        testDelete404('/api/election/badid', 'election', done);
+    });
+
+    it('should get 404 when deleting elections with nonexistent ObjectIds', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testDelete404('/api/election/' + badId, 'election', done);
+    });
 });

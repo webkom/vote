@@ -11,7 +11,8 @@ router.route('/')
     .get(election.list);
 
 router.route('/:electionId')
-    .get(election.retrieve);
+    .get(election.retrieve)
+    .delete(ensureAdmin, election.delete);
 
 router.post('/:electionId/activate', ensureAdmin, election.activate);
 

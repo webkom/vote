@@ -93,3 +93,26 @@ exports.sumVotes = function(req, res) {
             return errors.handleError(res, err);
         });
 };
+
+exports.delete = function(req, res) {
+    Election.findByIdAsync(req.params.electionId)
+        .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
+            if (election.active) {
+                throw new errors.DeleteError('Cannot delete an active election.');
+            }
+            return election.removeAsync();
+        })
+        .then(function() {
+            return res.status(200).json({
+                message: 'Election deleted.',
+                status: 200
+            });
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
+        });
+};
