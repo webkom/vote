@@ -61,6 +61,15 @@ NotFoundError.prototype = Object.create(Error.prototype);
 NotFoundError.prototype.constructor = NotFoundError;
 exports.NotFoundError = NotFoundError;
 
+function DeleteError(message) {
+    this.name = 'DeleteError';
+    this.message = message || 'Cannot delete resource.';
+    this.statusCode = 400;
+}
+DeleteError.prototype = Object.create(Error.prototype);
+DeleteError.prototype.constructor = DeleteError;
+exports.DeleteError = DeleteError;
+
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {
         statusCode = err.statusCode ? err.statusCode : 500;

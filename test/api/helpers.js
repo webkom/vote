@@ -34,6 +34,20 @@ exports.testPost404 = function(path, type, done) {
         });
 };
 
+exports.testDelete404 = function(path, type, done) {
+    request(app)
+        .delete(path)
+        .expect(404)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+            if (err) return done(err);
+            var error = res.body;
+            error.status.should.equal(404);
+            error.message.should.equal('Couldn\'t find ' + type + '.');
+            done();
+        });
+};
+
 function checkAdminResource(err, res, done) {
     if (err) return done(err);
     var error = res.body;
@@ -55,6 +69,16 @@ exports.testAdminResourceGet = function(path, done) {
 exports.testAdminResourcePost = function(path, done) {
     request(app)
         .post(path)
+        .expect(403)
+        .expect('Content-Type', /json/)
+        .end(function(err, res) {
+            checkAdminResource(err, res, done);
+        });
+};
+
+exports.testAdminResourceDelete = function(path, done) {
+    request(app)
+        .delete(path)
         .expect(403)
         .expect('Content-Type', /json/)
         .end(function(err, res) {

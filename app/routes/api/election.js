@@ -11,7 +11,8 @@ router.route('/')
     .get(election.list);
 
 router.route('/:electionId')
-    .get(election.retrieve);
+    .get(election.retrieve)
+    .delete(ensureAdmin, election.delete);
 
 router.post('/:electionId/activate', ensureAdmin, election.activate);
 
@@ -20,6 +21,8 @@ router.post('/:electionId/deactivate', ensureAdmin, election.deactivate);
 router.route('/:electionId/alternatives')
     .get(alternative.list)
     .post(ensureAdmin, alternative.create);
+
+router.delete('/:electionId/alternatives/:alternativeId', ensureAdmin, alternative.delete);
 
 router.get('/:electionId/votes', ensureAdmin, election.sumVotes);
 
