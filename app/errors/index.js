@@ -70,13 +70,41 @@ DeleteError.prototype = Object.create(Error.prototype);
 DeleteError.prototype.constructor = DeleteError;
 exports.DeleteError = DeleteError;
 
+function ValidationError(errors) {
+    this.name = 'ValidationError';
+    this.message = 'Validation failed.';
+    this.statusCode = 400;
+    this.errors = errors;
+    this.payload = {
+        name: this.name,
+        message: this.message,
+        status: this.statusCode,
+        errors: this.errors
+    };
+}
+ValidationError.prototype = Object.create(Error.prototype);
+ValidationError.prototype.constructor = ValidationError;
+exports.ValidationError = ValidationError;
+
+function InvalidRegistrationError(message) {
+    this.name = 'InvalidRegistrationError';
+    this.message = message;
+    this.statusCode = 400;
+}
+InvalidRegistrationError.prototype = Object.create(Error.prototype);
+InvalidRegistrationError.prototype.constructor = InvalidRegistrationError;
+exports.InvalidRegistrationError = InvalidRegistrationError;
+
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {
         statusCode = err.statusCode ? err.statusCode : 500;
     }
 
-    return res.status(statusCode).json({
-        status: statusCode,
-        message: err.message
-    });
+    return res
+        .status(statusCode)
+        .json(err.payload || {
+            name: err.name,
+            status: statusCode,
+            message: err.message
+        });
 };

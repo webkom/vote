@@ -14,8 +14,8 @@ var alternativeSchema = new Schema({
         required: true
     },
     election: {
-        type: Schema.Types.ObjectId, ref: 'Election',
-        required: true
+        type: Schema.Types.ObjectId,
+        ref: 'Election'
     }
 });
 

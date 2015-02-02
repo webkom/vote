@@ -13,9 +13,16 @@ exports.list = function(req, res) {
 
 exports.create = function(req, res) {
     var user = new User(req.body);
+
     User.registerAsync(user, req.body.password)
         .then(function(createdUser) {
             return res.status(201).json(createdUser.getCleanUser());
+        })
+        .catch(function(err) {
+            if (err.name === 'BadRequestError') {
+                throw new errors.InvalidRegistrationError(err.message);
+            }
+            throw err;
         })
         .catch(function(err) {
             return errors.handleError(res, err);

@@ -105,6 +105,23 @@ describe('Alternatives API', function() {
             });
     });
 
+    it('should return 400 when creating alternatives without required fields', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/election/' + this.election.id + '/alternatives')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('ValidationError');
+                error.status.should.equal(400);
+                error.errors.description.path.should.equal('description');
+                error.errors.description.type.should.equal('required');
+                done();
+            });
+    });
+
     it('should get 404 when creating alternatives for invalid electionIds', function(done) {
         passportStub.login(this.adminUser);
         testPost404('/api/election/badid/alternatives', 'election', done);

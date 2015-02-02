@@ -14,7 +14,8 @@ var electionSchema = new Schema({
     },
     alternatives: [
         {
-            type: Schema.Types.ObjectId, ref: 'Alternative'
+            type: Schema.Types.ObjectId,
+            ref: 'Alternative'
         }
     ],
     active: {

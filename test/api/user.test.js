@@ -53,6 +53,7 @@ describe('User API', function() {
 
                 return User.findOneAsync({ username: testUserData.username })
                 .then(function(user) {
+                    should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
                 }).nodeify(done);
             });
@@ -61,6 +62,21 @@ describe('User API', function() {
     it('should not be possible to create users without being admin', function(done) {
         passportStub.login(this.user);
         testAdminResourcePost('/api/user', done);
+    });
+
+    it('should return 400 when creating users without required fields', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/user')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('InvalidRegistrationError');
+                error.status.should.equal(400);
+                done();
+            });
     });
 
     it('should be able to get users', function(done) {
