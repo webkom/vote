@@ -19,8 +19,6 @@ var testAdminResourceDelete = helpers.testAdminResourceDelete;
 chai.should();
 
 describe('Election API', function() {
-    passportStub.install(app);
-
     var activeElectionData = {
         title: 'activeElection1',
         description: 'active election 1',
@@ -35,6 +33,10 @@ describe('Election API', function() {
     var testAlternative = {
         description: 'test alternative'
     };
+
+    before(function() {
+        passportStub.install(app);
+    });
 
     beforeEach(function() {
         passportStub.logout();
@@ -62,6 +64,11 @@ describe('Election API', function() {
             this.user = user;
             this.adminUser = adminUser;
         });
+    });
+
+    after(function() {
+        passportStub.logout();
+        passportStub.uninstall();
     });
 
     it('should be able to create elections', function(done) {
