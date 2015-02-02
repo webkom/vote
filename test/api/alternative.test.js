@@ -18,8 +18,6 @@ var createUsers = helpers.createUsers;
 chai.should();
 
 describe('Alternatives API', function() {
-    passportStub.install(app);
-
     var testElectionData = {
         title: 'test election',
         description: 'test election description',
@@ -33,6 +31,10 @@ describe('Alternatives API', function() {
     var testAlternativeData = {
         description: 'test alternative 2'
     };
+
+    before(function() {
+        passportStub.install(app);
+    });
 
     beforeEach(function() {
         passportStub.logout();
@@ -59,6 +61,11 @@ describe('Alternatives API', function() {
             this.user = user;
             this.adminUser = adminUser;
         });
+    });
+
+    after(function() {
+        passportStub.logout();
+        passportStub.uninstall();
     });
 
     it('should be able to get alternatives', function(done) {

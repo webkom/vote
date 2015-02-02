@@ -2,7 +2,7 @@ var User = require('../models/user');
 var errors = require('../errors');
 
 exports.list = function(req, res) {
-    return User.findAsync({ admin: false }, 'username admin active')
+    return User.findAsync({}, 'username admin active')
         .then(function(users) {
             return res.json(users);
         })
@@ -11,7 +11,7 @@ exports.list = function(req, res) {
         });
 };
 
-exports.register = function(req, res) {
+exports.create = function(req, res) {
     var user = new User(req.body);
     User.registerAsync(user, req.body.password)
         .then(function(createdUser) {

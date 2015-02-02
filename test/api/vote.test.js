@@ -15,8 +15,6 @@ var createUsers = helpers.createUsers;
 var should = chai.should();
 
 describe('Vote API', function() {
-    passportStub.install(app);
-
     var activeElectionData = {
         title: 'activeElection',
         description: 'test election',
@@ -38,6 +36,10 @@ describe('Vote API', function() {
             alternativeId: alternativeId
         };
     }
+
+    before(function() {
+        passportStub.install(app);
+    });
 
     beforeEach(function() {
         return Bluebird.all([
@@ -71,6 +73,11 @@ describe('Vote API', function() {
             this.adminUser = adminUser;
             passportStub.login(user);
         });
+    });
+
+    after(function() {
+        passportStub.logout();
+        passportStub.uninstall();
     });
 
     it('should not be possible to vote with an invalid ObjectId as alternativeId', function(done) {
@@ -217,11 +224,10 @@ describe('Vote API', function() {
                 error.message.should.equal('Can\'t vote on an inactive election.');
                 error.status.should.equal(400);
 
-                Vote.findAsync({ election: this.inactiveElection.id })
+                return Vote.findAsync({ election: this.inactiveElection.id })
                     .then(function(votes) {
                         votes.length.should.equal(0, 'no vote should be added');
-                        done();
-                    }).catch(done);
+                    }).nodeify(done);
             }.bind(this));
     });
 

@@ -1,25 +1,48 @@
 var request = require('supertest');
+var passportStub = require('passport-stub');
 var chai = require('chai');
 var app = require('../../app');
 var User = require('../../app/models/user');
+var helpers = require('./helpers');
+var testAdminResourceGet = helpers.testAdminResourceGet;
+var testAdminResourcePost = helpers.testAdminResourcePost;
+var createUsers = helpers.createUsers;
 var should = chai.should();
 
 describe('User API', function() {
+    before(function() {
+        passportStub.install(app);
+    });
+
+    beforeEach(function() {
+        passportStub.logout();
+        return User.removeAsync({}).bind(this)
+            .then(function() {
+                return createUsers();
+            })
+            .spread(function(user, adminUser) {
+                this.user = user;
+                this.adminUser = adminUser;
+            });
+    });
+
+    after(function() {
+        passportStub.logout();
+        passportStub.uninstall();
+    });
+
     var testUserData = {
-        username: 'testUser',
+        username: 'newUser',
         password: 'password'
     };
 
-    beforeEach(function() {
-        return User.removeAsync({});
-    });
-
-    it('should be able to create user', function(done) {
+    it('should be possible to create users', function(done) {
+        passportStub.login(this.adminUser);
         request(app)
-            .post('/auth/register')
+            .post('/api/user')
+            .send(testUserData)
             .expect(201)
             .expect('Content-Type', /json/)
-            .send(testUserData)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.status.should.equal(201);
@@ -31,27 +54,35 @@ describe('User API', function() {
                 return User.findOneAsync({ username: testUserData.username })
                 .then(function(user) {
                     createdUser.username.should.equal(user.username);
-                    done();
-                })
-                .catch(done);
+                }).nodeify(done);
             });
     });
 
+    it('should not be possible to create users without being admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourcePost('/api/user', done);
+    });
+
     it('should be able to get users', function(done) {
-        User.registerAsync(testUserData, testUserData.password)
-            .then(function(user) {
-                request(app)
-                    .get('/api/user')
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        var createdUser = res.body[0];
-                        createdUser.username.should.equal(testUserData.username);
-                        should.not.exist(createdUser.password);
-                        done();
-                    });
-            })
-            .catch(done);
+        passportStub.login(this.adminUser);
+        request(app)
+            .get('/api/user')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var users = res.body;
+                users.length.should.equal(2);
+                users[0].username.should.exist();
+                users[0].active.should.exist();
+                users[0].admin.should.exist();
+                should.not.exist(users[0].password);
+                done();
+            });
+    });
+
+    it('should not be possible to get users without being admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/user', done);
     });
 });
