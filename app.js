@@ -6,6 +6,7 @@ var session         = require('express-session');
 var MongoStore      = require('connect-mongo')(session);
 var passport        = require('passport');
 var path            = require('path');
+var csrf            = require('csurf');
 var router          = require('./app/routes');
 var User            = require('./app/models/user');
 
@@ -32,6 +33,24 @@ app.use(session({
   saveUninitialized: true,
   resave: false
 }));
+
+/* istanbul ignore if */
+if (process.env.NODE_ENV !== 'test') {
+    app.use(csrf({
+        cookie: {
+            key: 'XSRF-TOKEN'
+        }
+    }));
+
+    app.use(function(err, req, res, next) {
+        if (err.code !== 'EBADCSRFTOKEN') return next(err);
+        res.status(403).json({
+            type: 'InvalidCSRFTokenError',
+            message: 'Invalid or missing CSRF token',
+            status: 403
+        });
+    });
+}
 
 app.use(passport.initialize());
 app.use(passport.session());
