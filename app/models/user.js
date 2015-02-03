@@ -26,6 +26,7 @@ userSchema.methods.getCleanUser = function() {
     return user;
 };
 
+/* istanbul ignore else */
 if (['test', 'development'].indexOf(process.env.NODE_ENV) !== -1) {
     userSchema.plugin(passportLocalMongoose, {
         iterations: 1
