@@ -2,8 +2,8 @@ var request = require('supertest');
 var mongoose = require('mongoose');
 var chai = require('chai');
 var app = require('../../app');
-var should = chai.should();
 var User = require('../../app/models/user');
+chai.should();
 
 describe('Auth API', function() {
     var testUser = {
@@ -27,13 +27,30 @@ describe('Auth API', function() {
         request(app)
             .post('/auth/login')
             .send(testUser)
-            .expect(200)
-            .expect('Content-Type', /json/)
+            .expect(302)
             .end(function(err, res) {
                 if (err) return done(err);
-                should.exist(res.body.username, 'should return a username');
-                should.not.exist(res.body.password, 'password should not be returned');
+                res.header.location.should.equal('/');
                 done();
+            });
+    });
+
+    it('should redirect correctly on login', function(done) {
+        var agent = request.agent(app);
+        agent
+            .get('/test')
+            .expect(302)
+            .end(function(err, res) {
+                if (err) return done(err);
+                agent
+                    .post('/auth/login')
+                    .send(testUser)
+                    .expect(302)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        res.header.location.should.equal('/test');
+                        done();
+                    });
             });
     });
 
@@ -62,12 +79,10 @@ describe('Auth API', function() {
                     if (err) return done(err);
                     agent
                         .post('/auth/logout')
-                        .expect(200)
-                        .expect('Content-Type', /json/)
+                        .expect(302)
                         .end(function(err, res) {
                             if (err) return done(err);
-                            res.body.message.should.equal('Successfully logged out.');
-                            res.body.status.should.equal(200);
+                            res.header.location.should.equal('/login');
                             sessions
                                 .find({})
                                 .toArray(function(err, sessions) {

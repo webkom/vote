@@ -1,0 +1,13 @@
+.row
+    .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+        form.form-group(ng-submit='createElection(election)', name='createElectionForm')
+            .form-group(ng-class="{'has-warning': createElectionForm.title.$invalid, 'has-success': createElectionForm.title.$valid}")
+                label Tittel
+                input.form-control(type='text', name='title', placeholder='Skriv inn tittel', ng-model='election.title', required='required')
+            label Beskrivelse
+            input.form-control(type='text', name='beskrivelse', placeholder='Skriv inn beskrivelse', ng-model='election.description')
+            br
+            button#submit.btn(type='submit', value='Submit') Submit
+            br
+            br
+            p {{formFeedback}}
