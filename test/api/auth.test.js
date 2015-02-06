@@ -54,14 +54,25 @@ describe('Auth API', function() {
             });
     });
 
-    it('should deny users with bad credentials', function(done) {
-        request(app)
+    it('should redirect to login with flash on bad auth', function(done) {
+        var agent = request.agent(app);
+        agent
             .post('/auth/login')
             .send(badTestUser)
-            .expect(401)
+            .expect(302)
             .end(function(err, res) {
                 if (err) return done(err);
-                done();
+                res.header.location.should.equal('/auth/login');
+
+                agent
+                    .get('/auth/login')
+                    .expect(200)
+                    .expect('Content-Type', /text\/html/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        res.text.should.include('Incorrect password');
+                        done();
+                    });
             });
     });
 
@@ -82,7 +93,7 @@ describe('Auth API', function() {
                         .expect(302)
                         .end(function(err, res) {
                             if (err) return done(err);
-                            res.header.location.should.equal('/login');
+                            res.header.location.should.equal('/auth/login');
                             sessions
                                 .find({})
                                 .toArray(function(err, sessions) {

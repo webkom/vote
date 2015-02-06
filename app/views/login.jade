@@ -11,4 +11,6 @@ block content
                 .form-group
                     label(for='password') Passord:
                     input(name='password', type='password', class='form-control')
+                if feedback
+                    p= feedback
                 button(class='btn btn-danger', type='submit') Logg på

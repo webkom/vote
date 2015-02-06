@@ -4,7 +4,7 @@ var checkAuthOrRedirect = exports.checkAuthOrRedirect = function(req, res, next)
     if (req.isAuthenticated()) return next();
     // Store the original path so we can redirect there after login
     req.session.originalPath = req.path;
-    res.redirect('/login');
+    res.redirect('/auth/login');
 };
 
 exports.checkAdmin = function(req, res, next) {

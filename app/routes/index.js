@@ -20,10 +20,6 @@ router.get('/partials/*', checkAuthOrRedirect, function(req, res) {
     res.render('partials/' + req.params[0]);
 });
 
-router.get('/login', function(req, res) {
-    res.render('login', { csrfToken: req.csrfToken() });
-});
-
 router.use('/api', apiRoutes);
 router.use('/auth', authRoutes);
 

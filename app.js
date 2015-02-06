@@ -6,6 +6,7 @@ var session         = require('express-session');
 var MongoStore      = require('connect-mongo')(session);
 var passport        = require('passport');
 var csrf            = require('csurf');
+var flash           = require('connect-flash');
 var router          = require('./app/routes');
 var User            = require('./app/models/user');
 
@@ -25,6 +26,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(flash());
 
 app.use(session({
     cookie: { maxAge : 1000*3600*24*30*3 }, // Three months
