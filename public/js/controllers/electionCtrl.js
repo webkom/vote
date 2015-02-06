@@ -1,12 +1,13 @@
-angular.module('voteApp').controller('electionController', function($scope, apiService) {
+angular.module('voteApp').controller('electionController',
+['$scope', 'apiService', 'alertService', function($scope, apiService, alertService) {
 
     $scope.election = {};
 
-    apiService.getElection().then(function(response) {
-        var data = response.data;
-        $scope.id = data._id;
-        $scope.title = data.title;
-        $scope.description = data.description;
-        $scope.alternatives = data.alternatives;
-    });
-});
+    apiService.getElection()
+        .success(function(election) {
+            $scope.election = election;
+        })
+        .error(function(err) {
+            alertService.addError(err.message);
+        });
+}]);
