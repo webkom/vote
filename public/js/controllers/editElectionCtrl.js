@@ -14,7 +14,7 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
                 $scope.alternatives.push(data);
                 $scope.formFeedback = 'Alternativ lagret';
             })
-        .error(function(data, status) {
+            .error(function(data, status) {
                 $scope.formFeedback = 'Noe gikk galt med lagring av alternativ';
             });
     };
