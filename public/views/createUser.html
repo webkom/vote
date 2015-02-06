@@ -1,18 +1,30 @@
 <div class="row">
     <div class="col-xs-12 col-sm-offset-3 col-sm-6 col-md-offset-4 col-md-4 text-center">
-        <form class="form-group" ng-submit="createUser(user)">
-            <label>Kortnummer</label>
-            <input type="text" class="form-control" name="cardNr" placeholder="Skriv inn kortnummer" ng-model="user.cardNumber">
-            <label>Brukernavn</label>
-            <input type="text" class="form-control" name="username" placeholder="Skriv inn brukernavn" ng-model="user.username">
-            <label>Password</label>
-            <input type="password" class="form-control" name="password" placeholder="Skriv inn ønsket passord" ng-model="user.password">
-            <label>Password</label>
-            <input type="password" class="form-control" name="confirmPassword" placeholder="Bekreft passord" ng-model="user.confirmPassword">
+        <form class="form-group" ng-submit="createUser(user)" name="createUserForm">
+            <div class="form-group" ng-class="{'has-warning': createUserForm.cardNr.$invalid, 'has-success': createUserForm.cardNr.$valid}">
+                <label>Kortnummer</label>
+                <input type="text" class="form-control" name="cardNr" placeholder="Skriv inn kortnummer" ng-model="user.cardNumber" required="required">
+            </div>
+            <div class="form-group" ng-class="{'has-warning': createUserForm.username.$invalid, 'has-success': createUserForm.username.$valid}">
+                <label>Brukernavn</label>
+                <input type="text" class="form-control" name="username" placeholder="Skriv inn brukernavn" ng-model="user.username" ng-minlength=6>
+                <p ng-show="createUserForm.username.$invalid" class="text-danger">Brukernavn må være minst 6 tegn</p>
+            </div>
+            <div class="form-group" ng-class="{'has-warning': createUserForm.password.$invalid, 'has-success': createUserForm.password.$valid}">
+                <label>Password</label>
+                <input type="password" class="form-control" name="password" placeholder="Skriv inn ønsket passord" ng-model="user.password" ng-minlength=6>
+                <p ng-show="createUserForm.password.$invalid" class="text-danger">Brukernavn må være minst 6 tegn</p>
+            </div>
+            <div class="form-group" ng-class="{'has-warning': createUserForm.confirmPassword.$invalid, 'has-success': createUserForm.confirmPassword.$valid}">
+                <label>Bekreft password</label>
+                <input type="password" class="form-control" name="confirmPassword" placeholder="Bekreft passord" ng-model="user.confirmPassword" match-password="user.password">
+                <p ng-show="createUserForm.confirmPassword.$invalid" class="text-danger">Må være lik passordet</p>
+            </div>
             <br>
             <button type="submit" id="submit" class="btn" value="Submit" >Submit</button>
         </form>
+        <br>
+        <br>
+        <p>{{formFeedback}}</p>
     </div>
 </div>
-
-<p>{{formFeedback}}</p>

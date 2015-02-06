@@ -3,11 +3,13 @@ angular.module('voteApp').controller('loginController', function($scope, apiServ
     $scope.formFeedback = '';
 
     $scope.login = function() {
-        apiService.login($scope.username, $scope.password).then(function(response) {
-            if (response.data.user) {
-                apiService.setUser(response.data.user);
-            }
-            $scope.tagline = response.data;
-        });
+        apiService.login($scope.username, $scope.password)
+            .success(function(data) {
+                apiService.setUser(data);
+                $scope.formFeedback = 'Du er nå logget inn';
+            })
+            .error(function(data, status) {
+                $scope.formFeedback = 'Innlogging mislykkes';
+            });
     };
 });

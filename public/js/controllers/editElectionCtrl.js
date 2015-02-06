@@ -3,20 +3,20 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
     $scope.alternatives = [];
     $scope.formFeedback = '';
 
-    apiService.getElection().then(function(response) {
-        $scope.alternatives = response.data.alternatives;
-    });
+    apiService.getElection()
+        .success(function(data) {
+            $scope.alternatives = data.alternatives;
+        });
 
     $scope.addAlternative = function(alternative) {
-        if (alternative) {
-            apiService.addAlternative(alternative.title).then(function(response) {
-                console.log(response.data);
-                $scope.alternatives.push(response.data);
-
+        apiService.addAlternative(alternative.title)
+            .success(function(data) {
+                $scope.alternatives.push(data);
+                $scope.formFeedback = 'Alternativ lagret';
+            })
+            .error(function(data, status) {
+                $scope.formFeedback = 'Noe gikk galt med lagring av alternativ';
             });
-        } else {
-            $scope.formFeedback = 'Alternativfeltet kan ikke være tomt';
-        }
     };
 
 });
