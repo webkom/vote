@@ -89,9 +89,10 @@ describe('User API', function() {
                 if (err) return done(err);
                 var users = res.body;
                 users.length.should.equal(2);
-                users[0].username.should.exist();
-                users[0].active.should.exist();
-                users[0].admin.should.exist();
+
+                should.exist(users[0].username);
+                should.exist(users[0].active);
+                should.exist(users[0].admin);
                 should.not.exist(users[0].password);
                 done();
             });
