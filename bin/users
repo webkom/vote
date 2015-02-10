@@ -1,0 +1,38 @@
+#!/usr/bin/env node
+
+var program = require('commander');
+var mongoose = require('mongoose');
+var chalk = require('chalk');
+var promptly = require('promptly');
+var User = require('../app/models/user');
+
+function done(err, user) {
+    if (err) throw err;
+    console.log(chalk.green('Created user ' + user.username));
+    process.exit(0);
+}
+
+program
+    .version('1.0.0')
+    .command('create-admin <username>')
+    .description('create an admin user')
+    .action(function(username, password) {
+        var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/ads';
+
+        mongoose.connect(mongoURL, function(err) {
+            if (err) return done(err);
+
+            promptly.password('Enter a password: ', function(err, password) {
+                if (err) return done(err);
+                var user = new User({
+                    username: username,
+                    admin: true
+                });
+
+                User.register(user, password, done);
+            });
+
+        });
+    });
+
+program.parse(process.argv);
