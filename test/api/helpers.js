@@ -88,11 +88,13 @@ exports.testAdminResourceDelete = function(path, done) {
 
 exports.createUsers = function() {
     var testUser = {
-        username: 'testUser'
+        username: 'testUser',
+        cardkey: '99TESTCARDKEY'
     };
     var adminUser = {
         username: 'admin',
-        admin: true
+        admin: true,
+        cardkey: '55TESTCARDKEY'
     };
     var testPassword = 'password';
 

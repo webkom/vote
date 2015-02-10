@@ -6,6 +6,7 @@ var User = require('../../app/models/user');
 var helpers = require('./helpers');
 var testAdminResourceGet = helpers.testAdminResourceGet;
 var testAdminResourcePost = helpers.testAdminResourcePost;
+var testPost404 = helpers.testPost404;
 var createUsers = helpers.createUsers;
 var should = chai.should();
 
@@ -33,7 +34,8 @@ describe('User API', function() {
 
     var testUserData = {
         username: 'newUser',
-        password: 'password'
+        password: 'password',
+        cardkey: '00TESTCARDKEY'
     };
 
     it('should be possible to create users', function(done) {
@@ -98,8 +100,32 @@ describe('User API', function() {
             });
     });
 
+    it('should be able to toggle active users', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/user/' + this.user.cardkey + '/toggle_active')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var user = res.body;
+                user.active.should.equal(false, 'user should be inactive');
+                done();
+            });
+    });
+
     it('should not be possible to get users without being admin', function(done) {
         passportStub.login(this.user);
         testAdminResourceGet('/api/user', done);
+    });
+
+    it('should not be possible to toggle a user without being admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourcePost('/api/user/' + this.user.cardkey + '/toggle_active', done);
+    });
+
+    it('should get 404 when toggeling active users with invalid cardkey', function(done) {
+        passportStub.login(this.adminUser);
+        testPost404('/api/user/LELELENEET/toggle_active', 'user', done);
     });
 });

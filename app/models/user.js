@@ -18,6 +18,11 @@ var userSchema = new Schema({
     admin: {
         type: Boolean,
         default: false
+    },
+    cardkey: {
+        type: String,
+        required: true,
+        unique: true
     }
 });
 

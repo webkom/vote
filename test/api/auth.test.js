@@ -8,12 +8,14 @@ chai.should();
 describe('Auth API', function() {
     var testUser = {
         username: 'test',
-        password: 'test121312313'
+        password: 'test121312313',
+        cardkey: '99TESTCARDKEY'
     };
 
     var badTestUser = {
         username: 'test',
-        password: 'notthecorrectpw'
+        password: 'notthecorrectpw',
+        cardkey: '00TESTCARDKEY'
     };
 
     beforeEach(function() {
