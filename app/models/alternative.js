@@ -1,4 +1,3 @@
-var mongoose = require('mongoose');
 var Bluebird = require('bluebird');
 var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Election = require('./election');

@@ -30,6 +30,19 @@ describe('Election API', function() {
         description: 'inactive election 1'
     };
 
+    var electionWithAlternative = {
+        title: 'electionWithAlternative',
+        description: 'alternative election',
+        alternatives:[
+            {
+                description: 'election alternative 1'
+            },
+            {
+                description: 'election alternative 2'
+            }
+        ]
+    };
+
     var testAlternative = {
         description: 'test alternative'
     };
@@ -83,6 +96,25 @@ describe('Election API', function() {
                 res.body.title.should.equal(inactiveElectionData.title, 'db election title hash should be the same as api result');
                 res.body.description.should.equal(inactiveElectionData.description, 'db election description hash should be the same as api result');
                 res.body.active.should.equal(false, 'db election should not be active');
+                done();
+            });
+    });
+
+    it('should be able to create elections with alternatives', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/election')
+            .send(electionWithAlternative)
+            .expect(201)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.title.should.equal(electionWithAlternative.title, 'db election title hash should be the same as api result');
+                res.body.description.should.equal(electionWithAlternative.description, 'db election description hash should be the same as api result');
+                res.body.active.should.equal(false, 'db election should not be active');
+                res.body.alternatives.length.should.not.equal(0, 'db election should contain alternatives');
+                res.body.alternatives[0].description.should.equal(electionWithAlternative.alternatives[0].description, 'db election alternative should be correct');
+                res.body.alternatives[1].description.should.equal(electionWithAlternative.alternatives[1].description, 'db election alternative should be correct');
                 done();
             });
     });
