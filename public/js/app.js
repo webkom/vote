@@ -1,1 +1,1 @@
-angular.module('voteApp', ['ngRoute']);
+angular.module('voteApp', ['ngRoute', 'ui.bootstrap']);

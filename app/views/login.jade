@@ -1,0 +1,16 @@
+extends basic
+
+block content
+    .row
+        .col-xs-12.col-sm-4.col-sm-offset-4.col-md-2.col-md-offset-5.text-center
+            form(action='/auth/login', method='post', role='form')
+                input(type='hidden', name='_csrf', value=csrfToken)
+                .form-group
+                    label(for='username') Brukernavn:
+                    input(name='username', type='text', class='form-control')
+                .form-group
+                    label(for='password') Passord:
+                    input(name='password', type='password', class='form-control')
+                if feedback
+                    p= feedback
+                button(class='btn btn-danger', type='submit') Logg på

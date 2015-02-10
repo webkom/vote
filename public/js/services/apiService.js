@@ -1,4 +1,5 @@
-angular.module('voteApp').service('apiService', function($http, $routeParams) {
+angular.module('voteApp').service('apiService', ['$http', '$routeParams',
+function($http, $routeParams) {
 
     this.user = {
         loggedIn: false,
@@ -36,4 +37,4 @@ angular.module('voteApp').service('apiService', function($http, $routeParams) {
         return $http({ method: 'POST', data: {title: title, description: title}, url: '/api/election/' + $routeParams.param + '/alternatives' });
     };
 
-});
+}]);

@@ -1,5 +1,5 @@
 angular.module('voteApp').config(['$routeProvider', '$locationProvider',
-    function($routeProvider, $locationProvider) {
+function($routeProvider, $locationProvider) {
 
     $locationProvider.html5Mode(true);
 
@@ -7,42 +7,36 @@ angular.module('voteApp').config(['$routeProvider', '$locationProvider',
 
         // home page
         .when('/', {
-            templateUrl: 'views/home.html',
-            controller: 'mainController'
-        })
-
-        .when('/login', {
-            templateUrl: 'views/login.html',
-            controller: 'loginController'
+            redirectTo: '/election'
         })
 
         .when('/election', {
-            templateUrl: 'views/elections.html',
+            templateUrl: 'partials/elections',
             controller: 'electionsController'
         })
 
         .when('/election/:param', {
-            templateUrl: 'views/election.html',
+            templateUrl: 'partials/election',
             controller: 'electionController'
         })
 
-        .when('/create_user', {
-            templateUrl: 'views/createUser.html',
+        .when('/admin/create_user', {
+            templateUrl: 'partials/admin/createUser',
             controller: 'createUserController'
         })
 
-        .when('/create_election', {
-            templateUrl: 'views/createElection.html',
+        .when('/admin/create_election', {
+            templateUrl: 'partials/admin/createElection',
             controller: 'createElectionController'
         })
 
-        .when('/election/:param/edit', {
-            templateUrl: 'views/editElection.html',
+        .when('/admin/election/:param/edit', {
+            templateUrl: 'partials/admin/editElection',
             controller: 'editElectionController'
         })
 
         .otherwise({
-            templateUrl: 'views/home.html',
+            templateUrl: 'partials/404',
             controller: 'mainController'
         });
 }]);
