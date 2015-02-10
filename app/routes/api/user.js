@@ -8,4 +8,7 @@ router.route('/')
     .get(ensureAdmin, user.list)
     .post(ensureAdmin, user.create);
 
+router.route('/:cardkey/toggle_active')
+    .post(ensureAdmin, user.toggleActive);
+
 module.exports = router;

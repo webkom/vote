@@ -26,7 +26,8 @@ program
                 if (err) return done(err);
                 var user = new User({
                     username: username,
-                    admin: true
+                    admin: true,
+                    cardkey: 'ADMINCARDKEY'
                 });
 
                 User.register(user, password, done);
