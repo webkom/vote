@@ -1,11 +1,27 @@
 var mongoose = require('mongoose');
 var Election = require('../models/election');
+var Alternative = require('../models/alternative');
 var errors = require('../errors');
+var Bluebird = require('bluebird');
 
 exports.create = function(req, res) {
     return Election.createAsync({
         title: req.body.title,
         description: req.body.description
+    }).then(function(election) {
+        var alternatives = req.body.alternatives;
+        if (alternatives && alternatives.length) {
+            return Bluebird.map(alternatives, function(alternative) {
+                alternative.election = election;
+                return Alternative.createAsync(alternative);
+            }).then(function(alternatives) {
+                election.alternatives = alternatives;
+                return election.saveAsync();
+            });
+        }
+        return [election];
+    }).spread(function(election) {
+        return election.populateAsync('alternatives');
     }).then(function(election) {
         return res.status(201).json(election);
     }).catch(mongoose.Error.ValidationError, function(err) {
@@ -13,6 +29,7 @@ exports.create = function(req, res) {
     }).catch(function(err) {
         return errors.handleError(res, err);
     });
+
 };
 
 exports.list = function(req, res) {
