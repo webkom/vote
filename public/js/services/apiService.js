@@ -37,4 +37,20 @@ function($http, $routeParams) {
         return $http({ method: 'POST', data: {title: title, description: title}, url: '/api/election/' + $routeParams.param + '/alternatives' });
     };
 
+    this.activateElection = function() {
+        return $http({ method: 'POST', url: '/api/election/' + $routeParams.param + '/activate' });
+    };
+
+    this.deactivateElection = function() {
+        return $http({ method: 'POST', url: '/api/election/' + $routeParams.param + '/deactivate' });
+    };
+
+    this.activateUser = function(cardKey) {
+        return $http({ method: 'POST', url: '/api/user/' + cardKey + '/toggle_active' });
+    };
+
+    this.createUser = function(cardkey, username, password) {
+        return $http({ method: 'POST', data: {cardkey: cardkey, username: username, password: password}, url: '/api/user/' });
+    };
+
 }]);

@@ -20,9 +20,19 @@ function($routeProvider, $locationProvider) {
             controller: 'electionController'
         })
 
+        .when('/admin', {
+            templateUrl: 'partials/admin/elections',
+            controller: 'electionsController'
+        })
+
         .when('/admin/create_user', {
             templateUrl: 'partials/admin/createUser',
             controller: 'createUserController'
+        })
+
+        .when('/admin/activate_user', {
+            templateUrl: 'partials/admin/activateUser',
+            controller: 'activateUserController'
         })
 
         .when('/admin/create_election', {

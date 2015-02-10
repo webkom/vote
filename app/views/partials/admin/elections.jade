@@ -1,0 +1,4 @@
+.jumbotron
+    ul
+        li(ng-repeat='election in elections')
+            a(href='admin/election/{{election._id}}/edit') {{election.title}}
