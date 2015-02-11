@@ -12,6 +12,8 @@ MONGO_URL = mongodb://localhost:27017/ads-test
 TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
 
+all: node_modules public/main.css
+
 install: node_modules
 
 node_modules: package.json
@@ -23,13 +25,12 @@ jshint:
 jscs:
 	$(JSCS) app public/js test
 
-public/styles/main.css: node_modules $(STYL)
+public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
-	$(STYLUS) --compress --include node_modules/nib/lib < public/styles/main.styl > public/styles/main.css
+	$(STYLUS) --compress --include node_modules/nib/lib public/styles/main.styl -o public
 else
-	$(STYLUS) --sourcemap --include node_modules/nib/lib < public/styles/main.styl > public/styles/main.css
+	$(STYLUS) --sourcemap --include node_modules/nib/lib public/styles/main.styl -o public
 endif
-
 
 test: node_modules jshint jscs public/styles/main.css
 	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
@@ -47,6 +48,7 @@ else
 	@echo "Not in a production environment!"
 endif
 
+clean:
+	rm -f public/main.css
 
-.PHONY: server install test jshint jscs production
-
+.PHONY: server install test jshint jscs production all clean

@@ -28,9 +28,10 @@ node_modules
 .lock-wscript
 
 # Our stuff
+*.map
 .idea
 dist
 db
 public/libs
 
-public/styles/*.css
+public/*.css
