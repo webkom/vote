@@ -1,22 +1,43 @@
+@import 'nib'
+
+@import url('http://fonts.googleapis.com/css?family=Raleway:700,400,200,100')
+
+$font-gray = #666c77
+$alternative-background = darken($font-gray, 20%)
+$alternative-color = lighten($font-gray, 20%)
 $dark-gray = #333
 $red = #b11b11
 $white = #fdfdfd
 
 body
-  padding 70px 0 0 0
-  background $dark-gray
-  color $white
+    font-family 'Raleway', 'Lucida Grande'
+    font-weight 100
+    color $font-gray
+
+header
+    text-align center
+    font-size 60px
+    font-weight 100
+    padding-top 50px
+    margin-bottom 20px
+    border-bottom 2px solid #e0e0e0
+
+h2, h3
+    font-weight 200
+
+p
+    font-weight 100
+
+.container
+    width 100%
 
 .navbar
-  color $dark-gray
-  background $red
-  a
-    color white
-    &:hover,
-    &:active
-      color $dark-gray
+    background transparent
+    border none
+    min-height 25px
 
 label
-  color $white
-  font-weight 100
-  letter-spacing 0.1em
+    font-weight 400
+    letter-spacing 0.1em
+
+@import 'election'
