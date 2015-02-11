@@ -20,4 +20,7 @@ block scripts
     script(src='/js/appRoutes.js')
 
 block content
+    .center(ng-repeat='alert in alerts')
+        alert(type='{{alert.type}}', close='alert.close()') {{alert.message}}
+
     .container(ng-view='')

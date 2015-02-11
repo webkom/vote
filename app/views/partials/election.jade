@@ -1,4 +1,4 @@
-.election.text-center(ng-switch='!!activeElection._id')
+.center.text-center(ng-switch='!!activeElection')
     div(ng-switch-when='true')
         .election-info
             h2 {{activeElection.title}}
@@ -14,5 +14,5 @@
 
 
     div(ng-switch-default)
-        h2 Ingen aktive avstemninger
+        h2 {{voteFeedback || 'Ingen aktive avstemninger.'}}
 
