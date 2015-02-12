@@ -32,7 +32,7 @@ else
 	$(STYLUS) --sourcemap --include node_modules/nib/lib public/styles/main.styl -o public
 endif
 
-test: node_modules jshint jscs public/styles/main.css
+test: all jshint jscs
 	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
 	$(ISTANBUL) report cobertura
 
