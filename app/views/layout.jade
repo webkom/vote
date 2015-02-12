@@ -15,11 +15,17 @@ html(ng-app='voteApp')
 
     header
         .container
-            .row: .col-xs-12 vote
+            .row: .col-xs-12
+                span vote
+                img(src='/images/Abakule.jpg')
+
     body
         block content
 
+    footer
         .navbar.navbar-fixed-bottom: .container.text-center
             | Made by
-            a(href='http://webkom.abakus.no')  webkom  -
-            a(href='https://github.com/webkom/census')  Fork me on Github
+            a(href='http://webkom.abakus.no')  webkom
+            |  |
+            a.red(href='https://github.com/webkom/census')  Fork me on
+                span  GitHub

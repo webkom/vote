@@ -1,11 +1,13 @@
 @import 'nib'
 
-@import url('http://fonts.googleapis.com/css?family=Raleway:700,400,200,100')
+@import url('http://fonts.googleapis.com/css?family=Raleway:700,400,300,200,100')
 
 $font-gray = #666c77
 $alternative-background = darken($font-gray, 20%)
 $alternative-color = lighten($font-gray, 20%)
 $dark-gray = #333
+$abakus-light = #fc0405
+$abakus-dark = #bd0005
 $red = #b11b11
 $white = #fdfdfd
 
@@ -22,11 +24,33 @@ header
     margin-bottom 20px
     border-bottom 2px solid #e0e0e0
 
-h2, h3
+    img
+        margin-left 15px
+        width 35px
+
+footer
+    a
+        color $abakus-light
+
+        &:hover
+            color $abakus-dark
+
+    .red
+        a
+            color $font-gray
+
+        &:hover
+            color $abakus-dark
+
+a:hover
+    text-decoration none
+
+h2, h3, .btn
     font-weight 200
 
-p
-    font-weight 100
+.alert
+    margin 0 auto
+    max-width 90%
 
 .container
     width 100%

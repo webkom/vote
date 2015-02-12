@@ -16,7 +16,7 @@ angular.module('voteApp').directive('confirmVote', function() {
 
             scope.$watch('selectedAlternative', function(newValue) {
                 if (newValue) {
-                    scope.buttonText = 'Stem på ' + newValue.description;
+                    scope.buttonText = 'Avgi stemme';
                     clicked = false;
                 }
             });
