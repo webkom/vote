@@ -56,12 +56,10 @@ function($scope, apiService, alertService, voteService, localStorageService) {
     $scope.vote = function() {
         voteService.vote($scope.selectedAlternative._id)
             .success(function(result) {
-                console.log('stemte nå', result);
                 $scope.voteFeedback = 'Takk for din stemme.';
                 addVotedElection($scope.activeElection._id);
             })
             .error(function(error) {
-                console.log('hei', error);
                 switch (error.name) {
                     case 'InactiveElectionError':
                         alertService.addError('Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.');

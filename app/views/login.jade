@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    .row
+    .container: .row
         .col-xs-12.col-sm-4.col-sm-offset-4.col-md-2.col-md-offset-5.text-center
             form(action='/auth/login', method='post', role='form')
                 input(type='hidden', name='_csrf', value=csrfToken)

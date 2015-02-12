@@ -27,6 +27,14 @@
         background-color alpha($alternative-background, 0.4)
         transition all 0.5s
 
+        &:hover
+            cursor pointer
+            border 1px solid lighten($font-gray, 50%)
+            background-color alpha($alternative-background, 0.05)
+            p
+                color darken($alternative-color, 50%)
+                opacity 1
+
         &.selected
             background-color alpha($alternative-background, 0.1)
 
@@ -36,13 +44,6 @@
             transition all 0.3s
             vertical-align middle
 
-        &:hover
-            cursor pointer
-            border 1px solid lighten($font-gray, 50%)
-            background-color alpha($alternative-background, 0.05)
-            p
-                color darken($alternative-color, 50%)
-                opacity 1
 
 @media (max-width 1000px)
     .alternatives
