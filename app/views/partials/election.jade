@@ -1,6 +1,8 @@
 .jumbotron.text-center
-    h2 Title: {{title}}
+    h2 Title: {{election.title}}
     h3 Description:
-    p {{description}}
+    p {{election.description}}
     h3 Alternatives
-a(href='/admin/election/{{id}}/edit') Edit
+    div(ng-repeat='alternative in election.alternatives')
+        p {{alternative.description}}
+a(href='/admin/election/{{election.id}}/edit') Edit

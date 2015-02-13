@@ -1,14 +1,12 @@
-angular.module('voteApp').controller('createUserController', function($scope, apiService) {
-
-    $scope.formFeedback = '';
+angular.module('voteApp').controller('createUserController', function($scope, apiService, alertService) {
 
     $scope.createUser = function(user) {
         apiService.createUser(user.cardkey, user.username, user.password)
             .success(function(data) {
-                $scope.formFeedback = 'Bruker registrert!';
+                alertService.addSuccess('Bruker registrert!');
             })
             .error(function(data) {
-                $scope.formFeedback = 'Ops, noe gikk galt';
+                alertService.addError();
             });
 
     };

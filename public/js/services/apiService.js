@@ -22,11 +22,7 @@ function($http, $routeParams) {
     };
 
     this.getElection = function() {
-        return $http({ method: 'GET', url: '/api/election/' + $routeParams.param }).
-            success(function(data, status, headers, config) {
-            }).
-            error(function(data, status, headers, config) {
-            });
+        return $http({ method: 'GET', url: '/api/election/' + $routeParams.param });
     };
 
     this.login = function(username, password) {

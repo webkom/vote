@@ -1,18 +1,17 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-        h2 Tittel: {{title}}
-        p Beskrivelse: {{description}}
+        h2 Tittel: {{election.title}}
+        p Beskrivelse: {{election.description}}
         p Alternativ:
-        div(ng-repeat='alternative in alternatives')
+        div(ng-repeat='alternative in election.alternatives')
             p {{alternative.description}}
         form.form-group(ng-submit='addAlternative(alternative)')
             label Legg til alternativ
             input.form-control(type='text', name='alternative', placeholder='Skriv inn alternativ', ng-model='alternative.title')
             br
             button#submit.btn(type='submit', value='Submit') Submit
-        button#submit.btn(ng-click='activateElection()', ng-show='!activated')
+        button#submit.btn(ng-click='activateElection()', ng-show='!election.activated')
             | Aktiver avstemning
-        button#submit.btn(ng-click='deactivateElection()', ng-show='activated')
+        button#submit.btn(ng-click='deactivateElection()', ng-show='election.activated')
             | Deaktiver avstemning
 
-p {{formFeedback}}
