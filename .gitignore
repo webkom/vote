@@ -33,6 +33,5 @@ node_modules
 dist
 db
 public/libs
-public/js/ads.admin.min.js
 public/js/ads.min.js
 public/*.css
