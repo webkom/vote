@@ -42,40 +42,9 @@ public/js/ads.min.js: $(FRONTEND_FILES)
 		public/libs/angular-bootstrap/ui-bootstrap-tpls.min.js \
 		public/libs/angular-local-storage/dist/angular-local-storage.min.js \
 		public/js/app.js \
-		public/js/services/apiService.js \
-		public/js/services/alertService.js \
-		public/js/services/voteService.js \
-		public/js/controllers/mainCtrl.js \
-		public/js/controllers/electionCtrl.js \
-		public/js/controllers/electionsCtrl.js \
-		public/js/controllers/loginCtrl.js \
-		public/js/controllers/createUserCtrl.js \
-		public/js/controllers/createElectionCtrl.js \
-		public/js/controllers/editElectionCtrl.js \
-		public/js/directives/passwordDirective.js \
-		public/js/directives/confirmVoteDirective.js \
-		public/js/appRoutes.js \
-	-o $@
-
-
-public/js/ads.admin.min.js: $(FRONTEND_FILES)
-	$(UGLIFY) \
-	 	public/libs/angular/angular.min.js \
-		public/libs/angular-route/angular-route.min.js \
-		public/libs/angular-bootstrap/ui-bootstrap-tpls.min.js \
-		public/libs/angular-local-storage/dist/angular-local-storage.min.js \
-		public/js/app.js \
-		public/js/services/apiService.js \
-		public/js/services/alertService.js \
-		public/js/controllers/mainCtrl.js \
-		public/js/controllers/electionCtrl.js \
-		public/js/controllers/electionsCtrl.js \
-		public/js/controllers/loginCtrl.js \
-		public/js/controllers/createUserCtrl.js \
-		public/js/controllers/createElectionCtrl.js \
-		public/js/controllers/editElectionCtrl.js \
-		public/js/controllers/activateUserController.js \
-		public/js/directives/passwordDirective.js \
+		public/js/services/*.js \
+		public/js/controllers/*.js \
+		public/js/directives/*.js \
 		public/js/appRoutes.js \
 	-o $@
 
