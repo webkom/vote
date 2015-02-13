@@ -1,21 +1,11 @@
-doctype html
-html(lang='en', ng-app='voteApp')
-    head
-        meta(charset='UTF-8')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        meta(charset='utf-8')
-        meta(http-equiv='X-UA-Compatible', content='IE=edge')
-        base(href='/')
-        title Abavote
+extends layout
 
-        // CSS
-        link(rel='stylesheet', href='libs/bootstrap/dist/css/bootstrap.min.css')
-        link(rel='stylesheet', href='styles/main.css')
-
+block scripts
         // JS
         script(src='/libs/angular/angular.min.js')
         script(src='/libs/angular-route/angular-route.min.js')
         script(src='/libs/angular-bootstrap/ui-bootstrap-tpls.min.js')
+        script(src='/libs/angular-local-storage/dist/angular-local-storage.min.js')
 
         // ANGULAR CUSTOM
         script(src='/js/app.js')
@@ -32,15 +22,17 @@ html(lang='en', ng-app='voteApp')
         script(src='/js/directives/passwordDirective.js')
         script(src='/js/appRoutes.js')
 
-    body(ng-controller='mainController')
-        nav.navbar.navbar-fixed-top
-            ul.nav.navbar-nav
-                li
-                    a(href='/admin') Avstemninger
-                li
-                    a(href='/admin/create_user') Registrer bruker
-                li
-                    a(href='/admin/activate_user') Aktiver bruker
-                li
-                    a(href='/admin/create_election') Lag avstemning
-        .container(ng-view='')
+block navbar
+    nav
+        ul.list-unstyled
+            li
+                a(href='/admin') Avstemninger
+            li
+                a(href='/admin/create_user') Registrer bruker
+            li
+                a(href='/admin/activate_user') Aktiver bruker
+            li
+                a(href='/admin/create_election') Lag avstemning
+
+block content
+    .container(ng-view='')

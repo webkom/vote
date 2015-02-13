@@ -157,6 +157,7 @@ describe('Vote API', function() {
                         if (err) return done(err);
 
                         var error = res.body;
+                        error.name.should.equal('AlreadyVotedError');
                         error.message.should.equal('You can only vote once per election.');
                         error.status.should.equal(400);
 
@@ -221,6 +222,7 @@ describe('Vote API', function() {
                 if (err) return done(err);
 
                 var error = res.body;
+                error.name.should.equal('InactiveElectionError');
                 error.message.should.equal('Can\'t vote on an inactive election.');
                 error.status.should.equal(400);
 

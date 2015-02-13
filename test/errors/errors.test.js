@@ -27,10 +27,10 @@ describe('handleError', function() {
     });
 
     it('should use a provided status code', function() {
-        var testError = new errors.VoteError();
+        var testError = new errors.LoginError();
         errors.handleError(res, testError, 417);
         stub.should.have.been.calledWith({
-            name: 'VoteError',
+            name: 'LoginError',
             status: 417,
             message: testError.message
         });

@@ -35,12 +35,12 @@ alternativeSchema.methods.addVote = function(user) {
 
     return Election.findByIdAsync(this.election).bind(this)
         .then(function(election) {
-            if (!election.active) throw new errors.VoteError('Can\'t vote on an inactive election.');
+            if (!election.active) throw new errors.InactiveElectionError();
 
             var voteHash = createHash(user.username, this.election);
             return Vote.findAsync({ alternative: this.id, hash: voteHash }).bind(this)
             .then(function(votes) {
-                if (votes.length) throw new errors.VoteError('You can only vote once per election.');
+                if (votes.length) throw new errors.AlreadyVotedError();
                 var vote = new Vote({ hash: voteHash, alternative: this.id });
                 return vote.saveAsync();
             });

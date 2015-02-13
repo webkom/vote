@@ -1,28 +1,35 @@
+var util = require('util');
+
 function InactiveUserError(username) {
     this.name = 'InactiveUserError';
     this.message = 'Can\'t vote with an inactive user: ' + username;
     this.statusCode = 403;
 }
-InactiveUserError.prototype = Object.create(Error.prototype);
-InactiveUserError.prototype.constructor = InactiveUserError;
+util.inherits(InactiveUserError, Error);
 exports.InactiveUserError = InactiveUserError;
 
-function VoteError(message) {
-    this.name = 'VoteError';
-    this.message = message || 'Error during voting process.';
+function AlreadyVotedError() {
+    this.name = 'AlreadyVotedError';
+    this.message = 'You can only vote once per election.';
     this.statusCode = 400;
 }
-VoteError.prototype = Object.create(Error.prototype);
-VoteError.prototype.constructor = VoteError;
-exports.VoteError = VoteError;
+util.inherits(AlreadyVotedError, Error);
+exports.AlreadyVotedError = AlreadyVotedError;
+
+function InactiveElectionError() {
+    this.name = 'InactiveElectionError';
+    this.message = 'Can\'t vote on an inactive election.';
+    this.statusCode = 400;
+}
+util.inherits(InactiveElectionError, Error);
+exports.InactiveElectionError = InactiveElectionError;
 
 function LoginError() {
     this.name = 'LoginError';
     this.message = 'You need to be logged in to access this resource.';
     this.statusCode = 401;
 }
-LoginError.prototype = Object.create(Error.prototype);
-LoginError.prototype.constructor = LoginError;
+util.inherits(LoginError, Error);
 exports.LoginError = LoginError;
 
 function PermissionError() {
@@ -30,8 +37,7 @@ function PermissionError() {
     this.message = 'You need to be an admin to access this resource.';
     this.statusCode = 403;
 }
-PermissionError.prototype = Object.create(Error.prototype);
-PermissionError.prototype.constructor = PermissionError;
+util.inherits(PermissionError, Error);
 exports.PermissionError = PermissionError;
 
 function InvalidPayloadError(property) {
@@ -39,8 +45,7 @@ function InvalidPayloadError(property) {
     this.message = 'Missing property ' + property + ' from payload.';
     this.statusCode = 400;
 }
-InvalidPayloadError.prototype = Object.create(Error.prototype);
-InvalidPayloadError.prototype.constructor = InvalidPayloadError;
+util.inherits(InvalidPayloadError, Error);
 exports.InvalidPayloadError = InvalidPayloadError;
 
 function MissingHeaderError(header) {
@@ -48,8 +53,7 @@ function MissingHeaderError(header) {
     this.message = 'Missing header ' + header + '.';
     this.statusCode = 400;
 }
-MissingHeaderError.prototype = Object.create(Error.prototype);
-MissingHeaderError.prototype.constructor = MissingHeaderError;
+util.inherits(MissingHeaderError, Error);
 exports.MissingHeaderError = MissingHeaderError;
 
 function NotFoundError(type) {
@@ -57,8 +61,7 @@ function NotFoundError(type) {
     this.message = 'Couldn\'t find ' + type + '.';
     this.statusCode = 404;
 }
-NotFoundError.prototype = Object.create(Error.prototype);
-NotFoundError.prototype.constructor = NotFoundError;
+util.inherits(NotFoundError, Error);
 exports.NotFoundError = NotFoundError;
 
 function DeleteError(message) {
@@ -66,8 +69,7 @@ function DeleteError(message) {
     this.message = message || 'Cannot delete resource.';
     this.statusCode = 400;
 }
-DeleteError.prototype = Object.create(Error.prototype);
-DeleteError.prototype.constructor = DeleteError;
+util.inherits(DeleteError, Error);
 exports.DeleteError = DeleteError;
 
 function ValidationError(errors) {
@@ -82,8 +84,7 @@ function ValidationError(errors) {
         errors: this.errors
     };
 }
-ValidationError.prototype = Object.create(Error.prototype);
-ValidationError.prototype.constructor = ValidationError;
+util.inherits(ValidationError, Error);
 exports.ValidationError = ValidationError;
 
 function InvalidRegistrationError(message) {
@@ -91,8 +92,7 @@ function InvalidRegistrationError(message) {
     this.message = message;
     this.statusCode = 400;
 }
-InvalidRegistrationError.prototype = Object.create(Error.prototype);
-InvalidRegistrationError.prototype.constructor = InvalidRegistrationError;
+util.inherits(InvalidRegistrationError, Error);
 exports.InvalidRegistrationError = InvalidRegistrationError;
 
 exports.handleError = function(res, err, statusCode) {

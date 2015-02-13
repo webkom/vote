@@ -1,8 +1,20 @@
-.jumbotron.text-center
-    h2 Title: {{election.title}}
-    h3 Description:
-    p {{election.description}}
-    h3 Alternatives
-    div(ng-repeat='alternative in election.alternatives')
-        p {{alternative.description}}
-a(href='/admin/election/{{election.id}}/edit') Edit
+.center.text-center(ng-switch='!!activeElection')
+    div(ng-switch-when='true')
+        .election-info
+            h2 {{activeElection.title}}
+            p {{activeElection.description}}
+
+        .alternatives
+            h3 Alternativer
+            ul.list-unstyled
+                li(ng-repeat='alternative in activeElection.alternatives',
+                  ng-click='selectAlternative(alternative)',
+                  ng-class='{"selected": isChosen(alternative)}')
+                    p {{alternative.description}}
+
+            confirm-vote(vote-handler='vote()', selected-alternative='selectedAlternative')
+
+
+    div(ng-switch-default)
+        h2 {{voteFeedback || 'Ingen aktive avstemninger.'}}
+

@@ -40,11 +40,12 @@ app.use(session({
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
-    app.use(csrf({
-        cookie: {
-            key: 'XSRF-TOKEN'
-        }
-    }));
+    app.use(csrf());
+
+    app.use(function(req, res, next) {
+        res.cookie('XSRF-TOKEN', req.csrfToken());
+        next();
+    });
 
     app.use(function(err, req, res, next) {
         if (err.code !== 'EBADCSRFTOKEN') return next(err);

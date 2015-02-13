@@ -1,0 +1,31 @@
+doctype html
+html(ng-app='voteApp')
+    head
+        title Abavote
+        base(href='/')
+        meta(charset='utf-8')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        meta(http-equiv='X-UA-Compatible', content='IE=edge')
+        meta(name='description', content='')
+        meta(name='viewport', content='width=device-width, initial-scale=1')
+        link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet')
+        link(href='//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', rel='stylesheet')
+        link(rel='stylesheet', href='/main.css')
+        block scripts
+
+    header
+        .container
+            .row.header: .col-xs-12
+                img(src='/images/Abakule.jpg')
+                span vote
+
+            .row: block navbar
+    body
+        block content
+
+    footer
+        .container.text-center
+            | Made by
+            a(href='http://webkom.abakus.no')  webkom
+            |  | Follow us on
+            a.red(href='https://github.com/webkom/census')  GitHub

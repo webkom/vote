@@ -1,6 +1,5 @@
 angular.module('voteApp').config(['$routeProvider', '$locationProvider',
 function($routeProvider, $locationProvider) {
-
     $locationProvider.html5Mode(true);
 
     $routeProvider
@@ -11,8 +10,8 @@ function($routeProvider, $locationProvider) {
         })
 
         .when('/election', {
-            templateUrl: 'partials/elections',
-            controller: 'electionsController'
+            templateUrl: 'partials/election',
+            controller: 'electionController'
         })
 
         .when('/election/:param', {

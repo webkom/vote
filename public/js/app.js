@@ -1,1 +1,1 @@
-angular.module('voteApp', ['ngRoute', 'ui.bootstrap']);
+angular.module('voteApp', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
