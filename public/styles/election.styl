@@ -5,6 +5,7 @@
         text-transform uppercase
 
 .alternatives
+    margin-bottom 30px
     border-top 1px solid rgba(177, 181, 188, 0.3)
     padding-top 40px
 
@@ -29,13 +30,14 @@
             color $abakus-dark
 
     ul li
+        margin-bottom 10px
         line-height 60px
         border-radius 2px
         border 1px solid transparent
-        background-color alpha($alternative-background, 0.4)
+        background-color alpha($alternative-background, 0.1)
         transition all 0.5s
 
-        &.selected:hover, &:hover
+        &:hover
             cursor pointer
             border 1px solid rgba(236,236,236,0.3)
             background-color alpha($alternative-background, 0.05)
@@ -45,7 +47,7 @@
                 opacity 1
 
         &.selected
-            background-color alpha($alternative-background, 0.1)
+            background-color alpha($alternative-background, 0.2)
 
         p
             text-transform uppercase

@@ -11,9 +11,14 @@ $abakus-dark = #bd0005
 $red = #b11b11
 $white = #fdfdfd
 
+html
+    min-height 100%
+    position relative
+
 body
     font-family 'Raleway', 'Lucida Grande'
     font-weight 100
+    margin-bottom 30px
     color $font-gray
 
 header
@@ -48,25 +53,28 @@ header
     padding-top 50px
 
     img
-        margin-left 15px
+        margin-right 15px
         width 35px
 
 footer
+    position absolute
+    height 30px
+    width 100%
+    margin 0 auto
+    bottom 0
+
     a
         color $abakus-light
 
         &:hover
             color $abakus-dark
 
-    .red
-        a
-            color $font-gray
+a
+    color $abakus-light
 
-        &:hover
-            color $abakus-dark
-
-a:hover
-    text-decoration none
+    &:hover
+        color $abakus-dark
+        text-decoration none
 
 h2, h3, .btn
     font-weight 200

@@ -6,8 +6,10 @@
 
         .alternatives
             h3 Alternativer
-            ul.list-unstyled(ng-repeat='alternative in activeElection.alternatives')
-                li(ng-click='selectAlternative(alternative)', ng-class='{"selected": isChosen(alternative)}')
+            ul.list-unstyled
+                li(ng-repeat='alternative in activeElection.alternatives',
+                  ng-click='selectAlternative(alternative)',
+                  ng-class='{"selected": isChosen(alternative)}')
                     p {{alternative.description}}
 
             confirm-vote(vote-handler='vote()', selected-alternative='selectedAlternative')
