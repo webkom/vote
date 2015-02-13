@@ -6,7 +6,6 @@ html(lang='en', ng-app='voteApp')
         meta(charset='utf-8')
         meta(http-equiv='X-UA-Compatible', content='IE=edge')
         base(href='/')
-
         title Abavote
 
         // CSS
@@ -34,5 +33,14 @@ html(lang='en', ng-app='voteApp')
         script(src='/js/appRoutes.js')
 
     body(ng-controller='mainController')
-
+        nav.navbar.navbar-fixed-top
+            ul.nav.navbar-nav
+                li
+                    a(href='/admin') Avstemninger
+                li
+                    a(href='/admin/create_user') Registrer bruker
+                li
+                    a(href='/admin/activate_user') Aktiver bruker
+                li
+                    a(href='/admin/create_election') Lag avstemning
         .container(ng-view='')

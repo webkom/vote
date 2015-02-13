@@ -22,11 +22,7 @@ function($http, $routeParams) {
     };
 
     this.getElection = function() {
-        return $http({ method: 'GET', url: '/api/election/' + $routeParams.param }).
-            success(function(data, status, headers, config) {
-            }).
-            error(function(data, status, headers, config) {
-            });
+        return $http({ method: 'GET', url: '/api/election/' + $routeParams.param });
     };
 
     this.login = function(username, password) {
@@ -35,6 +31,22 @@ function($http, $routeParams) {
 
     this.addAlternative = function(title) {
         return $http({ method: 'POST', data: {title: title, description: title}, url: '/api/election/' + $routeParams.param + '/alternatives' });
+    };
+
+    this.activateElection = function() {
+        return $http({ method: 'POST', url: '/api/election/' + $routeParams.param + '/activate' });
+    };
+
+    this.deactivateElection = function() {
+        return $http({ method: 'POST', url: '/api/election/' + $routeParams.param + '/deactivate' });
+    };
+
+    this.activateUser = function(cardKey) {
+        return $http({ method: 'POST', url: '/api/user/' + cardKey + '/toggle_active' });
+    };
+
+    this.createUser = function(cardkey, username, password) {
+        return $http({ method: 'POST', data: {cardkey: cardkey, username: username, password: password}, url: '/api/user/' });
     };
 
 }]);

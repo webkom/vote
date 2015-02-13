@@ -10,7 +10,7 @@ var router = express.Router();
 
 // Make sure all admin routes are secure
 router.get('/admin*', checkAdmin, function(req, res) {
-    res.render('index');
+    res.render('adminIndex');
 });
 
 // Extra check in case someone tries to request an admin partial directly

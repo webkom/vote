@@ -1,7 +1,7 @@
 angular.module('voteApp').controller('electionController',
 ['$scope', 'apiService', 'alertService', function($scope, apiService, alertService) {
 
-    $scope.election = {};
+    $scope.election = null;
 
     apiService.getElection()
         .success(function(election) {

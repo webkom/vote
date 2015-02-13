@@ -1,14 +1,12 @@
-angular.module('voteApp').controller('createElectionController', function($scope, apiService) {
-
-    $scope.formFeedback = '';
+angular.module('voteApp').controller('createElectionController', function($scope, apiService, alertService) {
 
     $scope.createElection = function(election) {
         apiService.createElection(election.title, election.description)
             .success(function(data) {
-                $scope.formFeedback = 'Avstemning lagret';
+                alertService.addSuccess('Avstemning lagret');
             })
             .error(function(data) {
-                $scope.formFeedback = 'Noe gikk galt ved lagring av avstemning';
+                alertService.addError();
             });
     };
 });
