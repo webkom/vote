@@ -12,7 +12,7 @@ CORRECT = abakus.no
 MONGO_URL = mongodb://localhost:27017/ads-test
 TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
-FRONTEND_FILES = $(shell find public -name "*.js")
+FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
 BACKEND_FILES = $(shell find app -name "*.js")
 
 all: node_modules public/main.css
