@@ -3,13 +3,16 @@
         h2 Tittel: {{election.title}}
         p Beskrivelse: {{election.description}}
         p Alternativ:
+
         div(ng-repeat='alternative in election.alternatives')
             p {{alternative.description}}
+
         form.form-group(ng-submit='addAlternative(alternative)')
             label Legg til alternativ
             input.form-control(type='text', name='alternative', placeholder='Skriv inn alternativ', ng-model='alternative.title')
-            br
+
             button#submit.btn(type='submit', value='Submit') Submit
+
         button#submit.btn.btn-default.btn-lg(ng-click='activateElection()', ng-show='!election.activated')
             | Aktiver avstemning
         button#submit.btn.btn-default.btn-lg(ng-click='deactivateElection()', ng-show='election.activated')

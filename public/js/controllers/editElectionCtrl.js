@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('editElectionController', function($scope, apiService, alertService) {
 
-    $scope.election = false;
+    $scope.election = null;
 
     apiService.getElection()
         .success(function(data) {
@@ -13,8 +13,8 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
                 $scope.election.alternatives.push(data);
                 alertService.addSuccess('Alternativ lagret');
             })
-            .error(function(data, status) {
-                alertService.addError('Noe gikk galt med lagring av alternativ');
+            .error(function(error) {
+                alertService.addError(error.message);
             });
     };
 
@@ -24,8 +24,8 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
                 alertService.addSuccess('Avstemning er aktivert');
                 $scope.election.activated = true;
             })
-            .error(function(data) {
-                alertService.addError();
+            .error(function(error) {
+                alertService.addError(error.message);
             });
     };
 
@@ -35,8 +35,8 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
                 alertService.addSuccess('Avstemning er deaktivert');
                 $scope.election.activated = false;
             })
-            .error(function(data) {
-                alertService.addError();
+            .error(function(error) {
+                alertService.addError(error.message);
             });
     };
 

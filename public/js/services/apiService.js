@@ -17,16 +17,12 @@ function($http, $routeParams) {
         return $http({ method: 'GET', url: '/api/election' });
     };
 
-    this.createElection = function(title, description) {
-        return $http({ method: 'POST', data: {title: title, description: description}, url: '/api/election/' });
+    this.createElection = function(election) {
+        return $http({ method: 'POST', data: election, url: '/api/election/' });
     };
 
     this.getElection = function() {
         return $http({ method: 'GET', url: '/api/election/' + $routeParams.param });
-    };
-
-    this.login = function(username, password) {
-        return $http({ method: 'POST', data: {username: username, password: password}, url: '/auth/login' });
     };
 
     this.addAlternative = function(title) {

@@ -4,7 +4,7 @@
             .form-group(ng-class="{'has-warning': activateUserForm.cardKey.$invalid, 'has-success': createUserForm.cardKey.$valid}")
                 label Kortnummer
                 input.form-control(type='text', name='cardNr', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
-            br
+
             button#submit.btn.btn-default.btn-lg(type='submit',
                 value='Submit',
                 ng-disabled='activateUserForm.$invalid') Submit
