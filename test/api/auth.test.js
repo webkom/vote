@@ -9,13 +9,13 @@ describe('Auth API', function() {
     var testUser = {
         username: 'test',
         password: 'test121312313',
-        cardkey: '99TESTCARDKEY'
+        cardKey: '99TESTCARDKEY'
     };
 
     var badTestUser = {
         username: 'test',
         password: 'notthecorrectpw',
-        cardkey: '00TESTCARDKEY'
+        cardKey: '00TESTCARDKEY'
     };
 
     beforeEach(function() {

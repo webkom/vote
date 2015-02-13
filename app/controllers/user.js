@@ -29,7 +29,7 @@ exports.create = function(req, res) {
 };
 
 exports.toggleActive = function(req, res) {
-    User.findOneAsync({cardkey: req.params.cardkey})
+    User.findOneAsync({cardKey: req.params.cardKey})
         .then(function(user) {
             if (!user) {
                 throw new errors.NotFoundError('user');

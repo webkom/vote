@@ -45,8 +45,8 @@ function($http, $routeParams) {
         return $http({ method: 'POST', url: '/api/user/' + cardKey + '/toggle_active' });
     };
 
-    this.createUser = function(cardkey, username, password) {
-        return $http({ method: 'POST', data: {cardkey: cardkey, username: username, password: password}, url: '/api/user/' });
+    this.createUser = function(cardKey, username, password) {
+        return $http({ method: 'POST', data: {cardKey: cardKey, username: username, password: password}, url: '/api/user/' });
     };
 
 }]);

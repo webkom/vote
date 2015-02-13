@@ -1,9 +1,9 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
         form.form-group(ng-submit='createUser(user)', name='createUserForm')
-            .form-group(ng-class="{'has-warning': createUserForm.cardkey.$invalid, 'has-success': createUserForm.cardKey.$valid}")
+            .form-group(ng-class="{'has-warning': createUserForm.cardKey.$invalid, 'has-success': createUserForm.cardKey.$valid}")
                 label Kortnummer
-                input.form-control(type='text', name='cardkey', placeholder='Skriv inn kortnummer', ng-model='user.cardkey', required='required', disabled)
+                input.form-control(type='text', name='cardKey', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
             .form-group(ng-class="{'has-warning': createUserForm.username.$invalid, 'has-success': createUserForm.username.$valid}")
                 label Brukernavn
                 input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn', ng-model='user.username', ng-minlength='6')

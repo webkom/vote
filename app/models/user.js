@@ -19,7 +19,7 @@ var userSchema = new Schema({
         type: Boolean,
         default: false
     },
-    cardkey: {
+    cardKey: {
         type: String,
         required: true,
         unique: true

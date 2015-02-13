@@ -27,7 +27,7 @@ program
                 var user = new User({
                     username: username,
                     admin: true,
-                    cardkey: 'ADMINCARDKEY'
+                    cardKey: 'ADMINCARDKEY'
                 });
 
                 User.register(user, password, done);

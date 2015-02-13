@@ -35,7 +35,7 @@ describe('User API', function() {
     var testUserData = {
         username: 'newUser',
         password: 'password',
-        cardkey: '00TESTCARDKEY'
+        cardKey: '00TESTCARDKEY'
     };
 
     it('should be possible to create users', function(done) {
@@ -103,7 +103,7 @@ describe('User API', function() {
     it('should be able to toggle active users', function(done) {
         passportStub.login(this.adminUser);
         request(app)
-            .post('/api/user/' + this.user.cardkey + '/toggle_active')
+            .post('/api/user/' + this.user.cardKey + '/toggle_active')
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -121,10 +121,10 @@ describe('User API', function() {
 
     it('should not be possible to toggle a user without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/user/' + this.user.cardkey + '/toggle_active', done);
+        testAdminResourcePost('/api/user/' + this.user.cardKey + '/toggle_active', done);
     });
 
-    it('should get 404 when toggeling active users with invalid cardkey', function(done) {
+    it('should get 404 when toggeling active users with invalid cardKey', function(done) {
         passportStub.login(this.adminUser);
         testPost404('/api/user/LELELENEET/toggle_active', 'user', done);
     });
