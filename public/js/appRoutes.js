@@ -45,7 +45,6 @@ function($routeProvider, $locationProvider) {
         })
 
         .otherwise({
-            templateUrl: 'partials/404',
-            controller: 'mainController'
+            templateUrl: 'partials/404'
         });
 }]);

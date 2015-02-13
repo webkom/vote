@@ -13,10 +13,8 @@ block scripts
         script(src='/js/services/apiService.js')
         script(src='/js/services/alertService.js')
         script(src='/js/services/voteService.js')
-        script(src='/js/controllers/mainCtrl.js')
         script(src='/js/controllers/electionCtrl.js')
         script(src='/js/controllers/electionsCtrl.js')
-        script(src='/js/controllers/loginCtrl.js')
         script(src='/js/controllers/createUserCtrl.js')
         script(src='/js/controllers/createElectionCtrl.js')
         script(src='/js/controllers/editElectionCtrl.js')
@@ -25,7 +23,4 @@ block scripts
         script(src='/js/appRoutes.js')
 
 block content
-    .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
-        alert(type='{{alert.type}}', close='alert.close()') {{alert.message}}
-
     .container(ng-view='')
