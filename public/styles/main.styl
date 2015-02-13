@@ -17,12 +17,35 @@ body
     color $font-gray
 
 header
+    width 100%
+    border-bottom 2px solid #e0e0e0
+    margin-bottom 20px
+
+    nav ul
+        padding-top 10px
+        padding-bottom 20px
+        text-align center
+        width 50%
+        margin 0 auto
+
+        li
+            padding-right 20px
+            display inline
+
+            a
+                color $font-gray
+
+                &:hover
+                    color $abakus-light
+
+                &:focus
+                    text-decoration none
+
+.header
     text-align center
     font-size 60px
     font-weight 100
     padding-top 50px
-    margin-bottom 20px
-    border-bottom 2px solid #e0e0e0
 
     img
         margin-left 15px
@@ -60,13 +83,8 @@ h2, h3, .btn
     margin 0 auto
     font-size 21px
 
-.navbar
-    background transparent
-    border none
-    min-height 25px
-
 label
-    font-weight 400
+    font-weight 200
     letter-spacing 0.1em
 
 .fade

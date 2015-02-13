@@ -17,4 +17,6 @@
                 input.form-control(type='password', name='confirmPassword', placeholder='Bekreft passord', ng-model='user.confirmPassword', match-password='user.password')
                 p.text-danger(ng-show='createUserForm.confirmPassword.$invalid') Må være lik passordet
             br
-            button#submit.btn(type='submit', value='Submit') Submit
+            button#submit.btn.btn-default.btn-lg(type='submit',
+                value='Submit',
+                ng-disabled='createUserForm.$invalid') Submit

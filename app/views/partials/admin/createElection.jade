@@ -3,8 +3,17 @@
         form.form-group(ng-submit='createElection(election)', name='createElectionForm')
             .form-group(ng-class="{'has-warning': createElectionForm.title.$invalid, 'has-success': createElectionForm.title.$valid}")
                 label Tittel
-                input.form-control(type='text', name='title', placeholder='Skriv inn tittel', ng-model='election.title', required='required')
+                input.form-control(type='text',
+                    name='title',
+                    placeholder='Skriv inn tittel',
+                    ng-model='election.title',
+                    required='required')
             label Beskrivelse
-            input.form-control(type='text', name='beskrivelse', placeholder='Skriv inn beskrivelse', ng-model='election.description')
+            input.form-control(type='text',
+                name='beskrivelse',
+            placeholder='Skriv inn beskrivelse',
+            ng-model='election.description')
             br
-            button#submit.btn(type='submit', value='Submit') Submit
+            button#submit.btn.btn-default.btn-lg(type='submit',
+                value='Submit',
+                ng-disabled='createElectionForm.$invalid') Submit

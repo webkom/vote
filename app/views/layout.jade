@@ -15,10 +15,11 @@ html(ng-app='voteApp')
 
     header
         .container
-            .row: .col-xs-12
+            .row.header: .col-xs-12
                 span vote
                 img(src='/images/Abakule.jpg')
 
+            .row: block navbar
     body
         block content
 
