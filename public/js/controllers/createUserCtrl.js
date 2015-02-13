@@ -1,5 +1,7 @@
 angular.module('voteApp').controller('createUserController',
-['$scope', 'userService', 'alertService', function($scope, userService, alertService) {
+['$scope', 'userService', 'alertService', 'cardKeyService', function($scope, userService, alertService, cardKeyService) {
+
+    $scope.user = {};
 
     $scope.createUser = function(user) {
         userService.createUser(user)
@@ -10,5 +12,10 @@ angular.module('voteApp').controller('createUserController',
                 alertService.addError();
             });
     };
+
+    cardKeyService.listen(function(cardKey) {
+        $scope.user.cardKey = cardKey;
+        $scope.$apply();
+    });
 
 }]);

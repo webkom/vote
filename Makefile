@@ -26,7 +26,7 @@ jshint: $(FRONTEND_FILES) $(BACKEND_FILES)
 	$(JSHINT) .
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES)
-	$(JSCS) app public/js test
+	$(JSCS) app public/js chrome_app test
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
