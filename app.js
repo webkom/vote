@@ -28,6 +28,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(flash());
 
+app.locals.NODE_ENV = process.env.NODE_ENV || 'development';
+
 app.use(session({
     cookie: { maxAge : 1000*3600*24*30*3 }, // Three months
     secret: process.env.COOKIE_SECRET || 'localsecret',
