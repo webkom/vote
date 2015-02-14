@@ -6,7 +6,6 @@ var chai = require('chai');
 var app = require('../../app');
 var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
-var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
@@ -42,15 +41,7 @@ describe('Vote API', function() {
     });
 
     beforeEach(function() {
-        return Bluebird.all([
-            Election.removeAsync({}),
-            Alternative.removeAsync({}),
-            User.removeAsync({}),
-            Vote.removeAsync({})
-        ]).bind(this)
-        .then(function() {
-            return Election.createAsync(activeElectionData, inactiveElectionData);
-        })
+        return Election.createAsync(activeElectionData, inactiveElectionData).bind(this)
         .spread(function(activeCreated, inactiveCreated) {
             this.activeElection = activeCreated;
             this.inactiveElection = inactiveCreated;

@@ -19,10 +19,7 @@ describe('Auth API', function() {
     };
 
     beforeEach(function() {
-        return User.removeAsync({})
-        .then(function() {
-            return User.registerAsync(testUser, testUser.password);
-        });
+        return User.registerAsync(testUser, testUser.password);
     });
 
     it('should be able to authenticate users', function(done) {
