@@ -38,7 +38,7 @@ alternativeSchema.methods.addVote = function(user) {
             if (!election.active) throw new errors.InactiveElectionError();
 
             var voteHash = createHash(user.username, this.election);
-            return Vote.findAsync({ alternative: this.id, hash: voteHash }).bind(this)
+            return Vote.findAsync({ hash: voteHash }).bind(this)
             .then(function(votes) {
                 if (votes.length) throw new errors.AlreadyVotedError();
                 var vote = new Vote({ hash: voteHash, alternative: this.id });
