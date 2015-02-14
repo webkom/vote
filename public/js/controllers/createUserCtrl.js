@@ -1,14 +1,14 @@
-angular.module('voteApp').controller('createUserController', function($scope, apiService, alertService) {
+angular.module('voteApp').controller('createUserController',
+['$scope', 'userService', 'alertService', function($scope, userService, alertService) {
 
     $scope.createUser = function(user) {
-        apiService.createUser(user.cardKey, user.username, user.password)
+        userService.createUser(user)
             .success(function(data) {
                 alertService.addSuccess('Bruker registrert!');
             })
             .error(function(data) {
                 alertService.addError();
             });
-
     };
 
-});
+}]);

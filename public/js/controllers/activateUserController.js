@@ -1,7 +1,8 @@
-angular.module('voteApp').controller('activateUserController', function($scope, apiService, alertService) {
+angular.module('voteApp').controller('activateUserController',
+['$scope', 'userService', 'alertService', function($scope, userService, alertService) {
 
     $scope.activateUser = function(cardKey) {
-        apiService.activateUser(cardKey)
+        userService.activateUser(cardKey)
             .success(function(data) {
                 if (data.active) {
                     alertService.addSuccess('Bruker har blitt aktivert');
@@ -13,4 +14,4 @@ angular.module('voteApp').controller('activateUserController', function($scope, 
                 alertService.addError();
             });
     };
-});
+}]);

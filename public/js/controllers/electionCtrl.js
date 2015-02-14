@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('electionController',
-['$scope', 'apiService', 'alertService', 'voteService', 'localStorageService',
-function($scope, apiService, alertService, voteService, localStorageService) {
+['$scope', 'electionService', 'alertService', 'voteService', 'localStorageService',
+function($scope, electionService, alertService, voteService, localStorageService) {
 
     $scope.activeElection = null;
     $scope.selectedAlternative = null;
@@ -13,7 +13,7 @@ function($scope, apiService, alertService, voteService, localStorageService) {
      * Tries to find an active election
      */
     var getActiveElection = (function() {
-        return apiService.getElections()
+        return electionService.getElections()
             .success(function(elections) {
                 $scope.elections = elections;
 

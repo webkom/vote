@@ -1,13 +1,13 @@
 angular.module('voteApp').controller('createElectionController',
-['$scope', '$location', 'apiService', 'alertService',
-function($scope, $location, apiService, alertService) {
+['$scope', '$location', 'adminElectionService', 'alertService',
+function($scope, $location, adminElectionService, alertService) {
 
     $scope.election = {
         alternatives: [{}]
     };
 
     $scope.createElection = function(election) {
-        apiService.createElection(election)
+        adminElectionService.createElection(election)
             .success(function(data) {
                 alertService.addSuccess('Avstemning lagret');
                 $location.path('/admin/election/' + data._id + '/edit');

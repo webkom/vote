@@ -1,8 +1,9 @@
-angular.module('voteApp').controller('electionsController', function($scope, apiService) {
+angular.module('voteApp').controller('electionsController',
+['$scope', 'electionService', function($scope, electionService) {
 
-    apiService.getElections()
+    electionService.getElections()
         .success(function(data) {
             $scope.elections = data;
         });
 
-});
+}]);

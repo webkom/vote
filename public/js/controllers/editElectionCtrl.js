@@ -1,14 +1,16 @@
-angular.module('voteApp').controller('editElectionController', function($scope, apiService, alertService) {
+angular.module('voteApp').controller('editElectionController',
+['$scope', 'electionService', 'adminElectionService', 'alertService',
+function($scope, electionService, adminElectionService, alertService) {
 
     $scope.election = null;
 
-    apiService.getElection()
+    electionService.getElection()
         .success(function(data) {
             $scope.election = data;
         });
 
     $scope.addAlternative = function(alternative) {
-        apiService.addAlternative(alternative.title)
+        adminElectionService.addAlternative(alternative)
             .success(function(data) {
                 $scope.election.alternatives.push(data);
                 alertService.addSuccess('Alternativ lagret');
@@ -19,7 +21,7 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
     };
 
     $scope.activateElection = function() {
-        apiService.activateElection()
+        adminElectionService.activateElection()
             .success(function(data) {
                 alertService.addSuccess('Avstemning er aktivert');
                 $scope.election.activated = true;
@@ -30,7 +32,7 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
     };
 
     $scope.deactivateElection = function() {
-        apiService.deactivateElection()
+        adminElectionService.deactivateElection()
             .success(function(data) {
                 alertService.addSuccess('Avstemning er deaktivert');
                 $scope.election.activated = false;
@@ -40,4 +42,4 @@ angular.module('voteApp').controller('editElectionController', function($scope, 
             });
     };
 
-});
+}]);
