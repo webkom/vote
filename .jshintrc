@@ -18,18 +18,11 @@
     "browser"       : true,     // Web Browser (window, document, etc)
     "devel"         : true,     // Development/debugging (alert, confirm, etc)
     "node"          : true,    // Node.js
+    "mocha"         : true,
 
     // Custom Globals
     "globals"      : {
       "angular"    : false,
-      "describe"   : false,
-      "it"         : false,
-      "before"     : false,
-      "beforeEach" : false,
-      "after"      : false,
-      "afterEach"  : false,
-      "moment"     : true,
-      "_"          : true,
-      "union"      : true
+      "io"         : false
     }
 }
