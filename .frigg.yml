@@ -1,6 +1,8 @@
 tasks:
  - make install
  - make test
+ - make jshint
+ - make jscs
 
 coverage:
   path: coverage/cobertura-coverage.xml

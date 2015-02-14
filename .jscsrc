@@ -1,6 +1,6 @@
 {
     "preset": "airbnb",
-    "excludeFiles": ["node_modules/**", "coverage/**", "public/libs/**"],
+    "excludeFiles": ["node_modules/**", "coverage/**", "public/libs/**", "public/js/*.min.js"],
     "validateIndentation": 4,
     "disallowMultipleVarDecl": true,
     "requireMultipleVarDecl": null,
