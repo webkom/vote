@@ -38,14 +38,17 @@
   "devDependencies": {
     "chai": "=1.9.2",
     "commander": "=2.6.0",
+    "cucumber": "^0.4.7",
     "istanbul": "=0.3.5",
     "jscs": "=1.10.0",
     "jshint": "=2.6.0",
     "mocha": "=2.1.0",
     "mockgoose": "=1.10.7",
+    "selenium-webdriver": "^2.44.0",
     "sinon": "=1.12.2",
     "sinon-chai": "=2.6.0",
     "supertest": "=0.14.0",
-    "uglify-js": "^2.4.16"
+    "uglify-js": "^2.4.16",
+    "zombie": "^2.5.1"
   }
 }

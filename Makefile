@@ -5,6 +5,7 @@ JSHINT = $(BIN)/jshint
 JSCS = $(BIN)/jscs
 STYLUS = $(BIN)/stylus
 UGLIFY = $(BIN)/uglifyjs
+CUCUMBER = $(BIN)/cucumber.js
 
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
@@ -14,6 +15,7 @@ TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
 FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
 BACKEND_FILES = $(shell find app -name "*.js")
+CUCUMBER_FILES = $(shell find features -name "*.js" -or -name "*.feature")
 
 all: node_modules public/main.css
 
@@ -22,11 +24,14 @@ install: node_modules
 node_modules: package.json
 	@npm install
 
-jshint: $(FRONTEND_FILES) $(BACKEND_FILES)
+jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .
 
-jscs: $(FRONTEND_FILES) $(BACKEND_FILES)
-	$(JSCS) app public/js test
+cucumber: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
+	$(CUCUMBER)
+
+jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
+	$(JSCS) app public/js test features
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
