@@ -1,8 +1,9 @@
+var Bluebird = require('bluebird');
 var mongoose = require('mongoose');
 var Election = require('../models/election');
 var Alternative = require('../models/alternative');
 var errors = require('../errors');
-var Bluebird = require('bluebird');
+var app = require('../../app');
 
 exports.create = function(req, res) {
     return Election.createAsync({
@@ -73,13 +74,19 @@ exports.retrieve = function(req, res) {
         });
 };
 
-exports.activate = function(req, res) {
+function setElectionStatus(req, res, active) {
     return retrieveOr404(req, res)
         .then(function(election) {
-            election.active = true;
+            election.active = active;
             return election.saveAsync();
-        })
+        });
+}
+
+exports.activate = function(req, res) {
+    setElectionStatus(req, res, true)
         .spread(function(election) {
+            var io = app.get('io');
+            io.emit('election');
             return res.status(200).json(election);
         })
         .catch(function(err) {
@@ -88,11 +95,7 @@ exports.activate = function(req, res) {
 };
 
 exports.deactivate = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            election.active = false;
-            return election.saveAsync();
-        })
+    setElectionStatus(req, res, false)
         .spread(function(election) {
             return res.status(200).json(election);
         })
