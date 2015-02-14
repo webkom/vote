@@ -17,10 +17,8 @@ describe('User API', function() {
 
     beforeEach(function() {
         passportStub.logout();
-        return User.removeAsync({}).bind(this)
-            .then(function() {
-                return createUsers();
-            })
+
+        return createUsers().bind(this)
             .spread(function(user, adminUser) {
                 this.user = user;
                 this.adminUser = adminUser;

@@ -6,7 +6,6 @@ var chai = require('chai');
 var app = require('../../app');
 var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
-var User = require('../../app/models/user');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
@@ -38,29 +37,22 @@ describe('Alternatives API', function() {
 
     beforeEach(function() {
         passportStub.logout();
-        return Bluebird.all([
-            Election.removeAsync({}),
-            Alternative.removeAsync({}),
-            User.removeAsync({}),
-            Vote.removeAsync({})
-        ]).bind(this)
-        .then(function() {
-            var election = new Election(testElectionData);
-            return election.saveAsync();
-        })
-        .spread(function(election) {
-            this.election = election;
-            createdAlternativeData.election = election.id;
-            this.alternative = new Alternative(createdAlternativeData);
-            return election.addAlternative(this.alternative);
-        })
-        .then(function() {
-            return createUsers();
-        })
-        .spread(function(user, adminUser) {
-            this.user = user;
-            this.adminUser = adminUser;
-        });
+        var election = new Election(testElectionData);
+
+        return election.saveAsync().bind(this)
+            .spread(function(election) {
+                this.election = election;
+                createdAlternativeData.election = election.id;
+                this.alternative = new Alternative(createdAlternativeData);
+                return election.addAlternative(this.alternative);
+            })
+            .then(function() {
+                return createUsers();
+            })
+            .spread(function(user, adminUser) {
+                this.user = user;
+                this.adminUser = adminUser;
+            });
     });
 
     after(function() {
