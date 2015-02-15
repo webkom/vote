@@ -26,6 +26,9 @@ describe('Vote API', function() {
     var activeData = {
         description: 'active election alt'
     };
+    var otherActiveData = {
+        description: 'other active election alt'
+    };
     var inactiveData = {
         description: 'inactive election alt'
     };
@@ -42,28 +45,32 @@ describe('Vote API', function() {
 
     beforeEach(function() {
         return Election.createAsync(activeElectionData, inactiveElectionData).bind(this)
-        .spread(function(activeCreated, inactiveCreated) {
-            this.activeElection = activeCreated;
-            this.inactiveElection = inactiveCreated;
+            .spread(function(activeCreated, inactiveCreated) {
+                this.activeElection = activeCreated;
+                this.inactiveElection = inactiveCreated;
 
-            activeData.election = this.activeElection;
-            inactiveData.election = this.inactiveElection;
-            this.activeAlternative = new Alternative(activeData);
-            this.inactiveAlternative = new Alternative(inactiveData);
+                activeData.election = this.activeElection;
+                inactiveData.election = this.inactiveElection;
+                this.activeAlternative = new Alternative(activeData);
+                this.otherActiveAlternative = new Alternative(otherActiveData);
+                this.inactiveAlternative = new Alternative(inactiveData);
 
-            return Bluebird.all([
-                this.activeElection.addAlternative(this.activeAlternative),
-                this.inactiveElection.addAlternative(this.inactiveAlternative)
-            ]);
-        })
-        .then(function() {
-            return createUsers();
-        })
-        .spread(function(user, adminUser) {
-            this.user = user;
-            this.adminUser = adminUser;
-            passportStub.login(user);
-        });
+                return Bluebird.all([
+                    this.activeElection.addAlternative(this.activeAlternative),
+                    this.inactiveElection.addAlternative(this.inactiveAlternative)
+                ]);
+            })
+            .then(function() {
+                return this.activeElection.addAlternative(this.otherActiveAlternative);
+            })
+            .then(function() {
+                return createUsers();
+            })
+            .spread(function(user, adminUser) {
+                this.user = user;
+                this.adminUser = adminUser;
+                passportStub.login(user);
+            });
     });
 
     after(function() {
@@ -141,7 +148,7 @@ describe('Vote API', function() {
             .then(function() {
                 request(app)
                     .post('/api/vote')
-                    .send(votePayload(this.activeAlternative.id))
+                    .send(votePayload(this.otherActiveAlternative.id))
                     .expect(400)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
@@ -308,29 +315,23 @@ describe('Vote API', function() {
 
     it('should be possible to sum votes', function(done) {
         passportStub.login(this.adminUser);
-        var newAlternative = new Alternative({ description: 'other alternative' });
-        this.activeElection.addAlternative(newAlternative).bind(this)
-            .then(function() {
-                return Bluebird.all([
-                    newAlternative.addVote(this.user),
-                    this.activeAlternative.addVote(this.adminUser)
-                ]);
-            })
-            .then(function() {
-                request(app)
-                    .get('/api/election/' + this.activeElection.id + '/votes')
-                    .expect(200)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        var alternatives = res.body;
-                        alternatives.length.should.equal(2);
-                        alternatives[0].votes.should.equal(1);
-                        alternatives[1].votes.should.equal(1);
-                        done();
-                    });
-            })
-            .catch(done);
+        return Bluebird.all([
+                this.otherActiveAlternative.addVote(this.user),
+                this.activeAlternative.addVote(this.adminUser)
+        ]).bind(this).then(function() {
+            request(app)
+                .get('/api/election/' + this.activeElection.id + '/votes')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    var alternatives = res.body;
+                    alternatives.length.should.equal(2);
+                    alternatives[0].votes.should.equal(1);
+                    alternatives[1].votes.should.equal(1);
+                    done();
+                });
+        }).catch(done);
     });
 
     it('should not be possible to sum votes without being admin', function(done) {
