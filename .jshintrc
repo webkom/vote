@@ -24,5 +24,10 @@
     "globals"      : {
       "angular"    : false,
       "io"         : false
+      "by"         : false,
+      "browser"    : false,
+      "element"    : false,
+      "moment"     : true,
+      "_"          : true
     }
 }

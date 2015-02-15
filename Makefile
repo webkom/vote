@@ -5,7 +5,8 @@ JSHINT = $(BIN)/jshint
 JSCS = $(BIN)/jscs
 STYLUS = $(BIN)/stylus
 UGLIFY = $(BIN)/uglifyjs
-CUCUMBER = $(BIN)/cucumber.js
+WEBDRIVER_MANAGER = $(BIN)/webdriver-manager
+PROTRACTOR = $(BIN)/protractor
 
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
@@ -27,8 +28,11 @@ node_modules: package.json
 jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .
 
-cucumber: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(CUCUMBER)
+selenium:
+	$(WEBDRIVER_MANAGER) update
+
+protractor: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES) selenium
+	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(PROTRACTOR) ./features/protractor-conf.js
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSCS) app public/js test features
@@ -72,4 +76,4 @@ endif
 clean:
 	rm -f public/main.css
 
-.PHONY: server install test jshint jscs production all clean
+.PHONY: server install test jshint selenium protractor selenium jscs production all clean

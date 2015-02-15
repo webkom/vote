@@ -1,19 +1,33 @@
+var chai = require('chai');
+var chaiAsPromised = require('chai-as-promised');
+var expect = chai.expect;
+
+chai.should();
+chai.use(chaiAsPromised);
+
 module.exports = function() {
+    this.Given(/^I am logged in$/, function(callback) {
+        var driver = browser.driver;
 
-  this.World = require('../support/world').World;
+        var findByName = function(name) {
+            return driver.findElement(by.name(name));
+        };
 
-  this.Given(/^I am logged in$/, function (callback) {
-    // Write code here that turns the phrase above into concrete actions
-    callback.pending();
-  });
+        driver.get('http://localhost:3000/auth/login');
+        findByName('username').sendKeys('testUser');
+        findByName('password').sendKeys('password');
+        driver.findElement(by.tagName('button')).click();
 
-  this.Given(/^I am on page "([^"]*)"$/, function (path, callback) {
-    this.visit(path, callback);
-  });
+        callback();
+    });
 
-  this.Then(/^I see "([^"]*)"$/, function (text, callback) {
-    // Write code here that turns the phrase above into concrete actions
-    callback.pending();
-  });
+    this.Given(/^I am on page "([^"]*)"$/, function(path, callback) {
+        browser.get(path);
+        callback();
+    });
+
+    this.Then(/^I see "([^"]*)"$/, function(text, callback) {
+        expect(browser.getPageSource()).to.eventually.contain(text).notify(callback);
+    });
 
 };

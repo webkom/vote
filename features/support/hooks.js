@@ -1,25 +1,50 @@
 var mongoose = require('mongoose');
-var User = require('../../app/models/user');
+var Election = require('../../app/models/election');
+var Alternative = require('../../app/models/alternative');
+var helpers = require('../../test/helpers');
+var apiHelpers = require('../../test/api/helpers');
+var createUsers = apiHelpers.createUsers;
+var clearCollections = helpers.clearCollections;
+var dropDatabase = helpers.dropDatabase;
 
-module.exports = function () {
-  this.Before(function(callback) {
-    var mongoURL = 'mongodb://localhost:27017/ads_cucumber';
+module.exports = function() {
+    var activeElectionData = {
+        title: 'activeElection1',
+        description: 'active election 1',
+        active: true
+    };
 
-    mongoose.connect(mongoURL, function(err) {
-      if (err) throw err;
+    var testAlternative = {
+        description: 'test alternative'
+    };
 
-      var user = new User({ username: 'dumbledore', cardkey: 'CARDKEY' });
-      User.register(user, 'acid pops', function (err) {
-        if (err) throw err;
-        mongoose.close(callback);
-      });
+    this.BeforeFeatures(function(e, callback) {
+        mongoose.connect(process.env.MONGO_URL, callback);
     });
-  });
 
-  this.After(function(callback) {
-    //mongoose.connection.collections.ads_cucumber.drop( function(err) {
-    //  if (err) throw err;
-    //  callback();
-    //});
-  });
+    this.Before(function(callback) {
+        return clearCollections().bind(this)
+            .then(function() {
+                var election = new Election(activeElectionData);
+                return election.saveAsync();
+            })
+            .spread(function(election) {
+                this.election = election;
+                testAlternative.election = election;
+                this.alternative = new Alternative(testAlternative);
+                return election.addAlternative(this.alternative);
+            })
+            .then(function() {
+                return createUsers();
+            })
+            .spread(function(user, adminUser) {
+                this.user = user;
+                this.adminUser = adminUser;
+                callback();
+            }).catch(callback);
+    });
+
+    this.AfterFeatures(function(e, callback) {
+        dropDatabase(callback);
+    });
 };
