@@ -21,6 +21,9 @@ html(ng-app='voteApp')
 
             .row: block navbar
     body
+        .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
+            alert(type='{{alert.type}}', close='alert.close()') {{alert.message}}
+
         block content
 
     footer

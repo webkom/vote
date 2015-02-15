@@ -1,4 +1,5 @@
 var express         = require('express');
+var app             = module.exports = express();
 var mongoose        = require('mongoose');
 var bodyParser      = require('body-parser');
 var cookieParser    = require('cookie-parser');
@@ -9,8 +10,6 @@ var csrf            = require('csurf');
 var flash           = require('connect-flash');
 var router          = require('./app/routes');
 var User            = require('./app/models/user');
-
-var app = express();
 
 app.disable('x-powered-by');
 app.set('view engine', 'jade');

@@ -1,4 +1,4 @@
-angular.module('voteApp').service('alertService', ['$timeout', '$rootScope',
+angular.module('voteApp').factory('alertService', ['$timeout', '$rootScope',
 function($timeout, $rootScope) {
 
     $rootScope.alerts = [];

@@ -1,13 +1,17 @@
+/* jshint expr: true */
 var Bluebird = require('bluebird');
 var passportStub = require('passport-stub');
 var ObjectId = require('mongoose').Types.ObjectId;
 var request = require('supertest');
-var app = require('../../app');
 var chai = require('chai');
+var sinon = require('sinon');
+var sinonChai = require('sinon-chai');
+var app = require('../../app');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
+
 var testPost404 = helpers.testPost404;
 var testGet404 = helpers.testGet404;
 var testDelete404 = helpers.testDelete404;
@@ -15,6 +19,7 @@ var createUsers = helpers.createUsers;
 var testAdminResourcePost = helpers.testAdminResourcePost;
 var testAdminResourceDelete = helpers.testAdminResourceDelete;
 
+chai.use(sinonChai);
 chai.should();
 
 describe('Election API', function() {
@@ -46,12 +51,18 @@ describe('Election API', function() {
         description: 'test alternative'
     };
 
+    var ioStub = {
+        emit: sinon.stub()
+    };
+
     before(function() {
         passportStub.install(app);
+        app.set('io', ioStub);
     });
 
     beforeEach(function() {
         passportStub.logout();
+        ioStub.emit.reset();
 
         var election = new Election(activeElectionData);
         return election.saveAsync().bind(this)
@@ -181,6 +192,7 @@ describe('Election API', function() {
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
+                        ioStub.emit.should.have.been.calledWith('election');
                         res.body.description.should.equal(election.description);
                         res.body.active.should.equal(true, 'db election should be active');
                         done();
@@ -212,6 +224,7 @@ describe('Election API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
+                ioStub.emit.should.not.have.been.called;
                 res.body.active.should.equal(false, 'db election should not be active');
                 done();
             });

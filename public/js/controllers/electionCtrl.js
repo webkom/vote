@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('electionController',
-['$scope', 'electionService', 'alertService', 'voteService', 'localStorageService',
-function($scope, electionService, alertService, voteService, localStorageService) {
+['$scope', 'electionService', 'alertService', 'voteService', 'localStorageService', 'socketIOService',
+function($scope, electionService, alertService, voteService, localStorageService, socketIOService) {
 
     $scope.activeElection = null;
     $scope.selectedAlternative = null;
@@ -12,7 +12,7 @@ function($scope, electionService, alertService, voteService, localStorageService
     /**
      * Tries to find an active election
      */
-    var getActiveElection = (function() {
+    function getActiveElection() {
         return electionService.getElections()
             .success(function(elections) {
                 $scope.elections = elections;
@@ -29,7 +29,9 @@ function($scope, electionService, alertService, voteService, localStorageService
             .error(function(err) {
                 alertService.addError(err.message);
             });
-    })();
+    }
+    getActiveElection();
+    socketIOService.listen('election', getActiveElection);
 
     /**
      * Add the given electionId to local storage, to ensure that
