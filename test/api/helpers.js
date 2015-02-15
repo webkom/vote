@@ -1,26 +1,10 @@
-var _ = require('lodash');
 var Bluebird = require('bluebird');
 var request = require('supertest');
 var chai = require('chai');
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var app = require('../../app');
 var User = require('../../app/models/user');
 
 chai.should();
-
-exports.dropDatabase = function(done) {
-    mongoose.connection.db.dropDatabase(function(err) {
-        if (err) return done(err);
-        mongoose.connection.close(done);
-    });
-};
-
-exports.clearCollections = function() {
-    var collections = _.values(mongoose.connection.collections);
-    return Bluebird.map(collections, function(collection) {
-        return collection.removeAsync();
-    });
-};
 
 exports.testGet404 = function(path, type, done) {
     request(app)

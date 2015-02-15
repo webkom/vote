@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var helpers = require('./helpers');
+var helpers = require('../helpers');
 
 before(function(done) {
     mongoose.connection.on('connected', done);
