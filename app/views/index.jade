@@ -29,4 +29,7 @@ block scripts
         script(src='/js/appRoutes.js')
 
 block content
+    .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
+        alert(type='{{alert.type}}', close='alert.close()') {{alert.message}}
+
     .container(ng-view='')
