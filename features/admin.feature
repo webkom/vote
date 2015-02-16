@@ -11,6 +11,5 @@ Feature: Election
   Scenario: Create election
     Given There is an inactive election
     And I am on page "/admin/create_election"
-    And I create an election
-    Then I should be on "\/admin\/election\/[\w]+\/edit"
-    And The election should exist
+    When I create an election
+    Then The election should exist

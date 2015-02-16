@@ -31,14 +31,13 @@ module.exports = function() {
         ]).nodeify(callback);
     });
 
-    this.Given(/^I create an election$/, function(callback) {
-        // Add new alterantive
+    this.When(/^I create an election$/, function(callback) {
+        // Add new alternative
         element(by.className('fa-plus-square')).click();
 
         var title = element(by.model('election.title'));
         var description = element(by.model('election.description'));
         var alternatives = element.all(by.repeater('alternative in election.alternatives'));
-        var button = element(by.id('submit'));
 
         title.sendKeys(newElection.title);
         description.sendKeys(newElection.description);
@@ -49,12 +48,7 @@ module.exports = function() {
             alternatives.get(i).element(by.css('input')).sendKeys(alternative.description);
         }
 
-        button.click().then(callback);
-    });
-
-    this.Then(/^I should be on "([^"]*)"$/, function(path, callback) {
-        var re = new RegExp(path);
-        expect(browser.getLocationAbsUrl()).to.eventually.match(re).notify(callback);
+        title.submit().then(callback);
     });
 
     this.Then(/^The election should exist$/, function(callback) {

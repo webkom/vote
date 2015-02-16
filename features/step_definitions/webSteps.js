@@ -34,6 +34,11 @@ module.exports = function() {
         callback();
     });
 
+    this.When(/^I go to page "([^"]*)"$/, function(path, callback) {
+        browser.get(path);
+        callback();
+    });
+
     this.Then(/^I see "([^"]*)"$/, function(text, callback) {
         expect(browser.getPageSource()).to.eventually.contain(text).notify(callback);
     });
