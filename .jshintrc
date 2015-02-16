@@ -23,7 +23,7 @@
     // Custom Globals
     "globals"      : {
       "angular"    : false,
-      "io"         : false
+      "io"         : false,
       "by"         : false,
       "browser"    : false,
       "element"    : false,
