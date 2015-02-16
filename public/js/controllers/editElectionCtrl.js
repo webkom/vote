@@ -20,26 +20,24 @@ function($scope, electionService, adminElectionService, alertService) {
             });
     };
 
-    $scope.activateElection = function() {
-        adminElectionService.activateElection()
-            .success(function(data) {
-                alertService.addSuccess('Avstemning er aktivert');
-                $scope.election.activated = true;
-            })
-            .error(function(error) {
-                alertService.addError(error.message);
-            });
-    };
-
-    $scope.deactivateElection = function() {
-        adminElectionService.deactivateElection()
-            .success(function(data) {
-                alertService.addSuccess('Avstemning er deaktivert');
-                $scope.election.activated = false;
-            })
-            .error(function(error) {
-                alertService.addError(error.message);
-            });
+    $scope.toggleElection = function() {
+        if ($scope.election.active === true) {
+            adminElectionService.deactivateElection()
+                .success(function(data) {
+                    alertService.addSuccess('Avstemning er deaktivert');
+                })
+                .error(function(error) {
+                    alertService.addError(error.message);
+                });
+        } else {
+            adminElectionService.activateElection()
+                .success(function(data) {
+                    alertService.addSuccess('Avstemning er aktivert');
+                })
+                .error(function(error) {
+                    alertService.addError(error.message);
+                });
+        }
     };
 
 }]);

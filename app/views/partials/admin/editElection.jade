@@ -11,10 +11,7 @@
             label Legg til alternativ
             input.form-control(type='text', name='alternative', placeholder='Skriv inn alternativ', ng-model='alternative.description')
 
-            button#submit.btn(type='submit', value='Submit') Submit
+            button#submit.btn(type='submit', value='Submit') Legg til alternativ
 
-        button#submit.btn.btn-default.btn-lg(ng-click='activateElection()', ng-show='!election.activated')
-            | Aktiver avstemning
-        button#submit.btn.btn-default.btn-lg(ng-click='deactivateElection()', ng-show='election.activated')
-            | Deaktiver avstemning
-
+        button#submit.btn.btn-default.btn-lg(ng-click='toggleElection()')
+            | {{election.active ? "Deaktiver" : "Aktiver"}}
