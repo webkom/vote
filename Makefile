@@ -7,6 +7,7 @@ STYLUS = $(BIN)/stylus
 UGLIFY = $(BIN)/uglifyjs
 WEBDRIVER_MANAGER = $(BIN)/webdriver-manager
 PROTRACTOR = $(BIN)/protractor
+BOWER = $(BIN)/bower
 
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
@@ -20,10 +21,13 @@ CUCUMBER_FILES = $(shell find features -name "*.js" -or -name "*.feature")
 
 all: node_modules public/main.css
 
-install: node_modules
+install: node_modules public/lib
 
 node_modules: package.json
 	@npm install
+
+public/lib: bower.json
+	$(BOWER) install
 
 jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .

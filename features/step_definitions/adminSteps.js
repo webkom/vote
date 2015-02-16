@@ -2,7 +2,6 @@ var chai = require('chai');
 var Bluebird = require('bluebird');
 var chaiAsPromised = require('chai-as-promised');
 var Election = require('../../app/models/election');
-var utils = require('../utils');
 
 var expect = chai.expect;
 
@@ -49,7 +48,8 @@ module.exports = function() {
             alternatives.get(i).element(by.css('input')).sendKeys(alternative.description);
         }
 
-        title.submit().then(callback);
+        title.submit();
+        browser.waitForAngular().then(callback);
     });
 
     this.Then(/^The election should exist$/, function(callback) {
