@@ -13,8 +13,8 @@ module.exports = function() {
     });
 
     this.Then(/^I see an active election$/, function(callback) {
-        var title = element(by.css('.election-info > h2'));
-        var description = element(by.css('.election-info > p'));
+        var title = element(by.binding('activeElection.title'));
+        var description = element(by.binding('activeElection.description'));
         var alternatives = element.all(by.repeater('alternative in activeElection.alternatives'));
 
         Bluebird.all([
