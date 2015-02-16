@@ -34,7 +34,7 @@
         line-height 60px
         border-radius 2px
         border 1px solid transparent
-        background-color alpha($alternative-background, 0.1)
+        background-color alpha($alternative-background, 0.15)
         transition all 0.5s
 
         &:hover
@@ -50,9 +50,10 @@
             background-color alpha($alternative-background, 0.2)
 
         p
+            color darken($font-gray, 20%)
             text-transform uppercase
             margin-bottom 0
-            color $alternative-color
+            font-weight 200
             transition all 0.3s
             vertical-align middle
 
@@ -72,6 +73,5 @@
                     color $abakus-light
 
             p
-                color darken($alternative-color, 40%)
                 opacity 1
 
