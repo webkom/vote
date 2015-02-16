@@ -2,6 +2,7 @@ var chai = require('chai');
 var Bluebird = require('bluebird');
 var chaiAsPromised = require('chai-as-promised');
 var Election = require('../../app/models/election');
+var utils = require('../utils');
 
 var expect = chai.expect;
 
@@ -33,7 +34,7 @@ module.exports = function() {
 
     this.When(/^I create an election$/, function(callback) {
         // Add new alternative
-        element(by.className('fa-plus-square')).click();
+        element(by.className('new-alternative')).click();
 
         var title = element(by.model('election.title'));
         var description = element(by.model('election.description'));

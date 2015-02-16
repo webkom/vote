@@ -11,5 +11,4 @@ exports.writeScreenshot = function(data, filename) {
         stream.write(new Buffer(data, 'base64'));
         stream.end();
     });
-}
-
+};

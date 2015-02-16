@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
 var helpers = require('../../test/helpers');
+var server = require('../../server');
 var apiHelpers = require('../../test/api/helpers');
 var createUsers = apiHelpers.createUsers;
 var clearCollections = helpers.clearCollections;
@@ -19,7 +20,9 @@ module.exports = function() {
     };
 
     this.BeforeFeatures(function(e, callback) {
-        mongoose.connect(process.env.MONGO_URL, callback);
+        mongoose.connection.on('connected', function() {
+            server(callback);
+        });
     });
 
     this.Before(function(callback) {
