@@ -21,7 +21,7 @@ function($scope, electionService, adminElectionService, alertService) {
     };
 
     $scope.toggleElection = function() {
-        if ($scope.election.active === true) {
+        if ($scope.election.active) {
             adminElectionService.deactivateElection()
                 .success(function(data) {
                     alertService.addSuccess('Avstemning er deaktivert');
