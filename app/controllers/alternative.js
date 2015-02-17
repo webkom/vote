@@ -16,6 +16,10 @@ exports.list = function(req, res) {
 exports.create = function(req, res) {
     return retrieveElectionOr404(req, res, 'alternatives')
         .then(function(election) {
+            if (election.active) {
+                throw new errors.ActiveElectionError('Cannot create alternatives for active elections.');
+            }
+
             var alternative = new Alternative({
                 title: req.body.title,
                 description: req.body.description
@@ -38,7 +42,7 @@ exports.delete = function(req, res) {
     return retrieveElectionOr404(req, res, 'alternatives')
         .then(function(election) {
             if (election.active) {
-                throw new errors.DeleteError('Cannot delete alternatives belonging to an active election.');
+                throw new errors.ActiveElectionError('Cannot delete alternatives belonging to an active election.');
             }
 
             return Alternative.findByIdAsync(req.params.alternativeId);

@@ -20,7 +20,7 @@ describe('Alternatives API', function() {
     var testElectionData = {
         title: 'test election',
         description: 'test election description',
-        active: true
+        active: false
     };
 
     var createdAlternativeData = {
@@ -82,7 +82,7 @@ describe('Alternatives API', function() {
         testGet404('/api/election/' + badId + '/alternatives', 'election', done);
     });
 
-    it('should be able to create alternatives', function(done) {
+    it('should be able to create alternatives for deactivated elections', function(done) {
         passportStub.login(this.adminUser);
         request(app)
             .post('/api/election/' + this.election.id + '/alternatives')
@@ -95,6 +95,29 @@ describe('Alternatives API', function() {
                 res.status.should.equal(201);
                 done();
             });
+    });
+
+    it('should not be able to create alternatives for active elections', function(done) {
+        passportStub.login(this.adminUser);
+
+        this.election.active = true;
+
+        return this.election.saveAsync().bind(this)
+            .then(function() {
+                request(app)
+                    .post('/api/election/' + this.election.id + '/alternatives')
+                    .send(testAlternativeData)
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var error = res.body;
+                        error.name.should.equal('ActiveElectionError');
+                        error.message.should.equal('Cannot create alternatives for active elections.');
+                        error.status.should.equal(400);
+                        done();
+                    });
+            }).catch(done);
     });
 
     it('should return 400 when creating alternatives without required fields', function(done) {
@@ -130,7 +153,7 @@ describe('Alternatives API', function() {
         testAdminResourcePost('/api/election/' + this.election.id + '/alternatives', done);
     });
 
-    it('should be possible to delete alternatives', function(done) {
+    it('should be possible to delete alternatives for deactivated elections', function(done) {
         passportStub.login(this.adminUser);
 
         var vote = new Vote({
@@ -138,45 +161,46 @@ describe('Alternatives API', function() {
             hash: 'thisisahash'
         });
 
-        this.election.active = false;
-
-        return Bluebird.all([
-            vote.saveAsync(),
-            this.election.saveAsync()
-        ]).bind(this).then(function() {
-            request(app)
-                .delete('/api/election/' + this.election.id + '/alternatives/' + this.alternative.id)
-                .expect(200)
-                .expect('Content-Type', /json/)
-                .end(function(err, res) {
-                    if (err) return done(err);
-                    res.body.message.should.equal('Alternative deleted.');
-                    res.body.status.should.equal(200);
-                    return Bluebird.all([
-                        Election.findAsync({}),
-                        Alternative.findAsync({}),
-                        Vote.findAsync({})
-                    ]).spread(function(elections, alternatives, votes) {
-                        elections.length.should.equal(1, 'election should not be deleted');
-                        alternatives.length.should.equal(0);
-                        votes.length.should.equal(0);
-                    }).nodeify(done);
-                });
-        }).catch(done);
+        return vote.saveAsync().bind(this)
+            .then(function() {
+                request(app)
+                    .delete('/api/election/' + this.election.id + '/alternatives/' + this.alternative.id)
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        res.body.message.should.equal('Alternative deleted.');
+                        res.body.status.should.equal(200);
+                        return Bluebird.all([
+                            Election.findAsync({}),
+                            Alternative.findAsync({}),
+                            Vote.findAsync({})
+                        ]).spread(function(elections, alternatives, votes) {
+                            elections.length.should.equal(1, 'election should not be deleted');
+                            alternatives.length.should.equal(0);
+                            votes.length.should.equal(0);
+                        }).nodeify(done);
+                    });
+            }).catch(done);
     });
 
     it('should not be possible to delete alternatives for active elections', function(done) {
         passportStub.login(this.adminUser);
-        request(app)
-            .delete('/api/election/' + this.election.id + '/alternatives/' + this.alternative.id)
-            .expect(400)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.status.should.equal(400);
-                error.message.should.equal('Cannot delete alternatives belonging to an active election.');
-                done();
+
+        this.election.active = true;
+        this.election.saveAsync().bind(this)
+            .then(function() {
+                request(app)
+                    .delete('/api/election/' + this.election.id + '/alternatives/' + this.alternative.id)
+                    .expect(400)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var error = res.body;
+                        error.status.should.equal(400);
+                        error.message.should.equal('Cannot delete alternatives belonging to an active election.');
+                        done();
+                    });
             });
     });
 

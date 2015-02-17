@@ -121,7 +121,7 @@ exports.delete = function(req, res) {
     return retrieveOr404(req, res)
         .then(function(election) {
             if (election.active) {
-                throw new errors.DeleteError('Cannot delete an active election.');
+                throw new errors.ActiveElectionError('Cannot delete an active election.');
             }
             return election.removeAsync();
         })

@@ -64,13 +64,13 @@ function NotFoundError(type) {
 util.inherits(NotFoundError, Error);
 exports.NotFoundError = NotFoundError;
 
-function DeleteError(message) {
-    this.name = 'DeleteError';
-    this.message = message || 'Cannot delete resource.';
+function ActiveElectionError(message) {
+    this.name = 'ActiveElectionError';
+    this.message = message || 'You need to deactivate the election first.';
     this.statusCode = 400;
 }
-util.inherits(DeleteError, Error);
-exports.DeleteError = DeleteError;
+util.inherits(ActiveElectionError, Error);
+exports.ActiveElectionError = ActiveElectionError;
 
 function ValidationError(errors) {
     this.name = 'ValidationError';
