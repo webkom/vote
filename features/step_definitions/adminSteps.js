@@ -82,4 +82,17 @@ module.exports = function() {
 
         expect(span.getText()).to.eventually.equal('1').notify(callback);
     });
+
+    this.When(/^I enter a new alternative "([^"]*)"$/, function(alternative, callback) {
+        var input = element(by.id('new-alternative'));
+        input.sendKeys(alternative);
+        callback();
+    });
+
+    this.Then(/^I should see the alternative "([^"]*)"$/, function(alternativeText, callback) {
+        var alternatives = element.all(
+            by.repeater('alternative in election.alternatives').column('alternative.description')
+        );
+        expect(alternatives.getText()).to.eventually.contain(alternativeText.toUpperCase()).notify(callback);
+    });
 };

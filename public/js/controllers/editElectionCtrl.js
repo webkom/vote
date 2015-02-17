@@ -2,6 +2,7 @@ angular.module('voteApp').controller('editElectionController',
 ['$scope', '$interval', 'electionService', 'adminElectionService', 'alertService',
 function($scope, $interval, electionService, adminElectionService, alertService) {
 
+    $scope.newAlternative = {};
     $scope.election = null;
     $scope.showCount = false;
 

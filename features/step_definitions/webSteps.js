@@ -2,7 +2,6 @@ var chai = require('chai');
 var chaiAsPromised = require('chai-as-promised');
 var expect = chai.expect;
 
-chai.should();
 chai.use(chaiAsPromised);
 
 function logIn(username, password) {
@@ -47,5 +46,9 @@ module.exports = function() {
         var button = element(by.buttonText(buttonText));
         button.click();
         callback();
+    });
+
+    this.Then(/^I should not see "([^"]*)"$/, function(selector, callback) {
+        expect(element(by.css(selector)).isPresent()).to.eventually.equal(false).notify(callback);
     });
 };
