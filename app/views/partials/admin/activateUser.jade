@@ -1,10 +1,5 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-        form.form-group(ng-submit='activateUser(user.cardKey)', name='activateUserForm')
-            .form-group(ng-class="{'has-warning': activateUserForm.cardKey.$invalid, 'has-success': createUserForm.cardKey.$valid}")
-                label Kortnummer
-                input.form-control(type='text', name='cardNr', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
-
-            button#submit.btn.btn-default.btn-lg(type='submit',
-                value='Submit',
-                ng-disabled='activateUserForm.$invalid') Aktiver
+        h2 Vennligst skann kortet ditt
+        button#submit.btn.btn-default.btn-lg(ng-click='activateUser("123456")')
+            | Aktiver bruker
