@@ -2,10 +2,10 @@ angular.module('voteApp').service('electionService', ['$http', '$routeParams',
 function($http, $routeParams) {
 
     this.getElections = function() {
-        return $http({ method: 'GET', url: '/api/election' });
+        return $http.get('/api/election');
     };
 
     this.getElection = function() {
-        return $http({ method: 'GET', url: '/api/election/' + $routeParams.param });
+        return $http.get('/api/election/' + $routeParams.param);
     };
 }]);

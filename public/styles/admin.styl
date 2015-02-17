@@ -10,6 +10,10 @@ form
             cursor pointer
             color $abakus-dark
 
+.toggle-election
+    width 30%
+    margin-top 20px
+
 .input-group-addon
     color $abakus-light
 
@@ -21,3 +25,30 @@ form
     padding-top 10px
     margin-bottom 0
 
+    span
+        color $abakus-dark
+        margin-right 20px
+
+    ul li
+        &:hover
+            cursor default
+            background-color alpha($alternative-background, 0.1)
+
+.toggle-show
+    margin-left 30px
+
+form.add-alternative
+    input
+        text-align center
+        font-size 21px
+        line-height 60px
+        height 60px
+
+    button
+        margin-top 20px
+        font-size 16px
+        color $font-gray
+
+@media (max-width 1000px)
+    .toggle-show
+        margin-left 0
