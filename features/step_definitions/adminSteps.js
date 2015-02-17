@@ -2,7 +2,6 @@ var chai = require('chai');
 var Bluebird = require('bluebird');
 var chaiAsPromised = require('chai-as-promised');
 var Election = require('../../app/models/election');
-var utils = require('../utils');
 
 var expect = chai.expect;
 

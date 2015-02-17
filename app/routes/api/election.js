@@ -22,8 +22,6 @@ router.route('/:electionId/alternatives')
     .get(alternative.list)
     .post(ensureAdmin, alternative.create);
 
-router.delete('/:electionId/alternatives/:alternativeId', ensureAdmin, alternative.delete);
-
 router.get('/:electionId/votes', ensureAdmin, election.sumVotes);
 
 module.exports = router;

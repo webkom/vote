@@ -37,30 +37,3 @@ exports.create = function(req, res) {
             return errors.handleError(res, err);
         });
 };
-
-exports.delete = function(req, res) {
-    return retrieveElectionOr404(req, res, 'alternatives')
-        .then(function(election) {
-            if (election.active) {
-                throw new errors.ActiveElectionError('Cannot delete alternatives belonging to an active election.');
-            }
-
-            return Alternative.findByIdAsync(req.params.alternativeId);
-        })
-        .then(function(alternative) {
-            if (!alternative) throw new errors.NotFoundError('alternative');
-            return alternative.removeAsync();
-        })
-        .then(function() {
-            return res.status(200).json({
-                message: 'Alternative deleted.',
-                status: 200
-            });
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('alternative');
-        })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
-};
