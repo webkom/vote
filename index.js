@@ -1,10 +1,6 @@
-var socketIO = require('socket.io');
-var app = require('./app');
+var server = require('./server');
 
-app.set('port', process.env.PORT || 3000);
-
-var server = app.listen(app.get('port'), function() {
-  console.log('Listening on %d', app.get('port'));
+server(function(err, port) {
+    if (err) throw err;
+    console.log('Listening on %d', port);
 });
-
-app.set('io', socketIO(server));

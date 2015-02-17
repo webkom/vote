@@ -18,7 +18,8 @@
 
             .alternatives.admin
                 h2 Alternativer
-                    i.fa.fa-plus-square(ng-click='addAlternative()')
+                    a.new-alternative(ng-click='addAlternative()')
+                        i.fa.fa-plus-square
 
                 ng-form(name='alternativeForm', ng-repeat='alternative in election.alternatives')
                     .form-group(ng-class="{'has-warning': alternativeForm.$invalid, 'has-success': alternativeForm.$valid}")

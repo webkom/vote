@@ -1,6 +1,7 @@
 tasks:
  - make install
  - make test
+ - BROWSER=phantomjs make protractor
  - make jshint
  - make jscs
 

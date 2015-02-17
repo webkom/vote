@@ -1,5 +1,5 @@
-angular.module('voteApp').factory('alertService', ['$timeout', '$rootScope',
-function($timeout, $rootScope) {
+angular.module('voteApp').factory('alertService', ['$interval', '$rootScope',
+function($interval, $rootScope) {
 
     $rootScope.alerts = [];
 
@@ -36,13 +36,14 @@ function($timeout, $rootScope) {
         },
 
         timeoutRemove: function(alert) {
-            $timeout(function() {
+            // Use $interval to let protractor skip waiting for alerts to fade
+            $interval(function() {
                 alert.fade = true;
 
-                $timeout(function() {
+                $interval(function() {
                     this.close(alert);
-                }.bind(this), CLOSE_DELAY);
-            }.bind(this), FADE_DELAY);
+                }.bind(this), CLOSE_DELAY, 1);
+            }.bind(this), FADE_DELAY, 1);
         }
     };
 

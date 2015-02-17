@@ -5,6 +5,9 @@ JSHINT = $(BIN)/jshint
 JSCS = $(BIN)/jscs
 STYLUS = $(BIN)/stylus
 UGLIFY = $(BIN)/uglifyjs
+WEBDRIVER_MANAGER = $(BIN)/webdriver-manager
+PROTRACTOR = $(BIN)/protractor
+BOWER = $(BIN)/bower
 
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
@@ -14,19 +17,29 @@ TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
 FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
 BACKEND_FILES = $(shell find app -name "*.js")
+CUCUMBER_FILES = $(shell find features -name "*.js" -or -name "*.feature")
 
 all: node_modules public/main.css
 
-install: node_modules
+install: node_modules public/lib
 
 node_modules: package.json
 	@npm install
 
-jshint: $(FRONTEND_FILES) $(BACKEND_FILES)
+public/lib: bower.json
+	$(BOWER) install
+
+jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .
 
-jscs: $(FRONTEND_FILES) $(BACKEND_FILES)
-	$(JSCS) app public/js test
+selenium:
+	$(WEBDRIVER_MANAGER) update
+
+protractor: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES) selenium
+	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(PROTRACTOR) ./features/protractor-conf.js
+
+jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
+	$(JSCS) app public/js test features
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
@@ -67,4 +80,4 @@ endif
 clean:
 	rm -f public/main.css
 
-.PHONY: server install test jshint jscs production all clean
+.PHONY: server install test jshint selenium protractor selenium jscs production all clean
