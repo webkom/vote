@@ -48,7 +48,11 @@ module.exports = function() {
         callback();
     });
 
-    this.Then(/^I should not see "([^"]*)"$/, function(selector, callback) {
+    this.Then(/^I should find "([^"]*)"$/, function(selector, callback) {
+        expect(element(by.css(selector)).isPresent()).to.eventually.equal(true).notify(callback);
+    });
+
+    this.Then(/^I should not find "([^"]*)"$/, function(selector, callback) {
         expect(element(by.css(selector)).isPresent()).to.eventually.equal(false).notify(callback);
     });
 };

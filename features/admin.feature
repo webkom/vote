@@ -31,5 +31,21 @@ Feature: Election
   Scenario: Adding alternatives to active elections
     Given There is an active election
     When I am on the edit election page
-    Then I should not see "input#new-alternative"
-    And I should not see "button.add-alternative"
+    Then I should not find "input#new-alternative"
+    And I should not find "button.add-alternative"
+
+  Scenario: Activating elections
+    Given There is an inactive election
+    And I am on the edit election page
+    When I click "Aktiver"
+    Then I see "Deaktiver"
+    And I should not find "input#new-alternative"
+    And I should not find "button.add-alternative"
+
+  Scenario: Deactivating elections
+    Given There is an active election
+    And I am on the edit election page
+    When I click "Deaktiver"
+    Then I see "Aktiver"
+    And I should find "input#new-alternative"
+    And I should find "button.add-alternative"
