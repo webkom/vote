@@ -1,13 +1,14 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
         form.form-group(ng-submit='createElection(election)', name='createElectionForm')
-            .form-group(ng-class="{'has-warning': createElectionForm.title.$invalid, 'has-success': createElectionForm.title.$valid}")
+            .form-group(required)
                 label Tittel
                 input.form-control(type='text',
                     name='title',
                     placeholder='Skriv inn tittel',
                     ng-model='election.title',
                     required='required')
+                p.text-danger(ng-show='createElectionForm.title.$invalid') Tittel er påkrevd
 
             .form-group
                 label Beskrivelse
@@ -22,13 +23,14 @@
                         i.fa.fa-plus-square
 
                 ng-form(name='alternativeForm', ng-repeat='alternative in election.alternatives')
-                    .form-group(ng-class="{'has-warning': alternativeForm.$invalid, 'has-success': alternativeForm.$valid}")
+                    .form-group
                         div(ng-class='{"input-group": election.alternatives.length > 1}')
                             input.form-control(type='text',
                                 name='alternative{{$index}}',
                                 placeholder='Skriv inn en beskrivelse',
                                 ng-model='alternative.description',
                                 required)
+                            p.text-danger(ng-show='alternativeForm.alternative{{$index}}.$invalid') Alternativ er påkrevd
 
                             .input-group-addon(ng-if='election.alternatives.length > 1',
                                 ng-click='deleteAlternative(alternative)') Slett
