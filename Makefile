@@ -39,7 +39,7 @@ protractor: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES) selenium
 	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(PROTRACTOR) ./features/protractor-conf.js
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(JSCS) app public/js test features
+	$(JSCS) app public/js chrome_app test features
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))

@@ -28,6 +28,7 @@
       "browser"    : false,
       "element"    : false,
       "moment"     : true,
-      "_"          : true
+      "_"          : true,
+      "chrome"     : true
     }
 }
