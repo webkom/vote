@@ -65,4 +65,21 @@ module.exports = function() {
             })
             .nodeify(callback);
     });
+
+    this.Given(/^The election has votes$/, function(callback) {
+        this.alternative.addVote(this.user).nodeify(callback);
+    });
+
+    this.Given(/^I am on the edit election page$/, function(callback) {
+        browser.get('/admin/election/' + this.election.id + '/edit');
+        callback();
+    });
+
+    this.Then(/^I should see votes$/, function(callback) {
+        var alternatives = element.all(by.repeater('alternative in election.alternatives'));
+        var alternative = alternatives.first();
+        var span = alternative.element(by.tagName('span'));
+
+        expect(span.getText()).to.eventually.equal('1').notify(callback);
+    });
 };

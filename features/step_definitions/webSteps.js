@@ -43,4 +43,9 @@ module.exports = function() {
         expect(browser.getPageSource()).to.eventually.contain(text).notify(callback);
     });
 
+    this.When(/^I click "([^"]*)"$/, function(buttonText, callback) {
+        var button = element(by.buttonText(buttonText));
+        button.click();
+        callback();
+    });
 };
