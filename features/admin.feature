@@ -67,3 +67,9 @@ Feature: Election
     And I am on page "/admin/activate_user"
     When I scan card key "1235"
     Then I see "Noe gikk galt!"
+
+  Scenario: Creating user
+    Given I am on page "/admin/create_user"
+    When I create a user
+    Then I see "Bruker registrert!"
+

@@ -21,6 +21,13 @@ module.exports = function() {
         ]
     };
 
+    var newUser = {
+        cardKey: '1234',
+        username: 'username',
+        password: 'password',
+        confirmPassword: 'password'
+    };
+
     this.Then(/^I see a list of elections$/, function(callback) {
         var alternatives = element.all(by.repeater('election in elections'));
         var election = alternatives.first();
@@ -98,6 +105,20 @@ module.exports = function() {
 
     this.When(/^I scan card key "([^"]*)"$/, function(cardKey, callback) {
         browser.executeScript('window.postMessage(' + cardKey + ', "*");');
+        browser.waitForAngular().then(callback);
+    });
+
+    this.When(/^I create a user$/, function(callback) {
+        browser.executeScript('window.postMessage("1234", "*");');
+        var username = element(by.model('user.username'));
+        var password = element(by.model('user.password'));
+        var confirmPassword = element(by.model('user.confirmPassword'));
+
+        username.sendKeys(newUser.username);
+        password.sendKeys(newUser.password);
+        confirmPassword.sendKeys(newUser.confirmPassword);
+
+        username.submit();
         browser.waitForAngular().then(callback);
     });
 };
