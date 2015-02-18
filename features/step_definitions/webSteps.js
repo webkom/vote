@@ -55,4 +55,14 @@ module.exports = function() {
     this.Then(/^I should not find "([^"]*)"$/, function(selector, callback) {
         expect(element(by.css(selector)).isPresent()).to.eventually.equal(false).notify(callback);
     });
+
+    this.Then(/^I see alert "([^"]*)"$/, function(text, callback) {
+        var alert = element(by.cssContainingText('.alert', text));
+        browser.wait(function() {
+            return alert.isPresent();
+        }, 1000).then(function(isPresent) {
+            expect(isPresent).to.equal(true);
+            expect(alert.getText()).to.eventually.contain(text).notify(callback);
+        });
+    });
 };
