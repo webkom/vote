@@ -128,4 +128,15 @@ describe('Auth API', function() {
             .expect('Location', '/admin')
             .end(done);
     });
+
+    it('should redirect from /auth/login to / if you are logged in', function(done) {
+        passportStub.install(app);
+        passportStub.login(testUser);
+
+        request(app)
+            .get('/auth/login')
+            .expect(302)
+            .expect('Location', '/')
+            .end(done);
+    });
 });

@@ -5,6 +5,7 @@ var errors = require('../errors');
 var router = express.Router();
 
 router.get('/login', function(req, res) {
+    if (req.isAuthenticated()) return res.redirect('/');
     var csrfToken = process.env.NODE_ENV !== 'test' ? req.csrfToken() : 'test';
     res.render('login', {
         csrfToken: csrfToken,
