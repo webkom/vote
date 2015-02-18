@@ -32,6 +32,7 @@ alternativeSchema.pre('remove', function(next) {
 alternativeSchema.methods.addVote = function(user) {
     if (!user) throw new Error('Can\'t vote without a user');
     if (!user.active) throw new errors.InactiveUserError(user.username);
+    if (user.admin) throw new errors.AdminVotingError();
 
     return Election.findByIdAsync(this.election).bind(this)
         .then(function(election) {

@@ -95,6 +95,14 @@ function InvalidRegistrationError(message) {
 util.inherits(InvalidRegistrationError, Error);
 exports.InvalidRegistrationError = InvalidRegistrationError;
 
+function AdminVotingError() {
+    this.name = 'AdminVotingError';
+    this.message = 'Admin users can\'t vote.';
+    this.statusCode = 403;
+}
+util.inherits(AdminVotingError, Error);
+exports.AdminVotingError = AdminVotingError;
+
 exports.handleError = function(res, err, statusCode) {
     if (!statusCode) {
         statusCode = err.statusCode ? err.statusCode : 500;
