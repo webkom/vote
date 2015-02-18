@@ -1,18 +1,18 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
         form.form-group(ng-submit='createUser(user)', name='createUserForm')
-            .form-group(ng-class="{'has-warning': createUserForm.cardKey.$invalid, 'has-success': createUserForm.cardKey.$valid}")
+            .form-group
                 label Kortnummer
                 input.form-control(type='text', name='cardKey', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
-            .form-group(ng-class="{'has-warning': createUserForm.username.$invalid, 'has-success': createUserForm.username.$valid}")
+            .form-group
                 label Brukernavn
                 input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn', ng-model='user.username', ng-minlength='6')
                 p.text-danger(ng-show='createUserForm.username.$invalid') Brukernavn må være minst 6 tegn
-            .form-group(ng-class="{'has-warning': createUserForm.password.$invalid, 'has-success': createUserForm.password.$valid}")
+            .form-group
                 label Password
                 input.form-control(type='password', name='password', placeholder='Skriv inn ønsket passord', ng-model='user.password', ng-minlength='6')
                 p.text-danger(ng-show='createUserForm.password.$invalid') Brukernavn må være minst 6 tegn
-            .form-group(ng-class="{'has-warning': createUserForm.confirmPassword.$invalid, 'has-success': createUserForm.confirmPassword.$valid}")
+            .form-group
                 label Bekreft password
                 input.form-control(type='password', name='confirmPassword', placeholder='Bekreft passord', ng-model='user.confirmPassword', match-password='user.password')
                 p.text-danger(ng-show='createUserForm.confirmPassword.$invalid') Må være lik passordet
