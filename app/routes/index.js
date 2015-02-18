@@ -8,6 +8,12 @@ var checkAdminPartial = helpers.checkAdminPartial;
 
 var router = express.Router();
 
+// Admin users shouldn't be able to vote, so they don't need to see the election page
+router.get('/', checkAuthOrRedirect, function(req, res) {
+    if (req.user.admin) return res.redirect('/admin');
+    res.render('index');
+});
+
 // Make sure all admin routes are secure
 router.get('/admin*', checkAdmin, function(req, res) {
     res.render('adminIndex');

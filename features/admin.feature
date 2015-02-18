@@ -1,5 +1,5 @@
-Feature: Election
-  ...
+Feature: Admin
+  Elections and users should be managed through the admin panel
 
   Background:
     Given I am logged in as an admin

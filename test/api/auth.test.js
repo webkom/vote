@@ -1,6 +1,8 @@
+var Bluebird = require('bluebird');
 var request = require('supertest');
 var mongoose = require('mongoose');
 var chai = require('chai');
+var passportStub = require('passport-stub');
 var app = require('../../app');
 var User = require('../../app/models/user');
 chai.should();
@@ -12,6 +14,13 @@ describe('Auth API', function() {
         cardKey: '99TESTCARDKEY'
     };
 
+    var adminUser = {
+        username: 'admin',
+        password: 'admin',
+        admin: true,
+        cardKey: '11TESTCARDKEY'
+    };
+
     var badTestUser = {
         username: 'test',
         password: 'notthecorrectpw',
@@ -19,7 +28,12 @@ describe('Auth API', function() {
     };
 
     beforeEach(function() {
-        return User.registerAsync(testUser, testUser.password);
+        passportStub.logout();
+        passportStub.uninstall();
+        return Bluebird.all([
+            User.registerAsync(testUser, testUser.password),
+            User.registerAsync(adminUser, adminUser.password)
+        ]);
     });
 
     it('should be able to authenticate users', function(done) {
@@ -88,7 +102,7 @@ describe('Auth API', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     agent
-                        .post('/auth/logout')
+                        .get('/auth/logout')
                         .expect(302)
                         .end(function(err, res) {
                             if (err) return done(err);
@@ -102,5 +116,16 @@ describe('Auth API', function() {
                         });
                 });
         });
+    });
+
+    it('should redirect from / to /admin for admins', function(done) {
+        passportStub.install(app);
+        passportStub.login(adminUser);
+
+        request(app)
+            .get('/')
+            .expect(302)
+            .expect('Location', '/admin')
+            .end(done);
     });
 });

@@ -251,7 +251,8 @@ describe('Vote API', function() {
     });
 
     it('should not be possible to retrieve others\' votes', function(done) {
-        return this.activeAlternative.addVote(this.adminUser).bind(this)
+        passportStub.login(this.adminUser);
+        return this.activeAlternative.addVote(this.user).bind(this)
             .spread(function(vote) {
                 request(app)
                     .get('/api/vote/' + this.activeElection.id)
@@ -315,23 +316,22 @@ describe('Vote API', function() {
 
     it('should be possible to sum votes', function(done) {
         passportStub.login(this.adminUser);
-        return Bluebird.all([
-                this.otherActiveAlternative.addVote(this.user),
-                this.activeAlternative.addVote(this.adminUser)
-        ]).bind(this).then(function() {
-            request(app)
-                .get('/api/election/' + this.activeElection.id + '/votes')
-                .expect(200)
-                .expect('Content-Type', /json/)
-                .end(function(err, res) {
-                    if (err) return done(err);
-                    var alternatives = res.body;
-                    alternatives.length.should.equal(2);
-                    alternatives[0].votes.should.equal(1);
-                    alternatives[1].votes.should.equal(1);
-                    done();
-                });
-        }).catch(done);
+
+        return this.otherActiveAlternative.addVote(this.user).bind(this)
+            .then(function() {
+                request(app)
+                    .get('/api/election/' + this.activeElection.id + '/votes')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var alternatives = res.body;
+                        alternatives.length.should.equal(2);
+                        alternatives[0].votes.should.equal(0);
+                        alternatives[1].votes.should.equal(1);
+                        done();
+                    });
+            }).catch(done);
     });
 
     it('should not be possible to sum votes without being admin', function(done) {
@@ -348,5 +348,22 @@ describe('Vote API', function() {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
         testGet404('/api/election/' + badId + '/votes', 'election', done);
+    });
+
+    it('should return 403 when admins try to vote', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/vote')
+            .send(votePayload(this.activeAlternative.id))
+            .expect(403)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('AdminVotingError');
+                error.message.should.equal('Admin users can\'t vote.');
+                error.status.should.equal(403);
+                done();
+            });
     });
 });

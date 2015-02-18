@@ -4,12 +4,7 @@ function($routeProvider, $locationProvider) {
 
     $routeProvider
 
-        // home page
         .when('/', {
-            redirectTo: '/election'
-        })
-
-        .when('/election', {
             templateUrl: 'partials/election',
             controller: 'electionController'
         })

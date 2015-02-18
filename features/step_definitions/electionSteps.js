@@ -25,8 +25,7 @@ module.exports = function() {
         ]).nodeify(callback);
     });
 
-    this.Given(/^I have voted on the election$/, function(callback) {
-        browser.get('/election');
+    function vote(callback) {
         var alternatives = element.all(by.repeater('alternative in activeElection.alternatives'));
         var alternative = alternatives.first();
         var button = element(by.css('button'));
@@ -35,6 +34,9 @@ module.exports = function() {
         button.click();
         button.click();
         callback();
-    });
+    }
 
+    this.Given(/^I have voted on the election$/, vote);
+
+    this.When(/^I vote on an election$/, vote);
 };
