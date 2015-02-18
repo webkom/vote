@@ -11,6 +11,7 @@ html(ng-app='voteApp')
         link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet')
         link(href='//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css', rel='stylesheet')
         link(rel='stylesheet', href='/main.css')
+
         block scripts
 
     header
@@ -22,6 +23,14 @@ html(ng-app='voteApp')
             .row: block navbar
     body
         block content
+
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
+        script.
+            if ('addEventListener' in document) {
+                document.addEventListener('DOMContentLoaded', function() {
+                    FastClick.attach(document.body);
+                });
+            }
 
     footer
         .container.text-center
