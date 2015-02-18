@@ -1,13 +1,13 @@
 angular.module('voteApp').controller('activateUserController',
 ['$scope', 'userService', 'alertService', 'cardKeyService', function($scope, userService, alertService, cardKeyService) {
 
-    $scope.activateUser = function(cardKey) {
-        userService.activateUser(cardKey)
+    var toggleUser = function(cardKey) {
+        userService.toggleUser(cardKey)
             .success(function(data) {
                 if (data.active) {
-                    alertService.addSuccess('Bruker har blitt aktivert');
+                    alertService.addSuccess('Bruker har blitt aktivert.');
                 } else {
-                    alertService.addSuccess('Bruker har blitt deaktivert');
+                    alertService.addWarning('Bruker har blitt deaktivert.');
                 }
             })
             .error(function(data) {
@@ -15,10 +15,6 @@ angular.module('voteApp').controller('activateUserController',
             });
     };
 
-    cardKeyService.listen(function(cardKey) {
-        if (!$scope.user) $scope.user = {};
-        $scope.user.cardKey = cardKey;
-        $scope.$apply();
-    });
+    cardKeyService.listen(toggleUser);
 
 }]);

@@ -95,4 +95,10 @@ module.exports = function() {
         );
         expect(alternatives.getText()).to.eventually.contain(alternativeText.toUpperCase()).notify(callback);
     });
+
+    this.When(/^I scan card key "([^"]*)"$/, function(cardKey, callback) {
+        browser.executeScript('window.postMessage(' + cardKey + ', "*");');
+
+        callback();
+    });
 };

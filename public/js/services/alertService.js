@@ -3,8 +3,8 @@ function($interval, $rootScope) {
 
     $rootScope.alerts = [];
 
-    var CLOSE_DELAY = 500;
-    var FADE_DELAY = 10000;
+    var CLOSE_DELAY = 500000;
+    var FADE_DELAY = 10000000;
 
     var AlertService = {
         add: function(type, message) {
@@ -24,6 +24,11 @@ function($interval, $rootScope) {
         addError: function(message) {
             if (!message) message = 'Noe gikk galt!';
             this.add('danger', message);
+        },
+
+        addWarning: function(message) {
+            if (!message) message = 'Noe gikk galt.';
+            this.add('warning', message);
         },
 
         addSuccess: function(message) {
