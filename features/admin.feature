@@ -54,22 +54,22 @@ Feature: Election
     Given There is an inactive user with card key "1234"
     And I am on page "/admin/activate_user"
     When I scan card key "1234"
-    Then I see "Bruker har blitt aktivert."
+    Then I see alert "Bruker har blitt aktivert."
 
   Scenario: Deactivating user
     Given There is an active user with card key "1234"
     And I am on page "/admin/activate_user"
     When I scan card key "1234"
-    Then I see "Bruker har blitt deaktivert."
+    Then I see alert "Bruker har blitt deaktivert."
 
   Scenario: Activating user with invalid card key
     Given There is an active user with card key "1234"
     And I am on page "/admin/activate_user"
     When I scan card key "1235"
-    Then I see "Noe gikk galt!"
+    Then I see alert "Noe gikk galt!"
 
   Scenario: Creating user
     Given I am on page "/admin/create_user"
     When I create a user
-    Then I see "Bruker registrert!"
+    Then I see alert "Bruker registrert!"
 
