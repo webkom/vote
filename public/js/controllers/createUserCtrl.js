@@ -7,6 +7,7 @@ angular.module('voteApp').controller('createUserController',
         userService.createUser(user)
             .success(function(data) {
                 alertService.addSuccess('Bruker registrert!');
+                $scope.user = {};
             })
             .error(function(data) {
                 alertService.addError();
