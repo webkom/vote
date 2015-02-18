@@ -17,7 +17,7 @@ program
     .command('create-admin <username>')
     .description('create an admin user')
     .action(function(username, password) {
-        var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/ads';
+        var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
 
         mongoose.connect(mongoURL, function(err) {
             if (err) return done(err);

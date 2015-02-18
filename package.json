@@ -1,15 +1,16 @@
 {
-  "name": "ads",
+  "name": "vote",
   "version": "1.0.0",
-  "description": "Abakus Decision System",
+  "description": "Vote optimizes the election.",
   "main": "app.js",
   "scripts": {
+    "start": "node index.js",
     "test": "make test"
   },
   "author": "Webkom <webkom@abakus.no>",
   "repository": {
     "type": "git",
-    "url": "git@github.com:webkom/ads.git"
+    "url": "git@github.com:webkom/vote.git"
   },
   "license": "MIT",
   "dependencies": {

@@ -12,7 +12,7 @@ BOWER = $(BIN)/bower
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
 
-MONGO_URL = mongodb://localhost:27017/ads-test
+MONGO_URL = mongodb://localhost:27017/vote-test
 TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
 FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
@@ -27,19 +27,25 @@ node_modules: package.json
 	@npm install
 
 public/lib: bower.json
-	$(BOWER) install
-
-jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(JSHINT) .
+	@$(BOWER) install
 
 selenium:
 	$(WEBDRIVER_MANAGER) update
 
-protractor: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES) selenium
+protractor: selenium all
 	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(PROTRACTOR) ./features/protractor-conf.js
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSCS) app public/js chrome_app test features
+
+jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
+	$(JSHINT) .
+
+mocha:
+	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
+	$(ISTANBUL) report cobertura
+
+test: jshint jscs mocha protractor
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
@@ -48,7 +54,7 @@ else
 	$(STYLUS) --sourcemap --include node_modules/nib/lib public/styles/main.styl -o public
 endif
 
-public/js/ads.min.js: $(FRONTEND_FILES)
+public/js/vote.min.js: $(FRONTEND_FILES)
 	$(UGLIFY) \
 		public/libs/angular/angular.min.js \
 		public/libs/angular-route/angular-route.min.js \
@@ -61,17 +67,13 @@ public/js/ads.min.js: $(FRONTEND_FILES)
 		public/js/appRoutes.js \
 	-o $@
 
-test: all jshint jscs
-	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
-	$(ISTANBUL) report cobertura
-
 server:
 	@supervisor index
 
-production: node_modules public/js/ads.min.js public/js/ads.admin.min.js public/main.css
+production: node_modules public/js/vote.min.js public/main.css
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
 	git fetch && git reset --hard origin/master
-	npm install
+	make install
 	forever restart $(PWD)/index.js
 else
 	@echo "Not in a production environment!"

@@ -14,7 +14,7 @@ var User            = require('./app/models/user');
 app.disable('x-powered-by');
 app.set('view engine', 'jade');
 app.set('views', __dirname + '/app/views');
-app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/ads');
+app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
 mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
