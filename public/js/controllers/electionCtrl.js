@@ -71,6 +71,9 @@ function($scope, electionService, alertService, voteService, localStorageService
                         addVotedElection($scope.activeElection._id);
                         alertService.addError('Du kan bare stemme en gang per avstemning!');
                         break;
+                    case 'InactiveUserError':
+                        alertService.addError('Brukeren din er deaktivert, vennligst henvend deg til skranken.');
+                        break;
                     default:
                         alertService.addError('Noe gikk galt, vennligst prøv igjen.');
                 }
