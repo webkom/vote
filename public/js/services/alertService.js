@@ -3,8 +3,8 @@ function($interval, $rootScope) {
 
     $rootScope.alerts = [];
 
-    var CLOSE_DELAY = 500000;
-    var FADE_DELAY = 10000000;
+    var CLOSE_DELAY = 500;
+    var FADE_DELAY = 10000;
 
     var AlertService = {
         add: function(type, message) {

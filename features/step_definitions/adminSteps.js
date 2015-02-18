@@ -98,7 +98,6 @@ module.exports = function() {
 
     this.When(/^I scan card key "([^"]*)"$/, function(cardKey, callback) {
         browser.executeScript('window.postMessage(' + cardKey + ', "*");');
-
-        callback();
+        browser.waitForAngular().then(callback);
     });
 };
