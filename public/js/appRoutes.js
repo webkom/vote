@@ -31,7 +31,7 @@ function($routeProvider, $locationProvider) {
 
         .when('/admin/activate_user', {
             templateUrl: 'partials/admin/activateUser',
-            controller: 'activateUserController'
+            controller: 'toggleUserController'
         })
 
         .when('/admin/create_election', {

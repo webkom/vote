@@ -49,3 +49,21 @@ Feature: Election
     Then I see "Aktiver"
     And I should find "input#new-alternative"
     And I should find "button.add-alternative"
+
+  Scenario: Activating user
+    Given There is an inactive user with card key "1234"
+    And I am on page "/admin/activate_user"
+    When I scan card key "1234"
+    Then I see "Bruker har blitt aktivert."
+
+  Scenario: Deactivating user
+    Given There is an active user with card key "1234"
+    And I am on page "/admin/activate_user"
+    When I scan card key "1234"
+    Then I see "Bruker har blitt deaktivert."
+
+  Scenario: Activating user with invalid card key
+    Given There is an active user with card key "1234"
+    And I am on page "/admin/activate_user"
+    When I scan card key "1235"
+    Then I see "Noe gikk galt!"

@@ -1,6 +1,6 @@
 angular.module('voteApp').service('userService', ['$http', function($http) {
 
-    this.activateUser = function(cardKey) {
+    this.toggleUser = function(cardKey) {
         return $http.post('/api/user/' + cardKey + '/toggle_active');
     };
 

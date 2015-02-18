@@ -26,6 +26,11 @@ function($interval, $rootScope) {
             this.add('danger', message);
         },
 
+        addWarning: function(message) {
+            if (!message) message = 'Noe gikk galt.';
+            this.add('warning', message);
+        },
+
         addSuccess: function(message) {
             if (!message) message = 'Ferdig!';
             this.add('success', message);
