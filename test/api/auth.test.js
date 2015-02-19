@@ -83,7 +83,7 @@ describe('Auth API', function() {
                     .expect('Content-Type', /text\/html/)
                     .end(function(err, res) {
                         if (err) return done(err);
-                        res.text.should.include('Incorrect password');
+                        res.text.should.include('Brukernavn og/eller passord er feil.');
                         done();
                     });
             });
