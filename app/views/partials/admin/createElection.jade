@@ -30,10 +30,10 @@
                                 placeholder='Skriv inn en beskrivelse',
                                 ng-model='alternative.description',
                                 required)
-                            p.text-danger(ng-show='alternativeForm.alternative{{$index}}.$invalid') Alternativ er påkrevd
 
                             .input-group-addon(ng-if='election.alternatives.length > 1',
                                 ng-click='deleteAlternative(alternative)') Slett
+                        p.text-danger(ng-show='alternativeForm.alternative{{$index}}.$invalid') Alternativ er påkrevd
 
             button#submit.btn.btn-default.btn-lg(type='submit',
                 value='Submit',

@@ -29,7 +29,7 @@ function($scope, $interval, electionService, adminElectionService, alertService)
             adminElectionService.deactivateElection()
                 .success(function(data) {
                     $scope.election.active = data.active;
-                    alertService.addSuccess('Avstemning er deaktivert');
+                    alertService.addWarning('Avstemning er deaktivert');
                 })
                 .error(function(error) {
                     alertService.addError(error.message);
