@@ -1,4 +1,4 @@
-# vote [![Build status](https://ci.frigg.io/badges/webkom/ads/)](https://ci.frigg.io/webkom/ads/last/) [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/ads/)](https://ci.frigg.io/webkom/ads/last/)
+# vote [![Build status](https://ci.frigg.io/badges/webkom/vote/)](https://ci.frigg.io/webkom/vote/last/) [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/vote/)](https://ci.frigg.io/webkom/vote/last/)
 > vote optimizes the election
 
 Digital voting system for Abakus' general assembly, built using the MEAN-stack (mongoDB, Express, AngularJS, Node.js).
