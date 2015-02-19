@@ -64,6 +64,10 @@ function($scope, $interval, electionService, adminElectionService, alertService)
             });
     }
 
+    $scope.$on('$destroy', function() {
+        if (countInterval) $interval.cancel(countInterval);
+    });
+
     $scope.toggleCount = function() {
         $scope.showCount = !$scope.showCount;
         if ($scope.showCount) {
