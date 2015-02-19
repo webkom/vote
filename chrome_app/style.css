@@ -17,6 +17,9 @@ html, body, webview {
     position: relative;
     bottom: -50px;
     background: #262323;
+    -webkit-transition: all 200ms ease-in-out;
+    transition-delay: 2s;
+
 }
 
 .status_area:hover .hidden {

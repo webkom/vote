@@ -1,21 +1,22 @@
 var serial = chrome.serial;
 var snd = new Audio('assets/ding.wav');
+
 var $ = function(selector) {
     return document.querySelector(selector);
 };
 
-function updateStatus(status) {
+var updateStatus = function(status) {
     var statusbox = $('#status_text');
     statusbox.innerHTML = status;
-}
+};
 
-function updateTarget(value) {
+var updateTarget = function(value) {
     var wv = $('webview');
     wv.contentWindow.postMessage(value, '*');
-}
+};
 
 // Populate the list of available devices
-$('#refresh_button').addEventListener('click', function() {
+var refresh = function() {
     serial.getDevices(function(ports) {
         // get drop-down port selector
         var dropDown = $('#port_list');
@@ -33,7 +34,9 @@ $('#refresh_button').addEventListener('click', function() {
             dropDown.appendChild(newOption);
         });
     });
-});
+};
+
+$('#refresh_button').addEventListener('click', refresh);
 
 // Handle the 'Connect' button
 $('#connect_button').addEventListener('click', function() {
@@ -70,4 +73,4 @@ $('#test').addEventListener('click', function() {
     updateTarget('test');
 });
 
-updateStatus('ready');
+refresh();
