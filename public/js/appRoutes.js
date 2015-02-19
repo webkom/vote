@@ -9,11 +9,6 @@ function($routeProvider, $locationProvider) {
             controller: 'electionController'
         })
 
-        .when('/election/:param', {
-            templateUrl: 'partials/election',
-            controller: 'electionController'
-        })
-
         .when('/admin', {
             templateUrl: 'partials/admin/elections',
             controller: 'electionsController'

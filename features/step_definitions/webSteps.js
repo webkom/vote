@@ -4,7 +4,7 @@ var expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
-function logIn(username, password) {
+function logIn(username, password, callback) {
     var driver = browser.driver;
 
     var findByName = function(name) {
@@ -15,17 +15,26 @@ function logIn(username, password) {
     findByName('username').sendKeys(username);
     findByName('password').sendKeys(password);
     driver.findElement(by.tagName('button')).click();
+    browser.waitForAngular().then(callback);
 }
 
 module.exports = function() {
     this.Given(/^I am logged in as an admin$/, function(callback) {
-        logIn('admin', 'password');
+        logIn('admin', 'password', callback);
+    });
+
+    this.When(/^I log in$/, function(callback) {
+        logIn('testUser', 'password', callback);
+    });
+
+    this.When(/^I log out/, function(callback) {
+        var logoutButton = element(by.linkText('Logg ut'));
+        logoutButton.click();
         callback();
     });
 
     this.Given(/^I am logged in$/, function(callback) {
-        logIn('testUser', 'password');
-        callback();
+        logIn('testUser', 'password', callback);
     });
 
     this.Given(/^I am on page "([^"]*)"$/, function(path, callback) {
@@ -36,6 +45,12 @@ module.exports = function() {
     this.When(/^I go to page "([^"]*)"$/, function(path, callback) {
         browser.get(path);
         callback();
+    });
+
+    this.Then(/^I should be on page "([^"]*)"$/, function(path, callback) {
+        // Use the driver since it might be a page without angular
+        var driver = browser.driver;
+        expect(driver.getCurrentUrl()).to.eventually.contain(path).notify(callback);
     });
 
     this.Then(/^I see "([^"]*)"$/, function(text, callback) {
