@@ -14,9 +14,9 @@ function done(err, user) {
 
 program
     .version('1.0.0')
-    .command('create-admin <username>')
+    .command('create-admin <username> <cardKey>')
     .description('create an admin user')
-    .action(function(username, password) {
+    .action(function(username, cardKey) {
         var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
 
         mongoose.connect(mongoURL, function(err) {
@@ -27,7 +27,7 @@ program
                 var user = new User({
                     username: username,
                     admin: true,
-                    cardKey: 'ADMINCARDKEY'
+                    cardKey: cardKey
                 });
 
                 User.register(user, password, done);

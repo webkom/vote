@@ -31,13 +31,17 @@ userSchema.methods.getCleanUser = function() {
     return user;
 };
 
+var options = {
+    usernameLowerCase: true
+};
+
 /* istanbul ignore else */
 if (['test', 'development'].indexOf(process.env.NODE_ENV) !== -1) {
-    userSchema.plugin(passportLocalMongoose, {
+    userSchema.plugin(passportLocalMongoose, _.extend(options, {
         iterations: 1
-    });
+    }));
 } else {
-    userSchema.plugin(passportLocalMongoose);
+    userSchema.plugin(passportLocalMongoose, options);
 }
 
 module.exports = Bluebird.promisifyAll(mongoose.model('User', userSchema));

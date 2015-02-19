@@ -31,7 +31,7 @@ describe('User API', function() {
     });
 
     var testUserData = {
-        username: 'newUser',
+        username: 'newuser',
         password: 'password',
         cardKey: '00TESTCARDKEY'
     };

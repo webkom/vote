@@ -12,7 +12,12 @@ router.get('/login', function(req, res) {
     });
 });
 
-router.post('/login', passport.authenticate('local', {
+function stripUsername(req, res, next) {
+    req.body.username = req.body.username.trim();
+    next();
+}
+
+router.post('/login', stripUsername, passport.authenticate('local', {
     failureRedirect: '/auth/login', failureFlash: 'Brukernavn og/eller passord er feil.'
 }), function(req, res) {
     // If the user tried to access a specific page before, redirect there:
