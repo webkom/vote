@@ -1,5 +1,5 @@
 var serial = chrome.serial;
-var snd = new Audio('assets/ding.wav');
+var sound = new Audio('assets/cardread.mp3');
 
 var $ = function(selector) {
     return document.querySelector(selector);
@@ -58,7 +58,7 @@ $('#connect_button').addEventListener('click', function() {
                 updateTarget(temp.substring(0, 11));
                 temp = '';
                 updateStatus('reading...completed');
-                snd.play();
+                sound.play();
                 nextRead = Date.now() + 500;
             }
         });
