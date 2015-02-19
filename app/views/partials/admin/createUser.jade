@@ -6,8 +6,10 @@
                 input.form-control(type='text', name='cardKey', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
             .form-group
                 label Brukernavn
-                input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn', ng-model='user.username', ng-minlength='6')
-                p.text-danger(ng-show='createUserForm.username.$invalid') Brukernavn må være minst 6 tegn
+                input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn',
+                    ng-model='user.username', ng-minlength='6', ng-pattern='/^[a-zA-Z]+$/')
+                p.text-danger(ng-show='createUserForm.username.$error.minlength') Brukernavn må være minst 6 tegn
+                p.text-danger(ng-show='createUserForm.username.$error.pattern') Brukernavn kan bare inneholde bokstaver fra A-Z
             .form-group
                 label Password
                 input.form-control(type='password', name='password', placeholder='Skriv inn ønsket passord', ng-model='user.password', ng-minlength='6')

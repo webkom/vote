@@ -48,6 +48,21 @@ describe('Auth API', function() {
             });
     });
 
+    it('should strip spaces on login', function(done) {
+        request(app)
+            .post('/auth/login')
+            .send({
+                username: testUser.username + '    ',
+                password: testUser.password
+            })
+            .expect(302)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.header.location.should.equal('/');
+                done();
+            });
+    });
+
     it('should redirect correctly on login', function(done) {
         var agent = request.agent(app);
         agent
