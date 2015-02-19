@@ -34,7 +34,8 @@ html(ng-app='voteApp')
 
     footer
         .container.text-center
-            | Made by
-            a(href='http://webkom.abakus.no')  webkom
-            |  | Follow us on
-            a.red(href='https://github.com/webkom/census')  GitHub
+            block footer
+                | Made by
+                a(href='http://webkom.abakus.no')  webkom
+                |  | Follow us on
+                a.red(href='https://github.com/webkom/census')  GitHub
