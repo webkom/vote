@@ -43,8 +43,8 @@ module.exports = function() {
             .spread(function(user, adminUser) {
                 this.user = user;
                 this.adminUser = adminUser;
-                callback();
-            }).catch(callback);
+                return browser.manage().deleteAllCookies();
+            }).then(callback).catch(callback);
     });
 
     this.AfterFeatures(function(e, callback) {

@@ -5,6 +5,7 @@ var errors = require('../errors');
 var router = express.Router();
 
 router.get('/login', function(req, res) {
+    if (req.isAuthenticated()) return res.redirect('/');
     var csrfToken = process.env.NODE_ENV !== 'test' ? req.csrfToken() : 'test';
     res.render('login', {
         csrfToken: csrfToken,
@@ -13,7 +14,7 @@ router.get('/login', function(req, res) {
 });
 
 router.post('/login', passport.authenticate('local', {
-    failureRedirect: '/auth/login', failureFlash: true
+    failureRedirect: '/auth/login', failureFlash: 'Brukernavn og/eller passord er feil.'
 }), function(req, res) {
     // If the user tried to access a specific page before, redirect there:
     var path = req.session.originalPath || '/';
