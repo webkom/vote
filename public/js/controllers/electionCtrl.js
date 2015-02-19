@@ -60,12 +60,13 @@ function($scope, electionService, alertService, voteService, localStorageService
             .success(function(result) {
                 alertService.addSuccess('Takk for din stemme!');
                 addVotedElection($scope.activeElection._id);
+                getActiveElection();
             })
             .error(function(error) {
+                getActiveElection();
                 switch (error.name) {
                     case 'InactiveElectionError':
                         alertService.addError('Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.');
-                        getActiveElection();
                         break;
                     case 'AlreadyVotedError':
                         addVotedElection($scope.activeElection._id);
