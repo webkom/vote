@@ -19,7 +19,7 @@ Feature: Election
   Scenario: Voting
     Given There is an active election
     When I vote on an election
-    Then I see "Takk for din stemme."
+    Then I see alert "Takk for din stemme!"
 
   Scenario: Hide inactive election
     Given There is an inactive election

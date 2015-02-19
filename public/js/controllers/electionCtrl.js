@@ -58,7 +58,7 @@ function($scope, electionService, alertService, voteService, localStorageService
     $scope.vote = function() {
         voteService.vote($scope.selectedAlternative._id)
             .success(function(result) {
-                $scope.voteFeedback = 'Takk for din stemme.';
+                alertService.addSuccess('Takk for din stemme!');
                 addVotedElection($scope.activeElection._id);
             })
             .error(function(error) {

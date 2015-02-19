@@ -33,7 +33,7 @@ module.exports = function() {
         alternative.click();
         button.click();
         button.click();
-        callback();
+        browser.waitForAngular().then(callback);
     }
 
     this.Given(/^I have voted on the election$/, vote);
