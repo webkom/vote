@@ -117,7 +117,7 @@ describe('Auth API', function() {
                 .end(function(err, res) {
                     if (err) return done(err);
                     agent
-                        .get('/auth/logout')
+                        .post('/auth/logout')
                         .expect(302)
                         .end(function(err, res) {
                             if (err) return done(err);
