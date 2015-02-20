@@ -10,8 +10,14 @@ angular.module('voteApp').controller('toggleUserController',
                     alertService.addWarning('Bruker har blitt deaktivert.');
                 }
             })
-            .error(function(data) {
-                alertService.addError();
+            .error(function(error) {
+                switch (error.name) {
+                    case 'NotFoundError':
+                        alertService.addError('Uregistrert kort, vennligst lag en bruker først.');
+                        break;
+                    default:
+                        alertService.addError();
+                }
             });
     };
 
