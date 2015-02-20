@@ -19,9 +19,7 @@ FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
 BACKEND_FILES = $(shell find app -name "*.js")
 CUCUMBER_FILES = $(shell find features -name "*.js" -or -name "*.feature")
 
-all: node_modules public/main.css
-
-install: node_modules public/lib
+install: node_modules public/lib public/main.css
 
 node_modules: package.json
 	@npm install
