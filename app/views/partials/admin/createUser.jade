@@ -13,7 +13,7 @@
             .form-group
                 label Password
                 input.form-control(type='password', name='password', placeholder='Skriv inn ønsket passord', ng-model='user.password', ng-minlength='6')
-                p.text-danger(ng-show='createUserForm.password.$invalid') Brukernavn må være minst 6 tegn
+                p.text-danger(ng-show='createUserForm.password.$invalid') Passord må være minst 6 tegn
             .form-group
                 label Bekreft password
                 input.form-control(type='password', name='confirmPassword', placeholder='Bekreft passord', ng-model='user.confirmPassword', match-password='user.password')

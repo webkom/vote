@@ -66,7 +66,7 @@ Feature: Admin
     Given There is an active user with card key "1234"
     And I am on page "/admin/activate_user"
     When I scan card key "1235"
-    Then I see alert "Noe gikk galt!"
+    Then I see alert "Uregistrert kort, vennligst lag en bruker først."
 
   Scenario: Creating user
     Given I am on page "/admin/create_user"
