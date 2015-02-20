@@ -12,7 +12,7 @@ BOWER = $(BIN)/bower
 HOSTNAME = $(shell hostname -f)
 CORRECT = abakus.no
 
-MONGO_URL = mongodb://localhost:27017/vote-test
+TEST_DB = mongodb://localhost:27017/vote-test
 TESTS = $(shell find test -name "*.test.js")
 STYL = $(shell find public/styles -name "*.styl")
 FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
@@ -33,7 +33,7 @@ selenium:
 	$(WEBDRIVER_MANAGER) update
 
 protractor: selenium all
-	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(PROTRACTOR) ./features/protractor-conf.js
+	NODE_ENV=test MONGO_URL=$(TEST_DB) $(PROTRACTOR) ./features/protractor-conf.js
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSCS) app public/js chrome_app test features
@@ -42,7 +42,7 @@ jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .
 
 mocha:
-	NODE_ENV=test MONGO_URL=$(MONGO_URL) $(ISTANBUL) cover $(MOCHA) $(TESTS)
+	NODE_ENV=test MONGO_URL=$(TEST_DB) $(ISTANBUL) cover $(MOCHA) $(TESTS)
 	$(ISTANBUL) report cobertura
 
 test: jshint jscs mocha protractor

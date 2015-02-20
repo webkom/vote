@@ -9,6 +9,7 @@ var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
 var testPost404 = helpers.testPost404;
 var testAdminResourcePost = helpers.testAdminResourcePost;
+var testAdminResourceGet = helpers.testAdminResourceGet;
 var createUsers = helpers.createUsers;
 chai.should();
 
@@ -56,7 +57,8 @@ describe('Alternatives API', function() {
         passportStub.uninstall();
     });
 
-    it('should be able to get alternatives', function(done) {
+    it('should be able to get alternatives as admin', function(done) {
+        passportStub.login(this.adminUser);
         request(app)
             .get('/api/election/' + this.election.id + '/alternatives')
             .expect(200)
@@ -69,11 +71,18 @@ describe('Alternatives API', function() {
             }.bind(this));
     });
 
+    it('should only be possible to get alternatives as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/election/' + this.election.id + '/alternatives', done);
+    });
+
     it('should get 404 when listing alternatives for invalid electionIds', function(done) {
+        passportStub.login(this.adminUser);
         testGet404('/api/election/badid/alternatives', 'election', done);
     });
 
     it('should get 404 when listing alternatives for nonexistent electionIds', function(done) {
+        passportStub.login(this.adminUser);
         var badId = new ObjectId();
         testGet404('/api/election/' + badId + '/alternatives', 'election', done);
     });
