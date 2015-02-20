@@ -11,6 +11,7 @@ vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vot
 $ git clone git@github.com:webkom/vote.git
 $ cd vote
 $ make install
+$ ./bin/users create-admin <username> <cardKey>
 ```
 
 ## Usage
