@@ -361,7 +361,7 @@ describe('Election API', function() {
                         if (err) return done(err);
                         res.body.should.be.empty;
                         done();
-                });
+                    });
             });
     });
 });
