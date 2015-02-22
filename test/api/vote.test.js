@@ -132,7 +132,7 @@ describe('Vote API', function() {
                 if (err) return done(err);
 
                 var vote = res.body;
-                vote.alternative.should.equal(this.activeAlternative.id);
+                vote.alternative.description.should.equal(this.activeAlternative.description);
                 should.exist(vote.hash);
 
                 Vote.findAsync({ alternative: this.activeAlternative.id })

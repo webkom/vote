@@ -18,6 +18,9 @@ exports.create = function(req, res) {
             return alternative.addVote(req.user);
         })
         .spread(function(vote) {
+            return vote.populateAsync('alternative');
+        })
+        .then(function(vote) {
             return res.status(201).send(vote);
         })
         .catch(mongoose.Error.CastError, function(err) {
