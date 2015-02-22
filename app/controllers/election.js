@@ -151,3 +151,15 @@ exports.delete = function(req, res) {
             return errors.handleError(res, err);
         });
 };
+
+exports.count = function(req, res) {
+    return retrieveOr404(req, res)
+        .then(function(election) {
+            return res.json({
+                users: election.hasVotedUsers.length
+            });
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
+        });
+};
