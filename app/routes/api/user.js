@@ -8,6 +8,8 @@ router.route('/')
     .get(ensureAdmin, user.list)
     .post(ensureAdmin, user.create);
 
+router.get('/count', ensureAdmin, user.count);
+
 router.route('/:cardKey/toggle_active')
     .post(ensureAdmin, user.toggleActive);
 

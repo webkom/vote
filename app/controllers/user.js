@@ -1,6 +1,25 @@
 var User = require('../models/user');
 var errors = require('../errors');
 
+exports.count = function(req, res) {
+    var query = {};
+    if (req.query.active === 'true') {
+        query.active = true;
+    } else if (req.query.active === 'false') {
+        query.active = false;
+    }
+
+    return User.countAsync(query)
+        .then(function(count) {
+            return res.json({
+                users: count
+            });
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
+        });
+};
+
 exports.list = function(req, res) {
     return User.findAsync({}, 'username admin active')
         .then(function(users) {
