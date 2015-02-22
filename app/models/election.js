@@ -3,6 +3,13 @@ var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Vote = require('./vote');
 var Schema = mongoose.Schema;
 
+var hasVotedSchema = new Schema({
+    user: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
+});
+
 var electionSchema = new Schema({
     title: {
         type: String,
@@ -21,7 +28,8 @@ var electionSchema = new Schema({
     active: {
         type: Boolean,
         default: false
-    }
+    },
+    hasVotedUsers: [hasVotedSchema]
 });
 
 electionSchema.pre('remove', function(next) {

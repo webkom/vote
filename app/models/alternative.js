@@ -1,9 +1,10 @@
+var _ = require('lodash');
 var Bluebird = require('bluebird');
+var crypto = require('crypto');
 var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Election = require('./election');
 var Vote = require('./vote');
 var errors = require('../errors');
-var createHash = require('./helpers').createHash;
 
 var Schema = mongoose.Schema;
 
@@ -37,14 +38,23 @@ alternativeSchema.methods.addVote = function(user) {
     return Election.findByIdAsync(this.election).bind(this)
         .then(function(election) {
             if (!election.active) throw new errors.InactiveElectionError();
+            var votedUsers = election.hasVotedUsers.toObject();
+            var hasVoted = _.find(votedUsers, { user: user._id });
+            if (hasVoted) throw new errors.AlreadyVotedError();
 
-            var voteHash = createHash(user.username, this.election);
-            return Vote.findAsync({ hash: voteHash }).bind(this)
-            .then(function(votes) {
-                if (votes.length) throw new errors.AlreadyVotedError();
-                var vote = new Vote({ hash: voteHash, alternative: this.id });
-                return vote.saveAsync();
-            });
+            // 24 character random string
+            var voteHash = crypto.randomBytes(12).toString('hex');
+            var vote = new Vote({ hash: voteHash, alternative: this.id });
+
+            election.hasVotedUsers.push({ user: user._id });
+            return Bluebird.all([vote.saveAsync(), election.saveAsync()]);
+        })
+        .spread(function(voteResult) {
+            // voteResult will be an array:
+            // [voteObject, numberOfRowsAffected]
+            // use .spread(voteObject) when calling
+            // to only get the voteObject.
+            return voteResult;
         });
 };
 

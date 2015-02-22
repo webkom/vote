@@ -132,7 +132,7 @@ describe('Vote API', function() {
                 if (err) return done(err);
 
                 var vote = res.body;
-                vote.alternative.should.equal(this.activeAlternative.id);
+                vote.alternative.description.should.equal(this.activeAlternative.description);
                 should.exist(vote.hash);
 
                 Vote.findAsync({ alternative: this.activeAlternative.id })
@@ -235,7 +235,7 @@ describe('Vote API', function() {
         return this.activeAlternative.addVote(this.user).bind(this)
             .spread(function(vote) {
                 request(app)
-                    .get('/api/vote/' + this.activeElection.id)
+                    .get('/api/vote')
                     .set('Vote-Hash', vote.hash)
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -250,28 +250,9 @@ describe('Vote API', function() {
             }).catch(done);
     });
 
-    it('should not be possible to retrieve others\' votes', function(done) {
-        passportStub.login(this.adminUser);
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .spread(function(vote) {
-                request(app)
-                    .get('/api/vote/' + this.activeElection.id)
-                    .set('Vote-Hash', vote.hash)
-                    .expect(404)
-                    .expect('Content-Type', /json/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        var error = res.body;
-                        error.message.should.equal('Couldn\'t find vote.');
-                        error.status.should.equal(404);
-                        done();
-                    });
-            }).catch(done);
-    });
-
     it('should return 400 when retrieving votes without header', function(done) {
         request(app)
-            .get('/api/vote/' + this.activeElection.id)
+            .get('/api/vote')
             .expect(400)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
@@ -279,37 +260,6 @@ describe('Vote API', function() {
                 var error = res.body;
                 error.message.should.equal('Missing header Vote-Hash.');
                 error.status.should.equal(400);
-                done();
-            });
-    });
-
-    it('should return 404 for invalid electionIds', function(done) {
-        request(app)
-            .get('/api/vote/badid')
-            .set('Vote-Hash', 'something')
-            .expect(404)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.message.should.equal('Couldn\'t find election.');
-                error.status.should.equal(404);
-                done();
-            });
-    });
-
-    it('should return 404 for nonexistent electionIds', function(done) {
-        var badId = new ObjectId();
-        request(app)
-            .get('/api/vote/' + badId)
-            .set('Vote-Hash', 'something')
-            .expect(404)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                var error = res.body;
-                error.message.should.equal('Couldn\'t find election.');
-                error.status.should.equal(404);
                 done();
             });
     });

@@ -5,6 +5,22 @@ var Alternative = require('../models/alternative');
 var errors = require('../errors');
 var app = require('../../app');
 
+exports.retrieveActive = function(req, res) {
+    return Election
+        .findOne({ active: true })
+        .where('hasVotedUsers.user')
+        .ne(req.user.id)
+        .select('-hasVotedUsers')
+        .populate('alternatives')
+        .execAsync()
+        .then(function(election) {
+            res.status(200).json(election);
+        })
+        .catch(function(err) {
+            return errors.handleError(res, err);
+        });
+};
+
 exports.create = function(req, res) {
     return Election.createAsync({
         title: req.body.title,

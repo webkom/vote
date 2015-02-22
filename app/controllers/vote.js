@@ -1,6 +1,5 @@
 var mongoose = require('mongoose');
 var Alternative = require('../models/alternative');
-var Election = require('../models/election');
 var Vote = require('../models/vote');
 var errors = require('../errors');
 
@@ -19,6 +18,9 @@ exports.create = function(req, res) {
             return alternative.addVote(req.user);
         })
         .spread(function(vote) {
+            return vote.populateAsync('alternative');
+        })
+        .then(function(vote) {
             return res.status(201).send(vote);
         })
         .catch(mongoose.Error.CastError, function(err) {
@@ -37,16 +39,10 @@ exports.retrieve = function(req, res) {
         return errors.handleError(res, error);
     }
 
-    return Election.findByIdAsync(req.params.electionId)
-        .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
-            return Vote.findByHash(hash, req.user.username, req.params.electionId);
-        })
+    return Vote.findOneAsync({ hash: hash })
         .then(function(vote) {
-            return res.send(vote);
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
+            if (!vote) throw errors.NotFoundError('vote');
+            return res.json(vote);
         })
         .catch(function(err) {
             return errors.handleError(res, err);

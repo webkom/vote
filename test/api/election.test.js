@@ -16,11 +16,12 @@ var testPost404 = helpers.testPost404;
 var testGet404 = helpers.testGet404;
 var testDelete404 = helpers.testDelete404;
 var createUsers = helpers.createUsers;
+var testAdminResourceGet = helpers.testAdminResourceGet;
 var testAdminResourcePost = helpers.testAdminResourcePost;
 var testAdminResourceDelete = helpers.testAdminResourceDelete;
+var should = chai.should();
 
 chai.use(sinonChai);
-chai.should();
 
 describe('Election API', function() {
     var activeElectionData = {
@@ -98,6 +99,7 @@ describe('Election API', function() {
                 res.body.title.should.equal(inactiveElectionData.title, 'db election title hash should be the same as api result');
                 res.body.description.should.equal(inactiveElectionData.description, 'db election description hash should be the same as api result');
                 res.body.active.should.equal(false, 'db election should not be active');
+                res.body.hasVotedUsers.should.be.an.instanceof(Array);
                 done();
             });
     });
@@ -143,7 +145,8 @@ describe('Election API', function() {
         testAdminResourcePost('/api/election', done);
     });
 
-    it('should be able to get all elections', function(done) {
+    it('should be able to get all elections as admin', function(done) {
+        passportStub.login(this.adminUser);
         request(app)
             .get('/api/election')
             .expect(200)
@@ -157,7 +160,13 @@ describe('Election API', function() {
             }.bind(this));
     });
 
-    it('should be able to get an election and its alternatives', function(done) {
+    it('should only be possible to get elections jas admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/election', done);
+    });
+
+    it('should be able to get an election and its alternatives as admin', function(done) {
+        passportStub.login(this.adminUser);
         request(app)
             .get('/api/election/' + this.activeElection.id)
             .expect(200)
@@ -173,12 +182,19 @@ describe('Election API', function() {
             }.bind(this));
     });
 
+    it('should only be possible to retrieve alternatives as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/election/' + this.activeElection.id, done);
+    });
+
     it('should get 404 for missing elections', function(done) {
+        passportStub.login(this.adminUser);
         var badId = new ObjectId();
         testGet404('/api/election/' + badId, 'election', done);
     });
 
     it('should get 404 when retrieving alternatives with an invalid ObjectId', function(done) {
+        passportStub.login(this.adminUser);
         testGet404('/api/election/badelection', 'election', done);
     });
 
@@ -310,5 +326,42 @@ describe('Election API', function() {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
         testDelete404('/api/election/' + badId, 'election', done);
+    });
+
+    it('should be possible to retrieve active elections', function(done) {
+        passportStub.login(this.user);
+        request(app)
+            .get('/api/election/active')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var election = res.body;
+                election.title.should.equal(this.activeElection.title);
+                election.description.should.equal(this.activeElection.description);
+                election.alternatives[0].description.should.equal(this.alternative.description);
+                should.not.exist(election.hasVotedUsers);
+                done();
+            }.bind(this));
+    });
+
+    it('should filter out elections the user has voted on', function(done) {
+        passportStub.login(this.user);
+        this.activeElection.hasVotedUsers.push({
+            user: this.user.id
+        });
+
+        this.activeElection.saveAsync()
+            .then(function() {
+                request(app)
+                    .get('/api/election/active')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        res.body.should.be.empty;
+                        done();
+                    });
+            });
     });
 });
