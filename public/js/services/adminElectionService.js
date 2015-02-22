@@ -21,4 +21,11 @@ function($http, $routeParams) {
         return $http.get('/api/election/' + $routeParams.param + '/votes');
     };
 
+    this.getElections = function() {
+        return $http.get('/api/election');
+    };
+
+    this.getElection = function() {
+        return $http.get('/api/election/' + $routeParams.param);
+    };
 }]);

@@ -1,5 +1,6 @@
 angular.module('voteApp').controller('toggleUserController',
-['$scope', 'userService', 'alertService', 'cardKeyService', function($scope, userService, alertService, cardKeyService) {
+['$scope', 'userService', 'alertService', 'cardKeyService',
+function($scope, userService, alertService, cardKeyService) {
 
     var toggleUser = function(cardKey) {
         userService.toggleUser(cardKey)
