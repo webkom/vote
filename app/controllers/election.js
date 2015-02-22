@@ -5,6 +5,17 @@ var Alternative = require('../models/alternative');
 var errors = require('../errors');
 var app = require('../../app');
 
+exports.load = function(req, res, next, electionId) {
+    return Election.findByIdAsync(electionId)
+        .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
+            req.election = election;
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
+        }).nodeify(next);
+};
+
 exports.retrieveActive = function(req, res) {
     return Election
         .findOne({ active: true })
@@ -61,27 +72,8 @@ exports.list = function(req, res) {
         });
 };
 
-var retrieveOr404 = exports.retrieveOr404 = function(req, res, populate) {
-    function retrieve() {
-        if (populate) {
-            return Election.findById(req.params.electionId).populate(populate);
-        }
-        return Election.findById(req.params.electionId);
-    }
-
-    return retrieve()
-        .execAsync()
-        .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
-            return election;
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
-        });
-};
-
 exports.retrieve = function(req, res) {
-    return retrieveOr404(req, res, 'alternatives')
+    return req.election.populateAsync('alternatives')
         .then(function(election) {
             return res.status(200).json(election);
         })
@@ -91,11 +83,8 @@ exports.retrieve = function(req, res) {
 };
 
 function setElectionStatus(req, res, active) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            election.active = active;
-            return election.saveAsync();
-        });
+    req.election.active = active;
+    return req.election.saveAsync();
 }
 
 exports.activate = function(req, res) {
@@ -121,10 +110,7 @@ exports.deactivate = function(req, res) {
 };
 
 exports.sumVotes = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            return election.sumVotes();
-        })
+    return req.election.sumVotes()
         .then(function(alternatives) {
             return res.json(alternatives);
         })
@@ -134,13 +120,10 @@ exports.sumVotes = function(req, res) {
 };
 
 exports.delete = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            if (election.active) {
-                throw new errors.ActiveElectionError('Cannot delete an active election.');
-            }
-            return election.removeAsync();
-        })
+    if (req.election.active) {
+        throw new errors.ActiveElectionError('Cannot delete an active election.');
+    }
+    return req.election.removeAsync()
         .then(function() {
             return res.status(200).json({
                 message: 'Election deleted.',
@@ -153,13 +136,7 @@ exports.delete = function(req, res) {
 };
 
 exports.count = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            return res.json({
-                users: election.hasVotedUsers.length
-            });
-        })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+    res.json({
+        users: req.election.hasVotedUsers.length
+    });
 };

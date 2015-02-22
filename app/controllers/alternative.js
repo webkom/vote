@@ -1,10 +1,9 @@
 var mongoose = require('mongoose');
 var Alternative = require('../models/alternative');
-var retrieveElectionOr404 = require('./election').retrieveOr404;
 var errors = require('../errors');
 
 exports.list = function(req, res) {
-    return retrieveElectionOr404(req, res, 'alternatives')
+    return req.election.populateAsync('alternatives')
         .then(function(election) {
             return res.json(election.alternatives);
         })
@@ -14,7 +13,7 @@ exports.list = function(req, res) {
 };
 
 exports.create = function(req, res) {
-    return retrieveElectionOr404(req, res, 'alternatives')
+    return req.election.populateAsync('alternatives')
         .then(function(election) {
             if (election.active) {
                 throw new errors.ActiveElectionError('Cannot create alternatives for active elections.');
