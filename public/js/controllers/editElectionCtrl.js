@@ -1,12 +1,10 @@
 angular.module('voteApp').controller('editElectionController',
-['$scope', '$interval', 'adminElectionService', 'alertService',
-function($scope, $interval, adminElectionService, alertService) {
+['$scope', 'adminElectionService', 'alertService',
+function($scope, adminElectionService, alertService) {
 
     $scope.newAlternative = {};
     $scope.election = null;
     $scope.showCount = false;
-
-    var countInterval;
 
     adminElectionService.getElection()
         .success(function(data) {
@@ -59,24 +57,14 @@ function($scope, $interval, adminElectionService, alertService) {
                 });
             })
             .error(function(error) {
-                $interval.cancel(countInterval);
                 alertService.addError(error.message);
             });
     }
-
-    $scope.$on('$destroy', function() {
-        if (countInterval) $interval.cancel(countInterval);
-    });
 
     $scope.toggleCount = function() {
         $scope.showCount = !$scope.showCount;
         if ($scope.showCount) {
             getCount();
-            countInterval = $interval(getCount, 3000);
-        } else {
-            if (countInterval) {
-                $interval.cancel(countInterval);
-            }
         }
     };
 }]);

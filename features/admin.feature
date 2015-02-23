@@ -17,9 +17,15 @@ Feature: Admin
   Scenario: Count votes
     Given There is an active election
     And The election has votes
+    And The election is deactivated
     And I am on the edit election page
     When I click "Vis resultat"
     Then I should see votes
+
+  Scenario: Count votes for active elections
+    Given There is an active election
+    When I am on the edit election page
+    Then I should not find "button.toggle-show"
 
   Scenario: Add alternatives
     Given There is an inactive election

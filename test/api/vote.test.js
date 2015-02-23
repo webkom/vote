@@ -270,18 +270,31 @@ describe('Vote API', function() {
         return this.otherActiveAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
-                    .get('/api/election/' + this.activeElection.id + '/votes')
+                    .get('/api/election/' + this.inactiveElection.id + '/votes')
                     .expect(200)
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
                         var alternatives = res.body;
-                        alternatives.length.should.equal(2);
+                        alternatives.length.should.equal(1);
                         alternatives[0].votes.should.equal(0);
-                        alternatives[1].votes.should.equal(1);
                         done();
                     });
             }).catch(done);
+    });
+
+    it('should not be possible to get votes on an active election', function(done) {
+        passportStub.login(this.adminUser);
+
+        request(app)
+            .get('/api/election/' + this.activeElection.id + '/votes')
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.body.message.should.equal('Cannot retreive results on an active election.');
+                done();
+            });
     });
 
     it('should not be possible to sum votes without being admin', function(done) {

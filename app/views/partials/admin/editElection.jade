@@ -23,5 +23,6 @@
                     ng-if='!election.active',
                     ng-disabled='alternativeForm.$invalid') Legg til alternativ
                 button.toggle-show.btn.btn-default(type='button', ng-click='toggleCount()',
+                    ng-if='!election.active',
                     ng-class='{"alone": election.active}')
                     | {{showCount ? 'Skjul resultat': 'Vis resultat'}}
