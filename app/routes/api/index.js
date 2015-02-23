@@ -11,6 +11,11 @@ router.use('/user', userRoutes);
 router.use('/alternative', electionRoutes);
 router.use('/vote', voteRoutes);
 
+router.use(function(req, res, next) {
+    var error = new errors.NotFoundError(req.originalUrl);
+    next(error);
+});
+
 router.use(function(err, req, res, next) {
     errors.handleError(res, err);
 });
