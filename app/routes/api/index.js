@@ -11,7 +11,7 @@ router.use('/user', userRoutes);
 router.use('/alternative', electionRoutes);
 router.use('/vote', voteRoutes);
 
-router.use(function(err, res, res, next) {
+router.use(function(err, req, res, next) {
     errors.handleError(res, err);
 });
 

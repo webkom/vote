@@ -2,17 +2,15 @@ var mongoose = require('mongoose');
 var Alternative = require('../models/alternative');
 var errors = require('../errors');
 
-exports.list = function(req, res) {
+exports.list = function(req, res, next) {
     return req.election.populateAsync('alternatives')
         .then(function(election) {
             return res.json(election.alternatives);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     return req.election.populateAsync('alternatives')
         .then(function(election) {
             if (election.active) {
@@ -32,7 +30,5 @@ exports.create = function(req, res) {
         .catch(mongoose.Error.ValidationError, function(err) {
             throw new errors.ValidationError(err.errors);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
