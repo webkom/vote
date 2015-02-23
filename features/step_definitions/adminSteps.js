@@ -121,4 +121,9 @@ module.exports = function() {
         username.submit();
         browser.waitForAngular().then(callback);
     });
+
+    this.Then(/^I should see ([\d]+) in "([^"]*)"$/, function(count, binding, callback) {
+        var countElement = element(by.binding(binding));
+        expect(countElement.getText()).to.eventually.equal(String(count)).notify(callback);
+    });
 };

@@ -364,4 +364,38 @@ describe('Election API', function() {
                     });
             });
     });
+
+    it('should be possible to list the number of users that have voted', function(done) {
+        passportStub.login(this.adminUser);
+
+        this.alternative.addVote(this.user).bind(this)
+            .then(function() {
+                request(app)
+                    .get('/api/election/' + this.activeElection.id + '/count')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var count = res.body.users;
+                        count.should.equal(1);
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should only be possible to count voted users as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/election/' + this.activeElection.id + '/count', done);
+    });
+
+    it('should get 404 when counting votes for elections with invalid ObjectIds', function(done) {
+        passportStub.login(this.adminUser);
+        testGet404('/api/election/badid/count', 'election', done);
+    });
+
+    it('should get 404 when counting votes for elections with nonexistent ObjectIds', function(done) {
+        passportStub.login(this.adminUser);
+        var badId = new ObjectId();
+        testGet404('/api/election/' + badId + '/count', 'election', done);
+    });
 });

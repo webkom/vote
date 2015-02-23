@@ -1,17 +1,32 @@
 var User = require('../models/user');
 var errors = require('../errors');
 
-exports.list = function(req, res) {
+exports.count = function(req, res, next) {
+    var query = {};
+    if (req.query.active === 'true') {
+        query.active = true;
+    } else if (req.query.active === 'false') {
+        query.active = false;
+    }
+
+    return User.countAsync(query)
+        .then(function(count) {
+            return res.json({
+                users: count
+            });
+        })
+        .catch(next);
+};
+
+exports.list = function(req, res, next) {
     return User.findAsync({}, 'username admin active')
         .then(function(users) {
             return res.json(users);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     var user = new User(req.body);
     User.registerAsync(user, req.body.password)
         .then(function(createdUser) {
@@ -23,12 +38,10 @@ exports.create = function(req, res) {
             }
             throw err;
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.toggleActive = function(req, res) {
+exports.toggleActive = function(req, res, next) {
     User.findOneAsync({cardKey: req.params.cardKey})
         .then(function(user) {
             if (!user) {
@@ -40,7 +53,5 @@ exports.toggleActive = function(req, res) {
         .spread(function(user) {
             return res.json(user);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };

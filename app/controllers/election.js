@@ -5,7 +5,18 @@ var Alternative = require('../models/alternative');
 var errors = require('../errors');
 var app = require('../../app');
 
-exports.retrieveActive = function(req, res) {
+exports.load = function(req, res, next, electionId) {
+    return Election.findByIdAsync(electionId)
+        .then(function(election) {
+            if (!election) throw new errors.NotFoundError('election');
+            req.election = election;
+        })
+        .catch(mongoose.Error.CastError, function(err) {
+            throw new errors.NotFoundError('election');
+        }).nodeify(next);
+};
+
+exports.retrieveActive = function(req, res, next) {
     return Election
         .findOne({ active: true })
         .where('hasVotedUsers.user')
@@ -15,13 +26,10 @@ exports.retrieveActive = function(req, res) {
         .execAsync()
         .then(function(election) {
             res.status(200).json(election);
-        })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        }).catch(next);
 };
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     return Election.createAsync({
         title: req.body.title,
         description: req.body.description
@@ -43,111 +51,75 @@ exports.create = function(req, res) {
         return res.status(201).json(election);
     }).catch(mongoose.Error.ValidationError, function(err) {
         throw new errors.ValidationError(err.errors);
-    }).catch(function(err) {
-        return errors.handleError(res, err);
-    });
+    }).catch(next);
 
 };
 
-exports.list = function(req, res) {
+exports.list = function(req, res, next) {
     return Election.find()
         .populate('alternatives')
         .execAsync()
         .then(function(elections) {
             return res.status(200).json(elections);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-var retrieveOr404 = exports.retrieveOr404 = function(req, res, populate) {
-    function retrieve() {
-        if (populate) {
-            return Election.findById(req.params.electionId).populate(populate);
-        }
-        return Election.findById(req.params.electionId);
-    }
-
-    return retrieve()
-        .execAsync()
-        .then(function(election) {
-            if (!election) throw new errors.NotFoundError('election');
-            return election;
-        })
-        .catch(mongoose.Error.CastError, function(err) {
-            throw new errors.NotFoundError('election');
-        });
-};
-
-exports.retrieve = function(req, res) {
-    return retrieveOr404(req, res, 'alternatives')
+exports.retrieve = function(req, res, next) {
+    return req.election.populateAsync('alternatives')
         .then(function(election) {
             return res.status(200).json(election);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
 function setElectionStatus(req, res, active) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            election.active = active;
-            return election.saveAsync();
-        });
+    req.election.active = active;
+    return req.election.saveAsync();
 }
 
-exports.activate = function(req, res) {
+exports.activate = function(req, res, next) {
     setElectionStatus(req, res, true)
         .spread(function(election) {
             var io = app.get('io');
             io.emit('election');
             return res.status(200).json(election);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.deactivate = function(req, res) {
+exports.deactivate = function(req, res, next) {
     setElectionStatus(req, res, false)
         .spread(function(election) {
             return res.status(200).json(election);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.sumVotes = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            return election.sumVotes();
-        })
+exports.sumVotes = function(req, res, next) {
+    return req.election.sumVotes()
         .then(function(alternatives) {
             return res.json(alternatives);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.delete = function(req, res) {
-    return retrieveOr404(req, res)
-        .then(function(election) {
-            if (election.active) {
-                throw new errors.ActiveElectionError('Cannot delete an active election.');
-            }
-            return election.removeAsync();
-        })
+exports.delete = function(req, res, next) {
+    if (req.election.active) {
+        throw new errors.ActiveElectionError('Cannot delete an active election.');
+    }
+    return req.election.removeAsync()
         .then(function() {
             return res.status(200).json({
                 message: 'Election deleted.',
                 status: 200
             });
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
+};
+
+exports.count = function(req, res) {
+    res.json({
+        users: req.election.hasVotedUsers.length
+    });
 };

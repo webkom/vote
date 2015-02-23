@@ -126,4 +126,62 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         testPost404('/api/user/LELELENEET/toggle_active', 'user', done);
     });
+
+    it('should be possible to count active users', function(done) {
+        passportStub.login(this.adminUser);
+        this.user.active = false;
+
+        return this.user.saveAsync()
+            .then(function() {
+                request(app)
+                    .get('/api/user/count?active=true')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var count = res.body.users;
+                        count.should.equal(1);
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should be possible to count inactive users', function(done) {
+        passportStub.login(this.adminUser);
+
+        request(app)
+            .get('/api/user/count?active=false')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var count = res.body.users;
+                count.should.equal(0);
+                done();
+            });
+    });
+
+    it('should be possible to count all users', function(done) {
+        passportStub.login(this.adminUser);
+        this.user.active = false;
+
+        return this.user.saveAsync()
+            .then(function() {
+                request(app)
+                    .get('/api/user/count')
+                    .expect(200)
+                    .expect('Content-Type', /json/)
+                    .end(function(err, res) {
+                        if (err) return done(err);
+                        var count = res.body.users;
+                        count.should.equal(2);
+                        done();
+                    });
+            }).catch(done);
+    });
+
+    it('should only be possible to count users as admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResourceGet('/api/user/count', done);
+    });
 });

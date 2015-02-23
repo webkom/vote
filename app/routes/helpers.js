@@ -31,7 +31,7 @@ exports.ensureAdmin = function(req, res, next) {
     ensureAuthenticated(req, res, function() {
         if (!req.user.admin) {
             var error = new errors.PermissionError();
-            return errors.handleError(res, error);
+            return next(error);
         }
         return next();
     });

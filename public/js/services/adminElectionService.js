@@ -28,4 +28,8 @@ function($http, $routeParams) {
     this.getElection = function() {
         return $http.get('/api/election/' + $routeParams.param);
     };
+
+    this.countVotedUsers = function() {
+        return $http.get('/api/election/' + $routeParams.param + '/count');
+    };
 }]);

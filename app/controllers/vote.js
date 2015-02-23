@@ -3,7 +3,7 @@ var Alternative = require('../models/alternative');
 var Vote = require('../models/vote');
 var errors = require('../errors');
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
     var alternativeId = req.body.alternativeId;
     if (!alternativeId) {
         var error = new errors.InvalidPayloadError('alternativeId');
@@ -26,12 +26,10 @@ exports.create = function(req, res) {
         .catch(mongoose.Error.CastError, function(err) {
             throw new errors.NotFoundError('alternative');
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };
 
-exports.retrieve = function(req, res) {
+exports.retrieve = function(req, res, next) {
     var hash = req.get('Vote-Hash');
 
     if (!hash) {
@@ -44,7 +42,5 @@ exports.retrieve = function(req, res) {
             if (!vote) throw errors.NotFoundError('vote');
             return res.json(vote);
         })
-        .catch(function(err) {
-            return errors.handleError(res, err);
-        });
+        .catch(next);
 };

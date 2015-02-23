@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('editElectionController',
-['$scope', '$interval', 'adminElectionService', 'alertService',
-function($scope, $interval, adminElectionService, alertService) {
+['$scope', '$interval', 'adminUserService', 'adminElectionService', 'alertService',
+function($scope, $interval, adminUserService, adminElectionService, alertService) {
 
     $scope.newAlternative = {};
     $scope.election = null;
@@ -46,6 +46,11 @@ function($scope, $interval, adminElectionService, alertService) {
         }
     };
 
+    function handleIntervalError(error) {
+        $interval.cancel(countInterval);
+        alertService.addError(error.message);
+    }
+
     function getCount() {
         adminElectionService.countVotes()
             .success(function(alternatives) {
@@ -58,11 +63,26 @@ function($scope, $interval, adminElectionService, alertService) {
                     });
                 });
             })
-            .error(function(error) {
-                $interval.cancel(countInterval);
-                alertService.addError(error.message);
-            });
+            .error(handleIntervalError);
     }
+
+    function countActiveUsers() {
+        adminUserService.countActiveUsers()
+            .success(function(result) {
+                $scope.activeUsers = result.users;
+            })
+            .error(handleIntervalError);
+    }
+    countActiveUsers();
+
+    function countVotedUsers() {
+        adminElectionService.countVotedUsers()
+            .success(function(result) {
+                $scope.votedUsers = result.users;
+            })
+            .error(handleIntervalError);
+    }
+    countVotedUsers();
 
     $scope.$on('$destroy', function() {
         if (countInterval) $interval.cancel(countInterval);
@@ -72,7 +92,11 @@ function($scope, $interval, adminElectionService, alertService) {
         $scope.showCount = !$scope.showCount;
         if ($scope.showCount) {
             getCount();
-            countInterval = $interval(getCount, 3000);
+            countInterval = $interval(function() {
+                getCount();
+                countActiveUsers();
+                countVotedUsers();
+            }, 3000);
         } else {
             if (countInterval) {
                 $interval.cancel(countInterval);

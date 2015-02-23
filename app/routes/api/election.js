@@ -13,18 +13,23 @@ router.route('/')
 
 router.get('/active', ensureAuthenticated, election.retrieveActive);
 
+// Wraps all endpoints that use electionId in ensureAdmin
+router.param('electionId', ensureAdmin);
+router.param('electionId', election.load);
+
 router.route('/:electionId')
-    .get(ensureAdmin, election.retrieve)
-    .delete(ensureAdmin, election.delete);
+    .get(election.retrieve)
+    .delete(election.delete);
 
-router.post('/:electionId/activate', ensureAdmin, election.activate);
+router.get('/:electionId/count', election.count);
 
-router.post('/:electionId/deactivate', ensureAdmin, election.deactivate);
+router.post('/:electionId/activate', election.activate);
+router.post('/:electionId/deactivate', election.deactivate);
 
 router.route('/:electionId/alternatives')
-    .get(ensureAdmin, alternative.list)
-    .post(ensureAdmin, alternative.create);
+    .get(alternative.list)
+    .post(alternative.create);
 
-router.get('/:electionId/votes', ensureAdmin, election.sumVotes);
+router.get('/:electionId/votes', election.sumVotes);
 
 module.exports = router;
