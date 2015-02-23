@@ -1,6 +1,4 @@
-var request = require('supertest');
 var chai = require('chai');
-var app = require('../../app');
 var helpers = require('./helpers');
 var testGet404 = helpers.testGet404;
 var testPost404 = helpers.testPost404;

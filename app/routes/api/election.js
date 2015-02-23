@@ -13,6 +13,7 @@ router.route('/')
 
 router.get('/active', ensureAuthenticated, election.retrieveActive);
 
+// Wraps all endpoints that use electionId in ensureAdmin
 router.param('electionId', ensureAdmin);
 router.param('electionId', election.load);
 

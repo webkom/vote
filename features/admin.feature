@@ -73,3 +73,9 @@ Feature: Admin
     When I create a user
     Then I see alert "Bruker registrert!"
 
+  Scenario: Count number of votes and active users
+    Given There is an active election
+    And The election has votes
+    And I am on the edit election page
+    Then I should see 1 in "votedUsers"
+    And I should see 2 in "activeUsers"

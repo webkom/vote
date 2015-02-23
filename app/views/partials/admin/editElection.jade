@@ -1,8 +1,15 @@
 .row
     .center.text-center
-        .election-info
+        .election-info.admin
             h2 {{election.title}}
             p {{election.description}}
+
+        .election-info.admin
+            h3.user-status
+                span(ng-bind='votedUsers')
+                | /
+                span(ng-bind='activeUsers')
+                i.fa.fa-users
 
             button.toggle-election.btn.btn-default.btn-lg(ng-click='toggleElection()')
                 | {{election.active ? "Deaktiver" : "Aktiver"}}
