@@ -1,4 +1,5 @@
 var Bluebird = require('bluebird');
+var errors = require('../errors');
 var mongoose = Bluebird.promisifyAll(require('mongoose'));
 var Vote = require('./vote');
 var Schema = mongoose.Schema;
@@ -45,6 +46,7 @@ electionSchema.pre('remove', function(next) {
 });
 
 electionSchema.methods.sumVotes = function() {
+    if (this.active) throw new errors.ActiveElectionError('Cannot retreive results on an active election.');
     return Bluebird.map(this.alternatives, function(alternativeId) {
         return Vote.findAsync({ alternative: alternativeId })
             .then(function(votes) {

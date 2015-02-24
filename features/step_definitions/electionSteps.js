@@ -12,6 +12,12 @@ module.exports = function() {
         this.election.save(callback);
     });
 
+    this.Given(/^The election is (de)?activated/, function(arg, callback) {
+        var active = arg !== 'de';
+        this.election.active = active;
+        this.election.save(callback);
+    });
+
     this.Then(/^I see an active election$/, function(callback) {
         var title = element(by.binding('activeElection.title'));
         var description = element(by.binding('activeElection.description'));

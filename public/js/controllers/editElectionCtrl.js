@@ -6,7 +6,10 @@ function($scope, $interval, adminUserService, adminElectionService, alertService
     $scope.election = null;
     $scope.showCount = false;
 
-    var countInterval;
+    var countInterval = $interval(function() {
+        countActiveUsers();
+        countVotedUsers();
+    }, 3000);
 
     adminElectionService.getElection()
         .success(function(data) {
@@ -84,23 +87,10 @@ function($scope, $interval, adminUserService, adminElectionService, alertService
     }
     countVotedUsers();
 
-    $scope.$on('$destroy', function() {
-        if (countInterval) $interval.cancel(countInterval);
-    });
-
     $scope.toggleCount = function() {
         $scope.showCount = !$scope.showCount;
         if ($scope.showCount) {
             getCount();
-            countInterval = $interval(function() {
-                getCount();
-                countActiveUsers();
-                countVotedUsers();
-            }, 3000);
-        } else {
-            if (countInterval) {
-                $interval.cancel(countInterval);
-            }
         }
     };
 }]);
