@@ -39,6 +39,11 @@ app.use(session({
     resave: false
 }));
 
+if (process.env.NODE_ENV == 'production') {
+  var raven = require('raven');
+  app.use(raven.middleware.express(process.env.RAVEN_DSN));
+}
+
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
     app.use(csrf());
