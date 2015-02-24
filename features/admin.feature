@@ -58,24 +58,24 @@ Feature: Admin
 
   Scenario: Activating user
     Given There is an inactive user with card key "1234"
-    And I am on page "/admin/activate_user"
+    And I am waiting on page "/admin/activate_user"
     When I scan card key "1234"
     Then I see alert "Bruker har blitt aktivert."
 
   Scenario: Deactivating user
     Given There is an active user with card key "1234"
-    And I am on page "/admin/activate_user"
+    And I am waiting on page "/admin/activate_user"
     When I scan card key "1234"
     Then I see alert "Bruker har blitt deaktivert."
 
   Scenario: Activating user with invalid card key
     Given There is an active user with card key "1234"
-    And I am on page "/admin/activate_user"
+    And I am waiting on page "/admin/activate_user"
     When I scan card key "1235"
     Then I see alert "Uregistrert kort, vennligst lag en bruker først."
 
   Scenario: Creating user
-    Given I am on page "/admin/create_user"
+    Given I am waiting on page "/admin/create_user"
     When I create a user
     Then I see alert "Bruker registrert!"
 
