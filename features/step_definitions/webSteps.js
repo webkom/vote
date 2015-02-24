@@ -42,6 +42,11 @@ module.exports = function() {
         callback();
     });
 
+    this.Given(/^I am waiting on page "([^"]*)"$/, function(path, callback) {
+        browser.get(path);
+        browser.waitForAngular().then(callback);
+    });
+
     this.When(/^I go to page "([^"]*)"$/, function(path, callback) {
         browser.get(path);
         callback();
