@@ -129,7 +129,7 @@ describe('User API', function() {
 
     it('should be possible to count active users', function(done) {
         passportStub.login(this.adminUser);
-        this.user.active = false;
+        this.user.active = true;
 
         return this.user.saveAsync()
             .then(function() {
@@ -174,7 +174,7 @@ describe('User API', function() {
                     .end(function(err, res) {
                         if (err) return done(err);
                         var count = res.body.users;
-                        count.should.equal(2);
+                        count.should.equal(1);
                         done();
                     });
             }).catch(done);

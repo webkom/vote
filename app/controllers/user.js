@@ -2,7 +2,7 @@ var User = require('../models/user');
 var errors = require('../errors');
 
 exports.count = function(req, res, next) {
-    var query = {};
+    var query = { admin:false };
     if (req.query.active === 'true') {
         query.active = true;
     } else if (req.query.active === 'false') {
