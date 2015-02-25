@@ -84,4 +84,4 @@ Feature: Admin
     And The election has votes
     And I am on the edit election page
     Then I should see 1 in "votedUsers"
-    And I should see 2 in "activeUsers"
+    And I should see 1 in "activeUsers"
