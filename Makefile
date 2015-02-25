@@ -36,7 +36,7 @@ protractor: selenium all
 	NODE_ENV=test MONGO_URL=$(TEST_DB) $(PROTRACTOR) ./features/protractor-conf.js
 
 jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(JSCS) app public/js chrome_app test features
+	$(JSCS) .
 
 jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
 	$(JSHINT) .
