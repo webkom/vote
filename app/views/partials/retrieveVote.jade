@@ -1,0 +1,23 @@
+.row
+    .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+        form.form-group(ng-submit='retreiveVote(voteHash)', name='retreiveVoteForm')
+            .form-group(required)
+                label Skriv inn kvittering:
+                input.form-control(type='text',
+                ng-model='voteHash',
+                placeholder='Kvittering',
+                required='required')
+                p.text-danger(ng-show='retreiveVoteForm.hash.$invalid') Kvittering er påkrevd
+
+            button#submit.btn.btn-default.btn-lg(type='submit',
+            value='Submit',
+            ng-disabled='retreiveVoteForm.$invalid') Submit
+            
+
+        .container.text-center(ng-if='vote')
+            h5 Kvittering:
+            span {{vote.hash}}
+            h5 Avstemning:
+            span {{vote.alternative.election.title}}
+            h5 Alternativ valgt:
+            span {{vote.alternative.description}}

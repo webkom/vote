@@ -18,6 +18,22 @@ module.exports = function() {
         this.election.save(callback);
     });
 
+    this.Given(/^I am on the retrieve vote page$/, function(callback) {
+        browser.get('/retrieve');
+        callback();
+    });
+
+    this.Given(/^I enter a random string as vote hash$/, function(callback) {
+        element(by.model('voteHash')).sendKeys('LAALLALALA');
+        callback();
+    });
+
+    this.When(/^I submit the form$/, function(callback) {
+        var button = element(by.css('button'));
+        button.submit();
+        callback();
+    });
+
     this.Then(/^I see an active election$/, function(callback) {
         var title = element(by.binding('activeElection.title'));
         var description = element(by.binding('activeElection.description'));

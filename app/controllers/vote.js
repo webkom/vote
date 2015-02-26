@@ -37,10 +37,15 @@ exports.retrieve = function(req, res, next) {
         return errors.handleError(res, error);
     }
 
-    return Vote.findOneAsync({ hash: hash })
+    return Vote.findOne({ hash: hash })
+        .populate('alternative')
+        .execAsync()
         .then(function(vote) {
-            if (!vote) throw errors.NotFoundError('vote');
-            return res.json(vote);
+            if (!vote) throw new errors.NotFoundError('vote');
+            return vote.alternative.populateAsync('election')
+                .then(function(alternative) {
+                    return res.json(vote);
+                });
         })
         .catch(next);
 };
