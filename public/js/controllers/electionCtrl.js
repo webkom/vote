@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('electionController',
-['$scope', 'electionService', 'alertService', 'voteService', 'socketIOService',
-function($scope, electionService, alertService, voteService, socketIOService) {
+['$scope', 'electionService', 'alertService', 'voteService', 'socketIOService', 'localStorageService',
+function($scope, electionService, alertService, voteService, socketIOService, localStorageService) {
 
     $scope.activeElection = null;
     $scope.selectedAlternative = null;
@@ -36,6 +36,7 @@ function($scope, electionService, alertService, voteService, socketIOService) {
             .success(function(vote) {
                 $scope.activeElection = null;
                 alertService.addSuccess('Takk for din stemme!');
+                localStorageService.set('voteHash', vote.hash);
                 getActiveElection();
             })
             .error(function(error) {

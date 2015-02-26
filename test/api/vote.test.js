@@ -243,10 +243,11 @@ describe('Vote API', function() {
                         if (err) return done(err);
 
                         var receivedVote = res.body;
-                        receivedVote.alternative.should.equal(String(vote.alternative));
                         receivedVote.hash.should.equal(vote.hash);
+                        receivedVote.alternative._id.should.equal(String(vote.alternative));
+                        receivedVote.alternative.election._id.should.equal(String(this.activeElection.id));
                         done();
-                    });
+                    }.bind(this));
             }).catch(done);
     });
 
