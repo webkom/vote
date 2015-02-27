@@ -8,8 +8,8 @@ var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
-var testGet404 = helpers.testGet404;
-var testAdminResourceGet = helpers.testAdminResourceGet;
+var test404 = helpers.test404;
+var testAdminResource = helpers.testAdminResource;
 var createUsers = helpers.createUsers;
 var should = chai.should();
 
@@ -299,18 +299,18 @@ describe('Vote API', function() {
 
     it('should not be possible to sum votes without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/election/' + this.activeElection.id + '/votes', done);
+        testAdminResource('get', '/api/election/' + this.activeElection.id + '/votes', done);
     });
 
     it('should get 404 when summing votes for invalid electionIds', function(done) {
         passportStub.login(this.adminUser);
-        testGet404('/api/election/badid/votes', 'election', done);
+        test404('get', '/api/election/badid/votes', 'election', done);
     });
 
     it('should get 404 when summing votes for nonexistent electionIds', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testGet404('/api/election/' + badId + '/votes', 'election', done);
+        test404('get', '/api/election/' + badId + '/votes', 'election', done);
     });
 
     it('should return 403 when admins try to vote', function(done) {

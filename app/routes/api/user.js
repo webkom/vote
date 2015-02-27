@@ -10,7 +10,8 @@ router.route('/')
 
 router.get('/count', ensureAdmin, user.count);
 
-router.route('/:cardKey/toggle_active')
-    .post(ensureAdmin, user.toggleActive);
+router.put('/:username/change_card', ensureAdmin, user.changeCard);
+
+router.post('/:cardKey/toggle_active', ensureAdmin, user.toggleActive);
 
 module.exports = router;

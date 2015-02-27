@@ -1,5 +1,7 @@
+var Bluebird = require('bluebird');
 var User = require('../models/user');
 var errors = require('../errors');
+var errorChecks = require('../errors/error-checks');
 
 exports.count = function(req, res, next) {
     var query = { admin:false };
@@ -54,4 +56,28 @@ exports.toggleActive = function(req, res, next) {
             return res.json(user);
         })
         .catch(next);
+};
+
+exports.changeCard= function(req, res, next) {
+    var authenticateAsync = Bluebird.promisify(User.authenticate());
+    authenticateAsync(req.params.username, req.body.password)
+        .then(function(user) {
+            // User.authenticate returns a [false, { message: 'errmessage' }] when
+            // bad credentials are given
+            if (Array.isArray(user)) {
+                throw new errors.InvalidRegistrationError('Incorrect username and/or password.');
+            }
+
+            user.cardKey = req.body.cardKey;
+            return user.saveAsync();
+        })
+        .spread(function(user) {
+            res.json(user);
+        })
+        .catch(errorChecks.DuplicateError, function() {
+            throw new errors.DuplicateCardError();
+        })
+        .catch(function(err) {
+            next(err);
+        });
 };

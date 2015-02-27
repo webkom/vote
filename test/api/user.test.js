@@ -4,9 +4,8 @@ var chai = require('chai');
 var app = require('../../app');
 var User = require('../../app/models/user');
 var helpers = require('./helpers');
-var testAdminResourceGet = helpers.testAdminResourceGet;
-var testAdminResourcePost = helpers.testAdminResourcePost;
-var testPost404 = helpers.testPost404;
+var testAdminResource = helpers.testAdminResource;
+var test404 = helpers.test404;
 var createUsers = helpers.createUsers;
 var should = chai.should();
 
@@ -61,7 +60,7 @@ describe('User API', function() {
 
     it('should not be possible to create users without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/user', done);
+        testAdminResource('post', '/api/user', done);
     });
 
     it('should return 400 when creating users without required fields', function(done) {
@@ -114,17 +113,17 @@ describe('User API', function() {
 
     it('should not be possible to get users without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/user', done);
+        testAdminResource('get', '/api/user', done);
     });
 
     it('should not be possible to toggle a user without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/user/' + this.user.cardKey + '/toggle_active', done);
+        testAdminResource('post', '/api/user/' + this.user.cardKey + '/toggle_active', done);
     });
 
     it('should get 404 when toggeling active users with invalid cardKey', function(done) {
         passportStub.login(this.adminUser);
-        testPost404('/api/user/LELELENEET/toggle_active', 'user', done);
+        test404('post', '/api/user/LELELENEET/toggle_active', 'user', done);
     });
 
     it('should be possible to count active users', function(done) {
@@ -182,6 +181,78 @@ describe('User API', function() {
 
     it('should only be possible to count users as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/user/count', done);
+        testAdminResource('get', '/api/user/count', done);
+    });
+
+    it('should be possible to change a user\'s card key', function(done) {
+        passportStub.login(this.adminUser);
+
+        var changeCardPayload = {
+            password: 'password',
+            cardKey: 'thisisanewcardkey'
+        };
+
+        request(app)
+            .put('/api/user/' + this.user.username + '/change_card')
+            .send(changeCardPayload)
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var user = res.body;
+                user.cardKey.should.equal(changeCardPayload.cardKey);
+                done();
+            });
+    });
+
+    it('should not be possible to change a user\'s card key to an existing card', function(done) {
+        passportStub.login(this.adminUser);
+
+        var changeCardPayload = {
+            password: 'password',
+            cardKey: '55TESTCARDKEY'
+        };
+
+        request(app)
+            .put('/api/user/' + this.user.username + '/change_card')
+            .send(changeCardPayload)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('DuplicateCardError');
+                error.status.should.equal(400);
+                error.message.should.equal('There\'s already a user registered to this card.');
+                done();
+            });
+    });
+
+    it('should give feedback if wrong credentials are given when changing cards', function(done) {
+        passportStub.login(this.adminUser);
+
+        var changeCardPayload = {
+            password: 'notthepassword',
+            cardKey: 'somecardkey'
+        };
+
+        request(app)
+            .put('/api/user/' + this.user.username + '/change_card')
+            .send(changeCardPayload)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('InvalidRegistrationError');
+                error.status.should.equal(400);
+                error.message.should.equal('Incorrect username and/or password.');
+                done();
+            });
+    });
+
+    it('should only be possible to change cards as an admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResource('put', '/api/user/user/change_card', done);
     });
 });
