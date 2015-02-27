@@ -58,7 +58,7 @@ exports.toggleActive = function(req, res, next) {
         .catch(next);
 };
 
-exports.changeCard= function(req, res, next) {
+exports.changeCard = function(req, res, next) {
     var authenticateAsync = Bluebird.promisify(User.authenticate());
     authenticateAsync(req.params.username, req.body.password)
         .then(function(user) {
@@ -77,7 +77,5 @@ exports.changeCard= function(req, res, next) {
         .catch(errorChecks.DuplicateError, function() {
             throw new errors.DuplicateCardError();
         })
-        .catch(function(err) {
-            next(err);
-        });
+        .catch(next);
 };

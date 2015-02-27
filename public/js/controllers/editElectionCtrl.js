@@ -1,6 +1,6 @@
 angular.module('voteApp').controller('editElectionController',
-['$scope', '$interval', 'adminUserService', 'adminElectionService', 'alertService',
-function($scope, $interval, adminUserService, adminElectionService, alertService) {
+['$scope', '$interval', 'userService', 'adminElectionService', 'alertService',
+function($scope, $interval, userService, adminElectionService, alertService) {
 
     $scope.newAlternative = {};
     $scope.election = null;
@@ -70,7 +70,7 @@ function($scope, $interval, adminUserService, adminElectionService, alertService
     }
 
     function countActiveUsers() {
-        adminUserService.countActiveUsers()
+        userService.countActiveUsers()
             .success(function(result) {
                 $scope.activeUsers = result.users;
             })
