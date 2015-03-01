@@ -85,4 +85,9 @@ module.exports = function() {
             expect(alert.getText()).to.eventually.contain(text).notify(callback);
         });
     });
+
+    this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(id, value, callback) {
+        element(by.id(id)).sendKeys(value);
+        callback();
+    });
 };
