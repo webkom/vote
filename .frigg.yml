@@ -1,7 +1,6 @@
 tasks:
  - make install
  - make mocha
- - make protractor
  - make jshint
  - make jscs
 
