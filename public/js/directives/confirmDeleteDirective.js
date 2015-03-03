@@ -8,9 +8,13 @@ angular.module('voteApp').directive('deleteUsers', function() {
         template: '' +
             '<button type="button" ng-click="click()" class="btn btn-lg btn-default">' +
             '{{buttonText || "Slett brukere"}}' +
-            '</button>',
+            deleteHandler: '&',
+            buttonText: '@'
+        },
         link: function(scope, elem, attrs) {
             var clicked = false;
+
+            var originalText = scope.buttonText;
 
             scope.click = function() {
                 if (!clicked) {
@@ -19,6 +23,8 @@ angular.module('voteApp').directive('deleteUsers', function() {
                 }
                 else {
                     scope.deleteHandler();
+                    clicked = false;
+                    scope.buttonText = originalText;
                 }
             };
         }

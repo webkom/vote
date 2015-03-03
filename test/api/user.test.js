@@ -272,7 +272,12 @@ describe('User API', function() {
                         var adminUser = users[0];
                         numberOfUsers.should.equal(1);
                         adminUser.admin.should.equal(true);
-                    }).nodeify(done);
+                    }).then(function(users) {
+                    var numberOfUsers = users.length;
+                    var adminUser = users[0];
+                    numberOfUsers.should.equal(1);
+                    adminUser.admin.should.equal(true);
+                }).nodeify(done);
             });
     });
 
