@@ -115,6 +115,7 @@ Feature: Admin
 
   Scenario: Deleting users
     Given I am waiting on page "/admin/delete_users"
-    When I delete users
-    And I see alert "Alle brukere ble slettet!"
+    When I click "Slett brukere"
+    And I click "Er du sikker?"
+    Then I see alert "Alle brukere ble slettet!"
 
