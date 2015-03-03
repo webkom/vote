@@ -11,6 +11,10 @@ function($scope, $interval, userService, adminElectionService, alertService) {
         countVotedUsers();
     }, 3000);
 
+    $scope.$on('$destroy', function() {
+        $interval.cancel(countInterval);
+    });
+
     adminElectionService.getElection()
         .success(function(data) {
             $scope.election = data;
