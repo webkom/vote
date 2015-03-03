@@ -112,3 +112,9 @@ Feature: Admin
     And I fill in "password" with "notpassword"
     And I click "Registrer nytt kort"
     Then I see alert "Ugyldig brukernavn og/eller passord."
+
+  Scenario: Deleting users
+    Given I am waiting on page "/admin/delete_users"
+    When I delete users
+    And I see alert "Alle brukere ble slettet!"
+

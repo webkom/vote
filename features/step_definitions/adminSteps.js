@@ -122,6 +122,14 @@ module.exports = function() {
         browser.waitForAngular().then(callback);
     });
 
+    this.When(/^I delete users$/, function(callback) {
+        var button = element(by.css('button'));
+
+        button.click();
+        button.click();
+        browser.waitForAngular().then(callback);
+    });
+
     this.Then(/^I should see ([\d]+) in "([^"]*)"$/, function(count, binding, callback) {
         var countElement = element(by.binding(binding));
         expect(countElement.getText()).to.eventually.equal(String(count)).notify(callback);
