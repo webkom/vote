@@ -27,7 +27,9 @@ block scripts
         script(src='/js/controllers/createElectionCtrl.js')
         script(src='/js/controllers/editElectionCtrl.js')
         script(src='/js/controllers/toggleUserController.js')
+        script(src='/js/controllers/deleteUsersCtrl.js')
         script(src='/js/directives/passwordDirective.js')
+        script(src='/js/directives/confirmDeleteDirective.js')
         script(src='/js/appRoutes.js')
 
 block navbar
@@ -43,6 +45,8 @@ block navbar
                 a(href='/admin/change_card') Mistet kort
             li
                 a(href='/admin/create_election') Lag avstemning
+            li
+                a(href='/admin/delete_users') Slett brukere
 
 block content
     .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
