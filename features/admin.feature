@@ -85,3 +85,30 @@ Feature: Admin
     And I am on the edit election page
     Then I should see 1 in "votedUsers"
     And I should see 1 in "activeUsers"
+
+  Scenario: Changing the card key of a user
+    Given There is an active user with card key "1234"
+    And I am waiting on page "/admin/change_card"
+    When I scan card key "1235"
+    And I fill in "username" with "testuser"
+    And I fill in "password" with "password"
+    And I click "Registrer nytt kort"
+    Then I see alert "Det nye kortet er nå registert."
+
+  Scenario: Changing the card key of a user to an existing card
+    Given There is an active user with card key "1234"
+    And I am waiting on page "/admin/change_card"
+    When I scan card key "55TESTCARDKEY"
+    And I fill in "username" with "testuser"
+    And I fill in "password" with "password"
+    And I click "Registrer nytt kort"
+    Then I see alert "Dette kortet er allerede blitt registrert."
+
+  Scenario: Changing the card key of a user with invalid credentials
+    Given There is an active user with card key "1234"
+    And I am waiting on page "/admin/change_card"
+    When I scan card key "1235"
+    And I fill in "username" with "testuser"
+    And I fill in "password" with "notpassword"
+    And I click "Registrer nytt kort"
+    Then I see alert "Ugyldig brukernavn og/eller passord."

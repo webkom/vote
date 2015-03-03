@@ -12,13 +12,9 @@ var Alternative = require('../../app/models/alternative');
 var Vote = require('../../app/models/vote');
 var helpers = require('./helpers');
 
-var testPost404 = helpers.testPost404;
-var testGet404 = helpers.testGet404;
-var testDelete404 = helpers.testDelete404;
+var test404 = helpers.test404;
 var createUsers = helpers.createUsers;
-var testAdminResourceGet = helpers.testAdminResourceGet;
-var testAdminResourcePost = helpers.testAdminResourcePost;
-var testAdminResourceDelete = helpers.testAdminResourceDelete;
+var testAdminResource = helpers.testAdminResource;
 var should = chai.should();
 
 chai.use(sinonChai);
@@ -142,7 +138,7 @@ describe('Election API', function() {
 
     it('should only be possible to create elections as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/election', done);
+        testAdminResource('post', '/api/election', done);
     });
 
     it('should be able to get all elections as admin', function(done) {
@@ -162,7 +158,7 @@ describe('Election API', function() {
 
     it('should only be possible to get elections jas admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/election', done);
+        testAdminResource('get', '/api/election', done);
     });
 
     it('should be able to get an election and its alternatives as admin', function(done) {
@@ -184,18 +180,18 @@ describe('Election API', function() {
 
     it('should only be possible to retrieve alternatives as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/election/' + this.activeElection.id, done);
+        testAdminResource('get', '/api/election/' + this.activeElection.id, done);
     });
 
     it('should get 404 for missing elections', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testGet404('/api/election/' + badId, 'election', done);
+        test404('get', '/api/election/' + badId, 'election', done);
     });
 
     it('should get 404 when retrieving alternatives with an invalid ObjectId', function(done) {
         passportStub.login(this.adminUser);
-        testGet404('/api/election/badelection', 'election', done);
+        test404('get', '/api/election/badelection', 'election', done);
     });
 
     it('should be able to activate an election', function(done) {
@@ -219,17 +215,17 @@ describe('Election API', function() {
     it('should get 404 when activating a missing election', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testPost404('/api/election/' + badId + '/activate', 'election', done);
+        test404('post', '/api/election/' + badId + '/activate', 'election', done);
     });
 
     it('should get 404 when activating an election with an invalid ObjectId', function(done) {
         passportStub.login(this.adminUser);
-        testPost404('/api/election/badid/activate', 'election', done);
+        test404('post', '/api/election/badid/activate', 'election', done);
     });
 
     it('should only be possible to activate elections as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/election/' + this.activeElection.id + '/activate', done);
+        testAdminResource('post', '/api/election/' + this.activeElection.id + '/activate', done);
     });
 
     it('should be able to deactivate an election', function(done) {
@@ -249,17 +245,17 @@ describe('Election API', function() {
     it('should get 404 when deactivating a missing election', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testPost404('/api/election/' + badId + '/deactivate', 'election', done);
+        test404('post', '/api/election/' + badId + '/deactivate', 'election', done);
     });
 
     it('should get 404 when deactivating an election with an invalid ObjectId', function(done) {
         passportStub.login(this.adminUser);
-        testPost404('/api/election/badid/deactivate', 'election', done);
+        test404('post', '/api/election/badid/deactivate', 'election', done);
     });
 
     it('should only be possible to deactivate elections as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/election/' + this.activeElection.id + '/deactivate', done);
+        testAdminResource('post', '/api/election/' + this.activeElection.id + '/deactivate', done);
     });
 
     it('should be possible to delete elections', function(done) {
@@ -314,18 +310,18 @@ describe('Election API', function() {
 
     it('should only be possible to delete elections as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceDelete('/api/election/badid', done);
+        testAdminResource('delete', '/api/election/badid', done);
     });
 
     it('should get 404 when deleting elections with invalid ObjectIds', function(done) {
         passportStub.login(this.adminUser);
-        testDelete404('/api/election/badid', 'election', done);
+        test404('delete', '/api/election/badid', 'election', done);
     });
 
     it('should get 404 when deleting elections with nonexistent ObjectIds', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testDelete404('/api/election/' + badId, 'election', done);
+        test404('delete', '/api/election/' + badId, 'election', done);
     });
 
     it('should be possible to retrieve active elections', function(done) {
@@ -385,17 +381,17 @@ describe('Election API', function() {
 
     it('should only be possible to count voted users as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/election/' + this.activeElection.id + '/count', done);
+        testAdminResource('get', '/api/election/' + this.activeElection.id + '/count', done);
     });
 
     it('should get 404 when counting votes for elections with invalid ObjectIds', function(done) {
         passportStub.login(this.adminUser);
-        testGet404('/api/election/badid/count', 'election', done);
+        test404('get', '/api/election/badid/count', 'election', done);
     });
 
     it('should get 404 when counting votes for elections with nonexistent ObjectIds', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testGet404('/api/election/' + badId + '/count', 'election', done);
+        test404('get', '/api/election/' + badId + '/count', 'election', done);
     });
 });

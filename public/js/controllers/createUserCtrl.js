@@ -1,5 +1,6 @@
 angular.module('voteApp').controller('createUserController',
-['$scope', 'userService', 'alertService', 'cardKeyService', function($scope, userService, alertService, cardKeyService) {
+['$scope', 'userService', 'alertService', 'cardKeyService',
+function($scope, userService, alertService, cardKeyService) {
 
     $scope.user = {};
 

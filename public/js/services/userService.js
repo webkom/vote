@@ -8,4 +8,11 @@ angular.module('voteApp').service('userService', ['$http', function($http) {
         return $http.post('/api/user', user);
     };
 
+    this.changeCard = function(user) {
+        return $http.put('/api/user/' + user.username + '/change_card', user);
+    };
+
+    this.countActiveUsers = function() {
+        return $http.get('/api/user/count?active=true');
+    };
 }]);

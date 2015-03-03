@@ -29,6 +29,11 @@ function($routeProvider, $locationProvider) {
             controller: 'createElectionController'
         })
 
+        .when('/admin/change_card', {
+            templateUrl: 'partials/admin/changeCard',
+            controller: 'changeCardController'
+        })
+
         .when('/admin/election/:param/edit', {
             templateUrl: 'partials/admin/editElection',
             controller: 'editElectionController'

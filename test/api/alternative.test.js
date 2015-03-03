@@ -6,10 +6,8 @@ var app = require('../../app');
 var Alternative = require('../../app/models/alternative');
 var Election = require('../../app/models/election');
 var helpers = require('./helpers');
-var testGet404 = helpers.testGet404;
-var testPost404 = helpers.testPost404;
-var testAdminResourcePost = helpers.testAdminResourcePost;
-var testAdminResourceGet = helpers.testAdminResourceGet;
+var test404 = helpers.test404;
+var testAdminResource = helpers.testAdminResource;
 var createUsers = helpers.createUsers;
 chai.should();
 
@@ -73,18 +71,18 @@ describe('Alternatives API', function() {
 
     it('should only be possible to get alternatives as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourceGet('/api/election/' + this.election.id + '/alternatives', done);
+        testAdminResource('get', '/api/election/' + this.election.id + '/alternatives', done);
     });
 
     it('should get 404 when listing alternatives for invalid electionIds', function(done) {
         passportStub.login(this.adminUser);
-        testGet404('/api/election/badid/alternatives', 'election', done);
+        test404('get', '/api/election/badid/alternatives', 'election', done);
     });
 
     it('should get 404 when listing alternatives for nonexistent electionIds', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testGet404('/api/election/' + badId + '/alternatives', 'election', done);
+        test404('get', '/api/election/' + badId + '/alternatives', 'election', done);
     });
 
     it('should be able to create alternatives for deactivated elections', function(done) {
@@ -144,17 +142,17 @@ describe('Alternatives API', function() {
 
     it('should get 404 when creating alternatives for invalid electionIds', function(done) {
         passportStub.login(this.adminUser);
-        testPost404('/api/election/badid/alternatives', 'election', done);
+        test404('post', '/api/election/badid/alternatives', 'election', done);
     });
 
     it('should get 404 when creating alternatives for nonexistent electionIds', function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
-        testPost404('/api/election/' + badId + '/alternatives', 'election', done);
+        test404('post', '/api/election/' + badId + '/alternatives', 'election', done);
     });
 
     it('should only be possible to create alternatives as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResourcePost('/api/election/' + this.election.id + '/alternatives', done);
+        testAdminResource('post', '/api/election/' + this.election.id + '/alternatives', done);
     });
 });

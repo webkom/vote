@@ -15,7 +15,6 @@ block scripts
         script(src='/js/services/socketIOService.js')
         script(src='/js/services/electionService.js')
         script(src='/js/services/adminElectionService.js')
-        script(src='/js/services/adminUserService.js')
         script(src='/js/services/logoutService.js')
         script(src='/js/services/userService.js')
         script(src='/js/services/alertService.js')
@@ -24,6 +23,7 @@ block scripts
         script(src='/js/controllers/electionCtrl.js')
         script(src='/js/controllers/electionsCtrl.js')
         script(src='/js/controllers/createUserCtrl.js')
+        script(src='/js/controllers/changeCardCtrl.js')
         script(src='/js/controllers/createElectionCtrl.js')
         script(src='/js/controllers/editElectionCtrl.js')
         script(src='/js/controllers/toggleUserController.js')
@@ -39,6 +39,8 @@ block navbar
                 a(href='/admin/create_user') Registrer bruker
             li
                 a(href='/admin/activate_user') Aktiver bruker
+            li
+                a(href='/admin/change_card') Mistet kort
             li
                 a(href='/admin/create_election') Lag avstemning
 

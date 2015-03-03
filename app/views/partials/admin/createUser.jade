@@ -3,22 +3,35 @@
         form.form-group(ng-submit='createUser(user)', name='createUserForm')
             .form-group
                 label Kortnummer
-                input.form-control(type='text', name='cardKey', placeholder='Skriv inn kortnummer', ng-model='user.cardKey', required='required', disabled)
+                input.form-control(type='text', name='cardKey',
+                    placeholder='Skriv inn kortnummer', ng-model='user.cardKey',
+                    required='required', disabled)
+
             .form-group
                 label Brukernavn
                 input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn',
                     ng-model='user.username', ng-minlength='6', ng-pattern='/^[a-zA-Z]+$/')
-                p.text-danger(ng-show='createUserForm.username.$error.minlength') Brukernavn må være minst 6 tegn
-                p.text-danger(ng-show='createUserForm.username.$error.pattern') Brukernavn kan bare inneholde bokstaver fra A-Z
+                p.text-danger(ng-show='createUserForm.username.$error.minlength')
+                    | Brukernavn må være minst 6 tegn
+                p.text-danger(ng-show='createUserForm.username.$error.pattern')
+                    | Brukernavn kan bare inneholde bokstaver fra A-Z
+
             .form-group
                 label Password
-                input.form-control(type='password', name='password', placeholder='Skriv inn ønsket passord', ng-model='user.password', ng-minlength='6')
-                p.text-danger(ng-show='createUserForm.password.$invalid') Passord må være minst 6 tegn
+                input.form-control(type='password', name='password',
+                    placeholder='Skriv inn ønsket passord', ng-model='user.password',
+                    ng-minlength='6')
+                p.text-danger(ng-show='createUserForm.password.$invalid')
+                    | Passord må være minst 6 tegn
+
             .form-group
                 label Bekreft password
-                input.form-control(type='password', name='confirmPassword', placeholder='Bekreft passord', ng-model='user.confirmPassword', match-password='user.password')
-                p.text-danger(ng-show='createUserForm.confirmPassword.$invalid') Må være lik passordet
+                input.form-control(type='password', name='confirmPassword',
+                    placeholder='Bekreft passord', ng-model='user.confirmPassword',
+                    match-password='user.password')
+                p.text-danger(ng-show='createUserForm.confirmPassword.$invalid')
+                    | Må være lik passordet
 
             button#submit.btn.btn-default.btn-lg(type='submit',
                 value='Submit',
-                ng-disabled='createUserForm.$invalid') Submit
+                ng-disabled='createUserForm.$invalid') Lag ny bruker
