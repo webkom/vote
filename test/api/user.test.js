@@ -35,6 +35,12 @@ describe('User API', function() {
         cardKey: '00TESTCARDKEY'
     };
 
+    var badUsernameData = {
+        username: 'hi',
+        password: 'password',
+        cardKey: '11TESTCARDKEY'
+    };
+
     it('should be possible to create users', function(done) {
         passportStub.login(this.adminUser);
         request(app)
@@ -44,7 +50,6 @@ describe('User API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.status.should.equal(201);
 
                 var createdUser = res.body;
                 createdUser.active.should.equal(true);
@@ -55,6 +60,27 @@ describe('User API', function() {
                     should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
                 }).nodeify(done);
+            });
+    });
+
+    it('should not be possible to create users with invalid usernames', function(done) {
+        passportStub.login(this.adminUser);
+        request(app)
+            .post('/api/user')
+            .send(badUsernameData)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('ValidationError');
+                error.message.should.equal('Validation failed.');
+                error.status.should.equal(400);
+                error.errors.username.path.should.equal('username');
+                error.errors.username.message.should.equal(
+                    'Path `username` is invalid (hi).'
+                );
+                done();
             });
     });
 

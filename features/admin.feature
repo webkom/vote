@@ -114,7 +114,7 @@ Feature: Admin
     Then I see alert "Ugyldig brukernavn og/eller passord."
 
   Scenario: Deleting users
-    Given I am waiting on page "/admin/delete_users"
+    Given I am on page "/admin/delete_users"
     When I click "Slett brukere"
     And I click "Er du sikker?"
     Then I see alert "Alle brukere ble slettet!"

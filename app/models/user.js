@@ -9,7 +9,8 @@ var userSchema = new Schema({
         type: String,
         index: true,
         required: true,
-        unique: true
+        unique: true,
+        match: /^[a-zA-Z0-9]{5,}$/
     },
     active: {
         type: Boolean,
