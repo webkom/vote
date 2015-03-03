@@ -7,7 +7,7 @@ angular.module('voteApp').controller('deleteUsersController',
                 alertService.addSuccess('Alle brukere ble slettet!');
             })
             .error(function(data) {
-                alertService.addError('Noe gikk galt!');
+                alertService.addError();
             });
         $route.reload();
     };
