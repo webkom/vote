@@ -33,7 +33,9 @@ header
         margin 0 auto
 
         li
-            padding-right 20px
+            &:not(:first-child)
+                padding-left 20px
+
             display inline
 
             a
@@ -105,6 +107,25 @@ label
 
     &:focus
         outline none
+
+.vote-result-form
+    margin 0 auto
+
+    input
+        margin 10px auto
+        text-align center
+        width 70%
+
+.vote-result-feedback
+    margin-top 30px
+
+    p
+        font-size 18px
+
+@media (max-width 1000px)
+    .vote-result-form
+        input
+            width 100%
 
 @import 'election'
 @import 'admin'
