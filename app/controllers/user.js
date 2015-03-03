@@ -38,6 +38,9 @@ exports.create = function(req, res, next) {
         .catch(mongoose.Error.ValidationError, function(err) {
             throw new errors.ValidationError(err.errors);
         })
+        .catch(errorChecks.DuplicateError, function(err) {
+            throw new errors.DuplicateCardError();
+        })
         .catch(errorChecks.BadRequestError, function(err) {
             throw new errors.InvalidRegistrationError(err.message);
         })

@@ -10,8 +10,14 @@ function($scope, userService, alertService, cardKeyService) {
                 alertService.addSuccess('Bruker registrert!');
                 $scope.user = {};
             })
-            .error(function(data) {
-                alertService.addError();
+            .error(function(error) {
+                switch (error.name) {
+                    case 'DuplicateCardError':
+                        alertService.addError('Dette kortet er allerede blitt registrert.');
+                        break;
+                    default:
+                        alertService.addError();
+                }
             });
     };
 

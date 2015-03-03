@@ -25,7 +25,7 @@ Feature: Election
     Given There is an active election
     And I have voted on the election
     And I am on page "/retrieve"
-    Then I see my hash in "vote-hash"
+    Then I see my hash in "voteHash"
     When I submit the form
     Then I see "activeElection1" in "vote-result-election"
     And I see "test alternative" in "vote-result-alternative"
@@ -33,7 +33,7 @@ Feature: Election
   Scenario: Retrieve vote with invalid hash
     Given There is an active election
     And I am on page "/retrieve"
-    And I fill in "vote-hash" with "invalidhash"
+    And I fill in "voteHash" with "invalidhash"
     When I submit the form
     Then I see alert "En stemme med denne kvitteringen ble ikke funnet."
 

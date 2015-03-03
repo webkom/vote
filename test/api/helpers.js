@@ -32,16 +32,18 @@ exports.testAdminResource = function(method, path, done) {
         });
 };
 
+var testUser = exports.testUser = {
+    username: 'testuser',
+    cardKey: '99TESTCARDKEY'
+};
+
+var adminUser = exports.adminUser = {
+    username: 'admin',
+    admin: true,
+    cardKey: '55TESTCARDKEY'
+};
+
 exports.createUsers = function() {
-    var testUser = {
-        username: 'testuser',
-        cardKey: '99TESTCARDKEY'
-    };
-    var adminUser = {
-        username: 'admin',
-        admin: true,
-        cardKey: '55TESTCARDKEY'
-    };
     var testPassword = 'password';
 
     return Bluebird.all([

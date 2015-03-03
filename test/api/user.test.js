@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var request = require('supertest');
 var passportStub = require('passport-stub');
 var chai = require('chai');
@@ -80,6 +81,27 @@ describe('User API', function() {
                 error.errors.username.message.should.equal(
                     'Path `username` is invalid (hi).'
                 );
+                done();
+            });
+    });
+
+    it('should return 400 when creating users with an already used card key', function(done) {
+        passportStub.login(this.adminUser);
+
+        var payload = _.clone(testUserData);
+        payload.cardKey = helpers.testUser.cardKey;
+
+        request(app)
+            .post('/api/user')
+            .send(payload)
+            .expect(400)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+                var error = res.body;
+                error.name.should.equal('DuplicateCardError');
+                error.status.should.equal(400);
+                error.message.should.equal('There\'s already a user registered to this card.');
                 done();
             });
     });
