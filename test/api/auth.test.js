@@ -9,7 +9,7 @@ chai.should();
 
 describe('Auth API', function() {
     var testUser = {
-        username: 'test',
+        username: 'testuser',
         password: 'test121312313',
         cardKey: '99TESTCARDKEY'
     };
@@ -22,7 +22,7 @@ describe('Auth API', function() {
     };
 
     var badTestUser = {
-        username: 'test',
+        username: 'testuser',
         password: 'notthecorrectpw',
         cardKey: '00TESTCARDKEY'
     };

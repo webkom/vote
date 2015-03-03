@@ -48,9 +48,6 @@ module.exports = function() {
     });
 
     this.AfterFeatures(function(e, callback) {
-        browser.manage().logs().get('browser').then(function(browserLog) {
-            console.log('log: ' + require('util').inspect(browserLog));
-        });
         dropDatabase(callback);
     });
 };
