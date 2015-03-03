@@ -76,8 +76,20 @@ Feature: Admin
 
   Scenario: Creating user
     Given I am on page "/admin/create_user"
-    When I create a user
+    When I scan card key "1234"
+    And I fill in "username" with "newuser"
+    And I fill in "password" with "password"
+    And I submit the form
     Then I see alert "Bruker registrert!"
+
+  Scenario: Creating user with an already existing card key
+    Given I am on page "/admin/create_user"
+    And There is an active user with card key "1234"
+    When I scan card key "1234"
+    And I fill in "username" with "newuser"
+    And I fill in "password" with "password"
+    And I submit the form
+    Then I see alert "Dette kortet er allerede blitt registrert."
 
   Scenario: Count number of votes and active users
     Given There is an active election

@@ -2,7 +2,8 @@
     form.form-group.vote-result-form(ng-submit='retrieveVote(voteHash)', name='retrieveVoteForm')
         .form-group(required)
             label Skriv inn kvittering
-            input.form-control#vote-hash(type='text',
+            input.form-control(type='text',
+                name='voteHash',
                 ng-model='voteHash',
                 placeholder='Kvittering',
                 required='required')

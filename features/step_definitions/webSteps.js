@@ -81,8 +81,8 @@ module.exports = function() {
         });
     });
 
-    this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(id, value, callback) {
-        element(by.id(id)).sendKeys(value);
+    this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(name, value, callback) {
+        element(by.name(name)).sendKeys(value);
         callback();
     });
 
