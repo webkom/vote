@@ -255,4 +255,29 @@ describe('User API', function() {
         passportStub.login(this.user);
         testAdminResource('put', '/api/user/user/change_card', done);
     });
+
+    it('should be possible to delete all non-admin users', function(done) {
+        passportStub.login(this.adminUser);
+
+        request(app)
+            .delete('/api/user')
+            .expect(200)
+            .expect('Content-Type', /json/)
+            .end(function(err, res) {
+                if (err) return done(err);
+
+                return User.findAsync()
+                    .then(function(users) {
+                        var numberOfUsers = users.length;
+                        var adminUser = users[0];
+                        numberOfUsers.should.equal(1);
+                        adminUser.admin.should.equal(true);
+                    }).nodeify(done);
+            });
+    });
+
+    it('should not be possible to delete all non-admin users without being admin', function(done) {
+        passportStub.login(this.user);
+        testAdminResource('delete', '/api/user', done);
+    });
 });

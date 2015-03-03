@@ -79,3 +79,14 @@ exports.changeCard = function(req, res, next) {
         })
         .catch(next);
 };
+
+exports.deleteAllNonAdmin = function(req, res, next) {
+    return User.removeAsync({admin: false})
+        .then(function(result) {
+            return res.json({
+                status: 200,
+                message: 'All users have been deleted!'
+            });
+        })
+        .catch(next);
+};

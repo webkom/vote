@@ -6,7 +6,8 @@ var router = express.Router();
 
 router.route('/')
     .get(ensureAdmin, user.list)
-    .post(ensureAdmin, user.create);
+    .post(ensureAdmin, user.create)
+    .delete(ensureAdmin, user.deleteAllNonAdmin);
 
 router.get('/count', ensureAdmin, user.count);
 
