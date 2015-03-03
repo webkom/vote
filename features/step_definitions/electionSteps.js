@@ -1,6 +1,7 @@
 var chai = require('chai');
 var Bluebird = require('bluebird');
 var chaiAsPromised = require('chai-as-promised');
+var Vote = require('../../app/models/vote');
 var expect = chai.expect;
 
 chai.use(chaiAsPromised);
@@ -16,6 +17,11 @@ module.exports = function() {
         var active = arg !== 'de';
         this.election.active = active;
         this.election.save(callback);
+    });
+
+    this.When(/^I submit the form$/, function(callback) {
+        element(by.tagName('form')).submit();
+        callback();
     });
 
     this.Then(/^I see an active election$/, function(callback) {
@@ -45,4 +51,13 @@ module.exports = function() {
     this.Given(/^I have voted on the election$/, vote);
 
     this.When(/^I vote on an election$/, vote);
+
+    this.Then(/^I see my hash in "([^"]*)"$/, function(id, callback) {
+        var input = element(by.id(id));
+        Vote.findOneAsync({ alternative: this.alternative.id })
+            .then(function(vote) {
+                return expect(input.getAttribute('value'))
+                    .to.eventually.equal(vote.hash);
+            }).nodeify(callback);
+    });
 };

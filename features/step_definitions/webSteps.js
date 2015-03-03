@@ -39,11 +39,6 @@ module.exports = function() {
 
     this.Given(/^I am on page "([^"]*)"$/, function(path, callback) {
         browser.get(path);
-        callback();
-    });
-
-    this.Given(/^I am waiting on page "([^"]*)"$/, function(path, callback) {
-        browser.get(path);
         browser.waitForAngular().then(callback);
     });
 
@@ -89,5 +84,10 @@ module.exports = function() {
     this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(id, value, callback) {
         element(by.id(id)).sendKeys(value);
         callback();
+    });
+
+    this.Then(/^I see "([^"]*)" in "([^"]*)"$/, function(value, className, callback) {
+        var field = element(by.className(className));
+        expect(field.getText()).to.eventually.equal(value).notify(callback);
     });
 };
