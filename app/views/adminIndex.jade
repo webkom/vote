@@ -50,7 +50,7 @@ block navbar
 
 block content
     .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
-        alert(type='{{alert.type}}', close='alert.close()') {{alert.message}}
+        alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
     .container(ng-view='')
 
 block footer
