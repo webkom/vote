@@ -90,4 +90,9 @@ module.exports = function() {
         var field = element(by.className(className));
         expect(field.getText()).to.eventually.equal(value).notify(callback);
     });
+
+    this.Then(/^I count (\d+) "([^"]*)"$/, function(count, css, callback) {
+        var found = element.all(by.css(css));
+        expect(found.count()).to.eventually.equal(Number(count)).notify(callback);
+    });
 };

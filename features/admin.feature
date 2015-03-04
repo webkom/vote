@@ -68,6 +68,15 @@ Feature: Admin
     When I scan card key "1234"
     Then I see alert "Bruker har blitt deaktivert."
 
+  Scenario: Activating users in series should only show one alert
+    Given There is an inactive user with card key "1234"
+    And There is an inactive user with card key "1235"
+    And I am on page "/admin/activate_user"
+    When I scan card key "1234"
+    And I scan card key "1235"
+    Then I see alert "Bruker har blitt aktivert."
+    And I count 1 ".alert"
+
   Scenario: Activating user with invalid card key
     Given There is an active user with card key "1234"
     And I am on page "/admin/activate_user"

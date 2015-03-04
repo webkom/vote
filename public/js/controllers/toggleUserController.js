@@ -3,6 +3,7 @@ angular.module('voteApp').controller('toggleUserController',
 function($scope, userService, alertService, cardKeyService) {
 
     var toggleUser = function(cardKey) {
+        alertService.closeAll();
         userService.toggleUser(cardKey)
             .success(function(data) {
                 if (data.active) {
