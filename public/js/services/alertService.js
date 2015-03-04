@@ -37,7 +37,15 @@ function($interval, $rootScope) {
         },
 
         close: function(alert) {
-            $rootScope.alerts.splice($rootScope.alerts.indexOf(alert), 1);
+            var foundAlert = $rootScope.alerts.indexOf(alert);
+
+            if (foundAlert !== -1) {
+                $rootScope.alerts.splice(foundAlert, 1);
+            }
+        },
+
+        closeAll: function() {
+            $rootScope.alerts.splice(0, $rootScope.alerts.length);
         },
 
         timeoutRemove: function(alert) {
