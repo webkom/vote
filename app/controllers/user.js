@@ -1,4 +1,5 @@
 var Bluebird = require('bluebird');
+var mongoose = require('mongoose');
 var User = require('../models/user');
 var errors = require('../errors');
 var errorChecks = require('../errors/error-checks');
@@ -34,11 +35,14 @@ exports.create = function(req, res, next) {
         .then(function(createdUser) {
             return res.status(201).json(createdUser.getCleanUser());
         })
-        .catch(function(err) {
-            if (err.name === 'BadRequestError') {
-                throw new errors.InvalidRegistrationError(err.message);
-            }
-            throw err;
+        .catch(mongoose.Error.ValidationError, function(err) {
+            throw new errors.ValidationError(err.errors);
+        })
+        .catch(errorChecks.DuplicateError, function(err) {
+            throw new errors.DuplicateCardError();
+        })
+        .catch(errorChecks.BadRequestError, function(err) {
+            throw new errors.InvalidRegistrationError(err.message);
         })
         .catch(next);
 };

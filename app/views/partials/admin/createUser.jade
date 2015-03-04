@@ -10,11 +10,11 @@
             .form-group
                 label Brukernavn
                 input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn',
-                    ng-model='user.username', ng-minlength='6', ng-pattern='/^[a-zA-Z]+$/')
+                    ng-model='user.username', ng-minlength='5', ng-pattern='/^[a-zA-Z0-9]+$/')
                 p.text-danger(ng-show='createUserForm.username.$error.minlength')
-                    | Brukernavn må være minst 6 tegn
+                    | Brukernavn må være minst 5 tegn
                 p.text-danger(ng-show='createUserForm.username.$error.pattern')
-                    | Brukernavn kan bare inneholde bokstaver fra A-Z
+                    | Brukernavn kan bare inneholde tall eller bokstaver fra A-Z
 
             .form-group
                 label Password

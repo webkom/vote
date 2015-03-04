@@ -52,8 +52,8 @@ module.exports = function() {
 
     this.When(/^I vote on an election$/, vote);
 
-    this.Then(/^I see my hash in "([^"]*)"$/, function(id, callback) {
-        var input = element(by.id(id));
+    this.Then(/^I see my hash in "([^"]*)"$/, function(name, callback) {
+        var input = element(by.name(name));
         Vote.findOneAsync({ alternative: this.alternative.id })
             .then(function(vote) {
                 return expect(input.getAttribute('value'))
