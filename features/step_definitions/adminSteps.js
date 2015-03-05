@@ -80,7 +80,7 @@ module.exports = function() {
         var alternative = alternatives.first();
         var span = alternative.element(by.tagName('span'));
 
-        expect(span.getText()).to.eventually.equal('1').notify(callback);
+        expect(span.getText()).to.eventually.equal('1 - 100 %').notify(callback);
     });
 
     this.When(/^I enter a new alternative "([^"]*)"$/, function(alternative, callback) {

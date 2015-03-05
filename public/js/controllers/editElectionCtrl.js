@@ -91,6 +91,17 @@ function($scope, $interval, userService, adminElectionService, alertService) {
     }
     countVotedUsers();
 
+    $scope.getPercentage = function(count) {
+        if (count !== undefined) {
+            var sum = 0;
+            $scope.election.alternatives.forEach(function(alternative) {
+                sum += alternative.votes;
+            });
+
+            return Math.round(count/sum * 100);
+        }
+    };
+
     $scope.toggleCount = function() {
         $scope.showCount = !$scope.showCount;
         if ($scope.showCount) {

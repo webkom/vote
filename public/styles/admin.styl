@@ -36,14 +36,19 @@ form
     padding-top 10px
     margin-bottom 0
 
-    span
-        color $abakus-dark
-        margin-right 20px
 
     ul li
+        position relative
+
         &:hover
             cursor default
             background-color alpha($alternative-background, 0.15)
+
+        span
+            position absolute
+            right 20px
+            color $abakus-dark
+
 
 .toggle-show
     margin-left 30px
