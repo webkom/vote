@@ -20,7 +20,8 @@
             ul.list-unstyled
                 li(ng-repeat='alternative in election.alternatives')
                     p {{alternative.description}}
-                        span.pull-right(ng-if='showCount', ng-bind='alternative.votes')
+                        span(ng-if='showCount')
+                            | {{alternative.votes}} - {{getPercentage(alternative.votes)}} %
 
             form.add-alternative.form-group(name='alternativeForm', ng-submit='addAlternative(newAlternative)')
                 input.form-control#new-alternative(type='text', name='alternative', placeholder='Skriv inn alternativ',
