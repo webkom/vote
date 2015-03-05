@@ -7,22 +7,30 @@ html(ng-app='voteApp')
         meta(name='viewport', content='width=device-width, initial-scale=1')
         meta(http-equiv='X-UA-Compatible', content='IE=edge')
         meta(name='description', content='')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
         link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet')
         link(href='/libs/fontawesome/css/font-awesome.min.css', rel='stylesheet')
         link(href='/main.css', rel='stylesheet')
 
         block scripts
 
-    header
-        .container
-            .row.header: .col-xs-12
-                img(src='/images/Abakule.jpg')
-                span vote
-
-            .row: block navbar
     body
+        header
+            .container
+                .row.header: .col-xs-12
+                    img(src='/images/Abakule.jpg')
+                    span vote
+
+                .row: block navbar
+
         block content
+
+        footer
+            .container.text-center
+                block footer
+                    | Made by
+                    a(href='http://webkom.abakus.no')  webkom
+                    |  | Follow us on
+                    a.red(href='https://github.com/webkom')  GitHub
 
         script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
         script.
@@ -31,11 +39,3 @@ html(ng-app='voteApp')
                     FastClick.attach(document.body);
                 });
             }
-
-    footer
-        .container.text-center
-            block footer
-                | Made by
-                a(href='http://webkom.abakus.no')  webkom
-                |  | Follow us on
-                a.red(href='https://github.com/webkom/census')  GitHub
