@@ -59,7 +59,7 @@ $('#connect_button').addEventListener('click', function() {
                 temp = '';
                 updateStatus('reading...completed');
                 sound.play();
-                nextRead = Date.now() + 500;
+                nextRead = Date.now() + 2000;
             }
         });
     });
