@@ -20,7 +20,7 @@ mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });
 
-app.use(express.static(__dirname + '/public'));
+app.use('/static', express.static(__dirname + '/public'));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
