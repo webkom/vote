@@ -27,7 +27,7 @@ node_modules: package.json
 	@npm install
 
 public/lib: bower.json
-	@$(BOWER) install
+	@$(BOWER) install --allow-root
 
 selenium:
 	$(WEBDRIVER_MANAGER) update
