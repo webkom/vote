@@ -2,6 +2,9 @@
 > vote optimizes the election
 
 Digital voting system for Abakus' general assembly, built using the MEAN-stack (mongoDB, Express, AngularJS, Node.js).
+Relevant (Norwegian) blog post: http://webkom.abakus.no/vote/
+
+![vote](http://i.imgur.com/DU1CXQx.png)
 
 ## Setup
 
