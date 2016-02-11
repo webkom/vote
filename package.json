@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "bower": "*",
-    "chai": "=1.9.2",
+    "chai": "3.5.0",
     "chai-as-promised": "^5.2.0",
     "commander": "2.9.0",
     "cucumber": "^0.4.7",
