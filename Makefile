@@ -70,16 +70,7 @@ public/js/vote.min.js: $(FRONTEND_FILES)
 server:
 	@supervisor index
 
-production: node_modules public/js/vote.min.js public/main.css
-ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
-	git fetch && git reset --hard origin/master
-	make install
-	forever restart $(PWD)/index.js
-else
-	@echo "Not in a production environment!"
-endif
-
 clean:
 	rm -f public/main.css
 
-.PHONY: server install test jshint selenium protractor selenium jscs production all clean
+.PHONY: server install test jshint selenium protractor selenium jscs all clean
