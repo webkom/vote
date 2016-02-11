@@ -33,7 +33,7 @@
     "passport-local-mongoose": "=1.0.0",
     "passport-stub": "1.1.1",
     "promptly": "1.0.0",
-    "raven": "^0.7.2",
+    "raven": "^0.10.0",
     "socket.io": "~1.3.3",
     "stylus": "0.53.0"
   },
