@@ -52,7 +52,7 @@
     "protractor": "git://github.com/webkom/protractor.git",
     "sinon": "=1.12.2",
     "sinon-chai": "=2.6.0",
-    "supertest": "=0.14.0",
+    "supertest": "1.2.0",
     "uglify-js": "^2.4.16"
   }
 }
