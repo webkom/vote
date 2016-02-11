@@ -1,6 +1,6 @@
 var Bluebird = require('bluebird');
 var errors = require('../errors');
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
+var mongoose = require('mongoose');
 var Vote = require('./vote');
 var Schema = mongoose.Schema;
 
@@ -35,12 +35,12 @@ var electionSchema = new Schema({
 
 electionSchema.pre('remove', function(next) {
     // Use mongoose.model getter to avoid circular dependencies
-    return mongoose.model('Alternative').findAsync(this.alternatives)
+    return mongoose.model('Alternative').find(this.alternatives)
         .then(function(alternatives) {
             return Bluebird.map(alternatives, function(alternative) {
                 // Have to call remove on each document to activate Alternative's
                 // remove-middleware
-                return alternative.removeAsync();
+                return alternative.remove();
             });
         }).nodeify(next);
 });
@@ -48,7 +48,7 @@ electionSchema.pre('remove', function(next) {
 electionSchema.methods.sumVotes = function() {
     if (this.active) throw new errors.ActiveElectionError('Cannot retreive results on an active election.');
     return Bluebird.map(this.alternatives, function(alternativeId) {
-        return Vote.findAsync({ alternative: alternativeId })
+        return Vote.find({ alternative: alternativeId })
             .then(function(votes) {
                 return {
                     alternative: alternativeId,
@@ -61,9 +61,9 @@ electionSchema.methods.sumVotes = function() {
 electionSchema.methods.addAlternative = function(alternative) {
     this.alternatives.push(alternative);
     alternative.election = this._id;
-    return alternative.saveAsync().bind(this)
-        .spread(function(savedAlternative) {
-            return this.saveAsync().return(savedAlternative);
+    return alternative.save().bind(this)
+        .then(function(savedAlternative) {
+            return this.save().return(savedAlternative);
         });
 };
 

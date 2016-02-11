@@ -34,8 +34,8 @@ describe('Alternatives API', function() {
         passportStub.logout();
         var election = new Election(testElectionData);
 
-        return election.saveAsync().bind(this)
-            .spread(function(election) {
+        return election.save().bind(this)
+            .then(function(election) {
                 this.election = election;
                 createdAlternativeData.election = election.id;
                 this.alternative = new Alternative(createdAlternativeData);
@@ -105,7 +105,7 @@ describe('Alternatives API', function() {
 
         this.election.active = true;
 
-        return this.election.saveAsync().bind(this)
+        return this.election.save().bind(this)
             .then(function() {
                 request(app)
                     .post('/api/election/' + this.election.id + '/alternatives')
@@ -135,7 +135,7 @@ describe('Alternatives API', function() {
                 error.name.should.equal('ValidationError');
                 error.status.should.equal(400);
                 error.errors.description.path.should.equal('description');
-                error.errors.description.type.should.equal('required');
+                error.errors.description.kind.should.equal('required');
                 done();
             });
     });

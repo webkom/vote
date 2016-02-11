@@ -47,7 +47,7 @@ exports.createUsers = function() {
     var testPassword = 'password';
 
     return Bluebird.all([
-        User.registerAsync(testUser, testPassword),
-        User.registerAsync(adminUser, testPassword)
+        User.register(testUser, testPassword),
+        User.register(adminUser, testPassword)
     ]);
 };

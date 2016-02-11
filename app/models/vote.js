@@ -1,5 +1,4 @@
-var Bluebird = require('bluebird');
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
+var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
