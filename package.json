@@ -44,7 +44,7 @@
     "commander": "2.9.0",
     "cucumber": "^0.9.4",
     "istanbul": "=0.3.5",
-    "jscs": "=1.10.0",
+    "jscs": "2.9.0",
     "jshint": "2.9.1",
     "mkdirp": "^0.5.0",
     "mocha": "=2.1.0",
