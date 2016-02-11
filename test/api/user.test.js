@@ -56,7 +56,7 @@ describe('User API', function() {
                 createdUser.active.should.equal(true);
                 createdUser.admin.should.equal(false);
 
-                return User.findOneAsync({ username: testUserData.username })
+                return User.findOne({ username: testUserData.username })
                 .then(function(user) {
                     should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
@@ -120,7 +120,7 @@ describe('User API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 var error = res.body;
-                error.name.should.equal('InvalidRegistrationError');
+                error.name.should.equal('MissingUsernameError');
                 error.status.should.equal(400);
                 done();
             });
@@ -178,7 +178,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = true;
 
-        return this.user.saveAsync()
+        return this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count?active=true')
@@ -212,7 +212,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = false;
 
-        return this.user.saveAsync()
+        return this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count')
@@ -314,7 +314,7 @@ describe('User API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
 
-                return User.findAsync()
+                return User.find()
                 .then(function(users) {
                     var numberOfUsers = users.length;
                     var adminUser = users[0];

@@ -1,3 +1,4 @@
+var Bluebird        = require('bluebird');
 var express         = require('express');
 var app             = module.exports = express();
 var mongoose        = require('mongoose');
@@ -16,6 +17,7 @@ app.set('view engine', 'jade');
 app.set('views', __dirname + '/app/views');
 app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
+mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });

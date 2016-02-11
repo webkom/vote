@@ -31,8 +31,8 @@ describe('Auth API', function() {
         passportStub.logout();
         passportStub.uninstall();
         return Bluebird.all([
-            User.registerAsync(testUser, testUser.password),
-            User.registerAsync(adminUser, adminUser.password)
+            User.register(testUser, testUser.password),
+            User.register(adminUser, adminUser.password)
         ]);
     });
 

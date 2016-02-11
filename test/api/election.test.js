@@ -62,8 +62,8 @@ describe('Election API', function() {
         ioStub.emit.reset();
 
         var election = new Election(activeElectionData);
-        return election.saveAsync().bind(this)
-            .spread(function(election) {
+        return election.save().bind(this)
+            .then(function(election) {
                 this.activeElection = election;
                 testAlternative.election = election;
                 this.alternative = new Alternative(testAlternative);
@@ -131,7 +131,7 @@ describe('Election API', function() {
                 error.name.should.equal('ValidationError');
                 error.status.should.equal(400);
                 error.errors.title.path.should.equal('title');
-                error.errors.title.type.should.equal('required');
+                error.errors.title.kind.should.equal('required');
                 done();
             });
     });
@@ -196,7 +196,7 @@ describe('Election API', function() {
 
     it('should be able to activate an election', function(done) {
         passportStub.login(this.adminUser);
-        Election.createAsync(inactiveElectionData)
+        Election.create(inactiveElectionData)
             .then(function(election) {
                 request(app)
                     .post('/api/election/' + election.id + '/activate')
@@ -269,8 +269,8 @@ describe('Election API', function() {
         this.activeElection.active = false;
 
         return Bluebird.all([
-            vote.saveAsync(),
-            this.activeElection.saveAsync()
+            vote.save(),
+            this.activeElection.save()
         ]).bind(this).then(function() {
                 request(app)
                     .delete('/api/election/' + this.activeElection.id)
@@ -281,9 +281,9 @@ describe('Election API', function() {
                         res.body.message.should.equal('Election deleted.');
                         res.body.status.should.equal(200);
                         return Bluebird.all([
-                            Election.findAsync({}),
-                            Alternative.findAsync({}),
-                            Vote.findAsync({})
+                            Election.find({}),
+                            Alternative.find({}),
+                            Vote.find({})
                         ]).spread(function(elections, alternatives, votes) {
                             elections.length.should.equal(0);
                             alternatives.length.should.equal(0);
@@ -347,7 +347,7 @@ describe('Election API', function() {
             user: this.user.id
         });
 
-        this.activeElection.saveAsync()
+        this.activeElection.save()
             .then(function() {
                 request(app)
                     .get('/api/election/active')

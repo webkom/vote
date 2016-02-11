@@ -45,4 +45,9 @@ if (['test', 'development'].indexOf(process.env.NODE_ENV) !== -1) {
     userSchema.plugin(passportLocalMongoose, options);
 }
 
-module.exports = Bluebird.promisifyAll(mongoose.model('User', userSchema));
+// passport-local-mongoose doesn't provide a Promise interface yet, so we
+// need to make one ourself:
+userSchema.statics.register = Bluebird.promisify(userSchema.statics.register);
+userSchema.methods.authenticate = Bluebird.promisify(userSchema.methods.authenticate);
+
+module.exports = mongoose.model('User', userSchema);
