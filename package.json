@@ -20,7 +20,7 @@
     "connect-flash": "=0.1.1",
     "connect-mongo": "=0.7.0",
     "cookie-parser": "1.4.1",
-    "csurf": "=1.6.6",
+    "csurf": "1.8.3",
     "express": "=4.9.4",
     "express-session": "1.13.0",
     "jade": "^1.9.2",
