@@ -5,7 +5,7 @@ var errors = require('../errors');
 var errorChecks = require('../errors/error-checks');
 var AuthenticationError = require('passport-local-mongoose').errors.AuthenticationError;
 
-var authenticate = Bluebird.promisify(User.authenticate());
+var authenticate = Bluebird.promisify(User.authenticate(), { multiArgs: true });
 
 exports.count = function(req, res, next) {
     var query = { admin:false };
@@ -72,10 +72,8 @@ exports.toggleActive = function(req, res, next) {
 
 exports.changeCard = function(req, res, next) {
     authenticate(req.params.username, req.body.password)
-        .then(function(user) {
-            // User.authenticate returns a [false, { message: 'errmessage' }] when
-            // bad credentials are given
-            if (Array.isArray(user)) {
+        .spread(function(user, errorMessage) {
+            if (!user) {
                 throw new errors.InvalidRegistrationError('Incorrect username and/or password.');
             }
 
@@ -92,7 +90,7 @@ exports.changeCard = function(req, res, next) {
 };
 
 exports.deleteAllNonAdmin = function(req, res, next) {
-    return User.remove({admin: false})
+    return User.remove({ admin: false })
         .then(function(result) {
             return res.json({
                 status: 200,
