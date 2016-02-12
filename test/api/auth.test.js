@@ -40,6 +40,23 @@ describe('Auth API', function() {
         request(app)
             .post('/auth/login')
             .send(testUser)
+            .expect(302)
+            .end(function(err, res) {
+                if (err) return done(err);
+                res.header.location.should.equal('/');
+                done();
+            });
+    });
+
+    it('should make sure usernames are case-insensitive', function(done) {
+        var newUser = Object.assign(testUser, {
+            username: testUser.username.toUpperCase()
+        });
+
+        request(app)
+            .post('/auth/login')
+            .send(newUser)
+            .expect(302)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.header.location.should.equal('/');
@@ -83,54 +100,62 @@ describe('Auth API', function() {
 
     it('should redirect to login with flash on bad auth', function(done) {
         var agent = request.agent(app);
+        function logout(err, res) {
+            if (err) return done(err);
+            res.header.location.should.equal('/auth/login');
+
+            agent
+                .get('/auth/login')
+                .expect(200)
+                .expect('Content-Type', /text\/html/)
+                .end(function(loginErr, loginRes) {
+                    if (loginErr) return done(loginErr);
+                    loginRes.text.should.include('Brukernavn og/eller passord er feil.');
+                    done();
+                });
+        }
+
         agent
             .post('/auth/login')
             .send(badTestUser)
             .expect(302)
-            .end(function(err, res) {
-                if (err) return done(err);
-                res.header.location.should.equal('/auth/login');
-
-                agent
-                    .get('/auth/login')
-                    .expect(200)
-                    .expect('Content-Type', /text\/html/)
-                    .end(function(loginErr, loginRes) {
-                        if (loginErr) return done(loginErr);
-                        loginRes.text.should.include('Brukernavn og/eller passord er feil.');
-                        done();
-                    });
-            });
+            .end(logout);
     });
 
     it('should be possible to logout', function(done) {
         var sessions = mongoose.connection.db.collection('sessions');
 
-        sessions.drop(function(sessionErr) {
-            if (sessionErr) return done(sessionErr);
-            var agent = request.agent(app);
+        function checkSessions(err, res) {
+            if (err) return done(err);
+            res.header.location.should.equal('/auth/login');
+            sessions
+                .find({})
+                .toArray(function(sessionErr, newSessions) {
+                    if (sessionErr) return done(sessionErr);
+                    newSessions.length.should.equal(0);
+                    done();
+                });
+        }
 
+        function logout(err, agent) {
+            if (err) return done(err);
+            agent
+                .post('/auth/logout')
+                .expect(302)
+                .end(checkSessions);
+        }
+
+        function login(err) {
+            if (err) return done(err);
+            var agent = request.agent(app);
             agent
                 .post('/auth/login')
                 .expect(302)
                 .send(testUser)
-                .end(function(loginErr) {
-                    if (loginErr) return done(loginErr);
-                    agent
-                        .post('/auth/logout')
-                        .expect(302)
-                        .end(function(logoutErr, logoutRes) {
-                            if (logoutErr) return done(logoutErr);
-                            logoutRes.header.location.should.equal('/auth/login');
-                            sessions
-                                .find({})
-                                .toArray(function(err, newSessions) {
-                                    newSessions.length.should.equal(0);
-                                    done();
-                                });
-                        });
-                });
-        });
+                .end(newErr => logout(newErr, agent));
+        }
+
+        sessions.drop(login);
     });
 
     it('should redirect from / to /admin for admins', function(done) {

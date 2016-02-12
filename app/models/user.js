@@ -12,7 +12,7 @@ var userSchema = new Schema({
         index: true,
         required: true,
         unique: true,
-        match: /^[a-zA-Z0-9]{5,}$/
+        match: /^\w{5,}$/
     },
     hash: {
         type: String,
@@ -33,9 +33,20 @@ var userSchema = new Schema({
     }
 });
 
+userSchema.pre('save', function(next) {
+    // Usernames are case-insensitive, so store them
+    // in lowercase:
+    this.username = this.username.toLowerCase();
+    next();
+});
+
 userSchema.methods.getCleanUser = function() {
     var user = _.omit(this.toObject(), 'password', 'hash');
     return user;
+};
+
+userSchema.statics.findByUsername = function(username) {
+    return this.findOne({ username: username.toLowerCase() });
 };
 
 userSchema.statics.register = function(body, password) {
