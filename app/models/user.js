@@ -1,7 +1,9 @@
 var _ = require('lodash');
 var Bluebird = require('bluebird');
-var passportLocalMongoose = require('passport-local-mongoose');
+var bcrypt = Bluebird.promisifyAll(require('bcrypt'));
 var mongoose = require('mongoose');
+var errors = require('../errors');
+
 var Schema = mongoose.Schema;
 
 var userSchema = new Schema({
@@ -11,6 +13,10 @@ var userSchema = new Schema({
         required: true,
         unique: true,
         match: /^[a-zA-Z0-9]{5,}$/
+    },
+    hash: {
+        type: String,
+        required: true
     },
     active: {
         type: Boolean,
@@ -28,26 +34,35 @@ var userSchema = new Schema({
 });
 
 userSchema.methods.getCleanUser = function() {
-    var user = _.omit(this.toObject(), 'password', 'hash', 'salt');
+    var user = _.omit(this.toObject(), 'password', 'hash');
     return user;
 };
 
-var options = {
-    usernameLowerCase: true
+userSchema.statics.register = function(body, password) {
+    if (!password) throw new errors.InvalidRegistrationError('Missing password');
+    return bcrypt.genSaltAsync()
+        .then(salt => bcrypt.hashAsync(password, salt))
+        .then(hash => this.create(Object.assign(body, { hash })));
 };
 
-/* istanbul ignore else */
-if (['test', 'development'].indexOf(process.env.NODE_ENV) !== -1) {
-    userSchema.plugin(passportLocalMongoose, _.extend(options, {
-        iterations: 1
-    }));
-} else {
-    userSchema.plugin(passportLocalMongoose, options);
-}
+userSchema.statics.authenticate = function(username, password) {
+    var _user;
+    return this.findOne({ username })
+        .then(user => {
+            _user = user;
+            return user.authenticate(password);
+        })
+        .then(result => {
+            if (!result) {
+                throw new errors.InvalidRegistrationError('Incorrect username and/or password.');
+            }
 
-// passport-local-mongoose doesn't provide a Promise interface yet, so we
-// need to make one ourself:
-userSchema.statics.register = Bluebird.promisify(userSchema.statics.register);
-userSchema.methods.authenticate = Bluebird.promisify(userSchema.methods.authenticate, { multiArgs: true });
+            return _user;
+        });
+};
+
+userSchema.methods.authenticate = function(password) {
+    return bcrypt.compareAsync(password, this.hash);
+};
 
 module.exports = mongoose.model('User', userSchema);

@@ -40,7 +40,6 @@ describe('Auth API', function() {
         request(app)
             .post('/auth/login')
             .send(testUser)
-            .expect(302)
             .end(function(err, res) {
                 if (err) return done(err);
                 res.header.location.should.equal('/');
@@ -113,6 +112,7 @@ describe('Auth API', function() {
 
             agent
                 .post('/auth/login')
+                .expect(302)
                 .send(testUser)
                 .end(function(err, res) {
                     if (err) return done(err);

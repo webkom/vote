@@ -7,6 +7,7 @@ var cookieParser    = require('cookie-parser');
 var session         = require('express-session');
 var MongoStore      = require('connect-mongo')(session);
 var passport        = require('passport');
+var LocalStrategy   = require('passport-local');
 var csrf            = require('csurf');
 var flash           = require('connect-flash');
 var router          = require('./app/routes');
@@ -69,9 +70,20 @@ if (process.env.NODE_ENV !== 'test') {
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy((username, password, done) => {
+    var _user;
+    User.findOne({ username })
+        .then(user => {
+            if (!user) return false;
+            _user = user;
+            return user.authenticate(password);
+        })
+        .then(result => result && _user)
+        .nodeify(done);
+}));
+
+passport.serializeUser((user, cb) => { cb(null, user.username); });
+passport.deserializeUser((username, cb) => { User.findOne({ username }, cb); });
 
 app.use('/', router);
 

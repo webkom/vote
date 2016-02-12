@@ -120,7 +120,7 @@ describe('User API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 var error = res.body;
-                error.name.should.equal('MissingUsernameError');
+                error.name.should.equal('InvalidRegistrationError');
                 error.status.should.equal(400);
                 done();
             });
