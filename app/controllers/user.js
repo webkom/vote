@@ -1,11 +1,7 @@
-var Bluebird = require('bluebird');
 var mongoose = require('mongoose');
 var User = require('../models/user');
 var errors = require('../errors');
 var errorChecks = require('../errors/error-checks');
-var AuthenticationError = require('passport-local-mongoose').errors.AuthenticationError;
-
-var authenticate = Bluebird.promisify(User.authenticate(), { multiArgs: true });
 
 exports.count = function(req, res, next) {
     var query = { admin:false };
@@ -39,7 +35,6 @@ exports.create = function(req, res, next) {
             return res.status(201).json(createdUser.getCleanUser());
         })
         .catch(mongoose.Error.ValidationError, function(err) {
-            console.log('catcha ja', err);
             throw new errors.ValidationError(err.errors);
         })
         .catch(errorChecks.DuplicateError, function(err) {
@@ -47,10 +42,6 @@ exports.create = function(req, res, next) {
         })
         .catch(errorChecks.BadRequestError, function(err) {
             throw new errors.InvalidRegistrationError(err.message);
-        })
-        .catch(AuthenticationError, function(err) {
-            err.status = 400;
-            throw err;
         })
         .catch(next);
 };
@@ -71,12 +62,8 @@ exports.toggleActive = function(req, res, next) {
 };
 
 exports.changeCard = function(req, res, next) {
-    authenticate(req.params.username, req.body.password)
-        .spread(function(user, errorMessage) {
-            if (!user) {
-                throw new errors.InvalidRegistrationError('Incorrect username and/or password.');
-            }
-
+    User.authenticate(req.params.username, req.body.password)
+        .then(function(user) {
             user.cardKey = req.body.cardKey;
             return user.save();
         })

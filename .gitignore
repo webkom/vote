@@ -33,6 +33,6 @@ node_modules
 dist
 db
 public/libs
-public/js/ads.min.js
+public/js/vote.min.js
 public/*.css
 screenshots
