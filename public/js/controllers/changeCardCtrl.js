@@ -1,7 +1,6 @@
 angular.module('voteApp').controller('changeCardController',
 ['$scope', 'userService', 'alertService', 'cardKeyService',
 function($scope, userService, alertService, cardKeyService) {
-
     $scope.user = {};
 
     $scope.changeCard = function(user) {
@@ -12,14 +11,14 @@ function($scope, userService, alertService, cardKeyService) {
             })
             .error(function(error) {
                 switch (error.name) {
-                    case 'DuplicateCardError':
-                        alertService.addError('Dette kortet er allerede blitt registrert.');
-                        break;
-                    case 'InvalidRegistrationError':
-                        alertService.addError('Ugyldig brukernavn og/eller passord.');
-                        break;
-                    default:
-                        alertService.addError();
+                case 'DuplicateCardError':
+                    alertService.addError('Dette kortet er allerede blitt registrert.');
+                    break;
+                case 'InvalidRegistrationError':
+                    alertService.addError('Ugyldig brukernavn og/eller passord.');
+                    break;
+                default:
+                    alertService.addError();
                 }
             });
     };
@@ -28,5 +27,4 @@ function($scope, userService, alertService, cardKeyService) {
         $scope.user.cardKey = cardKey;
         $scope.$apply();
     });
-
 }]);

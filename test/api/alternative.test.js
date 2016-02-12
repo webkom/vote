@@ -35,9 +35,9 @@ describe('Alternatives API', function() {
         var election = new Election(testElectionData);
 
         return election.save().bind(this)
-            .then(function(election) {
-                this.election = election;
-                createdAlternativeData.election = election.id;
+            .then(function(createdElection) {
+                this.election = createdElection;
+                createdAlternativeData.election = createdElection.id;
                 this.alternative = new Alternative(createdAlternativeData);
                 return election.addAlternative(this.alternative);
             })
@@ -64,7 +64,8 @@ describe('Alternatives API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.length.should.equal(1);
-                res.body[0].description.should.equal(this.alternative.description, 'should be the same as api result');
+                res.body[0].description
+                    .should.equal(this.alternative.description, 'should be the same as api result');
                 done();
             }.bind(this));
     });
@@ -116,7 +117,8 @@ describe('Alternatives API', function() {
                         if (err) return done(err);
                         var error = res.body;
                         error.name.should.equal('ActiveElectionError');
-                        error.message.should.equal('Cannot create alternatives for active elections.');
+                        error.message
+                            .should.equal('Cannot create alternatives for active elections.');
                         error.status.should.equal(400);
                         done();
                     });

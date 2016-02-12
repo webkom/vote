@@ -39,8 +39,8 @@ exports.create = function(req, res, next) {
             return Bluebird.map(alternatives, function(alternative) {
                 alternative.election = election;
                 return Alternative.create(alternative);
-            }).then(function(alternatives) {
-                election.alternatives = alternatives;
+            }).then(function(createdAlternatives) {
+                election.alternatives = createdAlternatives;
                 return election.save();
             });
         }
@@ -53,7 +53,6 @@ exports.create = function(req, res, next) {
     }).catch(mongoose.Error.ValidationError, function(err) {
         throw new errors.ValidationError(err.errors);
     }).catch(next);
-
 };
 
 exports.list = function(req, res, next) {

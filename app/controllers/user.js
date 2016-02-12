@@ -4,7 +4,7 @@ var errors = require('../errors');
 var errorChecks = require('../errors/error-checks');
 
 exports.count = function(req, res, next) {
-    var query = { admin:false };
+    var query = { admin: false };
     if (req.query.active === 'true') {
         query.active = true;
     } else if (req.query.active === 'false') {
@@ -47,7 +47,7 @@ exports.create = function(req, res, next) {
 };
 
 exports.toggleActive = function(req, res, next) {
-    User.findOne({cardKey: req.params.cardKey})
+    User.findOne({ cardKey: req.params.cardKey })
         .then(function(user) {
             if (!user) {
                 throw new errors.NotFoundError('user');

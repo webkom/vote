@@ -67,14 +67,14 @@ describe('Auth API', function() {
         agent
             .get('/test')
             .expect(302)
-            .end(function(err, res) {
+            .end(function(err) {
                 if (err) return done(err);
                 agent
                     .post('/auth/login')
                     .send(testUser)
                     .expect(302)
-                    .end(function(err, res) {
-                        if (err) return done(err);
+                    .end(function(loginErr, res) {
+                        if (loginErr) return done(loginErr);
                         res.header.location.should.equal('/test');
                         done();
                     });
@@ -95,9 +95,9 @@ describe('Auth API', function() {
                     .get('/auth/login')
                     .expect(200)
                     .expect('Content-Type', /text\/html/)
-                    .end(function(err, res) {
-                        if (err) return done(err);
-                        res.text.should.include('Brukernavn og/eller passord er feil.');
+                    .end(function(loginErr, loginRes) {
+                        if (loginErr) return done(loginErr);
+                        loginRes.text.should.include('Brukernavn og/eller passord er feil.');
                         done();
                     });
             });
@@ -106,26 +106,26 @@ describe('Auth API', function() {
     it('should be possible to logout', function(done) {
         var sessions = mongoose.connection.db.collection('sessions');
 
-        sessions.drop(function(err) {
-            if (err) return done(err);
+        sessions.drop(function(sessionErr) {
+            if (sessionErr) return done(sessionErr);
             var agent = request.agent(app);
 
             agent
                 .post('/auth/login')
                 .expect(302)
                 .send(testUser)
-                .end(function(err, res) {
-                    if (err) return done(err);
+                .end(function(loginErr) {
+                    if (loginErr) return done(loginErr);
                     agent
                         .post('/auth/logout')
                         .expect(302)
-                        .end(function(err, res) {
-                            if (err) return done(err);
-                            res.header.location.should.equal('/auth/login');
+                        .end(function(logoutErr, logoutRes) {
+                            if (logoutErr) return done(logoutErr);
+                            logoutRes.header.location.should.equal('/auth/login');
                             sessions
                                 .find({})
-                                .toArray(function(err, sessions) {
-                                    sessions.length.should.equal(0);
+                                .toArray(function(err, newSessions) {
+                                    newSessions.length.should.equal(0);
                                     done();
                                 });
                         });

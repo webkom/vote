@@ -112,15 +112,12 @@ util.inherits(DuplicateCardError, Error);
 exports.DuplicateCardError = DuplicateCardError;
 
 exports.handleError = function(res, err, status) {
-    if (!status) {
-        status = err.status || 500;
-    }
-
+    const statusCode = status || err.status || 500;
     return res
-        .status(status)
+        .status(statusCode)
         .json(err.payload || {
             name: err.name,
-            status: status,
+            status: statusCode,
             message: err.message
         });
 };

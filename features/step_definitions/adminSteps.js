@@ -45,7 +45,10 @@ module.exports = function() {
         var alternative;
         for (var i = 0; i < newElection.alternatives.length; i++) {
             alternative = newElection.alternatives[i];
-            alternatives.get(i).element(by.css('input')).sendKeys(alternative.description);
+            alternatives
+                .get(i)
+                .element(by.css('input'))
+                .sendKeys(alternative.description);
         }
 
         title.submit();
@@ -56,11 +59,12 @@ module.exports = function() {
         Election
             .find({ title: newElection.title })
             .populate('alternatives')
-            .execAsync()
+            .exec()
             .spread(function(election) {
                 expect(election.description).to.equal(newElection.description);
                 election.alternatives.forEach(function(alternative, i) {
-                    expect(alternative.description).to.equal(newElection.alternatives[i].description);
+                    expect(alternative.description)
+                        .to.equal(newElection.alternatives[i].description);
                 });
             })
             .nodeify(callback);
@@ -93,7 +97,8 @@ module.exports = function() {
         var alternatives = element.all(
             by.repeater('alternative in election.alternatives').column('alternative.description')
         );
-        expect(alternatives.getText()).to.eventually.contain(alternativeText.toUpperCase()).notify(callback);
+        expect(alternatives.getText())
+            .to.eventually.contain(alternativeText.toUpperCase()).notify(callback);
     });
 
     this.When(/^I scan card key "([^"]*)"$/, function(cardKey, callback) {

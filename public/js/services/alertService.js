@@ -1,6 +1,5 @@
 angular.module('voteApp').factory('alertService', ['$interval', '$rootScope',
 function($interval, $rootScope) {
-
     $rootScope.alerts = [];
 
     var CLOSE_DELAY = 500;
@@ -22,18 +21,18 @@ function($interval, $rootScope) {
         },
 
         addError: function(message) {
-            if (!message) message = 'Noe gikk galt!';
-            this.add('danger', message);
+            var errMessage = message || 'Noe gikk galt!';
+            this.add('danger', errMessage);
         },
 
         addWarning: function(message) {
-            if (!message) message = 'Noe gikk galt.';
-            this.add('warning', message);
+            var errMessage = message || 'Noe gikk galt.';
+            this.add('warning', errMessage);
         },
 
         addSuccess: function(message) {
-            if (!message) message = 'Ferdig!';
-            this.add('success', message);
+            var errMessage = message || 'Ferdig!';
+            this.add('success', errMessage);
         },
 
         close: function(alert) {

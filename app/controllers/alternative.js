@@ -14,7 +14,9 @@ exports.create = function(req, res, next) {
     return req.election.populate('alternatives').execPopulate()
         .then(function(election) {
             if (election.active) {
-                throw new errors.ActiveElectionError('Cannot create alternatives for active elections.');
+                throw new errors.ActiveElectionError(
+                    'Cannot create alternatives for active elections.'
+                );
             }
 
             var alternative = new Alternative({

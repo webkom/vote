@@ -200,7 +200,9 @@ describe('Vote API', function() {
                         if (err) return done(err);
 
                         var error = res.body;
-                        error.message.should.equal('Can\'t vote with an inactive user: ' + this.user.username);
+                        error.message
+                            .should
+                            .equal(`Can\'t vote with an inactive user: ${this.user.username}`);
                         error.status.should.equal(403);
 
                         Vote.find({ alternative: this.activeAlternative.id })
@@ -247,7 +249,9 @@ describe('Vote API', function() {
                         var receivedVote = res.body;
                         receivedVote.hash.should.equal(vote.hash);
                         receivedVote.alternative._id.should.equal(String(vote.alternative));
-                        receivedVote.alternative.election._id.should.equal(String(this.activeElection.id));
+                        receivedVote.alternative.election._id
+                            .should
+                            .equal(String(this.activeElection.id));
                         done();
                     }.bind(this));
             }).catch(done);

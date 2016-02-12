@@ -1,7 +1,6 @@
 angular.module('voteApp').controller('toggleUserController',
 ['$scope', 'userService', 'alertService', 'cardKeyService',
 function($scope, userService, alertService, cardKeyService) {
-
     var toggleUser = function(cardKey) {
         alertService.closeAll();
         userService.toggleUser(cardKey)
@@ -14,15 +13,14 @@ function($scope, userService, alertService, cardKeyService) {
             })
             .error(function(error) {
                 switch (error.name) {
-                    case 'NotFoundError':
-                        alertService.addError('Uregistrert kort, vennligst lag en bruker først.');
-                        break;
-                    default:
-                        alertService.addError();
+                case 'NotFoundError':
+                    alertService.addError('Uregistrert kort, vennligst lag en bruker først.');
+                    break;
+                default:
+                    alertService.addError();
                 }
             });
     };
 
     cardKeyService.listen(toggleUser);
-
 }]);

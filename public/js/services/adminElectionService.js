@@ -1,6 +1,5 @@
 angular.module('voteApp').service('adminElectionService', ['$http', '$routeParams',
 function($http, $routeParams) {
-
     this.createElection = function(election) {
         return $http.post('/api/election/', election);
     };
