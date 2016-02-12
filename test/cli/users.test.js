@@ -9,7 +9,11 @@ describe('Users CLI', function() {
     });
 
     it('should create admin users', function(done) {
-        var stream = spawn(process.cwd() + '/bin/users', ['create-admin', 'testuser', 'testcardkey']);
+        var stream = spawn(
+            `${process.cwd()}/bin/users`,
+            ['create-admin', 'testuser', 'testcardkey']
+        );
+
         stream.stdin.setEncoding('utf8');
         stream.stdout.setEncoding('utf8');
         stream.stdin.write('testpw\n');

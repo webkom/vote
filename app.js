@@ -1,17 +1,18 @@
-var Bluebird        = require('bluebird');
-var express         = require('express');
-var app             = module.exports = express();
-var mongoose        = require('mongoose');
-var bodyParser      = require('body-parser');
-var cookieParser    = require('cookie-parser');
-var session         = require('express-session');
-var MongoStore      = require('connect-mongo')(session);
-var passport        = require('passport');
-var LocalStrategy   = require('passport-local');
-var csrf            = require('csurf');
-var flash           = require('connect-flash');
-var router          = require('./app/routes');
-var User            = require('./app/models/user');
+var Bluebird = require('bluebird');
+var express = require('express');
+var app = module.exports = express();
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+var csrf = require('csurf');
+var flash = require('connect-flash');
+var favicon = require('serve-favicon');
+var router = require('./app/routes');
+var User = require('./app/models/user');
 
 app.disable('x-powered-by');
 app.set('view engine', 'jade');
@@ -23,7 +24,9 @@ mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });
 
-app.use('/static', express.static(__dirname + '/public'));
+var publicPath = `${__dirname}/public`;
+app.use(favicon(`${publicPath}/favicon.ico`));
+app.use('/static', express.static(publicPath));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));

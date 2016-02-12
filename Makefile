@@ -1,8 +1,7 @@
 BIN = node_modules/.bin
 MOCHA = $(BIN)/_mocha
 ISTANBUL = $(BIN)/istanbul
-JSHINT = $(BIN)/jshint
-JSCS = $(BIN)/jscs
+ESLINT = $(BIN)/eslint
 STYLUS = $(BIN)/stylus
 UGLIFY = $(BIN)/uglifyjs
 WEBDRIVER_MANAGER = $(BIN)/webdriver-manager
@@ -35,17 +34,14 @@ selenium:
 protractor: selenium all
 	NODE_ENV=test MONGO_URL=$(TEST_DB) $(PROTRACTOR) ./features/protractor-conf.js
 
-jscs: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(JSCS) .
-
-jshint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
-	$(JSHINT) .
+lint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
+	$(ESLINT) --ignore-path .gitignore .
 
 mocha:
 	NODE_ENV=test MONGO_URL=$(TEST_DB) $(ISTANBUL) cover $(MOCHA) $(TESTS)
 	$(ISTANBUL) report cobertura
 
-test: jshint jscs mocha protractor
+test: lint mocha protractor
 
 public/main.css: $(STYL)
 ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
@@ -73,4 +69,4 @@ server:
 clean:
 	rm -f public/main.css
 
-.PHONY: server install test jshint selenium protractor selenium jscs all clean
+.PHONY: server install test lint selenium protractor selenium all clean

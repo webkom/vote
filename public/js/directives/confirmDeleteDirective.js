@@ -19,8 +19,7 @@ angular.module('voteApp').directive('deleteUsers', function() {
                 if (!clicked) {
                     clicked = true;
                     scope.buttonText = 'Er du sikker?';
-                }
-                else {
+                } else {
                     scope.deleteHandler();
                     clicked = false;
                     scope.buttonText = originalText;

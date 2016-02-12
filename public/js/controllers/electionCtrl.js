@@ -1,7 +1,7 @@
 angular.module('voteApp').controller('electionController',
-['$scope', 'electionService', 'alertService', 'voteService', 'socketIOService', 'localStorageService',
+['$scope', 'electionService', 'alertService', 'voteService',
+'socketIOService', 'localStorageService',
 function($scope, electionService, alertService, voteService, socketIOService, localStorageService) {
-
     $scope.activeElection = null;
     $scope.selectedAlternative = null;
 
@@ -42,17 +42,23 @@ function($scope, electionService, alertService, voteService, socketIOService, lo
             .error(function(error) {
                 getActiveElection();
                 switch (error.name) {
-                    case 'InactiveElectionError':
-                        alertService.addError('Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.');
-                        break;
-                    case 'AlreadyVotedError':
-                        alertService.addError('Du kan bare stemme en gang per avstemning!');
-                        break;
-                    case 'InactiveUserError':
-                        alertService.addError('Brukeren din er deaktivert, vennligst henvend deg til skranken.');
-                        break;
-                    default:
-                        alertService.addError('Noe gikk galt, vennligst prøv igjen.');
+                case 'InactiveElectionError':
+                    alertService.addError(
+                        'Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.'
+                    );
+                    break;
+                case 'AlreadyVotedError':
+                    alertService.addError(
+                        'Du kan bare stemme en gang per avstemning!'
+                    );
+                    break;
+                case 'InactiveUserError':
+                    alertService.addError(
+                        'Brukeren din er deaktivert, vennligst henvend deg til skranken.'
+                    );
+                    break;
+                default:
+                    alertService.addError('Noe gikk galt, vennligst prøv igjen.');
                 }
             });
     };

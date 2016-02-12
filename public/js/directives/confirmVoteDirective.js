@@ -7,7 +7,8 @@ angular.module('voteApp').directive('confirmVote', function() {
             voteHandler: '&'
         },
         template: '' +
-        '<button type="button" ng-click="click()" ng-disabled="!selectedAlternative" class="btn btn-lg btn-default">' +
+        '<button type="button" ng-click="click()" ' +
+        'ng-disabled="!selectedAlternative" class="btn btn-lg btn-default">' +
             '{{buttonText || "Velg et alternativ"}}' +
         '</button>',
 

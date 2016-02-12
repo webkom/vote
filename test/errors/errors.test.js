@@ -9,7 +9,7 @@ chai.should();
 describe('handleError', function() {
     var stub = sinon.stub();
     var res = {
-        status: function() {
+        status() {
             return {
                 json: stub
             };

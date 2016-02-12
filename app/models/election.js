@@ -46,7 +46,12 @@ electionSchema.pre('remove', function(next) {
 });
 
 electionSchema.methods.sumVotes = function() {
-    if (this.active) throw new errors.ActiveElectionError('Cannot retreive results on an active election.');
+    if (this.active) {
+        throw new errors.ActiveElectionError(
+            'Cannot retreive results on an active election.'
+        );
+    }
+
     return Bluebird.map(this.alternatives, function(alternativeId) {
         return Vote.find({ alternative: alternativeId })
             .then(function(votes) {

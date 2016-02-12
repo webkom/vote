@@ -29,9 +29,9 @@ module.exports = function() {
         return clearCollections().bind(this)
             .then(function() {
                 var election = new Election(activeElectionData);
-                return election.saveAsync();
+                return election.save();
             })
-            .spread(function(election) {
+            .then(function(election) {
                 this.election = election;
                 testAlternative.election = election;
                 this.alternative = new Alternative(testAlternative);

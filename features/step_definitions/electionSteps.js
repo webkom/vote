@@ -33,7 +33,8 @@ module.exports = function() {
             expect(title.getText()).to.eventually.equal(this.election.title.toUpperCase()),
             expect(description.getText()).to.eventually.equal(this.election.description),
             expect(alternatives.count()).to.eventually.equal(1),
-            expect(alternatives.first().getText()).to.eventually.contain(this.alternative.description.toUpperCase())
+            expect(alternatives.first().getText())
+                .to.eventually.contain(this.alternative.description.toUpperCase())
         ]).nodeify(callback);
     });
 
@@ -54,10 +55,10 @@ module.exports = function() {
 
     this.Then(/^I see my hash in "([^"]*)"$/, function(name, callback) {
         var input = element(by.name(name));
-        Vote.findOneAsync({ alternative: this.alternative.id })
-            .then(function(vote) {
+        Vote.findOne({ alternative: this.alternative.id })
+            .then(function(foundVote) {
                 return expect(input.getAttribute('value'))
-                    .to.eventually.equal(vote.hash);
+                    .to.eventually.equal(foundVote.hash);
             }).nodeify(callback);
     });
 };
