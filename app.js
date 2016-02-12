@@ -75,7 +75,7 @@ app.use(passport.session());
 
 passport.use(new LocalStrategy((username, password, done) => {
     var _user;
-    User.findOne({ username })
+    User.findByUsername(username)
         .then(user => {
             if (!user) return false;
             _user = user;
@@ -86,7 +86,9 @@ passport.use(new LocalStrategy((username, password, done) => {
 }));
 
 passport.serializeUser((user, cb) => { cb(null, user.username); });
-passport.deserializeUser((username, cb) => { User.findOne({ username }, cb); });
+passport.deserializeUser((username, cb) => {
+    User.findByUsername(username).exec().nodeify(cb);
+});
 
 app.use('/', router);
 
