@@ -4,47 +4,40 @@ var expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
-function logIn(username, password, callback) {
+function logIn(username, password) {
     var driver = browser.driver;
 
-    var findByName = function(name) {
-        return driver.findElement(by.name(name));
-    };
-
     driver.get('http://localhost:3000/auth/login');
+    var findByName = name => driver.findElement(by.name(name));
     findByName('username').sendKeys(username);
     findByName('password').sendKeys(password);
     driver.findElement(by.tagName('button')).click();
-    browser.waitForAngular().then(callback);
 }
 
 module.exports = function() {
-    this.Given(/^I am logged in as an admin$/, function(callback) {
-        logIn('admin', 'password', callback);
+    this.Given(/^I am logged in as an admin$/, function() {
+        logIn('admin', 'password');
     });
 
-    this.When(/^I log in$/, function(callback) {
-        logIn('testUser', 'password', callback);
+    this.When(/^I log in$/, function() {
+        logIn('testUser', 'password');
     });
 
-    this.When(/^I log out/, function(callback) {
+    this.When(/^I log out/, function() {
         var logoutButton = element(by.linkText('Logg ut'));
         logoutButton.click();
-        callback();
     });
 
-    this.Given(/^I am logged in$/, function(callback) {
-        logIn('testUser', 'password', callback);
+    this.Given(/^I am logged in$/, function() {
+        logIn('testUser', 'password');
     });
 
-    this.Given(/^I am on page "([^"]*)"$/, function(path, callback) {
+    this.Given(/^I am on page "([^"]*)"$/, function(path) {
         browser.get(path);
-        browser.waitForAngular().then(callback);
     });
 
-    this.When(/^I go to page "([^"]*)"$/, function(path, callback) {
+    this.When(/^I go to page "([^"]*)"$/, function(path) {
         browser.get(path);
-        callback();
     });
 
     this.Then(/^I should be on page "([^"]*)"$/, function(path, callback) {
@@ -53,46 +46,43 @@ module.exports = function() {
         expect(driver.getCurrentUrl()).to.eventually.contain(path).notify(callback);
     });
 
-    this.Then(/^I see "([^"]*)"$/, function(text, callback) {
-        expect(browser.getPageSource()).to.eventually.contain(text).notify(callback);
+    this.Then(/^I see "([^"]*)"$/, function(text) {
+        return expect(browser.getPageSource()).to.eventually.contain(text);
     });
 
-    this.When(/^I click "([^"]*)"$/, function(buttonText, callback) {
+    this.When(/^I click "([^"]*)"$/, function(buttonText) {
         var button = element(by.buttonText(buttonText));
         button.click();
-        callback();
     });
 
-    this.Then(/^I should find "([^"]*)"$/, function(selector, callback) {
-        expect(element(by.css(selector)).isPresent()).to.eventually.equal(true).notify(callback);
+    this.Then(/^I should find "([^"]*)"$/, function(selector) {
+        return expect(element(by.css(selector)).isPresent()).to.eventually.equal(true);
     });
 
-    this.Then(/^I should not find "([^"]*)"$/, function(selector, callback) {
-        expect(element(by.css(selector)).isPresent()).to.eventually.equal(false).notify(callback);
+    this.Then(/^I should not find "([^"]*)"$/, function(selector) {
+        return expect(element(by.css(selector)).isPresent()).to.eventually.equal(false);
     });
 
-    this.Then(/^I see alert "([^"]*)"$/, function(text, callback) {
+    this.Then(/^I see alert "([^"]*)"$/, function(text) {
         var alert = element(by.cssContainingText('.alert', text));
-        browser.wait(function() {
-            return alert.isPresent();
-        }, 1000).then(function(isPresent) {
-            expect(isPresent).to.equal(true);
-            expect(alert.getText()).to.eventually.contain(text).notify(callback);
-        });
+        return alert.isPresent()
+            .then(isPresent => {
+                expect(isPresent).to.equal(true);
+                return expect(alert.getText()).to.eventually.contain(text);
+            });
     });
 
-    this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(name, value, callback) {
+    this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, function(name, value) {
         element(by.name(name)).sendKeys(value);
-        callback();
     });
 
-    this.Then(/^I see "([^"]*)" in "([^"]*)"$/, function(value, className, callback) {
+    this.Then(/^I see "([^"]*)" in "([^"]*)"$/, function(value, className) {
         var field = element(by.className(className));
-        expect(field.getText()).to.eventually.equal(value).notify(callback);
+        expect(field.getText()).to.eventually.equal(value);
     });
 
-    this.Then(/^I count (\d+) "([^"]*)"$/, function(count, css, callback) {
+    this.Then(/^I count (\d+) "([^"]*)"$/, function(count, css) {
         var found = element.all(by.css(css));
-        expect(found.count()).to.eventually.equal(Number(count)).notify(callback);
+        expect(found.count()).to.eventually.equal(Number(count));
     });
 };
