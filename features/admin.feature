@@ -139,4 +139,3 @@ Feature: Admin
     When I click "Slett brukere"
     And I click "Er du sikker?"
     Then I see alert "Alle brukere ble slettet!"
-
