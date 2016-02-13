@@ -409,7 +409,7 @@ describe('Election API', function() {
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
-                        res.body.should.be.empty;
+                        should.not.exist(res.body);
                         done();
                     });
             });
