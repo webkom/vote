@@ -44,9 +44,9 @@ function($routeProvider, $locationProvider) {
             controller: 'editElectionController'
         })
 
-        .when('/admin/delete_users', {
-            templateUrl: 'partials/admin/deleteUsers',
-            controller: 'deleteUsersController'
+        .when('/admin/deactivate_users', {
+            templateUrl: 'partials/admin/deactivateUsers',
+            controller: 'deactivateUsersController'
         })
 
         .otherwise({
