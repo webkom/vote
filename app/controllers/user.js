@@ -76,13 +76,13 @@ exports.changeCard = function(req, res, next) {
         .catch(next);
 };
 
-exports.deleteAllNonAdmin = function(req, res, next) {
-    return User.remove({ admin: false })
-        .then(function(result) {
-            return res.json({
-                status: 200,
-                message: 'All users have been deleted!'
-            });
-        })
-        .catch(next);
+exports.deactivateAllNonAdmin = function(req, res, next) {
+    User.update({ admin: false }, {
+        active: false
+    }).then(function() {
+        return res.status(200).json({
+            message: 'Users deactivated.',
+            status: 200
+        });
+    }).catch(next);
 };

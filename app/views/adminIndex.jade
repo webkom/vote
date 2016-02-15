@@ -27,9 +27,9 @@ block scripts
         script(src='/static/js/controllers/createElectionCtrl.js')
         script(src='/static/js/controllers/editElectionCtrl.js')
         script(src='/static/js/controllers/toggleUserController.js')
-        script(src='/static/js/controllers/deleteUsersCtrl.js')
+        script(src='/static/js/controllers/deactivateUsersCtrl.js')
         script(src='/static/js/directives/passwordDirective.js')
-        script(src='/static/js/directives/confirmDeleteDirective.js')
+        script(src='/static/js/directives/confirmDeactivateDirective.js')
         script(src='/static/js/appRoutes.js')
 
 block navbar
@@ -46,7 +46,7 @@ block navbar
             li
                 a(href='/admin/create_election') Lag avstemning
             li
-                a(href='/admin/delete_users') Slett brukere
+                a(href='/admin/deactivate_users') Deaktiver brukere
 
 block content
     .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')

@@ -1,14 +1,14 @@
-angular.module('voteApp').directive('deleteUsers', function() {
+angular.module('voteApp').directive('deactivateUsers', function() {
     return {
         restrict: 'E',
         replace: true,
         scope: {
-            deleteHandler: '&',
+            deactivateHandler: '&',
             buttonText: '@'
         },
         template: '' +
             '<button type="button" ng-click="click()" class="btn btn-lg btn-default">' +
-            '{{buttonText}}' +
+            '{{buttonText || "Deaktiver brukere"}}' +
             '</button>',
         link: function(scope, elem, attrs) {
             var clicked = false;
@@ -20,7 +20,7 @@ angular.module('voteApp').directive('deleteUsers', function() {
                     clicked = true;
                     scope.buttonText = 'Er du sikker?';
                 } else {
-                    scope.deleteHandler();
+                    scope.deactivateHandler();
                     clicked = false;
                     scope.buttonText = originalText;
                 }
