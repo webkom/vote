@@ -1,7 +1,6 @@
 angular.module('voteApp').controller('createElectionController',
 ['$scope', '$location', 'adminElectionService', 'alertService',
 function($scope, $location, adminElectionService, alertService) {
-
     $scope.election = {
         alternatives: [{}]
     };

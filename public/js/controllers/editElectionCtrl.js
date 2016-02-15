@@ -1,12 +1,35 @@
 angular.module('voteApp').controller('editElectionController',
 ['$scope', '$interval', 'userService', 'adminElectionService', 'alertService',
 function($scope, $interval, userService, adminElectionService, alertService) {
-
     $scope.newAlternative = {};
     $scope.election = null;
     $scope.showCount = false;
+    var countInterval;
 
-    var countInterval = $interval(function() {
+    function handleIntervalError(error) {
+        $interval.cancel(countInterval);
+        alertService.addError(error.message);
+    }
+
+    function countActiveUsers() {
+        userService.countActiveUsers()
+            .success(function(result) {
+                $scope.activeUsers = result.users;
+            })
+            .error(handleIntervalError);
+    }
+    countActiveUsers();
+
+    function countVotedUsers() {
+        adminElectionService.countVotedUsers()
+            .success(function(result) {
+                $scope.votedUsers = result.users;
+            })
+            .error(handleIntervalError);
+    }
+    countVotedUsers();
+
+    countInterval = $interval(function() {
         countActiveUsers();
         countVotedUsers();
     }, 3000);
@@ -53,11 +76,6 @@ function($scope, $interval, userService, adminElectionService, alertService) {
         }
     };
 
-    function handleIntervalError(error) {
-        $interval.cancel(countInterval);
-        alertService.addError(error.message);
-    }
-
     function getCount() {
         adminElectionService.countVotes()
             .success(function(alternatives) {
@@ -72,24 +90,6 @@ function($scope, $interval, userService, adminElectionService, alertService) {
             })
             .error(handleIntervalError);
     }
-
-    function countActiveUsers() {
-        userService.countActiveUsers()
-            .success(function(result) {
-                $scope.activeUsers = result.users;
-            })
-            .error(handleIntervalError);
-    }
-    countActiveUsers();
-
-    function countVotedUsers() {
-        adminElectionService.countVotedUsers()
-            .success(function(result) {
-                $scope.votedUsers = result.users;
-            })
-            .error(handleIntervalError);
-    }
-    countVotedUsers();
 
     $scope.getPercentage = function(count) {
         if (count !== undefined) {

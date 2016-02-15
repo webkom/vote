@@ -34,10 +34,10 @@ describe('Alternatives API', function() {
         passportStub.logout();
         var election = new Election(testElectionData);
 
-        return election.saveAsync().bind(this)
-            .spread(function(election) {
-                this.election = election;
-                createdAlternativeData.election = election.id;
+        return election.save().bind(this)
+            .then(function(createdElection) {
+                this.election = createdElection;
+                createdAlternativeData.election = createdElection.id;
                 this.alternative = new Alternative(createdAlternativeData);
                 return election.addAlternative(this.alternative);
             })
@@ -64,7 +64,8 @@ describe('Alternatives API', function() {
             .end(function(err, res) {
                 if (err) return done(err);
                 res.body.length.should.equal(1);
-                res.body[0].description.should.equal(this.alternative.description, 'should be the same as api result');
+                res.body[0].description
+                    .should.equal(this.alternative.description, 'should be the same as api result');
                 done();
             }.bind(this));
     });
@@ -105,7 +106,7 @@ describe('Alternatives API', function() {
 
         this.election.active = true;
 
-        return this.election.saveAsync().bind(this)
+        return this.election.save().bind(this)
             .then(function() {
                 request(app)
                     .post('/api/election/' + this.election.id + '/alternatives')
@@ -116,7 +117,8 @@ describe('Alternatives API', function() {
                         if (err) return done(err);
                         var error = res.body;
                         error.name.should.equal('ActiveElectionError');
-                        error.message.should.equal('Cannot create alternatives for active elections.');
+                        error.message
+                            .should.equal('Cannot create alternatives for active elections.');
                         error.status.should.equal(400);
                         done();
                     });
@@ -135,7 +137,7 @@ describe('Alternatives API', function() {
                 error.name.should.equal('ValidationError');
                 error.status.should.equal(400);
                 error.errors.description.path.should.equal('description');
-                error.errors.description.type.should.equal('required');
+                error.errors.description.kind.should.equal('required');
                 done();
             });
     });

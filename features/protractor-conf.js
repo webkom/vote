@@ -4,5 +4,11 @@ exports.config = {
     },
     baseUrl: 'http://localhost:3000',
     specs: ['*.feature'],
-    framework: 'cucumber'
+    framework: 'custom',
+    frameworkPath: require.resolve('protractor-cucumber-framework'),
+    cucumberOpts: {
+        require: ['step_definitions/*.js', 'support/*.js'],
+        backtrace: true,
+        tags: process.env.TAGS
+    }
 };

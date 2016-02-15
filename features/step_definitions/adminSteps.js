@@ -21,96 +21,91 @@ module.exports = function() {
         ]
     };
 
-    this.Then(/^I see a list of elections$/, function(callback) {
+    this.Then(/^I see a list of elections$/, function() {
         var alternatives = element.all(by.repeater('election in elections'));
         var election = alternatives.first();
 
         Bluebird.all([
             expect(election.getText()).to.eventually.equal(this.election.title),
             expect(alternatives.count()).to.eventually.equal(1)
-        ]).nodeify(callback);
+        ]);
     });
 
-    this.When(/^I create an election$/, function(callback) {
-        // Add new alternative
+    this.When(/^I create an election$/, function() {
         element(by.className('new-alternative')).click();
-
         var title = element(by.model('election.title'));
         var description = element(by.model('election.description'));
         var alternatives = element.all(by.repeater('alternative in election.alternatives'));
-
+        // Add new alternative
         title.sendKeys(newElection.title);
         description.sendKeys(newElection.description);
-
-        var alternative;
-        for (var i = 0; i < newElection.alternatives.length; i++) {
-            alternative = newElection.alternatives[i];
-            alternatives.get(i).element(by.css('input')).sendKeys(alternative.description);
-        }
+        newElection.alternatives.forEach((alternative, i) => {
+            alternatives
+                .get(i)
+                .element(by.css('input'))
+                .sendKeys(alternative.description);
+        });
 
         title.submit();
-        browser.waitForAngular().then(callback);
     });
 
-    this.Then(/^The election should exist$/, function(callback) {
-        Election
+    this.Then(/^The election should exist$/, function() {
+        return Election
             .find({ title: newElection.title })
             .populate('alternatives')
-            .execAsync()
+            .exec()
             .spread(function(election) {
                 expect(election.description).to.equal(newElection.description);
                 election.alternatives.forEach(function(alternative, i) {
-                    expect(alternative.description).to.equal(newElection.alternatives[i].description);
+                    expect(alternative.description)
+                        .to.equal(newElection.alternatives[i].description);
                 });
-            })
-            .nodeify(callback);
+            });
     });
 
-    this.Given(/^The election has votes$/, function(callback) {
-        this.alternative.addVote(this.user).nodeify(callback);
+    this.Given(/^The election has votes$/, function() {
+        this.alternative.addVote(this.user);
     });
 
-    this.Given(/^I am on the edit election page$/, function(callback) {
+    this.Given(/^I am on the edit election page$/, function() {
         browser.get('/admin/election/' + this.election.id + '/edit');
-        callback();
     });
 
-    this.Then(/^I should see votes$/, function(callback) {
+    this.Then(/^I should see votes$/, function() {
         var alternatives = element.all(by.repeater('alternative in election.alternatives'));
         var alternative = alternatives.first();
         var span = alternative.element(by.tagName('span'));
 
-        expect(span.getText()).to.eventually.equal('1 - 100 %').notify(callback);
+        return expect(span.getText()).to.eventually.equal('1 - 100 %');
     });
 
-    this.When(/^I enter a new alternative "([^"]*)"$/, function(alternative, callback) {
+    this.When(/^I enter a new alternative "([^"]*)"$/, function(alternative) {
         var input = element(by.id('new-alternative'));
         input.sendKeys(alternative);
-        callback();
     });
 
-    this.Then(/^I should see the alternative "([^"]*)"$/, function(alternativeText, callback) {
+    this.Then(/^I should see the alternative "([^"]*)"$/, function(alternativeText) {
         var alternatives = element.all(
             by.repeater('alternative in election.alternatives').column('alternative.description')
         );
-        expect(alternatives.getText()).to.eventually.contain(alternativeText.toUpperCase()).notify(callback);
+
+        return expect(alternatives.getText())
+            .to.eventually.contain(alternativeText.toUpperCase());
     });
 
-    this.When(/^I scan card key "([^"]*)"$/, function(cardKey, callback) {
+    this.When(/^I scan card key "([^"]*)"$/, function(cardKey) {
         browser.executeScript('window.postMessage("' + cardKey + '", "*");');
-        browser.waitForAngular().then(callback);
     });
 
-    this.When(/^I delete users$/, function(callback) {
+    this.When(/^I delete users$/, function() {
         var button = element(by.css('button'));
 
         button.click();
         button.click();
-        browser.waitForAngular().then(callback);
     });
 
-    this.Then(/^I should see ([\d]+) in "([^"]*)"$/, function(count, binding, callback) {
+    this.Then(/^I should see ([\d]+) in "([^"]*)"$/, function(count, binding) {
         var countElement = element(by.binding(binding));
-        expect(countElement.getText()).to.eventually.equal(String(count)).notify(callback);
+        return expect(countElement.getText()).to.eventually.equal(String(count));
     });
 };

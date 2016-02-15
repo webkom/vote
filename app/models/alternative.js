@@ -1,7 +1,7 @@
 var _ = require('lodash');
 var Bluebird = require('bluebird');
 var crypto = require('crypto');
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
+var mongoose = require('mongoose');
 var Election = require('./election');
 var Vote = require('./vote');
 var errors = require('../errors');
@@ -20,12 +20,12 @@ var alternativeSchema = new Schema({
 });
 
 alternativeSchema.pre('remove', function(next) {
-    return Vote.findAsync({ alternative: this.id })
+    return Vote.find({ alternative: this.id })
         .then(function(votes) {
             return Bluebird.map(votes, function(vote) {
                 // Have to call remove on each document to activate Vote's
                 // remove-middleware
-                return vote.removeAsync();
+                return vote.remove();
             });
         }).nodeify(next);
 });
@@ -35,7 +35,7 @@ alternativeSchema.methods.addVote = function(user) {
     if (!user.active) throw new errors.InactiveUserError(user.username);
     if (user.admin) throw new errors.AdminVotingError();
 
-    return Election.findByIdAsync(this.election).bind(this)
+    return Election.findById(this.election).exec().bind(this)
         .then(function(election) {
             if (!election.active) throw new errors.InactiveElectionError();
             var votedUsers = election.hasVotedUsers.toObject();
@@ -47,13 +47,9 @@ alternativeSchema.methods.addVote = function(user) {
             var vote = new Vote({ hash: voteHash, alternative: this.id });
 
             election.hasVotedUsers.push({ user: user._id });
-            return Bluebird.all([vote.saveAsync(), election.saveAsync()]);
+            return Bluebird.all([vote.save(), election.save()]);
         })
         .spread(function(voteResult) {
-            // voteResult will be an array:
-            // [voteObject, numberOfRowsAffected]
-            // use .spread(voteObject) when calling
-            // to only get the voteObject.
             return voteResult;
         });
 };

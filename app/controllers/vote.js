@@ -12,13 +12,13 @@ exports.create = function(req, res, next) {
 
     return Alternative.findById(alternativeId)
         .populate('votes')
-        .execAsync()
+        .exec()
         .then(function(alternative) {
             if (!alternative) throw new errors.NotFoundError('alternative');
             return alternative.addVote(req.user);
         })
-        .spread(function(vote) {
-            return vote.populateAsync('alternative');
+        .then(function(vote) {
+            return vote.populate('alternative').execPopulate();
         })
         .then(function(vote) {
             return res.status(201).send(vote);
@@ -39,10 +39,10 @@ exports.retrieve = function(req, res, next) {
 
     return Vote.findOne({ hash: hash })
         .populate('alternative')
-        .execAsync()
+        .exec()
         .then(function(vote) {
             if (!vote) throw new errors.NotFoundError('vote');
-            return vote.alternative.populateAsync('election')
+            return vote.alternative.populate('election').execPopulate()
                 .then(function(alternative) {
                     return res.json(vote);
                 });

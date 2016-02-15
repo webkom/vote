@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var Bluebird = require('bluebird');
-var mongoose = Bluebird.promisifyAll(require('mongoose'));
+var mongoose = require('mongoose');
 
 exports.dropDatabase = function(done) {
     mongoose.connection.db.dropDatabase(function(err) {
@@ -12,6 +12,6 @@ exports.dropDatabase = function(done) {
 exports.clearCollections = function() {
     var collections = _.values(mongoose.connection.collections);
     return Bluebird.map(collections, function(collection) {
-        return collection.removeAsync();
+        return collection.remove();
     });
 };

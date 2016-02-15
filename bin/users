@@ -30,7 +30,7 @@ program
                     cardKey: cardKey
                 });
 
-                User.register(user, password, done);
+                User.register(user, password).nodeify(done);
             });
 
         });

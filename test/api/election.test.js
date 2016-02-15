@@ -1,4 +1,4 @@
-/* jshint expr: true */
+/* eslint-disable no-unused-expressions */
 var Bluebird = require('bluebird');
 var passportStub = require('passport-stub');
 var ObjectId = require('mongoose').Types.ObjectId;
@@ -34,7 +34,7 @@ describe('Election API', function() {
     var electionWithAlternative = {
         title: 'electionWithAlternative',
         description: 'alternative election',
-        alternatives:[
+        alternatives: [
             {
                 description: 'election alternative 1'
             },
@@ -62,10 +62,10 @@ describe('Election API', function() {
         ioStub.emit.reset();
 
         var election = new Election(activeElectionData);
-        return election.saveAsync().bind(this)
-            .spread(function(election) {
-                this.activeElection = election;
-                testAlternative.election = election;
+        return election.save().bind(this)
+            .then(function(createdElection) {
+                this.activeElection = createdElection;
+                testAlternative.election = createdElection;
                 this.alternative = new Alternative(testAlternative);
                 return election.addAlternative(this.alternative);
             })
@@ -92,8 +92,20 @@ describe('Election API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.body.title.should.equal(inactiveElectionData.title, 'db election title hash should be the same as api result');
-                res.body.description.should.equal(inactiveElectionData.description, 'db election description hash should be the same as api result');
+                res.body.title
+                    .should
+                    .equal(
+                        inactiveElectionData.title,
+                        'db election title hash should be the same as api result'
+                    );
+
+                res.body.description
+                    .should
+                    .equal(
+                        inactiveElectionData.description,
+                        'db election description hash should be the same as api result'
+                    );
+
                 res.body.active.should.equal(false, 'db election should not be active');
                 res.body.hasVotedUsers.should.be.an.instanceof(Array);
                 done();
@@ -109,12 +121,36 @@ describe('Election API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.body.title.should.equal(electionWithAlternative.title, 'db election title hash should be the same as api result');
-                res.body.description.should.equal(electionWithAlternative.description, 'db election description hash should be the same as api result');
+                res.body.title
+                    .should
+                    .equal(
+                        electionWithAlternative.title,
+                        'db election title hash should be the same as api result'
+                    );
+
+                res.body.description
+                    .should
+                    .equal(
+                        electionWithAlternative.description,
+                        'db election description hash should be the same as api result'
+                    );
+
                 res.body.active.should.equal(false, 'db election should not be active');
-                res.body.alternatives.length.should.not.equal(0, 'db election should contain alternatives');
-                res.body.alternatives[0].description.should.equal(electionWithAlternative.alternatives[0].description, 'db election alternative should be correct');
-                res.body.alternatives[1].description.should.equal(electionWithAlternative.alternatives[1].description, 'db election alternative should be correct');
+                res.body.alternatives.length
+                    .should.not.equal(0, 'db election should contain alternatives');
+                res.body.alternatives[0].description
+                    .should
+                    .equal(
+                        electionWithAlternative.alternatives[0].description,
+                        'db election alternative should be correct'
+                    );
+
+                res.body.alternatives[1].description
+                    .should
+                    .equal(
+                        electionWithAlternative.alternatives[1].description,
+                        'db election alternative should be correct'
+                    );
                 done();
             });
     });
@@ -131,7 +167,7 @@ describe('Election API', function() {
                 error.name.should.equal('ValidationError');
                 error.status.should.equal(400);
                 error.errors.title.path.should.equal('title');
-                error.errors.title.type.should.equal('required');
+                error.errors.title.kind.should.equal('required');
                 done();
             });
     });
@@ -149,9 +185,27 @@ describe('Election API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.body[0].title.should.equal(this.activeElection.title, 'db election title hash should be the same as api result');
-                res.body[0].description.should.equal(this.activeElection.description, 'db election description hash should be the same as api result');
-                res.body[0]._id.should.equal(this.activeElection.id, 'db election id hash should be the same as api result');
+                res.body[0].title
+                    .should
+                    .equal(
+                        this.activeElection.title,
+                        'db election title hash should be the same as api result'
+                    );
+
+                res.body[0].description
+                    .should
+                    .equal(
+                        this.activeElection.description,
+                        'db election description hash should be the same as api result'
+                    );
+
+                res.body[0]._id
+                    .should
+                    .equal(
+                        this.activeElection.id,
+                        'db election id hash should be the same as api result'
+                    );
+
                 done();
             }.bind(this));
     });
@@ -169,11 +223,11 @@ describe('Election API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.body.title.should.equal(this.activeElection.title, 'db election title hash should be the same as api result');
-                res.body.description.should.equal(this.activeElection.description, 'db election description hash should be the same as api result');
-                res.body.active.should.equal(true, 'db election should not be active');
+                res.body.title.should.equal(this.activeElection.title);
+                res.body.description.should.equal(this.activeElection.description);
+                res.body.active.should.equal(true);
                 res.body.alternatives.length.should.equal(1);
-                res.body.alternatives[0]._id.should.equal(this.alternative.id, 'should be the correct alternative');
+                res.body.alternatives[0]._id.should.equal(this.alternative.id);
                 done();
             }.bind(this));
     });
@@ -196,7 +250,7 @@ describe('Election API', function() {
 
     it('should be able to activate an election', function(done) {
         passportStub.login(this.adminUser);
-        Election.createAsync(inactiveElectionData)
+        Election.create(inactiveElectionData)
             .then(function(election) {
                 request(app)
                     .post('/api/election/' + election.id + '/activate')
@@ -269,10 +323,10 @@ describe('Election API', function() {
         this.activeElection.active = false;
 
         return Bluebird.all([
-            vote.saveAsync(),
-            this.activeElection.saveAsync()
+            vote.save(),
+            this.activeElection.save()
         ]).bind(this).then(function() {
-                request(app)
+            request(app)
                     .delete('/api/election/' + this.activeElection.id)
                     .expect(200)
                     .expect('Content-Type', /json/)
@@ -281,16 +335,16 @@ describe('Election API', function() {
                         res.body.message.should.equal('Election deleted.');
                         res.body.status.should.equal(200);
                         return Bluebird.all([
-                            Election.findAsync({}),
-                            Alternative.findAsync({}),
-                            Vote.findAsync({})
+                            Election.find({}),
+                            Alternative.find({}),
+                            Vote.find({})
                         ]).spread(function(elections, alternatives, votes) {
                             elections.length.should.equal(0);
                             alternatives.length.should.equal(0);
                             votes.length.should.equal(0);
                         }).nodeify(done);
                     });
-            }).catch(done);
+        }).catch(done);
     });
 
     it('should not be possible to delete active elections', function(done) {
@@ -347,7 +401,7 @@ describe('Election API', function() {
             user: this.user.id
         });
 
-        this.activeElection.saveAsync()
+        this.activeElection.save()
             .then(function() {
                 request(app)
                     .get('/api/election/active')
@@ -355,7 +409,7 @@ describe('Election API', function() {
                     .expect('Content-Type', /json/)
                     .end(function(err, res) {
                         if (err) return done(err);
-                        res.body.should.be.empty;
+                        should.not.exist(res.body);
                         done();
                     });
             });
@@ -389,7 +443,8 @@ describe('Election API', function() {
         test404('get', '/api/election/badid/count', 'election', done);
     });
 
-    it('should get 404 when counting votes for elections with nonexistent ObjectIds', function(done) {
+    it('should get 404 when counting votes for elections with nonexistent ObjectIds',
+    function(done) {
         passportStub.login(this.adminUser);
         var badId = new ObjectId();
         test404('get', '/api/election/' + badId + '/count', 'election', done);
