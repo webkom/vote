@@ -304,28 +304,27 @@ describe('User API', function() {
         testAdminResource('put', '/api/user/user/change_card', done);
     });
 
-    it('should be possible to delete all non-admin users', function(done) {
+    it('should be possible to deactivate all non-admin users', function(done) {
         passportStub.login(this.adminUser);
 
         request(app)
-            .delete('/api/user')
+            .post('/api/user/deactivate')
             .expect(200)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-
                 return User.find()
                 .then(function(users) {
-                    var numberOfUsers = users.length;
-                    var adminUser = users[0];
-                    numberOfUsers.should.equal(1);
-                    adminUser.admin.should.equal(true);
+                    users.forEach(function(user) {
+                        if (user.admin) user.active.should.equal(true);
+                        else user.active.should.equal(false);
+                    });
                 }).nodeify(done);
             });
     });
 
-    it('should not be possible to delete all non-admin users without being admin', function(done) {
+    it('should not be possible to deactivate all users without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResource('delete', '/api/user', done);
+        testAdminResource('post', '/api/user/deactivate', done);
     });
 });

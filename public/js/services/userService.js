@@ -15,7 +15,7 @@ angular.module('voteApp').service('userService', ['$http', function($http) {
         return $http.get('/api/user/count?active=true');
     };
 
-    this.deleteNonAdminUsers = function() {
-        return $http.delete('/api/user');
+    this.deactivateNonAdminUsers = function() {
+        return $http.post('/api/user/deactivate');
     };
 }]);
