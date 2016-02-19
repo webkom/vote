@@ -1,4 +1,4 @@
-angular.module('voteApp').directive('confirmVote', function() {
+module.exports = function() {
     return {
         restrict: 'E',
         replace: true,
@@ -32,4 +32,4 @@ angular.module('voteApp').directive('confirmVote', function() {
             };
         }
     };
-});
+};

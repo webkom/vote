@@ -1,4 +1,4 @@
-angular.module('voteApp').factory('socketIOService', function() {
+module.exports = function() {
     var socket = io();
 
     return {
@@ -6,4 +6,4 @@ angular.module('voteApp').factory('socketIOService', function() {
             socket.on(message, callback);
         }
     };
-});
+};

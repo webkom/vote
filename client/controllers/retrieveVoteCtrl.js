@@ -1,5 +1,4 @@
-angular.module('voteApp').controller('retrieveVoteController',
-['$scope', 'alertService', 'voteService', 'localStorageService',
+module.exports = ['$scope', 'alertService', 'voteService', 'localStorageService',
 function($scope, alertService, voteService, localStorageService) {
     $scope.voteHash = localStorageService.get('voteHash');
 
@@ -19,4 +18,4 @@ function($scope, alertService, voteService, localStorageService) {
                 }
             });
     };
-}]);
+}];

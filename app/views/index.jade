@@ -3,36 +3,6 @@ extends layout
 block scripts
     script(src='/socket.io/socket.io.js')
 
-    if NODE_ENV == 'production'
-        script(src='/static/js/vote.min.js')
-    else
-        script(src='/static/libs/angular/angular.min.js')
-        script(src='/static/libs/angular-route/angular-route.min.js')
-        script(src='/static/libs/angular-bootstrap/ui-bootstrap-tpls.min.js')
-        script(src='/static/libs/angular-local-storage/dist/angular-local-storage.min.js')
-
-        script(src='/static/js/app.js')
-        script(src='/static/js/services/socketIOService.js')
-        script(src='/static/js/services/electionService.js')
-        script(src='/static/js/services/adminElectionService.js')
-        script(src='/static/js/services/alertService.js')
-        script(src='/static/js/services/voteService.js')
-        script(src='/static/js/services/alertService.js')
-        script(src='/static/js/services/voteService.js')
-        script(src='/static/js/services/logoutService.js')
-        script(src='/static/js/controllers/logoutCtrl.js')
-        script(src='/static/js/controllers/electionCtrl.js')
-        script(src='/static/js/controllers/electionsCtrl.js')
-        script(src='/static/js/controllers/createUserCtrl.js')
-        script(src='/static/js/controllers/changeCardCtrl.js')
-        script(src='/static/js/controllers/createElectionCtrl.js')
-        script(src='/static/js/controllers/editElectionCtrl.js')
-        script(src='/static/js/controllers/retrieveVoteCtrl.js')
-        script(src='/static/js/directives/passwordDirective.js')
-        script(src='/static/js/directives/confirmVoteDirective.js')
-        script(src='/static/js/directives/confirmDeleteDirective.js')
-        script(src='/static/js/appRoutes.js')
-
 block navbar
     nav
         ul.list-unstyled
@@ -43,7 +13,7 @@ block navbar
 
 block content
     .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
-        alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
+        uib-alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
 
     .container(ng-view='')
 

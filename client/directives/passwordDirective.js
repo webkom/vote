@@ -1,4 +1,4 @@
-angular.module('voteApp').directive('matchPassword', function() {
+module.exports = function() {
     return {
         require: 'ngModel',
         restrict: 'A',
@@ -13,4 +13,4 @@ angular.module('voteApp').directive('matchPassword', function() {
             });
         }
     };
-});
+};

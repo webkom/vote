@@ -1,5 +1,4 @@
-angular.module('voteApp').controller('editElectionController',
-['$scope', '$interval', 'userService', 'adminElectionService', 'alertService',
+module.exports = ['$scope', '$interval', 'userService', 'adminElectionService', 'alertService',
 function($scope, $interval, userService, adminElectionService, alertService) {
     $scope.newAlternative = {};
     $scope.election = null;
@@ -110,4 +109,4 @@ function($scope, $interval, userService, adminElectionService, alertService) {
             getCount();
         }
     };
-}]);
+}];

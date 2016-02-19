@@ -1,4 +1,4 @@
-angular.module('voteApp').service('adminElectionService', ['$http', '$routeParams',
+module.exports = ['$http', '$routeParams',
 function($http, $routeParams) {
     this.createElection = function(election) {
         return $http.post('/api/election/', election);
@@ -31,4 +31,4 @@ function($http, $routeParams) {
     this.countVotedUsers = function() {
         return $http.get('/api/election/' + $routeParams.param + '/count');
     };
-}]);
+}];

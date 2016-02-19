@@ -1,5 +1,4 @@
-angular.module('voteApp').controller('toggleUserController',
-['$scope', 'userService', 'alertService', 'cardKeyService',
+module.exports = ['$scope', 'userService', 'alertService', 'cardKeyService',
 function($scope, userService, alertService, cardKeyService) {
     var toggleUser = function(cardKey) {
         alertService.closeAll();
@@ -23,4 +22,4 @@ function($scope, userService, alertService, cardKeyService) {
     };
 
     cardKeyService.listen(toggleUser);
-}]);
+}];

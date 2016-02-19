@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node index.js",
-    "test": "make test"
+    "test": "make test",
+    "lint": "eslint . --ignore-path .gitignore",
+    "postinstall": "webpack"
   },
   "author": "Webkom <webkom@abakus.no>",
   "repository": {
@@ -14,21 +16,29 @@
   },
   "license": "MIT",
   "dependencies": {
+    "angular": "1.5.0",
+    "angular-local-storage": "0.2.2",
+    "angular-route": "1.5.0",
+    "angular-ui-bootstrap": "1.1.2",
     "bcrypt": "0.8.5",
     "bluebird": "3.3.3",
     "body-parser": "1.15.0",
+    "bootstrap": "~3.3.2",
     "chalk": "1.1.1",
     "connect-flash": "0.1.1",
     "connect-mongo": "1.1.0",
     "cookie-parser": "1.4.1",
+    "css-loader": "0.23.1",
     "csurf": "1.8.3",
     "express": "4.13.4",
     "express-session": "1.13.0",
+    "font-awesome-webpack": "0.0.4",
     "jade": "^1.11.0",
     "lodash": "4.6.1",
     "method-override": "2.3.5",
     "mongoose": "4.4.6",
     "nib": "1.1.0",
+    "object-assign": "4.0.1",
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "passport-stub": "1.1.1",
@@ -36,7 +46,10 @@
     "raven": "^0.10.0",
     "serve-favicon": "2.3.0",
     "socket.io": "~1.4.5",
-    "stylus": "0.53.0"
+    "style-loader": "0.13.0",
+    "stylus": "0.53.0",
+    "stylus-loader": "1.5.1",
+    "webpack": "1.12.13"
   },
   "devDependencies": {
     "bower": "*",

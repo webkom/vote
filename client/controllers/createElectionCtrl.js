@@ -1,5 +1,4 @@
-angular.module('voteApp').controller('createElectionController',
-['$scope', '$location', 'adminElectionService', 'alertService',
+module.exports = ['$scope', '$location', 'adminElectionService', 'alertService',
 function($scope, $location, adminElectionService, alertService) {
     $scope.election = {
         alternatives: [{}]
@@ -24,4 +23,4 @@ function($scope, $location, adminElectionService, alertService) {
         var index = $scope.election.alternatives.indexOf(alternative);
         $scope.election.alternatives.splice(index, 1);
     };
-}]);
+}];

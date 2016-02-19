@@ -13,8 +13,8 @@ CORRECT = abakus.no
 
 TEST_DB = mongodb://localhost:27017/vote-test
 TESTS = $(shell find test -name "*.test.js")
-STYL = $(shell find public/styles -name "*.styl")
-FRONTEND_FILES = $(shell find public -name "*.js" -not -name "*.min.js")
+STYL = $(shell find client/styles -name "*.styl")
+FRONTEND_FILES = $(shell find client -name "*.js")
 BACKEND_FILES = $(shell find app -name "*.js")
 CUCUMBER_FILES = $(shell find features -name "*.js" -or -name "*.feature")
 
@@ -42,26 +42,6 @@ mocha:
 	$(ISTANBUL) report cobertura
 
 test: lint mocha protractor
-
-public/main.css: $(STYL)
-ifeq ($(findstring $(CORRECT),$(HOSTNAME)),$(CORRECT))
-	$(STYLUS) --compress --include node_modules/nib/lib public/styles/main.styl -o public
-else
-	$(STYLUS) --sourcemap --include node_modules/nib/lib public/styles/main.styl -o public
-endif
-
-public/js/vote.min.js: $(FRONTEND_FILES)
-	$(UGLIFY) \
-		public/libs/angular/angular.min.js \
-		public/libs/angular-route/angular-route.min.js \
-		public/libs/angular-bootstrap/ui-bootstrap-tpls.min.js \
-		public/libs/angular-local-storage/dist/angular-local-storage.min.js \
-		public/js/app.js \
-		public/js/services/*.js \
-		public/js/controllers/*.js \
-		public/js/directives/*.js \
-		public/js/appRoutes.js \
-	-o $@
 
 server:
 	@supervisor index

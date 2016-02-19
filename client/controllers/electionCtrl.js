@@ -1,5 +1,4 @@
-angular.module('voteApp').controller('electionController',
-['$scope', 'electionService', 'alertService', 'voteService',
+module.exports = ['$scope', 'electionService', 'alertService', 'voteService',
 'socketIOService', 'localStorageService',
 function($scope, electionService, alertService, voteService, socketIOService, localStorageService) {
     $scope.activeElection = null;
@@ -71,4 +70,4 @@ function($scope, electionService, alertService, voteService, socketIOService, lo
     $scope.isChosen = function(alternative) {
         return alternative === $scope.selectedAlternative;
     };
-}]);
+}];

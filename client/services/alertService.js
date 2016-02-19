@@ -1,4 +1,4 @@
-angular.module('voteApp').factory('alertService', ['$interval', '$rootScope',
+module.exports = ['$interval', '$rootScope',
 function($interval, $rootScope) {
     $rootScope.alerts = [];
 
@@ -60,4 +60,4 @@ function($interval, $rootScope) {
     };
 
     return AlertService;
-}]);
+}];

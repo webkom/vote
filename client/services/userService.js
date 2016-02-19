@@ -1,4 +1,4 @@
-angular.module('voteApp').service('userService', ['$http', function($http) {
+module.exports = ['$http', function($http) {
     this.toggleUser = function(cardKey) {
         return $http.post('/api/user/' + cardKey + '/toggle_active');
     };
@@ -18,4 +18,4 @@ angular.module('voteApp').service('userService', ['$http', function($http) {
     this.deactivateNonAdminUsers = function() {
         return $http.post('/api/user/deactivate');
     };
-}]);
+}];

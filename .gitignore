@@ -32,7 +32,6 @@ node_modules
 .idea
 dist
 db
-public/libs
-public/js/vote.min.js
-public/*.css
+public/bundle.js
+public/main.css
 screenshots
