@@ -25,13 +25,13 @@ install: node_modules public/lib
 node_modules: package.json
 	@npm install
 
+webdriver:
+	$(WEBDRIVER_MANAGER) update --standalone false
+
 public/lib: bower.json
 	@$(BOWER) install --allow-root
 
-selenium:
-	$(WEBDRIVER_MANAGER) update
-
-protractor: selenium all
+protractor: webdriver all
 	NODE_ENV=test MONGO_URL=$(TEST_DB) $(PROTRACTOR) ./features/protractor-conf.js
 
 lint: $(FRONTEND_FILES) $(BACKEND_FILES) $(CUCUMBER_FILES)
