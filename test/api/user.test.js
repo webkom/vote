@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Bluebird = require('bluebird');
 var request = require('supertest');
 var passportStub = require('passport-stub');
 var chai = require('chai');
@@ -9,6 +10,18 @@ var testAdminResource = helpers.testAdminResource;
 var test404 = helpers.test404;
 var createUsers = helpers.createUsers;
 var should = chai.should();
+
+var hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
+function createExtraUsers() {
+    var numbers = _.range(10);
+    return Bluebird.map(numbers, number => User.create({
+        username: `${number}testuser`,
+        cardKey: `${number}TESTCARDKEY`,
+        active: true,
+        admin: false,
+        hash
+    }));
+}
 
 describe('User API', function() {
     before(function() {
@@ -307,20 +320,23 @@ describe('User API', function() {
     it('should be possible to deactivate all non-admin users', function(done) {
         passportStub.login(this.adminUser);
 
-        request(app)
-            .post('/api/user/deactivate')
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-                return User.find()
-                .then(function(users) {
-                    users.forEach(function(user) {
-                        if (user.admin) user.active.should.equal(true);
-                        else user.active.should.equal(false);
-                    });
-                }).nodeify(done);
-            });
+        createExtraUsers()
+        .then(() => {
+            request(app)
+                .post('/api/user/deactivate')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    return User.find()
+                    .then(function(users) {
+                        users.forEach(function(user) {
+                            if (user.admin) user.active.should.equal(true);
+                            else user.active.should.equal(false);
+                        });
+                    }).nodeify(done);
+                });
+        });
     });
 
     it('should not be possible to deactivate all users without being admin', function(done) {

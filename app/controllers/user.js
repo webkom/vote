@@ -77,9 +77,11 @@ exports.changeCard = function(req, res, next) {
 };
 
 exports.deactivateAllNonAdmin = function(req, res, next) {
-    User.update({ admin: false }, {
-        active: false
-    }).then(function() {
+    User.update(
+        { admin: false },
+        { active: false },
+        { multi: true }
+    ).then(function() {
         return res.status(200).json({
             message: 'Users deactivated.',
             status: 200
