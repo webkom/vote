@@ -1,6 +1,7 @@
-module.exports = ['$scope', 'electionService', 'alertService', 'voteService',
-'socketIOService', 'localStorageService',
-function($scope, electionService, alertService, voteService, socketIOService, localStorageService) {
+module.exports = ['$scope', '$window', 'electionService', 'alertService',
+'voteService', 'socketIOService', 'localStorageService',
+function($scope, $window, electionService, alertService, voteService,
+    socketIOService, localStorageService) {
     $scope.activeElection = null;
     $scope.selectedAlternative = null;
 
@@ -33,12 +34,14 @@ function($scope, electionService, alertService, voteService, socketIOService, lo
     $scope.vote = function() {
         voteService.vote($scope.selectedAlternative._id)
             .success(function(vote) {
+                $window.scrollTo(0, 0);
                 $scope.activeElection = null;
                 alertService.addSuccess('Takk for din stemme!');
                 localStorageService.set('voteHash', vote.hash);
                 getActiveElection();
             })
             .error(function(error) {
+                $window.scrollTo(0, 0);
                 getActiveElection();
                 switch (error.name) {
                 case 'InactiveElectionError':
