@@ -1,0 +1,131 @@
+
+@import url('https://fonts.googleapis.com/css?family=Raleway:300,200,100')
+
+$font-gray = #666c77
+$alternative-background = darken($font-gray, 20%)
+$dark-gray = #333
+$abakus-light = #fc0405
+$abakus-dark = #bd0005
+$red = #b11b11
+$white = #fdfdfd
+
+html
+    min-height 100%
+    position relative
+
+body
+    font-family 'Raleway', 'Lucida Grande'
+    font-weight 100
+    word-break break-word
+    margin-bottom 30px
+    color $font-gray
+
+header
+    width 100%
+    border-bottom 2px solid #e0e0e0
+    margin-bottom 20px
+
+    nav ul
+        padding-top 10px
+        padding-bottom 20px
+        text-align center
+        width 100%
+        margin 0 auto
+
+        li
+            &:not(:first-child)
+                padding-left 20px
+
+            display inline
+
+            a
+                font-size 18px
+                color $font-gray
+
+                &:hover
+                    color $abakus-light
+
+                &:focus
+                    text-decoration none
+
+.header
+    text-align center
+    font-size 60px
+    font-weight 100
+    padding-top 50px
+
+    img
+        margin-right 15px
+        width 35px
+
+footer
+    position absolute
+    height 30px
+    width 100%
+    margin 0 auto
+    bottom 0
+
+    a
+        color $abakus-light
+
+        &:hover
+            color $abakus-dark
+
+a
+    color $abakus-light
+
+    &:hover, &:focus
+        color $abakus-dark
+        text-decoration none
+
+h2, h3, .btn
+    font-weight 200
+
+.alert
+    margin 15px auto
+    max-width 90%
+
+.container
+    width 100%
+
+.center
+    max-width 750px
+    margin 0 auto
+    font-size 21px
+
+label
+    font-weight 200
+    letter-spacing 0.1em
+
+.fade
+    transition opacity 0.5s
+    opacity 0
+
+.btn
+    &:active:focus
+        outline none
+
+    &:focus
+        outline none
+
+.vote-result-form
+    margin 0 auto
+
+    input
+        margin 10px auto
+        text-align center
+        width 70%
+
+.vote-result-feedback
+    margin-top 30px
+
+    p
+        font-size 18px
+
+@media (max-width 1000px)
+    .vote-result-form
+        input
+            width 100%
+
+@import 'election'
+@import 'admin'

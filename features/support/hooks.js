@@ -1,4 +1,3 @@
-var Bluebird = require('bluebird');
 var mongoose = require('mongoose');
 var Election = require('../../app/models/election');
 var Alternative = require('../../app/models/alternative');
@@ -48,17 +47,12 @@ module.exports = function() {
     this.registerHandler('AfterStep', function(event, callback) {
         // To make sure all tests run correctly we force
         // waiting for Angular after each step.
-        // However, we don't want to do it after a step
-        // that doesn't even use Angular (e.g. the login page)
-        // so this is a decently ugly hack to get around that:
-        browser.ignoreSynchronization = true;
-        browser.getPageSource()
-            .then(source => {
-                browser.ignoreSynchronization = false;
-                return source.includes('angular')
-                    ? browser.waitForAngular() : Bluebird.resolve();
-            })
-            .then(callback, callback);
+
+        return browser.waitForAngular().then(callback, err => {
+            const message = err.message || err;
+            if (message.includes('window.angular')) callback();
+            else callback(err);
+        });
     });
 
     this.registerHandler('AfterFeatures', function(event, callback) {

@@ -13,7 +13,7 @@ vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vot
 ```bash
 $ git clone git@github.com:webkom/vote.git
 $ cd vote
-$ make install
+$ npm install
 $ ./bin/users create-admin <username> <cardKey>
 ```
 
@@ -21,15 +21,22 @@ $ ./bin/users create-admin <username> <cardKey>
 
 vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. To access the RFID-reader vote is also packed as a Chrome-app, in the `./chrome-app`-folder.
 
+### Development
 ```bash
 $ npm start
+```
+
+### Production
+```bash
+$ npm run build
+$ NODE_ENV=production npm start
 ```
 
 ## Tests
 
 vote uses mocha for the backend tests and cucumber.js/protractor for the frontend tests. To run them all you can do:
 ```bash
-$ make test
+$ npm test
 ```
 
  --------
