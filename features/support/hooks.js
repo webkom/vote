@@ -49,7 +49,8 @@ module.exports = function() {
         // waiting for Angular after each step.
 
         return browser.waitForAngular().then(callback, err => {
-            if (err.includes('window.angular')) callback();
+            const message = err.message || err;
+            if (message.includes('window.angular')) callback();
             else callback(err);
         });
     });

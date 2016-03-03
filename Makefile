@@ -28,9 +28,6 @@ node_modules: package.json
 webdriver:
 	$(WEBDRIVER_MANAGER) update --standalone false
 
-public/lib: bower.json
-	@$(BOWER) install --allow-root
-
 protractor: webdriver all
 	NODE_ENV=test MONGO_URL=$(TEST_DB) $(PROTRACTOR) ./features/protractor-conf.js
 

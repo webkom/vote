@@ -5,6 +5,7 @@ Feature: Election
     When I log in
     Then I should be on page "/"
 
+  @test
   Scenario: Log out
     Given I am logged in
     When I log out
