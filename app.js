@@ -24,6 +24,16 @@ mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });
 
+if (['development', 'protractor'].indexOf(process.env.NODE_ENV) !== -1) {
+    var webpack = require('webpack');
+    var webpackMiddleware = require('webpack-dev-middleware');
+    var config = require('./webpack/dev.config');
+    app.use(webpackMiddleware(webpack(config), {
+        contentBase: 'public/',
+        publicPath: config.output.publicPath
+    }));
+}
+
 var publicPath = `${__dirname}/public`;
 app.use(favicon(`${publicPath}/favicon.ico`));
 app.use('/static', express.static(publicPath));
@@ -49,14 +59,6 @@ app.use(session({
 if (process.env.NODE_ENV === 'production') {
     var raven = require('raven');
     app.use(raven.middleware.express(process.env.RAVEN_DSN));
-} else if (process.env.NODE_ENV === 'development') {
-    var webpack = require('webpack');
-    var webpackMiddleware = require('webpack-dev-middleware');
-    var config = require('./webpack/dev.config');
-    app.use(webpackMiddleware(webpack(config), {
-        contentBase: 'public/',
-        publicPath: config.output.publicPath
-    }));
 }
 
 /* istanbul ignore if */

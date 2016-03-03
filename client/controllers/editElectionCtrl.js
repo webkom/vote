@@ -46,6 +46,8 @@ function($scope, $interval, userService, adminElectionService, alertService) {
         adminElectionService.addAlternative(alternative)
             .success(function(data) {
                 $scope.election.alternatives.push(data);
+                $scope.newAlternative = {};
+                $scope.alternativeForm.$setPristine();
                 alertService.addSuccess('Alternativ lagret');
             })
             .error(function(error) {
