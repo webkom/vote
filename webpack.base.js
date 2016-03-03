@@ -1,4 +1,5 @@
 /* eslint-disable */
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
   output: {
     path:'public/',
@@ -13,10 +14,13 @@ module.exports = {
   ],
   module: {
     loaders: [
-      { test: /\.styl$/, loader: 'style!css!stylus' }
+      { test: /\.styl$/, loader: ExtractTextPlugin.extract("style","css!stylus") }
     ]
   },
   stylus: {
     use: [require('nib')()]
   },
+  plugins: [
+        new ExtractTextPlugin("main.css")
+    ]
 };
