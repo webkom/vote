@@ -85,6 +85,8 @@ function($scope, $interval, userService, adminElectionService, alertService) {
                             alternative.votes = resultAlternative.votes;
                             return true;
                         }
+
+                        return false;
                     });
                 });
             })
