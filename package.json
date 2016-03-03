@@ -56,7 +56,6 @@
     "webpack": "1.12.13"
   },
   "devDependencies": {
-    "bower": "*",
     "chai": "3.5.0",
     "chai-as-promised": "^5.2.0",
     "commander": "2.9.0",
@@ -72,7 +71,6 @@
     "sinon": "1.17.3",
     "sinon-chai": "2.8.0",
     "supertest": "1.2.0",
-    "uglify-js": "^2.6.2",
     "webpack-dev-middleware": "1.5.1"
   }
 }

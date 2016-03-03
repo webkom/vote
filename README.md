@@ -21,8 +21,15 @@ $ ./bin/users create-admin <username> <cardKey>
 
 vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. To access the RFID-reader vote is also packed as a Chrome-app, in the `./chrome-app`-folder.
 
+### Development
 ```bash
 $ npm start
+```
+
+### Production
+```bash
+$ npm run build
+$ NODE_ENV=production npm start
 ```
 
 ## Tests
