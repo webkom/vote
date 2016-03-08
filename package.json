@@ -24,7 +24,7 @@
     "angular-route": "1.5.0",
     "angular-ui-bootstrap": "1.1.2",
     "bcrypt": "0.8.5",
-    "bluebird": "3.3.3",
+    "bluebird": "3.3.4",
     "body-parser": "1.15.0",
     "bootstrap": "~3.3.2",
     "chalk": "1.1.1",
