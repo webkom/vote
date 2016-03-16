@@ -19,6 +19,7 @@
   },
   "license": "MIT",
   "dependencies": {
+<<<<<<< 067b58fe5b8fa8bcc8285417c65208b27ef69b9e
     "angular": "1.5.0",
     "angular-local-storage": "0.2.7",
     "angular-route": "1.5.3",
