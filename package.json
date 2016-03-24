@@ -71,6 +71,6 @@
     "sinon": "1.17.3",
     "sinon-chai": "2.8.0",
     "supertest": "1.2.0",
-    "webpack-dev-middleware": "1.5.1"
+    "webpack-dev-middleware": "1.6.0"
   }
 }
