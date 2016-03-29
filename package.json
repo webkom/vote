@@ -52,7 +52,7 @@
     "socket.io": "~1.4.5",
     "style-loader": "0.13.1",
     "stylus": "0.53.0",
-    "stylus-loader": "1.5.1",
+    "stylus-loader": "2.0.0",
     "webpack": "1.12.13"
   },
   "devDependencies": {
