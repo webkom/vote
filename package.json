@@ -8,7 +8,7 @@
     "build": "webpack --config webpack/prod.config.js",
     "test": "npm run lint && npm run mocha && npm run protractor",
     "lint": "eslint . --ignore-path .gitignore",
-    "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} istanbul cover _mocha $(find test -name '*.test.js') && istanbul report cobertura",
+    "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} istanbul cover _mocha $(find test -name '*.test.js') -- --timeout 5000 && istanbul report cobertura",
     "protractor": "webdriver-manager update --standalone false && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "npm run build"
   },
