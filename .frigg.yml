@@ -1,5 +1,7 @@
+setup_tasks:
+  - npm install
+
 tasks:
- - npm install
  - npm run lint
  - npm run mocha
 
