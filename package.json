@@ -38,7 +38,7 @@
     "extract-text-webpack-plugin": "1.0.1",
     "font-awesome-webpack": "0.0.4",
     "jade": "^1.11.0",
-    "lodash": "4.9.0",
+    "lodash": "4.10.0",
     "method-override": "2.3.5",
     "mongoose": "4.4.11",
     "nib": "1.1.0",
