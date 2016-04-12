@@ -61,7 +61,7 @@
     "commander": "2.9.0",
     "cucumber": "0.10.2",
     "eslint": "^2.6.0",
-    "eslint-config-airbnb": "^6.2.0",
+    "eslint-config-airbnb": "^7.0.0",
     "eslint-config-webkom": "^1.3.4",
     "istanbul": "0.4.3",
     "mkdirp": "^0.5.1",
