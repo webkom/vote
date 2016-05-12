@@ -15,7 +15,7 @@ var router = require('./app/routes');
 var User = require('./app/models/user');
 
 app.disable('x-powered-by');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.set('views', __dirname + '/app/views');
 app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
