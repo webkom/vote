@@ -322,7 +322,7 @@ describe('Election API', function() {
 
         this.activeElection.active = false;
 
-        return Bluebird.all([
+        Bluebird.all([
             vote.save(),
             this.activeElection.save()
         ]).bind(this).then(function() {

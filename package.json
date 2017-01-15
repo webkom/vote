@@ -45,7 +45,7 @@
     "passport": "0.3.2",
     "passport-local": "1.0.0",
     "passport-stub": "1.1.1",
-    "promptly": "1.1.0",
+    "promptly": "2.1.0",
     "pug": "2.0.0-alpha8",
     "raven": "1.1.1",
     "serve-favicon": "2.3.2",
@@ -57,7 +57,7 @@
   },
   "devDependencies": {
     "chai": "3.5.0",
-    "chai-as-promised": "^5.3.0",
+    "chai-as-promised": "6.0.0",
     "commander": "2.9.0",
     "cucumber": "0.10.3",
     "eslint": "^2.6.0",
@@ -66,12 +66,12 @@
     "istanbul": "0.4.5",
     "istanbul-coveralls": "^1.0.3",
     "mkdirp": "^0.5.1",
-    "mocha": "2.5.2",
+    "mocha": "3.2.0",
     "protractor": "^4.0.14",
     "protractor-cucumber-framework": "^0.6.0",
     "sinon": "1.17.7",
     "sinon-chai": "2.8.0",
-    "supertest": "1.2.0",
+    "supertest": "2.0.1",
     "webpack-dev-middleware": "1.9.0"
   }
 }

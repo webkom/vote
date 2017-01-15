@@ -106,7 +106,7 @@ describe('Alternatives API', function() {
 
         this.election.active = true;
 
-        return this.election.save().bind(this)
+        this.election.save().bind(this)
             .then(function() {
                 request(app)
                     .post('/api/election/' + this.election.id + '/alternatives')

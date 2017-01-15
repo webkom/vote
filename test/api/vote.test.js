@@ -236,7 +236,7 @@ describe('Vote API', function() {
     });
 
     it('should be possible to retrieve a vote', function(done) {
-        return this.activeAlternative.addVote(this.user).bind(this)
+        this.activeAlternative.addVote(this.user).bind(this)
             .then(function(vote) {
                 request(app)
                     .get('/api/vote')
@@ -274,7 +274,7 @@ describe('Vote API', function() {
     it('should be possible to sum votes', function(done) {
         passportStub.login(this.adminUser);
 
-        return this.otherActiveAlternative.addVote(this.user).bind(this)
+        this.otherActiveAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .get('/api/election/' + this.inactiveElection.id + '/votes')
