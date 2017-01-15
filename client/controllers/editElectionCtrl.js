@@ -1,5 +1,6 @@
-module.exports = ['$scope', '$interval', 'userService', 'adminElectionService', 'alertService',
-function($scope, $interval, userService, adminElectionService, alertService) {
+module.exports = ['$scope', '$interval', '$location',
+'userService', 'adminElectionService', 'alertService',
+function($scope, $interval, $location, userService, adminElectionService, alertService) {
     $scope.newAlternative = {};
     $scope.election = null;
     $scope.showCount = false;
@@ -110,5 +111,21 @@ function($scope, $interval, userService, adminElectionService, alertService) {
         if ($scope.showCount) {
             getCount();
         }
+    };
+
+    $scope.copyElection = function() {
+        var alternatives = $scope.election.alternatives.map(function(alternative) {
+            return { description: alternative.description };
+        });
+
+        var election = {
+            title: $scope.election.title,
+            description: $scope.election.description,
+            alternatives: alternatives
+        };
+
+        $location
+            .path('/admin/create_election')
+            .search({ election: JSON.stringify(election) });
     };
 }];

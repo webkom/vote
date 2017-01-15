@@ -34,3 +34,6 @@
                     ng-if='!election.active',
                     ng-class='{"alone": election.active}')
                     | {{showCount ? 'Skjul resultat': 'Vis resultat'}}
+                button.toggle-show.btn.btn-default(type='button', ng-click='copyElection()',
+                    ng-if='!election.active')
+                    | Kopier avstemning

@@ -1,8 +1,14 @@
 module.exports = ['$scope', '$location', 'adminElectionService', 'alertService',
 function($scope, $location, adminElectionService, alertService) {
-    $scope.election = {
-        alternatives: [{}]
-    };
+    var existingElection = $location.search().election;
+    if (existingElection) {
+        $scope.election = JSON.parse(existingElection);
+    } else {
+        $scope.election = {
+            alternatives: [{}]
+        };
+    }
+
 
     $scope.createElection = function(election) {
         adminElectionService.createElection(election)
