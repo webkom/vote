@@ -1,4 +1,4 @@
-# vote [![Build status](https://ci.frigg.io/badges/webkom/vote/)](https://ci.frigg.io/webkom/vote/last/) [![Coverage status](https://ci.frigg.io/badges/coverage/webkom/vote/)](https://ci.frigg.io/webkom/vote/last/)
+# vote [![CircleCI](https://circleci.com/gh/webkom/vote.svg?style=shield)](https://circleci.com/gh/webkom/vote) [![Coverage Status](https://coveralls.io/repos/github/webkom/vote/badge.svg?branch=master)](https://coveralls.io/github/webkom/vote?branch=master)
 > vote optimizes the election
 
 Digital voting system for Abakus' general assembly, built using the MEAN-stack (mongoDB, Express, AngularJS, Node.js).
