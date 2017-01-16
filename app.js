@@ -11,6 +11,7 @@ var LocalStrategy = require('passport-local');
 var csrf = require('csurf');
 var flash = require('connect-flash');
 var favicon = require('serve-favicon');
+var raven = require('raven');
 var router = require('./app/routes');
 var User = require('./app/models/user');
 
@@ -23,6 +24,12 @@ mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });
+
+raven
+    .config(process.env.RAVEN_DSN)
+    .install();
+
+app.use(raven.requestHandler());
 
 if (['development', 'protractor'].indexOf(process.env.NODE_ENV) !== -1) {
     var webpack = require('webpack');
@@ -56,27 +63,12 @@ app.use(session({
 }));
 
 /* istanbul ignore if */
-if (process.env.NODE_ENV === 'production') {
-    var raven = require('raven');
-    app.use(raven.middleware.express(process.env.RAVEN_DSN));
-}
-
-/* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
     app.use(csrf());
 
     app.use(function(req, res, next) {
         res.cookie('XSRF-TOKEN', req.csrfToken());
         next();
-    });
-
-    app.use(function(err, req, res, next) {
-        if (err.code !== 'EBADCSRFTOKEN') return next(err);
-        res.status(403).json({
-            type: 'InvalidCSRFTokenError',
-            message: 'Invalid or missing CSRF token',
-            status: 403
-        });
     });
 }
 
@@ -101,5 +93,15 @@ passport.deserializeUser((username, cb) => {
 });
 
 app.use('/', router);
+
+app.use(raven.errorHandler());
+app.use(function(err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err);
+    res.status(403).json({
+        type: 'InvalidCSRFTokenError',
+        message: 'Invalid or missing CSRF token',
+        status: 403
+    });
+});
 
 module.exports = app;

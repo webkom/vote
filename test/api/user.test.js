@@ -191,7 +191,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = true;
 
-        return this.user.save()
+        this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count?active=true')
@@ -225,7 +225,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = false;
 
-        return this.user.save()
+        this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count')

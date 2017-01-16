@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var Bluebird = require('bluebird');
-var bcrypt = Bluebird.promisifyAll(require('bcrypt'));
+var bcrypt = require('bcrypt');
 var mongoose = require('mongoose');
 var errors = require('../errors');
 
@@ -51,8 +51,9 @@ userSchema.statics.findByUsername = function(username) {
 
 userSchema.statics.register = function(body, password) {
     if (!password) throw new errors.InvalidRegistrationError('Missing password');
-    return bcrypt.genSaltAsync()
-        .then(salt => bcrypt.hashAsync(password, salt))
+    // The controller expects a Bluebird promise, so we wrap it in resolve:
+    return Bluebird.resolve(bcrypt.genSalt())
+        .then(salt => bcrypt.hash(password, salt))
         .then(hash => this.create(Object.assign(body, { hash })));
 };
 
@@ -73,7 +74,8 @@ userSchema.statics.authenticate = function(username, password) {
 };
 
 userSchema.methods.authenticate = function(password) {
-    return bcrypt.compareAsync(password, this.hash);
+    // The controller expects a Bluebird promise, so we wrap it in resolve:
+    return Bluebird.resolve(bcrypt.compare(password, this.hash));
 };
 
 module.exports = mongoose.model('User', userSchema);
