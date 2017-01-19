@@ -3,7 +3,7 @@ var Alternative = require('../models/alternative');
 var errors = require('../errors');
 
 exports.list = function(req, res, next) {
-    return req.election.populateAsync('alternatives')
+    return req.election.populate('alternatives').execPopulate()
         .then(function(election) {
             return res.json(election.alternatives);
         })
@@ -11,10 +11,12 @@ exports.list = function(req, res, next) {
 };
 
 exports.create = function(req, res, next) {
-    return req.election.populateAsync('alternatives')
+    return req.election.populate('alternatives').execPopulate()
         .then(function(election) {
             if (election.active) {
-                throw new errors.ActiveElectionError('Cannot create alternatives for active elections.');
+                throw new errors.ActiveElectionError(
+                    'Cannot create alternatives for active elections.'
+                );
             }
 
             var alternative = new Alternative({

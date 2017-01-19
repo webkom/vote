@@ -1,4 +1,3 @@
-var Bluebird = require('bluebird');
 var request = require('supertest');
 var chai = require('chai');
 var app = require('../../app');
@@ -32,22 +31,18 @@ exports.testAdminResource = function(method, path, done) {
         });
 };
 
+var hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
 var testUser = exports.testUser = {
     username: 'testuser',
-    cardKey: '99TESTCARDKEY'
+    cardKey: '99TESTCARDKEY',
+    hash
 };
 
 var adminUser = exports.adminUser = {
     username: 'admin',
     admin: true,
-    cardKey: '55TESTCARDKEY'
+    cardKey: '55TESTCARDKEY',
+    hash
 };
 
-exports.createUsers = function() {
-    var testPassword = 'password';
-
-    return Bluebird.all([
-        User.registerAsync(testUser, testPassword),
-        User.registerAsync(adminUser, testPassword)
-    ]);
-};
+exports.createUsers = () => User.create([testUser, adminUser]);

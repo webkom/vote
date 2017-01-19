@@ -5,11 +5,15 @@ var should = chai.should();
 
 describe('Users CLI', function() {
     beforeEach(function() {
-        return User.removeAsync({});
+        return User.remove({});
     });
 
     it('should create admin users', function(done) {
-        var stream = spawn(process.cwd() + '/bin/users', ['create-admin', 'testuser', 'testcardkey']);
+        var stream = spawn(
+            `${process.cwd()}/bin/users`,
+            ['create-admin', 'testuser', 'testcardkey']
+        );
+
         stream.stdin.setEncoding('utf8');
         stream.stdout.setEncoding('utf8');
         stream.stdin.write('testpw\n');
@@ -21,7 +25,7 @@ describe('Users CLI', function() {
 
         stream.on('close', function() {
             output.should.include('Created user testuser');
-            User.findOneAsync({ username: 'testuser' })
+            User.findOne({ username: 'testuser' })
                 .then(function(user) {
                     user.admin.should.equal(true);
                     should.not.exist(user.password);

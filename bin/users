@@ -4,7 +4,10 @@ var program = require('commander');
 var mongoose = require('mongoose');
 var chalk = require('chalk');
 var promptly = require('promptly');
+var Bluebird = require('bluebird');
 var User = require('../app/models/user');
+
+mongoose.Promise = Bluebird;
 
 function done(err, user) {
     if (err) throw err;
@@ -19,20 +22,19 @@ program
     .action(function(username, cardKey) {
         var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
 
-        mongoose.connect(mongoURL, function(err) {
-            if (err) return done(err);
+        mongoose.connect(mongoURL, function(connectErr) {
+            if (connectErr) return done(connectErr);
 
-            promptly.password('Enter a password: ', function(err, password) {
-                if (err) return done(err);
+            promptly.password('Enter a password: ', function(pwErr, password) {
+                if (pwErr) return done(pwErr);
                 var user = new User({
                     username: username,
                     admin: true,
                     cardKey: cardKey
                 });
 
-                User.register(user, password, done);
+                User.register(user, password).nodeify(done);
             });
-
         });
     });
 

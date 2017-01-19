@@ -1,26 +1,49 @@
-var express         = require('express');
-var app             = module.exports = express();
-var mongoose        = require('mongoose');
-var bodyParser      = require('body-parser');
-var cookieParser    = require('cookie-parser');
-var session         = require('express-session');
-var MongoStore      = require('connect-mongo')(session);
-var passport        = require('passport');
-var csrf            = require('csurf');
-var flash           = require('connect-flash');
-var router          = require('./app/routes');
-var User            = require('./app/models/user');
+var Bluebird = require('bluebird');
+var express = require('express');
+var app = module.exports = express();
+var mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var session = require('express-session');
+var MongoStore = require('connect-mongo')(session);
+var passport = require('passport');
+var LocalStrategy = require('passport-local');
+var csrf = require('csurf');
+var flash = require('connect-flash');
+var favicon = require('serve-favicon');
+var raven = require('raven');
+var router = require('./app/routes');
+var User = require('./app/models/user');
 
 app.disable('x-powered-by');
-app.set('view engine', 'jade');
+app.set('view engine', 'pug');
 app.set('views', __dirname + '/app/views');
 app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
+mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), function(err) {
     if (err) throw err;
 });
 
-app.use('/static', express.static(__dirname + '/public'));
+raven
+    .config(process.env.RAVEN_DSN)
+    .install();
+
+app.use(raven.requestHandler());
+
+if (['development', 'protractor'].indexOf(process.env.NODE_ENV) !== -1) {
+    var webpack = require('webpack');
+    var webpackMiddleware = require('webpack-dev-middleware');
+    var config = require('./webpack/dev.config');
+    app.use(webpackMiddleware(webpack(config), {
+        contentBase: 'public/',
+        publicPath: config.output.publicPath
+    }));
+}
+
+var publicPath = `${__dirname}/public`;
+app.use(favicon(`${publicPath}/favicon.ico`));
+app.use('/static', express.static(publicPath));
 app.use(bodyParser.json());
 app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -40,12 +63,6 @@ app.use(session({
 }));
 
 /* istanbul ignore if */
-if (process.env.NODE_ENV === 'production') {
-    var raven = require('raven');
-    app.use(raven.middleware.express(process.env.RAVEN_DSN));
-}
-
-/* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {
     app.use(csrf());
 
@@ -53,24 +70,38 @@ if (process.env.NODE_ENV !== 'test') {
         res.cookie('XSRF-TOKEN', req.csrfToken());
         next();
     });
-
-    app.use(function(err, req, res, next) {
-        if (err.code !== 'EBADCSRFTOKEN') return next(err);
-        res.status(403).json({
-            type: 'InvalidCSRFTokenError',
-            message: 'Invalid or missing CSRF token',
-            status: 403
-        });
-    });
 }
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-passport.use(User.createStrategy());
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(new LocalStrategy((username, password, done) => {
+    var _user;
+    User.findByUsername(username)
+        .then(user => {
+            if (!user) return false;
+            _user = user;
+            return user.authenticate(password);
+        })
+        .then(result => result && _user)
+        .nodeify(done);
+}));
+
+passport.serializeUser((user, cb) => { cb(null, user.username); });
+passport.deserializeUser((username, cb) => {
+    User.findByUsername(username).exec().nodeify(cb);
+});
 
 app.use('/', router);
+
+app.use(raven.errorHandler());
+app.use(function(err, req, res, next) {
+    if (err.code !== 'EBADCSRFTOKEN') return next(err);
+    res.status(403).json({
+        type: 'InvalidCSRFTokenError',
+        message: 'Invalid or missing CSRF token',
+        status: 403
+    });
+});
 
 module.exports = app;

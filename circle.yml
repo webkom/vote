@@ -1,0 +1,34 @@
+machine:
+  services:
+    - docker
+
+dependencies:
+  post:
+    - wget https://saucelabs.com/downloads/sc-latest-linux.tar.gz
+    - tar -xzf sc-latest-linux.tar.gz
+    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD -e webkom@abakus.no
+
+test:
+  override:
+    - npm run lint
+    - npm run mocha && ./node_modules/.bin/istanbul-coveralls
+    # Setup the SauceLabs bridge:
+    - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
+        background: true
+    # Wait for tunnel to be ready:
+    - while [ ! -e ~/sauce_is_ready ]; do sleep 1; done
+    # Run the frontend tests:
+    - npm run protractor
+  post:
+    # Wait for Sauce Connect to close the tunnel:
+    - killall --wait sc
+
+deployment:
+  production:
+    branch: master
+    commands:
+      - docker build -t vote:$CIRCLE_SHA1 .
+      - docker tag vote:$CIRCLE_SHA1 $EXTERNAL_REGISTRY:$CIRCLE_SHA1
+      - docker tag vote:$CIRCLE_SHA1 $EXTERNAL_REGISTRY:latest
+      - docker push $EXTERNAL_REGISTRY:$CIRCLE_SHA1
+      - docker push $EXTERNAL_REGISTRY:latest

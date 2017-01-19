@@ -1,0 +1,32 @@
+extends layout
+
+block scripts
+    script(src='/static/bundle.js')
+
+block navbar
+    nav
+        ul.list-unstyled
+            li
+                a(href='/admin') Avstemninger
+            li
+                a(href='/admin/create_user') Registrer bruker
+            li
+                a(href='/admin/activate_user') Aktiver bruker
+            li
+                a(href='/admin/change_card') Mistet kort
+            li
+                a(href='/admin/create_election') Lag avstemning
+            li
+                a(href='/admin/deactivate_users') Deaktiver brukere
+
+block content
+    .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
+        uib-alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
+    .container(ng-view='')
+
+block footer
+    a(href='#', ng-controller='logoutController', ng-click='logout()') Logg ut
+    |  | Made by
+    a(href='http://webkom.abakus.no')  webkom
+    |  | Follow us on
+    a.red(href='https://github.com/webkom/census')  GitHub

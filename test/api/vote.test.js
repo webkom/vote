@@ -19,16 +19,20 @@ describe('Vote API', function() {
         description: 'test election',
         active: true
     };
+
     var inactiveElectionData = {
         title: 'inactiveElection',
         description: 'inactive election'
     };
+
     var activeData = {
         description: 'active election alt'
     };
+
     var otherActiveData = {
         description: 'other active election alt'
     };
+
     var inactiveData = {
         description: 'inactive election alt'
     };
@@ -44,7 +48,7 @@ describe('Vote API', function() {
     });
 
     beforeEach(function() {
-        return Election.createAsync(activeElectionData, inactiveElectionData).bind(this)
+        return Election.create([activeElectionData, inactiveElectionData]).bind(this)
             .spread(function(activeCreated, inactiveCreated) {
                 this.activeElection = activeCreated;
                 this.inactiveElection = inactiveCreated;
@@ -126,16 +130,14 @@ describe('Vote API', function() {
         request(app)
             .post('/api/vote')
             .send(votePayload(this.activeAlternative.id))
-            .expect(201)
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-
                 var vote = res.body;
                 vote.alternative.description.should.equal(this.activeAlternative.description);
                 should.exist(vote.hash);
 
-                Vote.findAsync({ alternative: this.activeAlternative.id })
+                Vote.find({ alternative: this.activeAlternative.id })
                     .then(function(votes) {
                         votes.length.should.equal(1);
                         done();
@@ -159,7 +161,7 @@ describe('Vote API', function() {
                         error.message.should.equal('You can only vote once per election.');
                         error.status.should.equal(400);
 
-                        Vote.findAsync({ alternative: this.activeAlternative.id })
+                        Vote.find({ alternative: this.activeAlternative.id })
                             .then(function(votes) {
                                 votes.length.should.equal(1);
                                 done();
@@ -187,7 +189,7 @@ describe('Vote API', function() {
 
     it('should not be able to vote with inactive user', function(done) {
         this.user.active = false;
-        this.user.saveAsync().bind(this)
+        this.user.save().bind(this)
             .then(function() {
                 request(app)
                     .post('/api/vote')
@@ -198,10 +200,12 @@ describe('Vote API', function() {
                         if (err) return done(err);
 
                         var error = res.body;
-                        error.message.should.equal('Can\'t vote with an inactive user: ' + this.user.username);
+                        error.message
+                            .should
+                            .equal(`Can\'t vote with an inactive user: ${this.user.username}`);
                         error.status.should.equal(403);
 
-                        Vote.findAsync({ alternative: this.activeAlternative.id })
+                        Vote.find({ alternative: this.activeAlternative.id })
                             .then(function(votes) {
                                 votes.length.should.equal(0, 'no vote should be added');
                                 done();
@@ -224,7 +228,7 @@ describe('Vote API', function() {
                 error.message.should.equal('Can\'t vote on an inactive election.');
                 error.status.should.equal(400);
 
-                return Vote.findAsync({ election: this.inactiveElection.id })
+                return Vote.find({ election: this.inactiveElection.id })
                     .then(function(votes) {
                         votes.length.should.equal(0, 'no vote should be added');
                     }).nodeify(done);
@@ -232,8 +236,8 @@ describe('Vote API', function() {
     });
 
     it('should be possible to retrieve a vote', function(done) {
-        return this.activeAlternative.addVote(this.user).bind(this)
-            .spread(function(vote) {
+        this.activeAlternative.addVote(this.user).bind(this)
+            .then(function(vote) {
                 request(app)
                     .get('/api/vote')
                     .set('Vote-Hash', vote.hash)
@@ -245,7 +249,9 @@ describe('Vote API', function() {
                         var receivedVote = res.body;
                         receivedVote.hash.should.equal(vote.hash);
                         receivedVote.alternative._id.should.equal(String(vote.alternative));
-                        receivedVote.alternative.election._id.should.equal(String(this.activeElection.id));
+                        receivedVote.alternative.election._id
+                            .should
+                            .equal(String(this.activeElection.id));
                         done();
                     }.bind(this));
             }).catch(done);
@@ -268,7 +274,7 @@ describe('Vote API', function() {
     it('should be possible to sum votes', function(done) {
         passportStub.login(this.adminUser);
 
-        return this.otherActiveAlternative.addVote(this.user).bind(this)
+        this.otherActiveAlternative.addVote(this.user).bind(this)
             .then(function() {
                 request(app)
                     .get('/api/election/' + this.inactiveElection.id + '/votes')

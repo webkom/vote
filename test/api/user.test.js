@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var Bluebird = require('bluebird');
 var request = require('supertest');
 var passportStub = require('passport-stub');
 var chai = require('chai');
@@ -9,6 +10,18 @@ var testAdminResource = helpers.testAdminResource;
 var test404 = helpers.test404;
 var createUsers = helpers.createUsers;
 var should = chai.should();
+
+var hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
+function createExtraUsers() {
+    var numbers = _.range(10);
+    return Bluebird.map(numbers, number => User.create({
+        username: `${number}testuser`,
+        cardKey: `${number}TESTCARDKEY`,
+        active: true,
+        admin: false,
+        hash
+    }));
+}
 
 describe('User API', function() {
     before(function() {
@@ -56,7 +69,7 @@ describe('User API', function() {
                 createdUser.active.should.equal(true);
                 createdUser.admin.should.equal(false);
 
-                return User.findOneAsync({ username: testUserData.username })
+                return User.findOne({ username: testUserData.username })
                 .then(function(user) {
                     should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
@@ -178,7 +191,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = true;
 
-        return this.user.saveAsync()
+        this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count?active=true')
@@ -212,7 +225,7 @@ describe('User API', function() {
         passportStub.login(this.adminUser);
         this.user.active = false;
 
-        return this.user.saveAsync()
+        this.user.save()
             .then(function() {
                 request(app)
                     .get('/api/user/count')
@@ -304,28 +317,30 @@ describe('User API', function() {
         testAdminResource('put', '/api/user/user/change_card', done);
     });
 
-    it('should be possible to delete all non-admin users', function(done) {
+    it('should be possible to deactivate all non-admin users', function(done) {
         passportStub.login(this.adminUser);
 
-        request(app)
-            .delete('/api/user')
-            .expect(200)
-            .expect('Content-Type', /json/)
-            .end(function(err, res) {
-                if (err) return done(err);
-
-                return User.findAsync()
-                .then(function(users) {
-                    var numberOfUsers = users.length;
-                    var adminUser = users[0];
-                    numberOfUsers.should.equal(1);
-                    adminUser.admin.should.equal(true);
-                }).nodeify(done);
-            });
+        createExtraUsers()
+        .then(() => {
+            request(app)
+                .post('/api/user/deactivate')
+                .expect(200)
+                .expect('Content-Type', /json/)
+                .end(function(err, res) {
+                    if (err) return done(err);
+                    return User.find()
+                    .then(function(users) {
+                        users.forEach(function(user) {
+                            if (user.admin) user.active.should.equal(true);
+                            else user.active.should.equal(false);
+                        });
+                    }).nodeify(done);
+                });
+        });
     });
 
-    it('should not be possible to delete all non-admin users without being admin', function(done) {
+    it('should not be possible to deactivate all users without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResource('delete', '/api/user', done);
+        testAdminResource('post', '/api/user/deactivate', done);
     });
 });

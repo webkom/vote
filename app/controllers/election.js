@@ -6,7 +6,7 @@ var errors = require('../errors');
 var app = require('../../app');
 
 exports.load = function(req, res, next, electionId) {
-    return Election.findByIdAsync(electionId)
+    return Election.findById(electionId)
         .then(function(election) {
             if (!election) throw new errors.NotFoundError('election');
             req.election = election;
@@ -23,14 +23,14 @@ exports.retrieveActive = function(req, res, next) {
         .ne(req.user.id)
         .select('-hasVotedUsers')
         .populate('alternatives')
-        .execAsync()
+        .exec()
         .then(function(election) {
             res.status(200).json(election);
         }).catch(next);
 };
 
 exports.create = function(req, res, next) {
-    return Election.createAsync({
+    return Election.create({
         title: req.body.title,
         description: req.body.description
     }).then(function(election) {
@@ -38,27 +38,27 @@ exports.create = function(req, res, next) {
         if (alternatives && alternatives.length) {
             return Bluebird.map(alternatives, function(alternative) {
                 alternative.election = election;
-                return Alternative.createAsync(alternative);
-            }).then(function(alternatives) {
-                election.alternatives = alternatives;
-                return election.saveAsync();
+                return Alternative.create(alternative);
+            }).then(function(createdAlternatives) {
+                election.alternatives = createdAlternatives;
+                return election.save();
             });
         }
-        return [election];
-    }).spread(function(election) {
-        return election.populateAsync('alternatives');
+
+        return election;
+    }).then(function(election) {
+        return election.populate('alternatives').execPopulate();
     }).then(function(election) {
         return res.status(201).json(election);
     }).catch(mongoose.Error.ValidationError, function(err) {
         throw new errors.ValidationError(err.errors);
     }).catch(next);
-
 };
 
 exports.list = function(req, res, next) {
     return Election.find()
         .populate('alternatives')
-        .execAsync()
+        .exec()
         .then(function(elections) {
             return res.status(200).json(elections);
         })
@@ -66,7 +66,7 @@ exports.list = function(req, res, next) {
 };
 
 exports.retrieve = function(req, res, next) {
-    return req.election.populateAsync('alternatives')
+    return req.election.populate('alternatives').execPopulate()
         .then(function(election) {
             return res.status(200).json(election);
         })
@@ -75,12 +75,12 @@ exports.retrieve = function(req, res, next) {
 
 function setElectionStatus(req, res, active) {
     req.election.active = active;
-    return req.election.saveAsync();
+    return req.election.save();
 }
 
 exports.activate = function(req, res, next) {
     setElectionStatus(req, res, true)
-        .spread(function(election) {
+        .then(function(election) {
             var io = app.get('io');
             io.emit('election');
             return res.status(200).json(election);
@@ -90,7 +90,7 @@ exports.activate = function(req, res, next) {
 
 exports.deactivate = function(req, res, next) {
     setElectionStatus(req, res, false)
-        .spread(function(election) {
+        .then(function(election) {
             return res.status(200).json(election);
         })
         .catch(next);
@@ -108,7 +108,8 @@ exports.delete = function(req, res, next) {
     if (req.election.active) {
         throw new errors.ActiveElectionError('Cannot delete an active election.');
     }
-    return req.election.removeAsync()
+
+    return req.election.remove()
         .then(function() {
             return res.status(200).json({
                 message: 'Election deleted.',

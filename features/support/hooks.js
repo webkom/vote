@@ -19,19 +19,13 @@ module.exports = function() {
         description: 'test alternative'
     };
 
-    this.BeforeFeatures(function(e, callback) {
-        mongoose.connection.on('connected', function() {
-            server(callback);
-        });
-    });
-
-    this.Before(function(callback) {
+    this.Before(function() {
         return clearCollections().bind(this)
             .then(function() {
                 var election = new Election(activeElectionData);
-                return election.saveAsync();
+                return election.save();
             })
-            .spread(function(election) {
+            .then(function(election) {
                 this.election = election;
                 testAlternative.election = election;
                 this.alternative = new Alternative(testAlternative);
@@ -43,11 +37,25 @@ module.exports = function() {
             .spread(function(user, adminUser) {
                 this.user = user;
                 this.adminUser = adminUser;
-                callback();
-            }).catch(callback);
+            });
     });
 
-    this.AfterFeatures(function(e, callback) {
+    this.registerHandler('BeforeFeatures', function(event, callback) {
+        mongoose.connection.on('connected', () => server(callback));
+    });
+
+    this.registerHandler('AfterStep', function(event, callback) {
+        // To make sure all tests run correctly we force
+        // waiting for Angular after each step.
+
+        return browser.waitForAngular().then(callback, err => {
+            const message = err.message || err;
+            if (message.includes('window.angular')) callback();
+            else callback(err);
+        });
+    });
+
+    this.registerHandler('AfterFeatures', function(event, callback) {
         dropDatabase(callback);
     });
 };
