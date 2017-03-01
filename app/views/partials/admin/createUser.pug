@@ -1,11 +1,6 @@
 .row
     .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
         form.form-group(ng-submit='createUser(user)', name='createUserForm')
-            .form-group
-                label Kortnummer
-                input.form-control(type='text', name='cardKey',
-                    placeholder='Skriv inn kortnummer', ng-model='user.cardKey',
-                    required='required', disabled)
 
             .form-group
                 label Brukernavn
@@ -32,5 +27,11 @@
                 p.text-danger(ng-show='createUserForm.confirmPassword.$invalid')
                     | Må være lik passordet
 
+            .form-group
+                label Kortnummer
+                input.form-control(type='text', name='cardKey',
+                    placeholder='Skriv inn kortnummer', ng-model='user.cardKey',
+                    required='required')
+            
             button#submit.btn.btn-default.btn-lg(type='submit',
                 ng-disabled='createUserForm.$invalid') Lag ny bruker
