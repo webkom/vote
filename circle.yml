@@ -5,6 +5,8 @@ machine:
     - docker
 
 dependencies:
+  override:
+    - yarn
   post:
     - wget https://saucelabs.com/downloads/sc-4.4.11-linux.tar.gz
     - tar -xzf sc-4.4.11-linux.tar.gz
