@@ -56,6 +56,6 @@ module.exports = function() {
     });
 
     this.registerHandler('AfterFeatures', function(event, callback) {
-        dropDatabase(callback);
+        dropDatabase(callback).nodeify(callback);
     });
 };
