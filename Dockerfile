@@ -1,4 +1,4 @@
-FROM node:6
+FROM node:8
 MAINTAINER Abakus Webkom <webkom@abakus.no>
 
 # Create app directory
@@ -11,6 +11,7 @@ EXPOSE 3000
 COPY . /app
 
 # Build image
-RUN npm install
+RUN yarn --production
 
-ENTRYPOINT ["npm", "start"]
+ENV NODE_ENV production
+ENTRYPOINT ["yarn", "start"]
