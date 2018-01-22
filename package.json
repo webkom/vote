@@ -58,7 +58,7 @@
   "devDependencies": {
     "chai": "3.5.0",
     "chai-as-promised": "6.0.0",
-    "commander": "2.9.0",
+    "commander": "2.13.0",
     "cucumber": "0.10.3",
     "eslint": "^2.6.0",
     "eslint-config-airbnb": "^7.0.0",
