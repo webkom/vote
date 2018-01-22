@@ -35,7 +35,7 @@ var electionSchema = new Schema({
 
 electionSchema.pre('remove', function(next) {
     // Use mongoose.model getter to avoid circular dependencies
-    return mongoose.model('Alternative').find(this.alternatives)
+    return mongoose.model('Alternative').find({ election: this.id })
         .then(function(alternatives) {
             return Bluebird.map(alternatives, function(alternative) {
                 // Have to call remove on each document to activate Alternative's
@@ -48,7 +48,7 @@ electionSchema.pre('remove', function(next) {
 electionSchema.methods.sumVotes = function() {
     if (this.active) {
         throw new errors.ActiveElectionError(
-            'Cannot retreive results on an active election.'
+            'Cannot retrieve results on an active election.'
         );
     }
 
@@ -64,7 +64,7 @@ electionSchema.methods.sumVotes = function() {
 };
 
 electionSchema.methods.addAlternative = function(alternative) {
-    this.alternatives.push(alternative);
+    this.alternatives.push(alternative._id);
     alternative.election = this._id;
     return alternative.save().bind(this)
         .then(function(savedAlternative) {

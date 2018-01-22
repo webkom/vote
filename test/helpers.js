@@ -1,17 +1,19 @@
-var _ = require('lodash');
 var Bluebird = require('bluebird');
 var mongoose = require('mongoose');
+var Alternative = require('../app/models/alternative');
+var Election = require('../app/models/election');
+var Vote = require('../app/models/vote');
+var User = require('../app/models/user');
 
-exports.dropDatabase = function(done) {
-    mongoose.connection.db.dropDatabase(function(err) {
-        if (err) return done(err);
-        mongoose.connection.close(done);
-    });
+exports.dropDatabase = function() {
+    return mongoose.connection.dropDatabase()
+      .then(function() {
+          return mongoose.disconnect();
+      });
 };
 
 exports.clearCollections = function() {
-    var collections = _.values(mongoose.connection.collections);
-    return Bluebird.map(collections, function(collection) {
+    return Bluebird.map([Alternative, Election, Vote, User], function(collection) {
         return collection.remove();
     });
 };
