@@ -12,6 +12,6 @@ beforeEach(function() {
 /**
  * Drop the database after running all tests
  */
-after(function(done) {
-    helpers.dropDatabase(done);
+after(function() {
+    return helpers.dropDatabase();
 });

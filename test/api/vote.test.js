@@ -299,7 +299,7 @@ describe('Vote API', function() {
             .expect('Content-Type', /json/)
             .end(function(err, res) {
                 if (err) return done(err);
-                res.body.message.should.equal('Cannot retreive results on an active election.');
+                res.body.message.should.equal('Cannot retrieve results on an active election.');
                 done();
             });
     });

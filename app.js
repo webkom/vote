@@ -21,15 +21,23 @@ app.set('views', __dirname + '/app/views');
 app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
 mongoose.Promise = Bluebird;
-mongoose.connect(app.get('mongourl'), function(err) {
-    if (err) throw err;
-});
+mongoose.connect(app.get('mongourl'));
 
 raven
     .config(process.env.RAVEN_DSN)
     .install();
 
 app.use(raven.requestHandler());
+
+var store = new MongoStore({
+    url: app.get('mongourl')
+    // TODO: re-enable this when
+    // https://github.com/jdesboeufs/connect-mongo/issues/277 is fixed:
+    // mongooseConnection: mongoose.connection
+});
+
+// TODO: This can also be removed when the above is fixed:
+mongoose.connection.on('disconnected', store.close.bind(store));
 
 if (['development', 'protractor'].indexOf(process.env.NODE_ENV) !== -1) {
     var webpack = require('webpack');
@@ -55,9 +63,7 @@ app.locals.NODE_ENV = process.env.NODE_ENV || 'development';
 app.use(session({
     cookie: { maxAge: 1000 * 3600 * 24 * 30 * 3 }, // Three months
     secret: process.env.COOKIE_SECRET || 'localsecret',
-    store: new MongoStore({
-        mongooseConnection: mongoose.connection
-    }),
+    store: store,
     saveUninitialized: true,
     resave: false
 }));
