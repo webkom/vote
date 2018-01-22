@@ -1,11 +1,11 @@
-var express = require('express');
-var election = require('../../controllers/election');
-var alternative = require('../../controllers/alternative');
-var helpers = require('../helpers');
-var ensureAdmin = helpers.ensureAdmin;
-var ensureAuthenticated = helpers.ensureAuthenticated;
+const express = require('express');
+const election = require('../../controllers/election');
+const alternative = require('../../controllers/alternative');
+const helpers = require('../helpers');
+const ensureAdmin = helpers.ensureAdmin;
+const ensureAuthenticated = helpers.ensureAuthenticated;
 
-var router = express.Router();
+const router = express.Router();
 
 router.route('/')
     .post(ensureAdmin, election.create)

@@ -1,19 +1,19 @@
-var _ = require('lodash');
-var Bluebird = require('bluebird');
-var request = require('supertest');
-var passportStub = require('passport-stub');
-var chai = require('chai');
-var app = require('../../app');
-var User = require('../../app/models/user');
-var helpers = require('./helpers');
-var testAdminResource = helpers.testAdminResource;
-var test404 = helpers.test404;
-var createUsers = helpers.createUsers;
-var should = chai.should();
+const _ = require('lodash');
+const Bluebird = require('bluebird');
+const request = require('supertest');
+const passportStub = require('passport-stub');
+const chai = require('chai');
+const app = require('../../app');
+const User = require('../../app/models/user');
+const helpers = require('./helpers');
+const testAdminResource = helpers.testAdminResource;
+const test404 = helpers.test404;
+const createUsers = helpers.createUsers;
+const should = chai.should();
 
-var hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
+const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
 function createExtraUsers() {
-    var numbers = _.range(10);
+    const numbers = _.range(10);
     return Bluebird.map(numbers, number => User.create({
         username: `${number}testuser`,
         cardKey: `${number}TESTCARDKEY`,
@@ -23,8 +23,8 @@ function createExtraUsers() {
     }));
 }
 
-describe('User API', function() {
-    before(function() {
+describe('User API', () => {
+    before(() => {
         passportStub.install(app);
     });
 
@@ -38,18 +38,18 @@ describe('User API', function() {
             });
     });
 
-    after(function() {
+    after(() => {
         passportStub.logout();
         passportStub.uninstall();
     });
 
-    var testUserData = {
+    const testUserData = {
         username: 'newuser',
         password: 'password',
         cardKey: '00TESTCARDKEY'
     };
 
-    var badUsernameData = {
+    const badUsernameData = {
         username: 'hi',
         password: 'password',
         cardKey: '11TESTCARDKEY'
@@ -62,15 +62,15 @@ describe('User API', function() {
             .send(testUserData)
             .expect(201)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
 
-                var createdUser = res.body;
+                const createdUser = res.body;
                 createdUser.active.should.equal(true);
                 createdUser.admin.should.equal(false);
 
                 return User.findOne({ username: testUserData.username })
-                .then(function(user) {
+                .then(user => {
                     should.not.exist(user.password);
                     createdUser.username.should.equal(user.username);
                 }).nodeify(done);
@@ -84,9 +84,9 @@ describe('User API', function() {
             .send(badUsernameData)
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('ValidationError');
                 error.message.should.equal('Validation failed.');
                 error.status.should.equal(400);
@@ -101,7 +101,7 @@ describe('User API', function() {
     it('should return 400 when creating users with an already used card key', function(done) {
         passportStub.login(this.adminUser);
 
-        var payload = _.clone(testUserData);
+        const payload = _.clone(testUserData);
         payload.cardKey = helpers.testUser.cardKey;
 
         request(app)
@@ -109,9 +109,9 @@ describe('User API', function() {
             .send(payload)
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('DuplicateCardError');
                 error.status.should.equal(400);
                 error.message.should.equal('There\'s already a user registered to this card.');
@@ -130,9 +130,9 @@ describe('User API', function() {
             .post('/api/user')
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('InvalidRegistrationError');
                 error.status.should.equal(400);
                 done();
@@ -145,9 +145,9 @@ describe('User API', function() {
             .get('/api/user')
             .expect(200)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var users = res.body;
+                const users = res.body;
                 users.length.should.equal(2);
 
                 should.exist(users[0].username);
@@ -161,12 +161,12 @@ describe('User API', function() {
     it('should be able to toggle active users', function(done) {
         passportStub.login(this.adminUser);
         request(app)
-            .post('/api/user/' + this.user.cardKey + '/toggle_active')
+            .post(`/api/user/${this.user.cardKey}/toggle_active`)
             .expect(200)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var user = res.body;
+                const user = res.body;
                 user.active.should.equal(false, 'user should be inactive');
                 done();
             });
@@ -179,7 +179,7 @@ describe('User API', function() {
 
     it('should not be possible to toggle a user without being admin', function(done) {
         passportStub.login(this.user);
-        testAdminResource('post', '/api/user/' + this.user.cardKey + '/toggle_active', done);
+        testAdminResource('post', `/api/user/${this.user.cardKey}/toggle_active`, done);
     });
 
     it('should get 404 when toggeling active users with invalid cardKey', function(done) {
@@ -192,14 +192,14 @@ describe('User API', function() {
         this.user.active = true;
 
         this.user.save()
-            .then(function() {
+            .then(() => {
                 request(app)
                     .get('/api/user/count?active=true')
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end(function(err, res) {
+                    .end((err, res) => {
                         if (err) return done(err);
-                        var count = res.body.users;
+                        const count = res.body.users;
                         count.should.equal(1);
                         done();
                     });
@@ -213,9 +213,9 @@ describe('User API', function() {
             .get('/api/user/count?active=false')
             .expect(200)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var count = res.body.users;
+                const count = res.body.users;
                 count.should.equal(0);
                 done();
             });
@@ -226,14 +226,14 @@ describe('User API', function() {
         this.user.active = false;
 
         this.user.save()
-            .then(function() {
+            .then(() => {
                 request(app)
                     .get('/api/user/count')
                     .expect(200)
                     .expect('Content-Type', /json/)
-                    .end(function(err, res) {
+                    .end((err, res) => {
                         if (err) return done(err);
-                        var count = res.body.users;
+                        const count = res.body.users;
                         count.should.equal(1);
                         done();
                     });
@@ -248,19 +248,19 @@ describe('User API', function() {
     it('should be possible to change a user\'s card key', function(done) {
         passportStub.login(this.adminUser);
 
-        var changeCardPayload = {
+        const changeCardPayload = {
             password: 'password',
             cardKey: 'thisisanewcardkey'
         };
 
         request(app)
-            .put('/api/user/' + this.user.username + '/change_card')
+            .put(`/api/user/${this.user.username}/change_card`)
             .send(changeCardPayload)
             .expect(200)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var user = res.body;
+                const user = res.body;
                 user.cardKey.should.equal(changeCardPayload.cardKey);
                 done();
             });
@@ -269,19 +269,19 @@ describe('User API', function() {
     it('should not be possible to change a user\'s card key to an existing card', function(done) {
         passportStub.login(this.adminUser);
 
-        var changeCardPayload = {
+        const changeCardPayload = {
             password: 'password',
             cardKey: '55TESTCARDKEY'
         };
 
         request(app)
-            .put('/api/user/' + this.user.username + '/change_card')
+            .put(`/api/user/${this.user.username}/change_card`)
             .send(changeCardPayload)
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('DuplicateCardError');
                 error.status.should.equal(400);
                 error.message.should.equal('There\'s already a user registered to this card.');
@@ -292,19 +292,19 @@ describe('User API', function() {
     it('should give feedback if wrong credentials are given when changing cards', function(done) {
         passportStub.login(this.adminUser);
 
-        var changeCardPayload = {
+        const changeCardPayload = {
             password: 'notthepassword',
             cardKey: 'somecardkey'
         };
 
         request(app)
-            .put('/api/user/' + this.user.username + '/change_card')
+            .put(`/api/user/${this.user.username}/change_card`)
             .send(changeCardPayload)
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('InvalidRegistrationError');
                 error.status.should.equal(400);
                 error.message.should.equal('Incorrect username and/or password.');
@@ -326,11 +326,11 @@ describe('User API', function() {
                 .post('/api/user/deactivate')
                 .expect(200)
                 .expect('Content-Type', /json/)
-                .end(function(err, res) {
+                .end((err, res) => {
                     if (err) return done(err);
                     return User.find()
-                    .then(function(users) {
-                        users.forEach(function(user) {
+                    .then(users => {
+                        users.forEach(user => {
                             if (user.admin) user.active.should.equal(true);
                             else user.active.should.equal(false);
                         });

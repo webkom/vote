@@ -1,15 +1,13 @@
-var chai = require('chai');
-var spawn = require('child_process').spawn;
-var User = require('../../app/models/user');
-var should = chai.should();
+const chai = require('chai');
+const spawn = require('child_process').spawn;
+const User = require('../../app/models/user');
+const should = chai.should();
 
-describe('Users CLI', function() {
-    beforeEach(function() {
-        return User.remove({});
-    });
+describe('Users CLI', () => {
+    beforeEach(() => User.remove({}));
 
-    it('should create admin users', function(done) {
-        var stream = spawn(
+    it('should create admin users', done => {
+        const stream = spawn(
             `${process.cwd()}/bin/users`,
             ['create-admin', 'testuser', 'testcardkey']
         );
@@ -18,15 +16,15 @@ describe('Users CLI', function() {
         stream.stdout.setEncoding('utf8');
         stream.stdin.write('testpw\n');
 
-        var output = '';
-        stream.stdout.on('data', function(data) {
+        let output = '';
+        stream.stdout.on('data', data => {
             output += data;
         });
 
-        stream.on('close', function() {
+        stream.on('close', () => {
             output.should.include('Created user testuser');
             User.findOne({ username: 'testuser' })
-                .then(function(user) {
+                .then(user => {
                     user.admin.should.equal(true);
                     should.not.exist(user.password);
                 }).nodeify(done);

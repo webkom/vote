@@ -1,33 +1,33 @@
-var Bluebird = require('bluebird');
-var request = require('supertest');
-var mongoose = require('mongoose');
-var chai = require('chai');
-var passportStub = require('passport-stub');
-var app = require('../../app');
-var User = require('../../app/models/user');
+const Bluebird = require('bluebird');
+const request = require('supertest');
+const mongoose = require('mongoose');
+const chai = require('chai');
+const passportStub = require('passport-stub');
+const app = require('../../app');
+const User = require('../../app/models/user');
 chai.should();
 
-describe('Auth API', function() {
-    var testUser = {
+describe('Auth API', () => {
+    const testUser = {
         username: 'testuser',
         password: 'test121312313',
         cardKey: '99TESTCARDKEY'
     };
 
-    var adminUser = {
+    const adminUser = {
         username: 'admin',
         password: 'admin',
         admin: true,
         cardKey: '11TESTCARDKEY'
     };
 
-    var badTestUser = {
+    const badTestUser = {
         username: 'testuser',
         password: 'notthecorrectpw',
         cardKey: '00TESTCARDKEY'
     };
 
-    beforeEach(function() {
+    beforeEach(() => {
         passportStub.logout();
         passportStub.uninstall();
         return Bluebird.all([
@@ -36,20 +36,20 @@ describe('Auth API', function() {
         ]);
     });
 
-    it('should be able to authenticate users', function(done) {
+    it('should be able to authenticate users', done => {
         request(app)
             .post('/auth/login')
             .send(testUser)
             .expect(302)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
                 res.header.location.should.equal('/');
                 done();
             });
     });
 
-    it('should make sure usernames are case-insensitive', function(done) {
-        var newUser = Object.assign(testUser, {
+    it('should make sure usernames are case-insensitive', done => {
+        const newUser = Object.assign(testUser, {
             username: testUser.username.toUpperCase()
         });
 
@@ -57,40 +57,40 @@ describe('Auth API', function() {
             .post('/auth/login')
             .send(newUser)
             .expect(302)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
                 res.header.location.should.equal('/');
                 done();
             });
     });
 
-    it('should strip spaces on login', function(done) {
+    it('should strip spaces on login', done => {
         request(app)
             .post('/auth/login')
             .send({
-                username: testUser.username + '    ',
+                username: `${testUser.username}    `,
                 password: testUser.password
             })
             .expect(302)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
                 res.header.location.should.equal('/');
                 done();
             });
     });
 
-    it('should redirect correctly on login', function(done) {
-        var agent = request.agent(app);
+    it('should redirect correctly on login', done => {
+        const agent = request.agent(app);
         agent
             .get('/test')
             .expect(302)
-            .end(function(err) {
+            .end(err => {
                 if (err) return done(err);
                 agent
                     .post('/auth/login')
                     .send(testUser)
                     .expect(302)
-                    .end(function(loginErr, res) {
+                    .end((loginErr, res) => {
                         if (loginErr) return done(loginErr);
                         res.header.location.should.equal('/test');
                         done();
@@ -98,8 +98,8 @@ describe('Auth API', function() {
             });
     });
 
-    it('should redirect to login with flash on bad auth', function(done) {
-        var agent = request.agent(app);
+    it('should redirect to login with flash on bad auth', done => {
+        const agent = request.agent(app);
         function logout(err, res) {
             if (err) return done(err);
             res.header.location.should.equal('/auth/login');
@@ -108,7 +108,7 @@ describe('Auth API', function() {
                 .get('/auth/login')
                 .expect(200)
                 .expect('Content-Type', /text\/html/)
-                .end(function(loginErr, loginRes) {
+                .end((loginErr, loginRes) => {
                     if (loginErr) return done(loginErr);
                     loginRes.text.should.include('Brukernavn og/eller passord er feil.');
                     done();
@@ -122,15 +122,15 @@ describe('Auth API', function() {
             .end(logout);
     });
 
-    it('should be possible to logout', function(done) {
-        var sessions = mongoose.connection.db.collection('sessions');
+    it('should be possible to logout', done => {
+        const sessions = mongoose.connection.db.collection('sessions');
 
         function checkSessions(err, res) {
             if (err) return done(err);
             res.header.location.should.equal('/auth/login');
             sessions
                 .find({})
-                .toArray(function(sessionErr, newSessions) {
+                .toArray((sessionErr, newSessions) => {
                     if (sessionErr) return done(sessionErr);
                     newSessions.length.should.equal(0);
                     done();
@@ -147,7 +147,7 @@ describe('Auth API', function() {
 
         function login(err) {
             if (err) return done(err);
-            var agent = request.agent(app);
+            const agent = request.agent(app);
             agent
                 .post('/auth/login')
                 .expect(302)
@@ -158,7 +158,7 @@ describe('Auth API', function() {
         sessions.drop(login);
     });
 
-    it('should redirect from / to /admin for admins', function(done) {
+    it('should redirect from / to /admin for admins', done => {
         passportStub.install(app);
         passportStub.login(adminUser);
 

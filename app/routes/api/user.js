@@ -1,8 +1,8 @@
-var express = require('express');
-var user = require('../../controllers/user');
-var ensureAdmin = require('../helpers').ensureAdmin;
+const express = require('express');
+const user = require('../../controllers/user');
+const ensureAdmin = require('../helpers').ensureAdmin;
 
-var router = express.Router();
+const router = express.Router();
 
 router.route('/')
     .get(ensureAdmin, user.list)

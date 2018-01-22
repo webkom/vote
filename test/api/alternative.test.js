@@ -1,38 +1,38 @@
-var passportStub = require('passport-stub');
-var request = require('supertest');
-var ObjectId = require('mongoose').Types.ObjectId;
-var chai = require('chai');
-var app = require('../../app');
-var Alternative = require('../../app/models/alternative');
-var Election = require('../../app/models/election');
-var helpers = require('./helpers');
-var test404 = helpers.test404;
-var testAdminResource = helpers.testAdminResource;
-var createUsers = helpers.createUsers;
+const passportStub = require('passport-stub');
+const request = require('supertest');
+const ObjectId = require('mongoose').Types.ObjectId;
+const chai = require('chai');
+const app = require('../../app');
+const Alternative = require('../../app/models/alternative');
+const Election = require('../../app/models/election');
+const helpers = require('./helpers');
+const test404 = helpers.test404;
+const testAdminResource = helpers.testAdminResource;
+const createUsers = helpers.createUsers;
 chai.should();
 
-describe('Alternatives API', function() {
-    var testElectionData = {
+describe('Alternatives API', () => {
+    const testElectionData = {
         title: 'test election',
         description: 'test election description',
         active: false
     };
 
-    var createdAlternativeData = {
+    const createdAlternativeData = {
         description: 'test alternative 1'
     };
 
-    var testAlternativeData = {
+    const testAlternativeData = {
         description: 'test alternative 2'
     };
 
-    before(function() {
+    before(() => {
         passportStub.install(app);
     });
 
     beforeEach(function() {
         passportStub.logout();
-        var election = new Election(testElectionData);
+        const election = new Election(testElectionData);
 
         return election.save().bind(this)
             .then(function(createdElection) {
@@ -41,16 +41,14 @@ describe('Alternatives API', function() {
                 this.alternative = new Alternative(createdAlternativeData);
                 return election.addAlternative(this.alternative);
             })
-            .then(function() {
-                return createUsers();
-            })
+            .then(() => createUsers())
             .spread(function(user, adminUser) {
                 this.user = user;
                 this.adminUser = adminUser;
             });
     });
 
-    after(function() {
+    after(() => {
         passportStub.logout();
         passportStub.uninstall();
     });
@@ -58,21 +56,21 @@ describe('Alternatives API', function() {
     it('should be able to get alternatives as admin', function(done) {
         passportStub.login(this.adminUser);
         request(app)
-            .get('/api/election/' + this.election.id + '/alternatives')
+            .get(`/api/election/${this.election.id}/alternatives`)
             .expect(200)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
                 res.body.length.should.equal(1);
                 res.body[0].description
                     .should.equal(this.alternative.description, 'should be the same as api result');
                 done();
-            }.bind(this));
+            });
     });
 
     it('should only be possible to get alternatives as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResource('get', '/api/election/' + this.election.id + '/alternatives', done);
+        testAdminResource('get', `/api/election/${this.election.id}/alternatives`, done);
     });
 
     it('should get 404 when listing alternatives for invalid electionIds', function(done) {
@@ -82,18 +80,18 @@ describe('Alternatives API', function() {
 
     it('should get 404 when listing alternatives for nonexistent electionIds', function(done) {
         passportStub.login(this.adminUser);
-        var badId = new ObjectId();
-        test404('get', '/api/election/' + badId + '/alternatives', 'election', done);
+        const badId = new ObjectId();
+        test404('get', `/api/election/${badId}/alternatives`, 'election', done);
     });
 
     it('should be able to create alternatives for deactivated elections', function(done) {
         passportStub.login(this.adminUser);
         request(app)
-            .post('/api/election/' + this.election.id + '/alternatives')
+            .post(`/api/election/${this.election.id}/alternatives`)
             .send(testAlternativeData)
             .expect(201)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
                 res.body.description.should.equal(testAlternativeData.description);
                 res.status.should.equal(201);
@@ -109,13 +107,13 @@ describe('Alternatives API', function() {
         this.election.save().bind(this)
             .then(function() {
                 request(app)
-                    .post('/api/election/' + this.election.id + '/alternatives')
+                    .post(`/api/election/${this.election.id}/alternatives`)
                     .send(testAlternativeData)
                     .expect(400)
                     .expect('Content-Type', /json/)
-                    .end(function(err, res) {
+                    .end((err, res) => {
                         if (err) return done(err);
-                        var error = res.body;
+                        const error = res.body;
                         error.name.should.equal('ActiveElectionError');
                         error.message
                             .should.equal('Cannot create alternatives for active elections.');
@@ -128,12 +126,12 @@ describe('Alternatives API', function() {
     it('should return 400 when creating alternatives without required fields', function(done) {
         passportStub.login(this.adminUser);
         request(app)
-            .post('/api/election/' + this.election.id + '/alternatives')
+            .post(`/api/election/${this.election.id}/alternatives`)
             .expect(400)
             .expect('Content-Type', /json/)
-            .end(function(err, res) {
+            .end((err, res) => {
                 if (err) return done(err);
-                var error = res.body;
+                const error = res.body;
                 error.name.should.equal('ValidationError');
                 error.status.should.equal(400);
                 error.errors.description.path.should.equal('description');
@@ -149,12 +147,12 @@ describe('Alternatives API', function() {
 
     it('should get 404 when creating alternatives for nonexistent electionIds', function(done) {
         passportStub.login(this.adminUser);
-        var badId = new ObjectId();
-        test404('post', '/api/election/' + badId + '/alternatives', 'election', done);
+        const badId = new ObjectId();
+        test404('post', `/api/election/${badId}/alternatives`, 'election', done);
     });
 
     it('should only be possible to create alternatives as admin', function(done) {
         passportStub.login(this.user);
-        testAdminResource('post', '/api/election/' + this.election.id + '/alternatives', done);
+        testAdminResource('post', `/api/election/${this.election.id}/alternatives`, done);
     });
 });

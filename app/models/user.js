@@ -1,12 +1,12 @@
-var _ = require('lodash');
-var Bluebird = require('bluebird');
-var bcrypt = require('bcrypt');
-var mongoose = require('mongoose');
-var errors = require('../errors');
+const _ = require('lodash');
+const Bluebird = require('bluebird');
+const bcrypt = require('bcrypt');
+const mongoose = require('mongoose');
+const errors = require('../errors');
 
-var Schema = mongoose.Schema;
+const Schema = mongoose.Schema;
 
-var userSchema = new Schema({
+const userSchema = new Schema({
     username: {
         type: String,
         index: true,
@@ -41,7 +41,7 @@ userSchema.pre('save', function(next) {
 });
 
 userSchema.methods.getCleanUser = function() {
-    var user = _.omit(this.toObject(), 'password', 'hash');
+    const user = _.omit(this.toObject(), 'password', 'hash');
     return user;
 };
 
@@ -58,7 +58,7 @@ userSchema.statics.register = function(body, password) {
 };
 
 userSchema.statics.authenticate = function(username, password) {
-    var _user;
+    let _user;
     return this.findOne({ username })
         .then(user => {
             _user = user;

@@ -1,17 +1,13 @@
-var mongoose = require('mongoose');
-var helpers = require('../helpers');
+const mongoose = require('mongoose');
+const helpers = require('../helpers');
 
-before(function(done) {
+before(done => {
     mongoose.connection.on('connected', done);
 });
 
-beforeEach(function() {
-    return helpers.clearCollections();
-});
+beforeEach(() => helpers.clearCollections());
 
 /**
  * Drop the database after running all tests
  */
-after(function() {
-    return helpers.dropDatabase();
-});
+after(() => helpers.dropDatabase());
