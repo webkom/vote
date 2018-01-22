@@ -5,7 +5,7 @@ machine:
 dependencies:
   post:
     - wget https://saucelabs.com/downloads/sc-4.4.11-linux.tar.gz
-    - tar -xzf sc-latest-linux.tar.gz
+    - tar -xzf sc-4.4.11-linux.tar.gz
     - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD -e webkom@abakus.no
 
 test:
