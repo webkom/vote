@@ -1,4 +1,6 @@
 const SerialPort = require('serialport');
+const memoize = require('lodash.memoize');
+const debounce = require('lodash.debounce');
 const sound = new Audio('assets/cardread.mp3');
 
 let port = null;
@@ -47,7 +49,7 @@ const calculateChecksum = (command, data) => {
 
 const poll = () => {
   const command = createMessage(commands.MIFARE.GET_SNR, [0x26, 0x00]);
-  writeAndDrain(command, () => setTimeout(poll, READ_DELAY));
+  writeAndDrain(command, poll);
 };
 
 const writeAndDrain = (data, callback) => {
@@ -64,6 +66,21 @@ const validate = (data, checksum) => {
   return Math.abs(calculatedChecksum % 255) === parseInt(checksum, 16);
 };
 
+const memoizeDebounce = (func, wait = 0, options = {}) => {
+  const mem = memoize(param => debounce(func, wait, options));
+  return param => mem(param)(param);
+};
+
+const updateOrDebounce = memoizeDebounce(
+  data => {
+    updateTarget(data);
+    sound.play();
+    updateStatus('reading...completed');
+  },
+  READ_DELAY,
+  { leading: true, trailing: false }
+);
+
 const onData = response => {
   const hexValues = [];
   for (let i = 0; i < response.length; i += 1) {
@@ -77,9 +94,7 @@ const onData = response => {
   const checksum = hexValues[hexValues.length - 1];
   const valid = validate([stationId, length, status, flag, ...data], checksum);
   if (replies[status] === 'OK' && replies[flag] !== 'NO CARD' && valid) {
-    updateTarget(data.join(':'));
-    updateStatus('reading...completed');
-    sound.play();
+    updateOrDebounce(data.join(':'));
   }
 };
 

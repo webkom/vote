@@ -6,9 +6,7 @@ const url = require('url');
 let mainWindow;
 
 const createWindow = () => {
-  mainWindow = new BrowserWindow({
-    icon: path.join(__dirname, 'assets/icon_128.png')
-  });
+  mainWindow = new BrowserWindow();
   mainWindow.maximize();
 
   mainWindow.webContents.openDevTools();
