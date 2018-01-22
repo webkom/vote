@@ -78,6 +78,8 @@ const onData = response => {
   const valid = validate([stationId, length, status, flag, ...data], checksum);
   if (replies[status] === 'OK' && replies[flag] !== 'NO CARD' && valid) {
     updateTarget(data.join(':'));
+    updateStatus('reading...completed');
+    sound.play();
   }
 };
 

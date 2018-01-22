@@ -5,7 +5,24 @@
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "install": "electron-rebuild"
+    "install": "electron-rebuild",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "build": {
+    "appId": "Vote",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "zip"
+    },
+    "linux": {
+      "category": "Utility",
+      "target": "zip"
+    },
+    "win": {
+      "target": "zip",
+      "icon": "build/icon.ico"
+    }
   },
   "repository": "https://github.com/webkom/vote",
   "author": "Abakus",
@@ -15,6 +32,7 @@
   },
   "devDependencies": {
     "electron": "~1.7.8",
+    "electron-builder": "^19.54.0",
     "electron-rebuild": "^1.6.1",
     "prettier": "^1.10.2"
   }
