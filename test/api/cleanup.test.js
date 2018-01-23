@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const helpers = require('../helpers');
 
 before(done => {
-    mongoose.connection.on('connected', done);
+  mongoose.connection.on('connected', done);
 });
 
 beforeEach(() => helpers.clearCollections());

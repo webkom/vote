@@ -7,9 +7,10 @@ const ensureAuthenticated = helpers.ensureAuthenticated;
 
 const router = express.Router();
 
-router.route('/')
-    .post(ensureAdmin, election.create)
-    .get(ensureAdmin, election.list);
+router
+  .route('/')
+  .post(ensureAdmin, election.create)
+  .get(ensureAdmin, election.list);
 
 router.get('/active', ensureAuthenticated, election.retrieveActive);
 
@@ -17,18 +18,20 @@ router.get('/active', ensureAuthenticated, election.retrieveActive);
 router.param('electionId', ensureAdmin);
 router.param('electionId', election.load);
 
-router.route('/:electionId')
-    .get(election.retrieve)
-    .delete(election.delete);
+router
+  .route('/:electionId')
+  .get(election.retrieve)
+  .delete(election.delete);
 
 router.get('/:electionId/count', election.count);
 
 router.post('/:electionId/activate', election.activate);
 router.post('/:electionId/deactivate', election.deactivate);
 
-router.route('/:electionId/alternatives')
-    .get(alternative.list)
-    .post(alternative.create);
+router
+  .route('/:electionId/alternatives')
+  .get(alternative.list)
+  .post(alternative.create);
 
 router.get('/:electionId/votes', election.sumVotes);
 

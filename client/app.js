@@ -5,8 +5,8 @@ require('angular-ui-bootstrap');
 require('./styles/main');
 
 angular
-    .module('voteApp', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule'])
-    .config(require('./appRoutes'));
+  .module('voteApp', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule'])
+  .config(require('./appRoutes'));
 
 require('./controllers');
 require('./directives');

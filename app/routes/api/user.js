@@ -4,9 +4,10 @@ const ensureAdmin = require('../helpers').ensureAdmin;
 
 const router = express.Router();
 
-router.route('/')
-    .get(ensureAdmin, user.list)
-    .post(ensureAdmin, user.create);
+router
+  .route('/')
+  .get(ensureAdmin, user.list)
+  .post(ensureAdmin, user.create);
 
 router.get('/count', ensureAdmin, user.count);
 

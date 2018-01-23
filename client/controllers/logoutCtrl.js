@@ -1,7 +1,11 @@
-module.exports = ['$scope', 'localStorageService', 'logoutService',
-function($scope, localStorageService, logoutService) {
+module.exports = [
+  '$scope',
+  'localStorageService',
+  'logoutService',
+  function($scope, localStorageService, logoutService) {
     $scope.logout = function() {
-        localStorageService.remove('voteHash');
-        logoutService.logout();
+      localStorageService.remove('voteHash');
+      logoutService.logout();
     };
-}];
+  }
+];

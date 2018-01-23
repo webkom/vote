@@ -5,8 +5,9 @@ const vote = require('../../controllers/vote');
 
 const router = express.Router();
 
-router.route('/')
-    .get(ensureAuthenticated, vote.retrieve)
-    .post(ensureAuthenticated, vote.create);
+router
+  .route('/')
+  .get(ensureAuthenticated, vote.retrieve)
+  .post(ensureAuthenticated, vote.create);
 
 module.exports = router;

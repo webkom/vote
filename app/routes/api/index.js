@@ -12,12 +12,12 @@ router.use('/alternative', electionRoutes);
 router.use('/vote', voteRoutes);
 
 router.use((req, res, next) => {
-    const error = new errors.NotFoundError(req.originalUrl);
-    next(error);
+  const error = new errors.NotFoundError(req.originalUrl);
+  next(error);
 });
 
 router.use((err, req, res, next) => {
-    errors.handleError(res, err);
+  errors.handleError(res, err);
 });
 
 module.exports = router;
