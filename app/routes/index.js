@@ -32,6 +32,10 @@ router.get('/partials/*', checkAuthOrRedirect, function(req, res) {
 router.use('/api', apiRoutes);
 router.use('/auth', authRoutes);
 
+router.get('/healthz', function(req, res) {
+    res.send();
+});
+
 // Can be both a valid frontend route accessed directly,
 // or a 404, but we let the frontend handle it
 router.get('*', checkAuthOrRedirect, function(req, res) {
