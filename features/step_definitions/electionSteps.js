@@ -1,32 +1,32 @@
-var chai = require('chai');
-var Bluebird = require('bluebird');
-var chaiAsPromised = require('chai-as-promised');
-var Vote = require('../../app/models/vote');
-var expect = chai.expect;
+const chai = require('chai');
+const Bluebird = require('bluebird');
+const chaiAsPromised = require('chai-as-promised');
+const Vote = require('../../app/models/vote');
+const expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
 module.exports = function() {
   this.Given(/^There is an (in)?active election$/, function(arg) {
-    var active = arg !== 'in';
+    const active = arg !== 'in';
     this.election.active = active;
     return this.election.save();
   });
 
   this.Given(/^The election is (de)?activated/, function(arg) {
-    var active = arg !== 'de';
+    const active = arg !== 'de';
     this.election.active = active;
     return this.election.save();
   });
 
-  this.When(/^I submit the form$/, function() {
+  this.When(/^I submit the form$/, () => {
     element(by.tagName('form')).submit();
   });
 
   this.Then(/^I see an active election$/, function() {
-    var title = element(by.binding('activeElection.title'));
-    var description = element(by.binding('activeElection.description'));
-    var alternatives = element.all(
+    const title = element(by.binding('activeElection.title'));
+    const description = element(by.binding('activeElection.description'));
+    const alternatives = element.all(
       by.repeater('alternative in activeElection.alternatives')
     );
 
@@ -45,11 +45,11 @@ module.exports = function() {
   });
 
   function vote() {
-    var alternatives = element.all(
+    const alternatives = element.all(
       by.repeater('alternative in activeElection.alternatives')
     );
-    var alternative = alternatives.first();
-    var button = element(by.css('button'));
+    const alternative = alternatives.first();
+    const button = element(by.css('button'));
 
     alternative.click();
     button.click();
@@ -61,7 +61,7 @@ module.exports = function() {
   this.When(/^I vote on an election$/, vote);
 
   this.Then(/^I see my hash in "([^"]*)"$/, function(name) {
-    var input = element(by.name(name));
+    const input = element(by.name(name));
     return Vote.findOne({ alternative: this.alternative.id }).then(foundVote =>
       expect(input.getAttribute('value')).to.eventually.equal(foundVote.hash)
     );

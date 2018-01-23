@@ -1,13 +1,13 @@
-var fs = require('fs');
-var path = require('path');
-var mkdirp = require('mkdirp');
+const fs = require('fs');
+const path = require('path');
+const mkdirp = require('mkdirp');
 
-exports.writeScreenshot = function(data, filename) {
-  var folder = path.resolve('screenshots');
-  mkdirp(folder, function(err) {
+exports.writeScreenshot = (data, filename) => {
+  const folder = path.resolve('screenshots');
+  mkdirp(folder, err => {
     if (err) throw err;
-    var writePath = path.resolve(folder, filename);
-    var stream = fs.createWriteStream(writePath);
+    const writePath = path.resolve(folder, filename);
+    const stream = fs.createWriteStream(writePath);
     stream.write(new Buffer(data, 'base64'));
     stream.end();
   });
