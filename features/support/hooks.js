@@ -43,14 +43,18 @@ module.exports = function() {
     mongoose.connection.on('connected', () => server(callback));
   });
 
-  this.registerHandler('AfterStep', (event, callback) => // To make sure all tests run correctly we force
-  // waiting for Angular after each step.
+  this.registerHandler('AfterStep', (
+    event,
+    callback // To make sure all tests run correctly we force
+  ) =>
+    // waiting for Angular after each step.
 
-  browser.waitForAngular().then(callback, err => {
-    const message = err.message || err;
-    if (message.includes('window.angular')) callback();
-    else callback(err);
-  }));
+    browser.waitForAngular().then(callback, err => {
+      const message = err.message || err;
+      if (message.includes('window.angular')) callback();
+      else callback(err);
+    })
+  );
 
   this.registerHandler('AfterFeatures', (event, callback) => {
     dropDatabase(callback).nodeify(callback);

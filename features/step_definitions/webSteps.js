@@ -48,20 +48,22 @@ module.exports = function() {
       .notify(callback);
   });
 
-  this.Then(/^I see "([^"]*)"$/, text => expect(browser.getPageSource()).to.eventually.contain(text));
+  this.Then(/^I see "([^"]*)"$/, text =>
+    expect(browser.getPageSource()).to.eventually.contain(text)
+  );
 
   this.When(/^I click "([^"]*)"$/, buttonText => {
     const button = element(by.buttonText(buttonText));
     button.click();
   });
 
-  this.Then(/^I should find "([^"]*)"$/, selector => expect(element(by.css(selector)).isPresent()).to.eventually.equal(
-    true
-  ));
+  this.Then(/^I should find "([^"]*)"$/, selector =>
+    expect(element(by.css(selector)).isPresent()).to.eventually.equal(true)
+  );
 
-  this.Then(/^I should not find "([^"]*)"$/, selector => expect(element(by.css(selector)).isPresent()).to.eventually.equal(
-    false
-  ));
+  this.Then(/^I should not find "([^"]*)"$/, selector =>
+    expect(element(by.css(selector)).isPresent()).to.eventually.equal(false)
+  );
 
   this.Then(/^I see alert "([^"]*)"$/, text => {
     const alert = element(by.cssContainingText('.alert', text));

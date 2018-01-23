@@ -51,17 +51,19 @@ module.exports = function() {
     title.submit();
   });
 
-  this.Then(/^The election should exist$/, () => Election.find({ title: newElection.title })
-    .populate('alternatives')
-    .exec()
-    .spread(election => {
-      expect(election.description).to.equal(newElection.description);
-      election.alternatives.forEach((alternative, i) => {
-        expect(alternative.description).to.equal(
-          newElection.alternatives[i].description
-        );
-      });
-    }));
+  this.Then(/^The election should exist$/, () =>
+    Election.find({ title: newElection.title })
+      .populate('alternatives')
+      .exec()
+      .spread(election => {
+        expect(election.description).to.equal(newElection.description);
+        election.alternatives.forEach((alternative, i) => {
+          expect(alternative.description).to.equal(
+            newElection.alternatives[i].description
+          );
+        });
+      })
+  );
 
   this.Given(/^The election has votes$/, function() {
     this.alternative.addVote(this.user);

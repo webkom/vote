@@ -33,7 +33,7 @@ router.use('/api', apiRoutes);
 router.use('/auth', authRoutes);
 
 router.get('/healthz', (req, res) => {
-    res.send();
+  res.send();
 });
 
 // Can be both a valid frontend route accessed directly,
