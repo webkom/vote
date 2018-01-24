@@ -125,6 +125,29 @@ describe('User API', () => {
       });
   });
 
+  it('should return 400 when creating users with existing usernames', function(done) {
+    passportStub.login(this.adminUser);
+    const payload = Object.assign({}, testUserData, {
+      username: this.user.username
+    });
+
+    request(app)
+      .post('/api/user')
+      .send(payload)
+      .expect(400)
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) return done(err);
+        const error = res.body;
+        error.name.should.equal('DuplicateUsernameError');
+        error.status.should.equal(400);
+        error.message.should.equal(
+          "There's already a user with this username."
+        );
+        done();
+      });
+  });
+
   it('should not be possible to create users without being admin', function(done) {
     passportStub.login(this.user);
     testAdminResource('post', '/api/user', done);

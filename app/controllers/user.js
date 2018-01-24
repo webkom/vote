@@ -33,7 +33,11 @@ exports.create = (req, res, next) => {
       throw new errors.ValidationError(err.errors);
     })
     .catch(errorChecks.DuplicateError, err => {
-      throw new errors.DuplicateCardError();
+      if (err.message.includes('cardKey')) {
+        throw new errors.DuplicateCardError();
+      }
+
+      throw new errors.DuplicateUsernameError();
     })
     .catch(errorChecks.BadRequestError, err => {
       throw new errors.InvalidRegistrationError(err.message);

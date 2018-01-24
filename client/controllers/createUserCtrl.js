@@ -15,6 +15,9 @@ module.exports = [
         })
         .error(function(error) {
           switch (error.name) {
+            case 'DuplicateUsernameError':
+              alertService.addError('Dette brukernavnet er allerede i bruk.');
+              break;
             case 'DuplicateCardError':
               alertService.addError(
                 'Dette kortet er allerede blitt registrert.'
