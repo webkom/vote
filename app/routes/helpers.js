@@ -1,38 +1,38 @@
-var errors = require('../errors');
+const errors = require('../errors');
 
-var checkAuthOrRedirect = exports.checkAuthOrRedirect = function(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    // Store the original path so we can redirect there after login
-    req.session.originalPath = req.path;
-    res.redirect('/auth/login');
+const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  // Store the original path so we can redirect there after login
+  req.session.originalPath = req.path;
+  res.redirect('/auth/login');
+});
+
+exports.checkAdmin = (req, res, next) => {
+  checkAuthOrRedirect(req, res, () => {
+    if (req.user.admin) return next();
+    res.redirect('/404');
+  });
 };
 
-exports.checkAdmin = function(req, res, next) {
-    checkAuthOrRedirect(req, res, function() {
-        if (req.user.admin) return next();
-        res.redirect('/404');
-    });
+exports.checkAdminPartial = (req, res, next) => {
+  checkAuthOrRedirect(req, res, () => {
+    if (req.user.admin) return next();
+    res.status(404).send();
+  });
 };
 
-exports.checkAdminPartial = function(req, res, next) {
-    checkAuthOrRedirect(req, res, function() {
-        if (req.user.admin) return next();
-        res.status(404).send();
-    });
-};
+const ensureAuthenticated = (exports.ensureAuthenticated = (req, res, next) => {
+  if (req.isAuthenticated()) return next();
+  const error = new errors.LoginError();
+  return errors.handleError(res, error);
+});
 
-var ensureAuthenticated = exports.ensureAuthenticated = function(req, res, next) {
-    if (req.isAuthenticated()) return next();
-    var error = new errors.LoginError();
-    return errors.handleError(res, error);
-};
-
-exports.ensureAdmin = function(req, res, next) {
-    ensureAuthenticated(req, res, function() {
-        if (!req.user.admin) {
-            var error = new errors.PermissionError();
-            return next(error);
-        }
-        return next();
-    });
+exports.ensureAdmin = (req, res, next) => {
+  ensureAuthenticated(req, res, () => {
+    if (!req.user.admin) {
+      const error = new errors.PermissionError();
+      return next(error);
+    }
+    return next();
+  });
 };

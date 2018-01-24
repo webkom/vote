@@ -1,19 +1,14 @@
-var Bluebird = require('bluebird');
-var mongoose = require('mongoose');
-var Alternative = require('../app/models/alternative');
-var Election = require('../app/models/election');
-var Vote = require('../app/models/vote');
-var User = require('../app/models/user');
+const Bluebird = require('bluebird');
+const mongoose = require('mongoose');
+const Alternative = require('../app/models/alternative');
+const Election = require('../app/models/election');
+const Vote = require('../app/models/vote');
+const User = require('../app/models/user');
 
-exports.dropDatabase = function() {
-    return mongoose.connection.dropDatabase()
-      .then(function() {
-          return mongoose.disconnect();
-      });
-};
+exports.dropDatabase = () =>
+  mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
-exports.clearCollections = function() {
-    return Bluebird.map([Alternative, Election, Vote, User], function(collection) {
-        return collection.remove();
-    });
-};
+exports.clearCollections = () =>
+  Bluebird.map([Alternative, Election, Vote, User], collection =>
+    collection.remove()
+  );

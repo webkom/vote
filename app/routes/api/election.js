@@ -1,15 +1,16 @@
-var express = require('express');
-var election = require('../../controllers/election');
-var alternative = require('../../controllers/alternative');
-var helpers = require('../helpers');
-var ensureAdmin = helpers.ensureAdmin;
-var ensureAuthenticated = helpers.ensureAuthenticated;
+const express = require('express');
+const election = require('../../controllers/election');
+const alternative = require('../../controllers/alternative');
+const helpers = require('../helpers');
+const ensureAdmin = helpers.ensureAdmin;
+const ensureAuthenticated = helpers.ensureAuthenticated;
 
-var router = express.Router();
+const router = express.Router();
 
-router.route('/')
-    .post(ensureAdmin, election.create)
-    .get(ensureAdmin, election.list);
+router
+  .route('/')
+  .post(ensureAdmin, election.create)
+  .get(ensureAdmin, election.list);
 
 router.get('/active', ensureAuthenticated, election.retrieveActive);
 
@@ -17,18 +18,20 @@ router.get('/active', ensureAuthenticated, election.retrieveActive);
 router.param('electionId', ensureAdmin);
 router.param('electionId', election.load);
 
-router.route('/:electionId')
-    .get(election.retrieve)
-    .delete(election.delete);
+router
+  .route('/:electionId')
+  .get(election.retrieve)
+  .delete(election.delete);
 
 router.get('/:electionId/count', election.count);
 
 router.post('/:electionId/activate', election.activate);
 router.post('/:electionId/deactivate', election.deactivate);
 
-router.route('/:electionId/alternatives')
-    .get(alternative.list)
-    .post(alternative.create);
+router
+  .route('/:electionId/alternatives')
+  .get(alternative.list)
+  .post(alternative.create);
 
 router.get('/:electionId/votes', election.sumVotes);
 

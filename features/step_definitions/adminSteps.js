@@ -1,111 +1,118 @@
-var chai = require('chai');
-var Bluebird = require('bluebird');
-var chaiAsPromised = require('chai-as-promised');
-var Election = require('../../app/models/election');
+const chai = require('chai');
+const Bluebird = require('bluebird');
+const chaiAsPromised = require('chai-as-promised');
+const Election = require('../../app/models/election');
 
-var expect = chai.expect;
+const expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
 module.exports = function() {
-    var newElection = {
-        title: 'new election',
-        description: 'new description',
-        alternatives: [
-            {
-                description: 'alternative 1'
-            },
-            {
-                description: 'alternative 2'
-            }
-        ]
-    };
+  const newElection = {
+    title: 'new election',
+    description: 'new description',
+    alternatives: [
+      {
+        description: 'alternative 1'
+      },
+      {
+        description: 'alternative 2'
+      }
+    ]
+  };
 
-    this.Then(/^I see a list of elections$/, function() {
-        var alternatives = element.all(by.repeater('election in elections'));
-        var election = alternatives.first();
+  this.Then(/^I see a list of elections$/, function() {
+    const alternatives = element.all(by.repeater('election in elections'));
+    const election = alternatives.first();
 
-        Bluebird.all([
-            expect(election.getText()).to.eventually.equal(this.election.title),
-            expect(alternatives.count()).to.eventually.equal(1)
-        ]);
+    Bluebird.all([
+      expect(election.getText()).to.eventually.equal(this.election.title),
+      expect(alternatives.count()).to.eventually.equal(1)
+    ]);
+  });
+
+  this.When(/^I create an election$/, () => {
+    element(by.className('new-alternative')).click();
+    const title = element(by.model('election.title'));
+    const description = element(by.model('election.description'));
+    const alternatives = element.all(
+      by.repeater('alternative in election.alternatives')
+    );
+    // Add new alternative
+    title.sendKeys(newElection.title);
+    description.sendKeys(newElection.description);
+    newElection.alternatives.forEach((alternative, i) => {
+      alternatives
+        .get(i)
+        .element(by.css('input'))
+        .sendKeys(alternative.description);
     });
 
-    this.When(/^I create an election$/, function() {
-        element(by.className('new-alternative')).click();
-        var title = element(by.model('election.title'));
-        var description = element(by.model('election.description'));
-        var alternatives = element.all(by.repeater('alternative in election.alternatives'));
-        // Add new alternative
-        title.sendKeys(newElection.title);
-        description.sendKeys(newElection.description);
-        newElection.alternatives.forEach((alternative, i) => {
-            alternatives
-                .get(i)
-                .element(by.css('input'))
-                .sendKeys(alternative.description);
+    title.submit();
+  });
+
+  this.Then(/^The election should exist$/, () =>
+    Election.find({ title: newElection.title })
+      .populate('alternatives')
+      .exec()
+      .spread(election => {
+        expect(election.description).to.equal(newElection.description);
+        election.alternatives.forEach((alternative, i) => {
+          expect(alternative.description).to.equal(
+            newElection.alternatives[i].description
+          );
         });
+      })
+  );
 
-        title.submit();
-    });
+  this.Given(/^The election has votes$/, function() {
+    this.alternative.addVote(this.user);
+  });
 
-    this.Then(/^The election should exist$/, function() {
-        return Election
-            .find({ title: newElection.title })
-            .populate('alternatives')
-            .exec()
-            .spread(function(election) {
-                expect(election.description).to.equal(newElection.description);
-                election.alternatives.forEach(function(alternative, i) {
-                    expect(alternative.description)
-                        .to.equal(newElection.alternatives[i].description);
-                });
-            });
-    });
+  this.Given(/^I am on the edit election page$/, function() {
+    browser.get(`/admin/election/${this.election.id}/edit`);
+  });
 
-    this.Given(/^The election has votes$/, function() {
-        this.alternative.addVote(this.user);
-    });
+  this.Then(/^I should see votes$/, () => {
+    const alternatives = element.all(
+      by.repeater('alternative in election.alternatives')
+    );
+    const alternative = alternatives.first();
+    const span = alternative.element(by.tagName('span'));
 
-    this.Given(/^I am on the edit election page$/, function() {
-        browser.get('/admin/election/' + this.election.id + '/edit');
-    });
+    return expect(span.getText()).to.eventually.equal('1 - 100 %');
+  });
 
-    this.Then(/^I should see votes$/, function() {
-        var alternatives = element.all(by.repeater('alternative in election.alternatives'));
-        var alternative = alternatives.first();
-        var span = alternative.element(by.tagName('span'));
+  this.When(/^I enter a new alternative "([^"]*)"$/, alternative => {
+    const input = element(by.id('new-alternative'));
+    input.sendKeys(alternative);
+  });
 
-        return expect(span.getText()).to.eventually.equal('1 - 100 %');
-    });
+  this.Then(/^I should see the alternative "([^"]*)"$/, alternativeText => {
+    const alternatives = element.all(
+      by
+        .repeater('alternative in election.alternatives')
+        .column('alternative.description')
+    );
 
-    this.When(/^I enter a new alternative "([^"]*)"$/, function(alternative) {
-        var input = element(by.id('new-alternative'));
-        input.sendKeys(alternative);
-    });
+    return expect(alternatives.getText()).to.eventually.contain(
+      alternativeText.toUpperCase()
+    );
+  });
 
-    this.Then(/^I should see the alternative "([^"]*)"$/, function(alternativeText) {
-        var alternatives = element.all(
-            by.repeater('alternative in election.alternatives').column('alternative.description')
-        );
+  this.When(/^I scan card key "([^"]*)"$/, cardKey => {
+    browser.executeScript(`window.postMessage("${cardKey}", "*");`);
+  });
 
-        return expect(alternatives.getText())
-            .to.eventually.contain(alternativeText.toUpperCase());
-    });
+  this.When(/^I delete users$/, () => {
+    const button = element(by.css('button'));
 
-    this.When(/^I scan card key "([^"]*)"$/, function(cardKey) {
-        browser.executeScript('window.postMessage("' + cardKey + '", "*");');
-    });
+    button.click();
+    button.click();
+  });
 
-    this.When(/^I delete users$/, function() {
-        var button = element(by.css('button'));
-
-        button.click();
-        button.click();
-    });
-
-    this.Then(/^I should see ([\d]+) in "([^"]*)"$/, function(count, binding) {
-        var countElement = element(by.binding(binding));
-        return expect(countElement.getText()).to.eventually.equal(String(count));
-    });
+  this.Then(/^I should see ([\d]+) in "([^"]*)"$/, (count, binding) => {
+    const countElement = element(by.binding(binding));
+    return expect(countElement.getText()).to.eventually.equal(String(count));
+  });
 };

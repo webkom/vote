@@ -1,13 +1,17 @@
-module.exports = ['$window', '$rootScope', function($window, $rootScope) {
+module.exports = [
+  '$window',
+  '$rootScope',
+  function($window, $rootScope) {
     $rootScope.$on('$routeChangeStart', function() {
-        angular.element($window).unbind('message');
+      angular.element($window).unbind('message');
     });
 
     return {
-        listen: function(cb) {
-            angular.element($window).bind('message', function(e) {
-                cb(e.data);
-            });
-        }
+      listen: function(cb) {
+        angular.element($window).bind('message', function(e) {
+          cb(e.data);
+        });
+      }
     };
-}];
+  }
+];

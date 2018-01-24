@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-var program = require('commander');
-var mongoose = require('mongoose');
-var chalk = require('chalk');
-var promptly = require('promptly');
-var Bluebird = require('bluebird');
-var User = require('../app/models/user');
+const program = require('commander');
+const mongoose = require('mongoose');
+const chalk = require('chalk');
+const promptly = require('promptly');
+const Bluebird = require('bluebird');
+const User = require('../app/models/user');
 
 mongoose.Promise = Bluebird;
 
 function done(err, user) {
     if (err) throw err;
-    console.log(chalk.green('Created user ' + user.username));
+    console.log(chalk.green(`Created user ${user.username}`));
     process.exit(0);
 }
 
@@ -19,15 +19,15 @@ program
     .version('1.0.0')
     .command('create-admin <username> <cardKey>')
     .description('create an admin user')
-    .action(function(username, cardKey) {
-        var mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
+    .action((username, cardKey) => {
+        const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
 
-        mongoose.connect(mongoURL, function(connectErr) {
+        mongoose.connect(mongoURL, connectErr => {
             if (connectErr) return done(connectErr);
 
-            promptly.password('Enter a password: ', function(pwErr, password) {
+            promptly.password('Enter a password: ', (pwErr, password) => {
                 if (pwErr) return done(pwErr);
-                var user = new User({
+                const user = new User({
                     username: username,
                     admin: true,
                     cardKey: cardKey
