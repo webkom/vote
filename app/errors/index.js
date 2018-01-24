@@ -148,6 +148,17 @@ class DuplicateCardError extends Error {
 
 exports.DuplicateCardError = DuplicateCardError;
 
+class DuplicateUsernameError extends Error {
+  constructor() {
+    super();
+    this.name = 'DuplicateUsernameError';
+    this.message = "There's already a user with this username.";
+    this.status = 400;
+  }
+}
+
+exports.DuplicateUsernameError = DuplicateUsernameError;
+
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(

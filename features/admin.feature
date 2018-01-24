@@ -100,6 +100,14 @@ Feature: Admin
     And I submit the form
     Then I see alert "Dette kortet er allerede blitt registrert."
 
+  Scenario: Creating user with an existing username
+    Given I am on page "/admin/create_user"
+    When I scan card key "1234"
+    And I fill in "username" with "testuser"
+    And I fill in "password" with "password"
+    And I submit the form
+    Then I see alert "Dette brukernavnet er allerede i bruk."
+
   Scenario: Count number of votes and active users
     Given There is an active election
     And The election has votes
