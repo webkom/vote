@@ -1,12 +1,10 @@
-const express = require('express');
+const router = require('express-promise-router')();
 const apiRoutes = require('./api');
 const authRoutes = require('./auth');
 const helpers = require('./helpers');
 const checkAuthOrRedirect = helpers.checkAuthOrRedirect;
 const checkAdmin = helpers.checkAdmin;
 const checkAdminPartial = helpers.checkAdminPartial;
-
-const router = express.Router();
 
 // Admin users shouldn't be able to vote, so they don't need to see the election page
 router.get('/', checkAuthOrRedirect, (req, res) => {
