@@ -36,134 +36,94 @@ describe('Auth API', () => {
     ]);
   });
 
-  it('should be able to authenticate users', done => {
-    request(app)
+  it('should be able to authenticate users', async () => {
+    const { header } = await request(app)
       .post('/auth/login')
       .send(testUser)
-      .expect(302)
-      .end((err, res) => {
-        if (err) return done(err);
-        res.header.location.should.equal('/');
-        done();
-      });
+      .expect(302);
+
+    header.location.should.equal('/');
   });
 
-  it('should make sure usernames are case-insensitive', done => {
+  it('should make sure usernames are case-insensitive', async () => {
     const newUser = Object.assign(testUser, {
       username: testUser.username.toUpperCase()
     });
 
-    request(app)
+    const { header } = await request(app)
       .post('/auth/login')
       .send(newUser)
-      .expect(302)
-      .end((err, res) => {
-        if (err) return done(err);
-        res.header.location.should.equal('/');
-        done();
-      });
+      .expect(302);
+
+    header.location.should.equal('/');
   });
 
-  it('should strip spaces on login', done => {
-    request(app)
+  it('should strip spaces on login', async () => {
+    const { header } = await request(app)
       .post('/auth/login')
       .send({
         username: `${testUser.username}    `,
         password: testUser.password
       })
-      .expect(302)
-      .end((err, res) => {
-        if (err) return done(err);
-        res.header.location.should.equal('/');
-        done();
-      });
+      .expect(302);
+
+    header.location.should.equal('/');
   });
 
-  it('should redirect correctly on login', done => {
+  it('should redirect correctly on login', async () => {
     const agent = request.agent(app);
-    agent
-      .get('/test')
-      .expect(302)
-      .end(err => {
-        if (err) return done(err);
-        agent
-          .post('/auth/login')
-          .send(testUser)
-          .expect(302)
-          .end((loginErr, res) => {
-            if (loginErr) return done(loginErr);
-            res.header.location.should.equal('/test');
-            done();
-          });
-      });
+    await agent.get('/test').expect(302);
+    const { header } = await agent
+      .post('/auth/login')
+      .send(testUser)
+      .expect(302);
+
+    header.location.should.equal('/test');
   });
 
-  it('should redirect to login with flash on bad auth', done => {
+  it('should redirect to login with flash on bad auth', async () => {
     const agent = request.agent(app);
-    function logout(err, res) {
-      if (err) return done(err);
-      res.header.location.should.equal('/auth/login');
-
-      agent
-        .get('/auth/login')
-        .expect(200)
-        .expect('Content-Type', /text\/html/)
-        .end((loginErr, loginRes) => {
-          if (loginErr) return done(loginErr);
-          loginRes.text.should.include('Brukernavn og/eller passord er feil.');
-          done();
-        });
-    }
-
-    agent
+    const { header } = await agent
       .post('/auth/login')
       .send(badTestUser)
-      .expect(302)
-      .end(logout);
+      .expect(302);
+    header.location.should.equal('/auth/login');
+
+    const { text } = await agent
+      .get('/auth/login')
+      .expect(200)
+      .expect('Content-Type', /text\/html/);
+    text.should.include('Brukernavn og/eller passord er feil.');
   });
 
-  it('should be possible to logout', done => {
+  it('should be possible to logout', async () => {
     const sessions = mongoose.connection.db.collection('sessions');
-
-    function checkSessions(err, res) {
-      if (err) return done(err);
-      res.header.location.should.equal('/auth/login');
-      sessions.find({}).toArray((sessionErr, newSessions) => {
-        if (sessionErr) return done(sessionErr);
-        newSessions.length.should.equal(0);
-        done();
-      });
-    }
-
-    function logout(err, agent) {
-      if (err) return done(err);
-      agent
-        .post('/auth/logout')
-        .expect(302)
-        .end(checkSessions);
-    }
-
-    function login(err) {
-      if (err) return done(err);
+    async function login(err) {
+      if (err) throw err;
       const agent = request.agent(app);
-      agent
+      await agent
         .post('/auth/login')
         .expect(302)
-        .send(testUser)
-        .end(newErr => logout(newErr, agent));
+        .send(testUser);
+
+      const { header } = await agent.post('/auth/logout').expect(302);
+      header.location.should.equal('/auth/login');
+      sessions.find({}).toArray((sessionErr, newSessions) => {
+        if (sessionErr) throw sessionErr;
+        newSessions.length.should.equal(0);
+      });
     }
 
     sessions.drop(login);
   });
 
-  it('should redirect from / to /admin for admins', done => {
+  it('should redirect from / to /admin for admins', async () => {
     passportStub.install(app);
     passportStub.login(adminUser);
 
-    request(app)
+    await request(app)
       .get('/')
       .expect(302)
-      .expect('Location', '/admin')
-      .end(done);
+      .expect('Location', '/admin');
   });
 });
