@@ -275,6 +275,14 @@ capture-stack-trace@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/capture-stack-trace/-/capture-stack-trace-1.0.0.tgz#4a6fa07399c26bba47f0b2496b4d0fb408c5550d"
 
+card-scanner@1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/card-scanner/-/card-scanner-1.0.1.tgz#6687716003021020fc93d6eb892cdd1ae4897934"
+  dependencies:
+    lodash.debounce "4.0.8"
+    lodash.memoize "4.1.2"
+    serialport "6.0.4"
+
 caseless@~0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/caseless/-/caseless-0.12.0.tgz#1b681c21ff84033c826543090689420d187151dc"

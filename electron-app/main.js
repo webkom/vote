@@ -9,7 +9,6 @@ const createWindow = () => {
   mainWindow = new BrowserWindow();
   mainWindow.maximize();
 
-  mainWindow.webContents.openDevTools();
   mainWindow.loadURL(
     url.format({
       pathname: path.join(__dirname, 'index.html'),
