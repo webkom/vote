@@ -10,13 +10,13 @@ exports.load = (req, res, next, electionId) =>
     .then(election => {
       if (!election) throw new errors.NotFoundError('election');
       req.election = election;
+      next();
     })
     .catch(mongoose.Error.CastError, err => {
       throw new errors.NotFoundError('election');
-    })
-    .nodeify(next);
+    });
 
-exports.retrieveActive = (req, res, next) =>
+exports.retrieveActive = (req, res) =>
   Election.findOne({ active: true })
     .where('hasVotedUsers.user')
     .ne(req.user.id)
@@ -25,10 +25,9 @@ exports.retrieveActive = (req, res, next) =>
     .exec()
     .then(election => {
       res.status(200).json(election);
-    })
-    .catch(next);
+    });
 
-exports.create = (req, res, next) =>
+exports.create = (req, res) =>
   Election.create({
     title: req.body.title,
     description: req.body.description
@@ -51,64 +50,51 @@ exports.create = (req, res, next) =>
     .then(election => res.status(201).json(election))
     .catch(mongoose.Error.ValidationError, err => {
       throw new errors.ValidationError(err.errors);
-    })
-    .catch(next);
+    });
 
-exports.list = (req, res, next) =>
+exports.list = (req, res) =>
   Election.find()
     .populate('alternatives')
     .exec()
-    .then(elections => res.status(200).json(elections))
-    .catch(next);
+    .then(elections => res.status(200).json(elections));
 
-exports.retrieve = (req, res, next) =>
+exports.retrieve = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
-    .then(election => res.status(200).json(election))
-    .catch(next);
+    .then(election => res.status(200).json(election));
 
 function setElectionStatus(req, res, active) {
   req.election.active = active;
   return req.election.save();
 }
 
-exports.activate = (req, res, next) => {
-  setElectionStatus(req, res, true)
-    .then(election => {
-      const io = app.get('io');
-      io.emit('election');
-      return res.status(200).json(election);
-    })
-    .catch(next);
-};
+exports.activate = (req, res) =>
+  setElectionStatus(req, res, true).then(election => {
+    const io = app.get('io');
+    io.emit('election');
+    return res.status(200).json(election);
+  });
 
-exports.deactivate = (req, res, next) => {
-  setElectionStatus(req, res, false)
-    .then(election => res.status(200).json(election))
-    .catch(next);
-};
+exports.deactivate = (req, res) =>
+  setElectionStatus(req, res, false).then(election =>
+    res.status(200).json(election)
+  );
 
-exports.sumVotes = (req, res, next) =>
-  req.election
-    .sumVotes()
-    .then(alternatives => res.json(alternatives))
-    .catch(next);
+exports.sumVotes = (req, res) =>
+  req.election.sumVotes().then(alternatives => res.json(alternatives));
 
-exports.delete = (req, res, next) => {
+exports.delete = (req, res) => {
   if (req.election.active) {
     throw new errors.ActiveElectionError('Cannot delete an active election.');
   }
 
-  return req.election
-    .remove()
-    .then(() =>
-      res.status(200).json({
-        message: 'Election deleted.',
-        status: 200
-      })
-    )
-    .catch(next);
+  return req.election.remove().then(() =>
+    res.status(200).json({
+      message: 'Election deleted.',
+      status: 200
+    })
+  );
 };
 
 exports.count = (req, res) => {

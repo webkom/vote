@@ -1,8 +1,6 @@
-const express = require('express');
+const router = require('express-promise-router')();
 const user = require('../../controllers/user');
 const ensureAdmin = require('../helpers').ensureAdmin;
-
-const router = express.Router();
 
 router
   .route('/')

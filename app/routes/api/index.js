@@ -1,10 +1,8 @@
-const express = require('express');
+const router = require('express-promise-router')();
 const electionRoutes = require('./election');
 const userRoutes = require('./user');
 const voteRoutes = require('./vote');
 const errors = require('../../errors');
-
-const router = express.Router();
 
 router.use('/election', electionRoutes);
 router.use('/user', userRoutes);

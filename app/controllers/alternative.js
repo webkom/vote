@@ -2,14 +2,13 @@ const mongoose = require('mongoose');
 const Alternative = require('../models/alternative');
 const errors = require('../errors');
 
-exports.list = (req, res, next) =>
+exports.list = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
-    .then(election => res.json(election.alternatives))
-    .catch(next);
+    .then(election => res.json(election.alternatives));
 
-exports.create = (req, res, next) =>
+exports.create = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
@@ -30,5 +29,4 @@ exports.create = (req, res, next) =>
     .then(alternative => res.status(201).send(alternative))
     .catch(mongoose.Error.ValidationError, err => {
       throw new errors.ValidationError(err.errors);
-    })
-    .catch(next);
+    });

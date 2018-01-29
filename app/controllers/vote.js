@@ -3,7 +3,7 @@ const Alternative = require('../models/alternative');
 const Vote = require('../models/vote');
 const errors = require('../errors');
 
-exports.create = (req, res, next) => {
+exports.create = (req, res) => {
   const alternativeId = req.body.alternativeId;
   if (!alternativeId) {
     const error = new errors.InvalidPayloadError('alternativeId');
@@ -21,11 +21,10 @@ exports.create = (req, res, next) => {
     .then(vote => res.status(201).send(vote))
     .catch(mongoose.Error.CastError, err => {
       throw new errors.NotFoundError('alternative');
-    })
-    .catch(next);
+    });
 };
 
-exports.retrieve = (req, res, next) => {
+exports.retrieve = (req, res) => {
   const hash = req.get('Vote-Hash');
 
   if (!hash) {
@@ -42,6 +41,5 @@ exports.retrieve = (req, res, next) => {
         .populate('election')
         .execPopulate()
         .then(alternative => res.json(vote));
-    })
-    .catch(next);
+    });
 };

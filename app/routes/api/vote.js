@@ -1,9 +1,7 @@
-const express = require('express');
+const router = require('express-promise-router')();
 const helpers = require('../helpers');
 const ensureAuthenticated = helpers.ensureAuthenticated;
 const vote = require('../../controllers/vote');
-
-const router = express.Router();
 
 router
   .route('/')
