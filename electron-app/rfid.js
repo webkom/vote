@@ -111,7 +111,7 @@ const refresh = () => {
     dropDown.innerHTML = '';
 
     ports.forEach(port => {
-      const displayName = port.comName;
+      let displayName = port.comName;
       if (!displayName) displayName = port.path;
 
       const newOption = document.createElement('option');
@@ -143,9 +143,7 @@ const connect = () => {
 
 $('#connect_button').addEventListener('click', connect);
 
-$('#fullscreen').addEventListener('click', () => {
-  console.log('fullscreen');
-});
+$('#fullscreen').addEventListener('click', () => {});
 
 $('#test').addEventListener('click', () => {
   updateTarget('test');
