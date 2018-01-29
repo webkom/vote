@@ -6,8 +6,7 @@ const errors = require('../errors');
 exports.create = (req, res) => {
   const alternativeId = req.body.alternativeId;
   if (!alternativeId) {
-    const error = new errors.InvalidPayloadError('alternativeId');
-    return errors.handleError(res, error);
+    throw new errors.InvalidPayloadError('alternativeId');
   }
 
   return Alternative.findById(alternativeId)
@@ -24,22 +23,18 @@ exports.create = (req, res) => {
     });
 };
 
-exports.retrieve = (req, res) => {
+exports.retrieve = async (req, res) => {
   const hash = req.get('Vote-Hash');
 
   if (!hash) {
-    const error = new errors.MissingHeaderError('Vote-Hash');
-    return errors.handleError(res, error);
+    throw new errors.MissingHeaderError('Vote-Hash');
   }
 
-  return Vote.findOne({ hash: hash })
-    .populate('alternative')
-    .exec()
-    .then(vote => {
-      if (!vote) throw new errors.NotFoundError('vote');
-      return vote.alternative
-        .populate('election')
-        .execPopulate()
-        .then(alternative => res.json(vote));
-    });
+  const vote = await Vote.findOne({ hash: hash }).populate({
+    path: 'alternative',
+    populate: { path: 'election' }
+  });
+
+  if (!vote) throw new errors.NotFoundError('vote');
+  res.json(vote);
 };

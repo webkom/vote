@@ -39,12 +39,8 @@ electionSchema.pre('remove', function(next) {
     .model('Alternative')
     .find({ election: this.id })
     .then(alternatives =>
-      Bluebird.map(alternatives, (
-        alternative // Have to call remove on each document to activate Alternative's
-      ) =>
-        // remove-middleware
-        alternative.remove()
-      )
+      // Have to call remove on each document to activate Alternative's remove-middleware
+      Bluebird.map(alternatives, alternative => alternative.remove())
     )
     .nodeify(next);
 });
@@ -64,12 +60,12 @@ electionSchema.methods.sumVotes = function() {
   );
 };
 
-electionSchema.methods.addAlternative = function(alternative) {
+electionSchema.methods.addAlternative = async function(alternative) {
   alternative.election = this._id;
-  return alternative.save().then(savedAlternative => {
-    this.alternatives = [...this.alternatives, savedAlternative];
-    return this.save().return(savedAlternative);
-  });
+  const savedAlternative = await alternative.save();
+  this.alternatives = [...this.alternatives, savedAlternative];
+  await this.save();
+  return savedAlternative;
 };
 
 module.exports = mongoose.model('Election', electionSchema);

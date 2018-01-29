@@ -3,7 +3,7 @@ const User = require('../models/user');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
-exports.count = (req, res) => {
+exports.count = async (req, res) => {
   const query = { admin: false };
   if (req.query.active === 'true') {
     query.active = true;
@@ -11,15 +11,14 @@ exports.count = (req, res) => {
     query.active = false;
   }
 
-  return User.count(query).then(count =>
-    res.json({
-      users: count
-    })
-  );
+  const count = await User.count(query);
+  res.json({ users: count });
 };
 
-exports.list = (req, res) =>
-  User.find({}, 'username admin active').then(users => res.json(users));
+exports.list = async (req, res) => {
+  const users = await User.find({}, 'username admin active');
+  res.json(users);
+};
 
 exports.create = (req, res) => {
   const user = new User(req.body);
@@ -40,16 +39,16 @@ exports.create = (req, res) => {
     });
 };
 
-exports.toggleActive = (req, res) =>
-  User.findOne({ cardKey: req.params.cardKey })
-    .then(user => {
-      if (!user) {
-        throw new errors.NotFoundError('user');
-      }
-      user.active = !user.active;
-      return user.save();
-    })
-    .then(user => res.json(user));
+exports.toggleActive = async (req, res) => {
+  const user = await User.findOne({ cardKey: req.params.cardKey });
+  if (!user) {
+    throw new errors.NotFoundError('user');
+  }
+
+  user.active = !user.active;
+  const saved = await user.save();
+  res.json(saved);
+};
 
 exports.changeCard = (req, res) =>
   User.authenticate(req.params.username, req.body.password)
@@ -64,10 +63,10 @@ exports.changeCard = (req, res) =>
       throw new errors.DuplicateCardError();
     });
 
-exports.deactivateAllNonAdmin = (req, res) =>
-  User.update({ admin: false }, { active: false }, { multi: true }).then(() =>
-    res.status(200).json({
-      message: 'Users deactivated.',
-      status: 200
-    })
-  );
+exports.deactivateAllNonAdmin = async (req, res) => {
+  await User.update({ admin: false }, { active: false }, { multi: true });
+  res.status(200).json({
+    message: 'Users deactivated.',
+    status: 200
+  });
+};

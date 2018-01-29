@@ -32,28 +32,24 @@ alternativeSchema.pre('remove', function(next) {
     .nodeify(next);
 });
 
-alternativeSchema.methods.addVote = function(user) {
+alternativeSchema.methods.addVote = async function(user) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();
 
-  return Election.findById(this.election)
-    .exec()
-    .bind(this)
-    .then(function(election) {
-      if (!election.active) throw new errors.InactiveElectionError();
-      const votedUsers = election.hasVotedUsers.toObject();
-      const hasVoted = _.find(votedUsers, { user: user._id });
-      if (hasVoted) throw new errors.AlreadyVotedError();
+  const election = await Election.findById(this.election).exec();
+  if (!election.active) throw new errors.InactiveElectionError();
+  const votedUsers = election.hasVotedUsers.toObject();
+  const hasVoted = _.find(votedUsers, { user: user._id });
+  if (hasVoted) throw new errors.AlreadyVotedError();
 
-      // 24 character random string
-      const voteHash = crypto.randomBytes(12).toString('hex');
-      const vote = new Vote({ hash: voteHash, alternative: this.id });
+  // 24 character random string
+  const voteHash = crypto.randomBytes(12).toString('hex');
+  const vote = new Vote({ hash: voteHash, alternative: this.id });
 
-      election.hasVotedUsers.push({ user: user._id });
-      return Bluebird.all([vote.save(), election.save()]);
-    })
-    .spread(voteResult => voteResult);
+  election.hasVotedUsers.push({ user: user._id });
+  await election.save();
+  return vote.save();
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);
