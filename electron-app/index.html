@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='style.css'>
+    </head>
+
+    <body>
+        <webview src='https://vote.abakus.no/admin' preload='./preload.js'></webview>
+
+        <div class='status_area'>
+            <div class='hidden'>
+                <select id='port_list'>
+                </select>
+                <a id='refresh_button'>Refresh</a>
+                <a id='connect_button'>Connect</a>
+                <a id='fullscreen'>Fullscreen</a>
+                <a id='test'>Test</a>
+
+                <div id='status_text'></div>
+            </div>
+        </div>
+
+        <script>
+        require('./rfid.js');
+</script>
+    </body>
+</html>
