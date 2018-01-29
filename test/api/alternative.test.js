@@ -5,7 +5,8 @@ const chai = require('chai');
 const app = require('../../app');
 const Alternative = require('../../app/models/alternative');
 const Election = require('../../app/models/election');
-const { test404, testAdminResource, createUsers } = require('./helpers');
+const { test404, testAdminResource } = require('./helpers');
+const { createUsers } = require('../helpers');
 
 chai.should();
 

@@ -4,10 +4,9 @@ const passportStub = require('passport-stub');
 const chai = require('chai');
 const app = require('../../app');
 const User = require('../../app/models/user');
-const helpers = require('./helpers');
-const testAdminResource = helpers.testAdminResource;
-const test404 = helpers.test404;
-const createUsers = helpers.createUsers;
+const { test404, testAdminResource } = require('./helpers');
+const { testUser, createUsers } = require('../helpers');
+
 const should = chai.should();
 
 describe('User API', () => {
@@ -76,7 +75,7 @@ describe('User API', () => {
     passportStub.login(this.adminUser);
 
     const payload = _.clone(testUserData);
-    payload.cardKey = helpers.testUser.cardKey;
+    payload.cardKey = testUser.cardKey;
 
     const { body: error } = await request(app)
       .post('/api/user')

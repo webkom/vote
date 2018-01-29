@@ -5,6 +5,7 @@ const chai = require('chai');
 const passportStub = require('passport-stub');
 const app = require('../../app');
 const User = require('../../app/models/user');
+
 chai.should();
 
 describe('Auth API', () => {

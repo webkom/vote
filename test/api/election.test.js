@@ -8,7 +8,8 @@ const app = require('../../app');
 const Election = require('../../app/models/election');
 const Alternative = require('../../app/models/alternative');
 const Vote = require('../../app/models/vote');
-const { test404, createUsers, testAdminResource } = require('./helpers');
+const { test404, testAdminResource } = require('./helpers');
+const { createUsers } = require('../helpers');
 
 const should = chai.should();
 chai.use(sinonChai);

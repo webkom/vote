@@ -6,10 +6,9 @@ const app = require('../../app');
 const Alternative = require('../../app/models/alternative');
 const Election = require('../../app/models/election');
 const Vote = require('../../app/models/vote');
-const helpers = require('./helpers');
-const test404 = helpers.test404;
-const testAdminResource = helpers.testAdminResource;
-const createUsers = helpers.createUsers;
+const { test404, testAdminResource } = require('./helpers');
+const { createUsers } = require('../helpers');
+
 const should = chai.should();
 
 describe('Vote API', () => {

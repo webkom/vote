@@ -1,6 +1,6 @@
 const chai = require('chai');
-const helpers = require('./helpers');
-const test404 = helpers.test404;
+const { test404 } = require('./helpers');
+
 chai.should();
 
 describe('API', () => {

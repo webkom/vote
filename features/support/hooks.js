@@ -3,8 +3,7 @@ const Election = require('../../app/models/election');
 const Alternative = require('../../app/models/alternative');
 const helpers = require('../../test/helpers');
 const server = require('../../server');
-const apiHelpers = require('../../test/api/helpers');
-const createUsers = apiHelpers.createUsers;
+const createUsers = helpers.createUsers;
 const clearCollections = helpers.clearCollections;
 const dropDatabase = helpers.dropDatabase;
 
