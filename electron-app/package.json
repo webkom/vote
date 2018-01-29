@@ -31,9 +31,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "lodash.debounce": "4.0.8",
-    "lodash.memoize": "4.1.2",
-    "serialport": "6.0.4"
+    "card-scanner": "1.0.1"
   },
   "devDependencies": {
     "electron": "1.8.2-beta.4",
