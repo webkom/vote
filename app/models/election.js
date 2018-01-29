@@ -65,14 +65,11 @@ electionSchema.methods.sumVotes = function() {
 };
 
 electionSchema.methods.addAlternative = function(alternative) {
-  this.alternatives.push(alternative._id);
   alternative.election = this._id;
-  return alternative
-    .save()
-    .bind(this)
-    .then(function(savedAlternative) {
-      return this.save().return(savedAlternative);
-    });
+  return alternative.save().then(savedAlternative => {
+    this.alternatives = [...this.alternatives, savedAlternative];
+    return this.save().return(savedAlternative);
+  });
 };
 
 module.exports = mongoose.model('Election', electionSchema);

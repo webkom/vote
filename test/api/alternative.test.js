@@ -39,11 +39,13 @@ describe('Alternatives API', () => {
       .bind(this)
       .then(function(createdElection) {
         this.election = createdElection;
-        createdAlternativeData.election = createdElection.id;
-        this.alternative = new Alternative(createdAlternativeData);
-        return election.addAlternative(this.alternative);
+        const alternative = new Alternative(createdAlternativeData);
+        return election.addAlternative(alternative);
       })
-      .then(() => createUsers())
+      .then(alternative => {
+        this.alternative = alternative;
+        return createUsers();
+      })
       .spread(function(user, adminUser) {
         this.user = user;
         this.adminUser = adminUser;
@@ -69,6 +71,32 @@ describe('Alternatives API', () => {
           'should be the same as api result'
         );
         done();
+      });
+  });
+
+  it('should be possible to get alternatives after adding them', function(done) {
+    passportStub.login(this.adminUser);
+    request(app)
+      .post(`/api/election/${this.election.id}/alternatives`)
+      .send(testAlternativeData)
+      .expect(201)
+      .expect('Content-Type', /json/)
+      .end((err, res) => {
+        if (err) return done(err);
+        passportStub.login(this.adminUser);
+        request(app)
+          .get(`/api/election/${this.election.id}/alternatives`)
+          .expect(200)
+          .expect('Content-Type', /json/)
+          .end((err, res) => {
+            if (err) return done(err);
+            res.body.length.should.equal(2);
+            res.body[0].description.should.equal(
+              this.alternative.description,
+              'should be the same as api result'
+            );
+            done();
+          });
       });
   });
 
