@@ -15,7 +15,8 @@ dependencies:
 test:
   override:
     - yarn lint
-    - yarn mocha && ./node_modules/.bin/istanbul-coveralls
+    - yarn mocha
+    - yarn coverage
     # Setup the SauceLabs bridge:
     - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready:
         background: true
