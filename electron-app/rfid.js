@@ -23,15 +23,15 @@ const updateTarget = value => {
 // Populate the list of available devices
 const updateAvailableDevices = () =>
   refresh().then(ports => {
-    const dropDown = $('#port_list');
+    const ul = $('#port_ul');
+    ul.innerHTML = '';
     updateStatus(`found ${ports.length} ports connected`);
-    dropDown.innerHTML = '';
 
     ports.forEach(port => {
-      const newOption = document.createElement('option');
-      newOption.text = port.comName;
-      newOption.value = port.comName;
-      dropDown.appendChild(newOption);
+      const newLi = document.createElement('li');
+      newLi.setAttribute('data-value', port.comName);
+      newLi.innerHTML = port.comName;
+      ul.appendChild(newLi);
     });
   });
 
@@ -39,23 +39,37 @@ const onData = response => {
   // Callback function when data is read
   updateTarget(response);
   sound.play();
-  updateStatus('reading...completed');
 };
 
 // Handle the 'Connect' button
 const connectToDevice = () => {
-  const dropDown = $('#port_list');
-  const devicePath = dropDown.options[dropDown.selectedIndex].value;
-  connect(devicePath, onData).then(() => {
-    updateStatus('connected');
-  });
+  const active = $('.active');
+  if (!active) {
+    updateStatus('No device selected');
+  } else {
+    const devicePath = active.getAttribute('data-value');
+    connect(devicePath, onData)
+      .then(() => {
+        $('#overlay').classList.add('hidden');
+      })
+      .catch(() => {
+        updateStatus('Error connecting!');
+      });
+  }
 };
 
+const setActive = e => {
+  if (e.target && e.target.matches('li')) {
+    const currentActive = $('.active');
+    if (currentActive) {
+      currentActive.classList.remove('active');
+    }
+    e.target.classList.add('active');
+  }
+};
+
+$('#port_ul').addEventListener('click', setActive);
 $('#refresh_button').addEventListener('click', updateAvailableDevices);
 $('#connect_button').addEventListener('click', connectToDevice);
-$('#fullscreen').addEventListener('click', () => {});
-$('#test').addEventListener('click', () => {
-  updateTarget('test');
-});
 
 updateAvailableDevices();

@@ -6,42 +6,83 @@ webview {
   border: 0;
   width: 100%;
   height: 100%;
+  font-family: 'Open Sans', sans-serif;
+  color: #3e3e3e;
 }
 
-.status_area {
+.overlay {
   position: absolute;
+  top: 0;
   left: 0;
   width: 100%;
-  bottom: 0;
+  height: 100%;
+  z-index: 10;
+  background-color: #ffffff;
 }
 
-.status_area .hidden {
-  position: relative;
-  bottom: -50px;
-  background: #262323;
-  -webkit-transition: all 200ms ease-in-out;
-  transition-delay: 2s;
+.hidden {
+  display: none;
 }
 
-.status_area:hover .hidden {
-  bottom: 0;
-  -webkit-transition: all 200ms ease-in-out;
+.setupContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
 }
 
-.status_area a {
-  display: inline-block;
-  padding: 0 5px;
-  color: #ffffff;
+.setupContainer > * {
+  margin: 10px 0;
 }
 
-a:hover {
-  color: #fc0405;
+.header {
+  font-size: 22px;
+  text-transform: uppercase;
 }
 
-.status_area #status_text {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  display: inline;
-  color: #ffffff;
+.inputContainer {
+  width: 480px;
+}
+
+.buttonGroup {
+  display: flex;
+}
+
+button {
+  width: 220px;
+  outline: 0;
+  cursor: pointer;
+  height: 50px;
+  font-size: 20px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.7);
+  margin: 20px 20px;
+  background-color: transparent;
+  text-transform: uppercase;
+  border: 2px solid #bbb;
+}
+
+.buttonGroup {
+  display: flex;
+}
+
+.options {
+  list-style: none;
+}
+
+.options > li {
+  padding-left: 5px;
+  height: 32px;
+  line-height: 32px;
+  vertical-align: middle;
+}
+
+.options > li:hover {
+  cursor: pointer;
+  background-color: rgba(60, 60, 60, 0.25);
+}
+
+.active {
+  background-color: rgba(60, 60, 60, 0.25);
 }
