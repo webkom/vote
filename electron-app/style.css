@@ -68,6 +68,8 @@ button {
 }
 
 .options {
+  max-height: 400px;
+  overflow-y: auto;
   list-style: none;
 }
 
