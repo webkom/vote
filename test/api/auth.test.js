@@ -97,25 +97,38 @@ describe('Auth API', () => {
     text.should.include('Brukernavn og/eller passord er feil.');
   });
 
-  it('should be possible to logout', async () => {
+  it('should be possible to logout', done => {
     const sessions = mongoose.connection.db.collection('sessions');
-    async function login(err) {
-      if (err) throw err;
-      const agent = request.agent(app);
-      await agent
-        .post('/auth/login')
-        .expect(302)
-        .send(testUser);
 
-      const { header } = await agent.post('/auth/logout').expect(302);
-      header.location.should.equal('/auth/login');
+    function checkSessions(err, res) {
+      if (err) return done(err);
+      res.header.location.should.equal('/auth/login');
       sessions.find({}).toArray((sessionErr, newSessions) => {
-        if (sessionErr) throw sessionErr;
+        if (sessionErr) return done(sessionErr);
         newSessions.length.should.equal(0);
+        done();
       });
     }
 
-    sessions.drop(login);
+    function logout(err, agent) {
+      if (err) return done(err);
+      agent
+        .post('/auth/logout')
+        .expect(302)
+        .end(checkSessions);
+    }
+
+    function login(err) {
+      if (err) return done(err);
+      const agent = request.agent(app);
+      agent
+        .post('/auth/login')
+        .expect(302)
+        .send(testUser)
+        .end(newErr => logout(newErr, agent));
+    }
+
+    sessions.remove({}, {}, login);
   });
 
   it('should redirect from / to /admin for admins', async () => {
