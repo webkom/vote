@@ -32,7 +32,7 @@ exports.retrieve = async (req, res) => {
 
   const vote = await Vote.findOne({ hash: hash }).populate({
     path: 'alternative',
-    populate: { path: 'election' }
+    populate: { path: 'election', select: 'title _id' }
   });
 
   if (!vote) throw new errors.NotFoundError('vote');

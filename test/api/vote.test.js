@@ -189,9 +189,10 @@ describe('Vote API', () => {
 
     receivedVote.hash.should.equal(vote.hash);
     receivedVote.alternative._id.should.equal(String(vote.alternative));
-    receivedVote.alternative.election._id.should.equal(
-      String(this.activeElection.id)
-    );
+    receivedVote.alternative.election.should.deep.equal({
+      _id: String(this.activeElection.id),
+      title: this.activeElection.title
+    });
   });
 
   it('should return 400 when retrieving votes without header', async () => {
