@@ -7,11 +7,11 @@ module.exports = [
     $scope.voteHash = localStorageService.get('voteHash');
 
     $scope.retrieveVote = function(voteHash) {
-      voteService
-        .retrieve(voteHash)
-        .then(function(response) {
+      voteService.retrieve(voteHash).then(
+        function(response) {
           $scope.vote = response.data;
-        }, function(response) {
+        },
+        function(response) {
           switch (response.data.name) {
             case 'NotFoundError':
               alertService.addError(
@@ -22,7 +22,8 @@ module.exports = [
             default:
               alertService.addError();
           }
-        });
+        }
+      );
     };
   }
 ];
