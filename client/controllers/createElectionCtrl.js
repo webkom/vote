@@ -14,15 +14,15 @@ module.exports = [
     }
 
     $scope.createElection = function(election) {
-      adminElectionService
-        .createElection(election)
-        .success(function(data) {
+      adminElectionService.createElection(election).then(
+        function(response) {
           alertService.addSuccess('Avstemning lagret');
-          $location.path('/admin/election/' + data._id + '/edit');
-        })
-        .error(function(error) {
-          alertService.addError(error.message);
-        });
+          $location.path('/admin/election/' + response.data._id + '/edit');
+        },
+        function(response) {
+          alertService.addError(response.data.message);
+        }
+      );
     };
 
     $scope.addAlternative = function() {

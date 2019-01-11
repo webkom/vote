@@ -5,14 +5,14 @@ module.exports = [
   'alertService',
   function($scope, $route, userService, alertService) {
     $scope.deactivateNonAdminUsers = function() {
-      userService
-        .deactivateNonAdminUsers()
-        .success(function(data) {
+      userService.deactivateNonAdminUsers().then(
+        function(response) {
           alertService.addSuccess('Alle brukere ble deaktivert!');
-        })
-        .error(function(data) {
+        },
+        function(response) {
           alertService.addError();
-        });
+        }
+      );
 
       $route.reload();
     };

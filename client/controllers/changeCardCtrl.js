@@ -7,14 +7,13 @@ module.exports = [
     $scope.user = {};
 
     $scope.changeCard = function(user) {
-      userService
-        .changeCard(user)
-        .success(function(data) {
+      userService.changeCard(user).then(
+        function(response) {
           alertService.addSuccess('Det nye kortet er nå registert.');
           $scope.user = {};
-        })
-        .error(function(error) {
-          switch (error.name) {
+        },
+        function(response) {
+          switch (response.data.name) {
             case 'DuplicateCardError':
               alertService.addError(
                 'Dette kortet er allerede blitt registrert.'
@@ -26,7 +25,8 @@ module.exports = [
             default:
               alertService.addError();
           }
-        });
+        }
+      );
     };
 
     cardKeyService.listen(function(cardKey) {
