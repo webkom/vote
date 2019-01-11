@@ -18,9 +18,9 @@ module.exports = [
     $scope.showCount = false;
     var countInterval;
 
-    function handleIntervalError(error) {
+    function handleIntervalError(response) {
       $interval.cancel(countInterval);
-      alertService.addError(error.message);
+      alertService.addError(response.data.message);
     }
 
     function countActiveUsers() {
