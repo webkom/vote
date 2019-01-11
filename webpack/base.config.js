@@ -1,7 +1,7 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  mode: "none",
+  mode: 'none',
   output: {
     path: `${__dirname}/../public`,
     filename: 'bundle.js',
@@ -12,23 +12,25 @@ module.exports = {
   },
   entry: ['./client/app.js'],
   module: {
-    rules: [{
+    rules: [
+      {
         test: /\.styl$/,
         use: [
-            {
-                loader: "style-loader"
-            },
-            {
-                loader: "css-loader"
-            },
-            {
-                loader: "stylus-loader",
-                options: {
-                    use: [require('nib')()]
-                }
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader'
+          },
+          {
+            loader: 'stylus-loader',
+            options: {
+              use: [require('nib')()]
             }
+          }
         ]
-    }]
+      }
+    ]
   },
   plugins: [new ExtractTextPlugin('main.css')]
 };

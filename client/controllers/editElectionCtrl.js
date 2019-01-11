@@ -119,7 +119,7 @@ module.exports = [
           sum += alternative.votes;
         });
 
-        return Math.round(count / sum * 100);
+        return Math.round((count / sum) * 100);
       }
     };
 

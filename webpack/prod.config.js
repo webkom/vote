@@ -3,10 +3,10 @@ var webpack = require('webpack');
 var baseConfig = require('./base.config');
 
 module.exports = objectAssign(baseConfig, {
-  mode: "production",
-    optimization: {
-        minimize: true,
-    },
+  mode: 'production',
+  optimization: {
+    minimize: true
+  },
   plugins: baseConfig.plugins.concat([
     new webpack.DefinePlugin({
       __DEV__: false
