@@ -22,13 +22,14 @@ module.exports = [
      * Tries to find an active election
      */
     function getActiveElection() {
-      return electionService
-        .getActiveElection()
-        .then(function(response) {
+      return electionService.getActiveElection().then(
+        function(response) {
           $scope.activeElection = response.data;
-        }, function(response) {
+        },
+        function(response) {
           alertService.addError(response.data.message);
-        });
+        }
+      );
     }
     getActiveElection();
     socketIOService.listen('election', getActiveElection);
@@ -45,15 +46,15 @@ module.exports = [
      * Persists votes to the backend
      */
     $scope.vote = function() {
-      voteService
-        .vote($scope.selectedAlternative._id)
-        .then(function(response) {
+      voteService.vote($scope.selectedAlternative._id).then(
+        function(response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
           alertService.addSuccess('Takk for din stemme!');
           localStorageService.set('voteHash', response.data.hash);
           getActiveElection();
-        }, function(response) {
+        },
+        function(response) {
           $window.scrollTo(0, 0);
           getActiveElection();
           switch (response.data.name) {
@@ -75,7 +76,8 @@ module.exports = [
             default:
               alertService.addError('Noe gikk galt, vennligst prøv igjen.');
           }
-        });
+        }
+      );
     };
 
     /**

@@ -7,12 +7,12 @@ module.exports = [
     $scope.user = {};
 
     $scope.createUser = function(user) {
-      userService
-        .createUser(user)
-        .then(function(response) {
+      userService.createUser(user).then(
+        function(response) {
           alertService.addSuccess('Bruker registrert!');
           $scope.user = {};
-        }, function(response) {
+        },
+        function(response) {
           switch (response.data.name) {
             case 'DuplicateUsernameError':
               alertService.addError('Dette brukernavnet er allerede i bruk.');
@@ -25,7 +25,8 @@ module.exports = [
             default:
               alertService.addError();
           }
-        });
+        }
+      );
     };
 
     cardKeyService.listen(function(cardKey) {

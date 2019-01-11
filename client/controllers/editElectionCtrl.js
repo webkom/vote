@@ -24,20 +24,16 @@ module.exports = [
     }
 
     function countActiveUsers() {
-      userService
-        .countActiveUsers()
-        .then(function(response) {
-          $scope.activeUsers = response.data.users;
-        }, handleIntervalError);
+      userService.countActiveUsers().then(function(response) {
+        $scope.activeUsers = response.data.users;
+      }, handleIntervalError);
     }
     countActiveUsers();
 
     function countVotedUsers() {
-      adminElectionService
-        .countVotedUsers()
-        .then(function(response) {
-          $scope.votedUsers = response.data.users;
-        }, handleIntervalError);
+      adminElectionService.countVotedUsers().then(function(response) {
+        $scope.votedUsers = response.data.users;
+      }, handleIntervalError);
     }
     countVotedUsers();
 
@@ -55,55 +51,56 @@ module.exports = [
     });
 
     $scope.addAlternative = function(alternative) {
-      adminElectionService
-        .addAlternative(alternative)
-        .then(function(response) {
+      adminElectionService.addAlternative(alternative).then(
+        function(response) {
           $scope.election.alternatives.push(response.data);
           $scope.newAlternative = {};
           $scope.alternativeForm.$setPristine();
           alertService.addSuccess('Alternativ lagret');
-        }, function(response) {
+        },
+        function(response) {
           alertService.addError(response.data.message);
-        });
+        }
+      );
     };
 
     $scope.toggleElection = function() {
       if ($scope.election.active) {
-        adminElectionService
-          .deactivateElection()
-          .then(function(response) {
+        adminElectionService.deactivateElection().then(
+          function(response) {
             $scope.election.active = response.data.active;
             alertService.addWarning('Avstemning er deaktivert');
-          }, function(response) {
+          },
+          function(response) {
             alertService.addError(response.data.message);
-          });
+          }
+        );
       } else {
-        adminElectionService
-          .activateElection()
-          .then(function(response) {
+        adminElectionService.activateElection().then(
+          function(response) {
             $scope.election.active = response.data.active;
             alertService.addSuccess('Avstemning er aktivert');
-          }, function(response) {
+          },
+          function(response) {
             alertService.addError(response.data.message);
-          });
+          }
+        );
       }
     };
 
     function getCount() {
-      adminElectionService
-        .countVotes()
-        .then(function(response) {
-          $scope.election.alternatives.forEach(function(alternative) {
-            response.data.some(function(resultAlternative) {
-              if (resultAlternative.alternative === alternative._id) {
-                alternative.votes = resultAlternative.votes;
-                return true;
-              }
+      adminElectionService.countVotes().then(function(response) {
+        $scope.election.alternatives.forEach(function(alternative) {
+          response.data.some(function(resultAlternative) {
+            if (resultAlternative.alternative === alternative._id) {
+              alternative.votes = resultAlternative.votes;
+              return true;
+            }
 
-              return false;
-            });
+            return false;
           });
-        }, handleIntervalError);
+        });
+      }, handleIntervalError);
     }
 
     $scope.getPercentage = function(count) {
