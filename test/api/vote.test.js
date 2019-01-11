@@ -66,7 +66,7 @@ describe('Vote API', () => {
     const [user, adminUser] = await createUsers();
     this.user = user;
     this.adminUser = adminUser;
-    passportStub.login(user);
+    passportStub.login(user.username);
   });
 
   after(() => {
@@ -206,7 +206,7 @@ describe('Vote API', () => {
   });
 
   it('should be possible to sum votes', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     await this.otherActiveAlternative.addVote(this.user);
     const { body } = await request(app)
@@ -219,7 +219,7 @@ describe('Vote API', () => {
   });
 
   it('should not be possible to get votes on an active election', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     const { body } = await request(app)
       .get(`/api/election/${this.activeElection.id}/votes`)
@@ -229,7 +229,7 @@ describe('Vote API', () => {
   });
 
   it('should not be possible to sum votes without being admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource(
       'get',
       `/api/election/${this.activeElection.id}/votes`
@@ -237,18 +237,18 @@ describe('Vote API', () => {
   });
 
   it('should get 404 when summing votes for invalid electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     test404('get', '/api/election/badid/votes', 'election');
   });
 
   it('should get 404 when summing votes for nonexistent electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const badId = new ObjectId();
     test404('get', `/api/election/${badId}/votes`, 'election');
   });
 
   it('should return 403 when admins try to vote', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.activeAlternative.id))

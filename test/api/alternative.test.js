@@ -57,7 +57,7 @@ describe('Alternatives API', () => {
   });
 
   it('should be able to get alternatives as admin', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const res = await request(app)
       .get(`/api/election/${this.election.id}/alternatives`)
       .expect(200)
@@ -71,14 +71,14 @@ describe('Alternatives API', () => {
   });
 
   it('should be possible to get alternatives after adding them', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     await request(app)
       .post(`/api/election/${this.election.id}/alternatives`)
       .send(testAlternativeData)
       .expect(201)
       .expect('Content-Type', /json/);
 
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const res = await request(app)
       .get(`/api/election/${this.election.id}/alternatives`)
       .expect(200)
@@ -92,7 +92,7 @@ describe('Alternatives API', () => {
   });
 
   it('should only be possible to get alternatives as admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource(
       'get',
       `/api/election/${this.election.id}/alternatives`
@@ -100,18 +100,18 @@ describe('Alternatives API', () => {
   });
 
   it('should get 404 when listing alternatives for invalid electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     await test404('get', '/api/election/badid/alternatives', 'election');
   });
 
   it('should get 404 when listing alternatives for nonexistent electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const badId = new ObjectId();
     await test404('get', `/api/election/${badId}/alternatives`, 'election');
   });
 
   it('should be able to create alternatives for deactivated elections', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const res = await request(app)
       .post(`/api/election/${this.election.id}/alternatives`)
       .send(testAlternativeData)
@@ -123,7 +123,7 @@ describe('Alternatives API', () => {
   });
 
   it('should not be able to create alternatives for active elections', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     this.election.active = true;
     await this.election.save();
@@ -141,7 +141,7 @@ describe('Alternatives API', () => {
   });
 
   it('should return 400 when creating alternatives without required fields', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post(`/api/election/${this.election.id}/alternatives`)
       .expect(400)
@@ -154,18 +154,18 @@ describe('Alternatives API', () => {
   });
 
   it('should get 404 when creating alternatives for invalid electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     await test404('post', '/api/election/badid/alternatives', 'election');
   });
 
   it('should get 404 when creating alternatives for nonexistent electionIds', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const badId = new ObjectId();
     await test404('post', `/api/election/${badId}/alternatives`, 'election');
   });
 
   it('should only be possible to create alternatives as admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource(
       'post',
       `/api/election/${this.election.id}/alternatives`

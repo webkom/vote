@@ -40,7 +40,7 @@ describe('User API', () => {
   };
 
   it('should be possible to create users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body } = await request(app)
       .post('/api/user')
       .send(testUserData)
@@ -55,7 +55,7 @@ describe('User API', () => {
   });
 
   it('should not be possible to create users with invalid usernames', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/user')
       .send(badUsernameData)
@@ -72,7 +72,7 @@ describe('User API', () => {
   });
 
   it('should return 400 when creating users with an already used card key', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     const payload = _.clone(testUserData);
     payload.cardKey = testUser.cardKey;
@@ -91,7 +91,7 @@ describe('User API', () => {
   });
 
   it('should return 400 when creating users with existing usernames', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const payload = Object.assign({}, testUserData, {
       username: this.user.username
     });
@@ -108,12 +108,12 @@ describe('User API', () => {
   });
 
   it('should not be possible to create users without being admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('post', '/api/user');
   });
 
   it('should return 400 when creating users without required fields', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/user')
       .expect(400)
@@ -124,7 +124,7 @@ describe('User API', () => {
   });
 
   it('should be able to get users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body: users } = await request(app)
       .get('/api/user')
       .expect(200)
@@ -138,7 +138,7 @@ describe('User API', () => {
   });
 
   it('should be able to toggle active users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body } = await request(app)
       .post(`/api/user/${this.user.cardKey}/toggle_active`)
       .expect(200)
@@ -147,12 +147,12 @@ describe('User API', () => {
   });
 
   it('should not be possible to get users without being admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('get', '/api/user');
   });
 
   it('should not be possible to toggle a user without being admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource(
       'post',
       `/api/user/${this.user.cardKey}/toggle_active`
@@ -160,12 +160,12 @@ describe('User API', () => {
   });
 
   it('should get 404 when toggeling active users with invalid cardKey', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     test404('post', '/api/user/LELELENEET/toggle_active', 'user');
   });
 
   it('should be possible to count active users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     this.user.active = true;
 
     await this.user.save();
@@ -177,7 +177,7 @@ describe('User API', () => {
   });
 
   it('should be possible to count inactive users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     const { body } = await request(app)
       .get('/api/user/count?active=false')
       .expect(200)
@@ -186,7 +186,7 @@ describe('User API', () => {
   });
 
   it('should be possible to count all users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     this.user.active = false;
     await this.user.save();
     const { body } = await request(app)
@@ -197,12 +197,12 @@ describe('User API', () => {
   });
 
   it('should only be possible to count users as admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('get', '/api/user/count');
   });
 
   it("should be possible to change a user's card key", async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     const changeCardPayload = {
       password: 'password',
@@ -218,7 +218,7 @@ describe('User API', () => {
   });
 
   it("should not be possible to change a user's card key to an existing card", async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     const changeCardPayload = {
       password: 'password',
@@ -239,7 +239,7 @@ describe('User API', () => {
   });
 
   it('should give feedback if wrong credentials are given when changing cards', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
 
     const changeCardPayload = {
       password: 'notthepassword',
@@ -258,12 +258,12 @@ describe('User API', () => {
   });
 
   it('should only be possible to change cards as an admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('put', '/api/user/user/change_card');
   });
 
   it('should be possible to deactivate all non-admin users', async function() {
-    passportStub.login(this.adminUser);
+    passportStub.login(this.adminUser.username);
     await request(app)
       .post('/api/user/deactivate')
       .expect(200)
@@ -277,7 +277,7 @@ describe('User API', () => {
   });
 
   it('should not be possible to deactivate all users without being admin', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('post', '/api/user/deactivate');
   });
 });
