@@ -3,7 +3,7 @@
 const program = require('commander');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
-const promptly = require('promptly');
+const prompt = require('prompt');
 const Bluebird = require('bluebird');
 const User = require('../app/models/user');
 
@@ -25,15 +25,18 @@ program
         mongoose.connect(mongoURL, connectErr => {
             if (connectErr) return done(connectErr);
 
-            promptly.password('Enter a password: ', (pwErr, password) => {
-                if (pwErr) return done(pwErr);
+            prompt.start();
+            prompt.get(['password'], (pwErr, result) => {
+                if (pwErr) {
+                    return done(pwErr);
+                }
                 const user = new User({
                     username: username,
                     admin: true,
                     cardKey: cardKey
                 });
+                User.register(user, result.password).nodeify(done);
 
-                User.register(user, password).nodeify(done);
             });
         });
     });
