@@ -24,11 +24,10 @@ module.exports = [
     function getActiveElection() {
       return electionService
         .getActiveElection()
-        .success(function(election) {
-          $scope.activeElection = election;
-        })
-        .error(function(err) {
-          alertService.addError(err.message);
+        .then(function(response) {
+          $scope.activeElection = response.data;
+        }, function(response) {
+          alertService.addError(response.data.message);
         });
     }
     getActiveElection();
@@ -48,17 +47,16 @@ module.exports = [
     $scope.vote = function() {
       voteService
         .vote($scope.selectedAlternative._id)
-        .success(function(vote) {
+        .then(function(response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
           alertService.addSuccess('Takk for din stemme!');
-          localStorageService.set('voteHash', vote.hash);
+          localStorageService.set('voteHash', response.data.hash);
           getActiveElection();
-        })
-        .error(function(error) {
+        }, function(response) {
           $window.scrollTo(0, 0);
           getActiveElection();
-          switch (error.name) {
+          switch (response.data.name) {
             case 'InactiveElectionError':
               alertService.addError(
                 'Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.'

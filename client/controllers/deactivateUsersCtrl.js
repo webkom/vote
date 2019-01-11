@@ -7,10 +7,9 @@ module.exports = [
     $scope.deactivateNonAdminUsers = function() {
       userService
         .deactivateNonAdminUsers()
-        .success(function(data) {
+        .then(function(response) {
           alertService.addSuccess('Alle brukere ble deaktivert!');
-        })
-        .error(function(data) {
+        }, function(response) {
           alertService.addError();
         });
 
