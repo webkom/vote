@@ -9,12 +9,11 @@ module.exports = [
     $scope.createUser = function(user) {
       userService
         .createUser(user)
-        .success(function(data) {
+        .then(function(response) {
           alertService.addSuccess('Bruker registrert!');
           $scope.user = {};
-        })
-        .error(function(error) {
-          switch (error.name) {
+        }, function(response) {
+          switch (response.data.name) {
             case 'DuplicateUsernameError':
               alertService.addError('Dette brukernavnet er allerede i bruk.');
               break;

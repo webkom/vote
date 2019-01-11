@@ -26,20 +26,18 @@ module.exports = [
     function countActiveUsers() {
       userService
         .countActiveUsers()
-        .success(function(result) {
-          $scope.activeUsers = result.users;
-        })
-        .error(handleIntervalError);
+        .then(function(response) {
+          $scope.activeUsers = response.data.users;
+        }, handleIntervalError);
     }
     countActiveUsers();
 
     function countVotedUsers() {
       adminElectionService
         .countVotedUsers()
-        .success(function(result) {
-          $scope.votedUsers = result.users;
-        })
-        .error(handleIntervalError);
+        .then(function(response) {
+          $scope.votedUsers = response.data.users;
+        }, handleIntervalError);
     }
     countVotedUsers();
 
@@ -52,21 +50,20 @@ module.exports = [
       $interval.cancel(countInterval);
     });
 
-    adminElectionService.getElection().success(function(data) {
-      $scope.election = data;
+    adminElectionService.getElection().then(function(response) {
+      $scope.election = response.data;
     });
 
     $scope.addAlternative = function(alternative) {
       adminElectionService
         .addAlternative(alternative)
-        .success(function(data) {
-          $scope.election.alternatives.push(data);
+        .then(function(response) {
+          $scope.election.alternatives.push(response.data);
           $scope.newAlternative = {};
           $scope.alternativeForm.$setPristine();
           alertService.addSuccess('Alternativ lagret');
-        })
-        .error(function(error) {
-          alertService.addError(error.message);
+        }, function(response) {
+          alertService.addError(response.data.message);
         });
     };
 
@@ -74,22 +71,20 @@ module.exports = [
       if ($scope.election.active) {
         adminElectionService
           .deactivateElection()
-          .success(function(data) {
-            $scope.election.active = data.active;
+          .then(function(response) {
+            $scope.election.active = response.data.active;
             alertService.addWarning('Avstemning er deaktivert');
-          })
-          .error(function(error) {
-            alertService.addError(error.message);
+          }, function(response) {
+            alertService.addError(response.data.message);
           });
       } else {
         adminElectionService
           .activateElection()
-          .success(function(data) {
-            $scope.election.active = data.active;
+          .then(function(response) {
+            $scope.election.active = response.data.active;
             alertService.addSuccess('Avstemning er aktivert');
-          })
-          .error(function(error) {
-            alertService.addError(error.message);
+          }, function(response) {
+            alertService.addError(response.data.message);
           });
       }
     };
@@ -97,9 +92,9 @@ module.exports = [
     function getCount() {
       adminElectionService
         .countVotes()
-        .success(function(alternatives) {
+        .then(function(response) {
           $scope.election.alternatives.forEach(function(alternative) {
-            alternatives.some(function(resultAlternative) {
+            response.data.some(function(resultAlternative) {
               if (resultAlternative.alternative === alternative._id) {
                 alternative.votes = resultAlternative.votes;
                 return true;
@@ -108,8 +103,7 @@ module.exports = [
               return false;
             });
           });
-        })
-        .error(handleIntervalError);
+        }, handleIntervalError);
     }
 
     $scope.getPercentage = function(count) {

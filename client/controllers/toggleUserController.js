@@ -8,15 +8,14 @@ module.exports = [
       alertService.closeAll();
       userService
         .toggleUser(cardKey)
-        .success(function(data) {
-          if (data.active) {
+        .then(function(response) {
+          if (response.data.active) {
             alertService.addSuccess('Bruker har blitt aktivert.');
           } else {
             alertService.addWarning('Bruker har blitt deaktivert.');
           }
-        })
-        .error(function(error) {
-          switch (error.name) {
+        }, function(response) {
+          switch (response.data.name) {
             case 'NotFoundError':
               alertService.addError(
                 'Uregistrert kort, vennligst lag en bruker først.'

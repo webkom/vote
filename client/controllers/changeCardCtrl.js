@@ -9,12 +9,11 @@ module.exports = [
     $scope.changeCard = function(user) {
       userService
         .changeCard(user)
-        .success(function(data) {
+        .then(function(response) {
           alertService.addSuccess('Det nye kortet er nå registert.');
           $scope.user = {};
-        })
-        .error(function(error) {
-          switch (error.name) {
+        }, function(response) {
+          switch (response.data.name) {
             case 'DuplicateCardError':
               alertService.addError(
                 'Dette kortet er allerede blitt registrert.'
