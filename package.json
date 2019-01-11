@@ -55,7 +55,7 @@
     "passport": "0.4.0",
     "passport-local": "1.0.0",
     "passport-stub": "1.1.1",
-    "promptly": "3.0.3",
+    "prompt": "1.0.0",
     "pug": "2.0.3",
     "raven": "2.6.4",
     "serve-favicon": "2.5.0",
