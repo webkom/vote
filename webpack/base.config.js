@@ -1,25 +1,34 @@
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
+  mode: "none",
   output: {
     path: `${__dirname}/../public`,
     filename: 'bundle.js',
     publicPath: '/static/'
   },
   resolve: {
-    extensions: ['', '.js', '.styl']
+    extensions: ['.js', '.styl']
   },
   entry: ['./client/app.js'],
   module: {
-    loaders: [
-      {
+    rules: [{
         test: /\.styl$/,
-        loader: ExtractTextPlugin.extract('style', 'css?minimize!stylus')
-      }
-    ]
-  },
-  stylus: {
-    use: [require('nib')()]
+        use: [
+            {
+                loader: "style-loader"
+            },
+            {
+                loader: "css-loader"
+            },
+            {
+                loader: "stylus-loader",
+                options: {
+                    use: [require('nib')()]
+                }
+            }
+        ]
+    }]
   },
   plugins: [new ExtractTextPlugin('main.css')]
 };
