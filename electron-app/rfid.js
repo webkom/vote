@@ -48,7 +48,10 @@ const connectToDevice = () => {
     updateStatus('No device selected');
   } else {
     const devicePath = active.getAttribute('data-value');
-    connect(devicePath, onData)
+    connect(
+      devicePath,
+      onData
+    )
       .then(() => {
         $('#overlay').classList.add('hidden');
       })
