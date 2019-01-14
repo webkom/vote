@@ -47,7 +47,7 @@
     "extract-text-webpack-plugin": "1.0.1",
     "font-awesome-webpack": "0.0.4",
     "lodash": "4.17.4",
-    "method-override": "2.3.10",
+    "method-override": "3.0.0",
     "mongoose": "5.0.1",
     "nib": "1.1.2",
     "nyc": "11.4.1",
