@@ -57,7 +57,7 @@
     "passport-stub": "1.1.1",
     "promptly": "2.1.0",
     "pug": "2.0.0-rc.4",
-    "raven": "2.3.0",
+    "raven": "2.6.4",
     "serve-favicon": "2.4.5",
     "socket.io": "1.7.2",
     "style-loader": "0.13.1",
