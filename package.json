@@ -46,7 +46,7 @@
     "express-session": "1.15.6",
     "extract-text-webpack-plugin": "1.0.1",
     "font-awesome-webpack": "0.0.4",
-    "lodash": "4.17.4",
+    "lodash": "4.17.11",
     "method-override": "2.3.10",
     "mongoose": "5.0.1",
     "nib": "1.1.2",
