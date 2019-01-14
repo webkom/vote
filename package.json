@@ -78,7 +78,7 @@
     "protractor": "4.0.14",
     "protractor-cucumber-framework": "0.6.0",
     "sinon": "4.2.0",
-    "sinon-chai": "2.14.0",
+    "sinon-chai": "3.3.0",
     "supertest": "3.0.0",
     "webpack-dev-middleware": "1.9.0"
   }
