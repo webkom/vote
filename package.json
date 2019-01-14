@@ -33,7 +33,7 @@
     "bcrypt": "1.0.3",
     "bluebird": "3.5.1",
     "body-parser": "1.18.2",
-    "bootstrap": "~3.3.6",
+    "bootstrap": "~4.2.1",
     "chalk": "2.3.0",
     "commander": "2.13.0",
     "connect-flash": "0.1.1",
