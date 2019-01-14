@@ -73,7 +73,7 @@
     "eslint": "4.16.0",
     "eslint-config-prettier": "2.9.0",
     "mkdirp": "^0.5.1",
-    "mocha": "5.0.0",
+    "mocha": "5.2.0",
     "prettier": "1.10.2",
     "protractor": "4.0.14",
     "protractor-cucumber-framework": "0.6.0",
