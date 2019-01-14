@@ -44,7 +44,7 @@
     "express": "4.16.2",
     "express-promise-router": "3.0.1",
     "express-session": "1.15.6",
-    "extract-text-webpack-plugin": "1.0.1",
+    "extract-text-webpack-plugin": "3.0.2",
     "font-awesome-webpack": "0.0.4",
     "lodash": "4.17.4",
     "method-override": "2.3.10",
