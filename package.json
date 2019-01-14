@@ -58,7 +58,7 @@
     "promptly": "2.1.0",
     "pug": "2.0.0-rc.4",
     "raven": "2.3.0",
-    "serve-favicon": "2.4.5",
+    "serve-favicon": "2.5.0",
     "socket.io": "1.7.2",
     "style-loader": "0.13.1",
     "stylus": "0.54.5",
