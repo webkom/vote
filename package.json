@@ -56,7 +56,7 @@
     "passport-local": "1.0.0",
     "passport-stub": "1.1.1",
     "promptly": "2.1.0",
-    "pug": "2.0.0-rc.4",
+    "pug": "2.0.3",
     "raven": "2.3.0",
     "serve-favicon": "2.4.5",
     "socket.io": "1.7.2",
