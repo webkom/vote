@@ -48,7 +48,7 @@
     "font-awesome-webpack": "0.0.4",
     "lodash": "4.17.4",
     "method-override": "2.3.10",
-    "mongoose": "4.13.18",
+    "mongoose": "5.4.6",
     "nib": "1.1.2",
     "nyc": "11.4.1",
     "object-assign": "4.1.1",
