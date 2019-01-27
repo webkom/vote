@@ -8,10 +8,12 @@ const User = require('../app/models/user');
 exports.dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
-exports.clearCollections = () =>
-  Bluebird.map([Alternative, Election, Vote, User], collection =>
-    collection.remove()
+exports.clearCollections = () => {
+  return Bluebird.map([Alternative, Election, Vote, User], collection => {
+      collection.remove()
+  }
   );
+}
 
 const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
 const testUser = (exports.testUser = {

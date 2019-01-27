@@ -5,8 +5,16 @@
   "main": "app.js",
   "scripts": {
     "start": "node index.js",
+<<<<<<< HEAD
     "build": "webpack --config webpack.config.js --mode=production",
     "test": "yarn lint && yarn mocha && yarn protractor",
+=======
+    "build": "webpack --config webpack/prod.config.js",
+    "test": "yarn lint && yarn mocha && yarn cy:test",
+    "cy:run": "NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} cypress run",
+    "cy:open": "NODE_ENV=protrator MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} cypress open",
+    "cy:test": "PORT=3030 NODE_ENV=protrator MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} start-server-and-test start http://localhost:3030 cy:run",
+>>>>>>> 5533cd8... WIP E2E testing fix
     "db:reset": "node --no-deprecation test/scripts/db_reset.js",
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
     "lint": "yarn lint:eslint && yarn lint:prettier",
@@ -43,15 +51,21 @@
     "cookie-parser": "1.4.3",
     "css-loader": "2.1.0",
     "csurf": "1.9.0",
+    "cypress": "3.1.4",
+    "cypress-cucumber-preprocessor": "1.9.1",
     "express": "4.16.4",
     "express-promise-router": "3.0.3",
     "express-session": "1.15.6",
     "extract-text-webpack-plugin": "4.0.0-beta.0",
+<<<<<<< HEAD
     "file-loader": "3.0.1",
     "font-awesome-webpack": "0.0.4",
+=======
+    "font-awesome-webpack": "0.0.5-beta.2",
+>>>>>>> 5533cd8... WIP E2E testing fix
     "lodash": "4.17.11",
     "method-override": "3.0.0",
-    "mongoose": "5.4.3",
+    "mongoose": "5.4.4",
     "nib": "1.1.2",
     "nyc": "13.1.0",
     "object-assign": "4.1.1",
@@ -74,16 +88,25 @@
     "coveralls": "3.0.2",
     "cucumber": "0.10.3",
     "eslint": "5.12.0",
-    "eslint-config-prettier": "3.3.0",
+    "eslint-config-prettier": "3.5.0",
     "mkdirp": "^0.5.1",
     "mocha": "5.2.0",
     "prettier": "1.15.3",
+<<<<<<< HEAD
     "protractor": "5.4.2",
     "protractor-cucumber-framework": "0.6.0",
+=======
+    "protractor": "^5.4.0",
+    "protractor-cucumber-framework": "6.1.1",
+>>>>>>> 5533cd8... WIP E2E testing fix
     "sinon": "7.2.2",
     "sinon-chai": "3.3.0",
-    "supertest": "3.3.0",
+    "start-server-and-test": "1.7.11",
+    "supertest": "3.4.1",
     "webpack-cli": "3.2.1",
     "webpack-dev-middleware": "3.5.0"
+  },
+  "cypress-cucumber-preprocessor": {
+    "step_definitions": "cypress/support/step_definitions/"
   }
 }

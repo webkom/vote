@@ -1,4 +1,12 @@
-const chai = require('chai');
+import { Given, Then, When } from "cypress-cucumber-preprocessor/steps";
+
+Given(/^There is an (in)?active election$/, function(arg) {
+  const active = arg !== 'in';
+  this.election.active = active;
+  // return this.election.save();
+});
+
+/*const chai = require('chai');
 const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const { defineSupportCode } = require('cucumber');
@@ -62,3 +70,4 @@ defineSupportCode(({ Given, When, Then }) => {
     );
   });
 });
+*/

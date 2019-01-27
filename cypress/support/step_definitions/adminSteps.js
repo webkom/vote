@@ -1,14 +1,11 @@
-const chai = require('chai');
-const Bluebird = require('bluebird');
-const chaiAsPromised = require('chai-as-promised');
-const { defineSupportCode } = require('cucumber');
+/*
 const Election = require('../../app/models/election');
+const Alternative = require('../../app/models/alternative');
+const User = require('../../app/models/user');
+*/
+const Election = require('../../../app/models/election');
+import { Given, Then, When } from "cypress-cucumber-preprocessor/steps";
 
-const expect = chai.expect;
-
-chai.use(chaiAsPromised);
-
-defineSupportCode(({ Given, When, Then }) => {
   const newElection = {
     title: 'new election',
     description: 'new description',
@@ -22,17 +19,35 @@ defineSupportCode(({ Given, When, Then }) => {
     ]
   };
 
-  Then(/^I see a list of elections$/, function() {
-    const alternatives = element.all(by.repeater('election in elections'));
-    const election = alternatives.first();
 
-    Bluebird.all([
-      expect(election.getText()).to.eventually.equal(this.election.title),
-      expect(alternatives.count()).to.eventually.equal(1)
-    ]);
-  });
+Then(/^I see a list of elections$/, function() {
+    console.log(this)
+    const alternatives = cy.get('[ng-repeat="election in elections"]')
+    const election = alternatives.first()
 
-  When(/^I create an election$/, () => {
+    alternatives.should($div => {
+      expect($div).to.have.length(1);
+    });
+
+    election.contains(this.election.title);
+});
+
+When(/^I create an election$/, function() {
+    //cy.get('.new-alternative').click();
+    cy.find('a').contains('Lag avstemning').click();
+    const title = cy.get('[ng-model="election.title"]');
+    const description = cy.get('[ng-model="election.description"]');
+    const alternatives = cy.get('[ng-repeat="alternative in election.alternatives"]')
+    // Add new alternative
+    title.type(newElection.title);
+    description.type(newElection.description);
+    newElection.alternatives.forEach((alternative, i) => {
+      alternatives
+        .get('.input')
+        .type(alternative.description);
+    });
+    title.submit();
+    /*
     element(by.className('new-alternative')).click();
     const title = element(by.model('election.title'));
     const description = element(by.model('election.description'));
@@ -50,9 +65,10 @@ defineSupportCode(({ Given, When, Then }) => {
     });
 
     title.submit();
-  });
+    */
+});
 
-  Then(/^The election should exist$/, () =>
+  Then(/^The election should exist$/, function() {
     Election.find({ title: newElection.title })
       .populate('alternatives')
       .exec()
@@ -64,7 +80,23 @@ defineSupportCode(({ Given, When, Then }) => {
           );
         });
       })
-  );
+  });
+
+/*
+Given(/^There is an (in)?active user with card key "([^"]*)"$/, (active, cardKey) => {
+
+
+  Then(/^I see a list of elections$/, function() {
+    const alternatives = element.all(by.repeater('election in elections'));
+    const election = alternatives.first();
+
+    Bluebird.all([
+      expect(election.getText()).to.eventually.equal(this.election.title),
+      expect(alternatives.count()).to.eventually.equal(1)
+    ]);
+  });
+
+
 
   Given(/^The election has votes$/, function() {
     this.alternative.addVote(this.user);
@@ -117,3 +149,4 @@ defineSupportCode(({ Given, When, Then }) => {
     return expect(countElement.getText()).to.eventually.equal(String(count));
   });
 });
+*/
