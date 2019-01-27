@@ -37,7 +37,7 @@ const store = new MongoStore({
 // TODO: This can also be removed when the above is fixed:
 mongoose.connection.on('disconnected', store.close.bind(store));
 
-if (['development', 'protractor'].includes(process.env.NODE_ENV)) {
+if (['development', 'protractor', 'cypress'].includes(process.env.NODE_ENV)) {
   const webpack = require('webpack');
   const webpackMiddleware = require('webpack-dev-middleware');
   const config = require('./webpack/dev.config');

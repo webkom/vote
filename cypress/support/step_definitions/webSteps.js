@@ -1,4 +1,26 @@
-const chai = require('chai');
+import { Given } from "cypress-cucumber-preprocessor/steps";
+
+const logIn = (username, password) => {
+  cy.visit('/auth/login');
+  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="password"]').type(password);
+  cy.get('button').click();
+}
+
+Given(/^I am logged in as an admin$/, () => {
+    logIn('admin', 'password');
+});
+
+Given(/^I am on page "([^"]*)"$/, path => {
+    cy.visit(path);
+});
+
+Then(/^I see "([^"]*)"$/, text =>
+    cy.contains(text)
+);
+
+
+/*const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const { defineSupportCode } = require('cucumber');
 const expect = chai.expect;
@@ -107,3 +129,4 @@ defineSupportCode(({ Given, When, Then }) => {
     expect(found.count()).to.eventually.equal(Number(count));
   });
 });
+*/
