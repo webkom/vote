@@ -1,0 +1,11 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo:3.6
+  vote:
+    image: abakus/vote:55a2d3b435455eb8ba65c121e340ebef62afab16
+    environment:
+      MONGO_URL: 'mongodb://mongo:27017/vote'
+    ports:
+      - '127.0.0.1:3000:3000'
