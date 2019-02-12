@@ -1,4 +1,4 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var webpack = require('webpack');
 
 module.exports = {
   mode: 'none',
@@ -15,22 +15,18 @@ module.exports = {
     rules: [
       {
         test: /\.styl$/,
-        use: [
-          {
-            loader: 'style-loader'
-          },
-          {
-            loader: 'css-loader'
-          },
-          {
-            loader: 'stylus-loader',
-            options: {
-              use: [require('nib')()]
-            }
-          }
-        ]
+        loader: 'file-loader?name=[name].css!stylus-loader'
       }
     ]
   },
-  plugins: [new ExtractTextPlugin('main.css')]
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      options: {
+        stylus: {
+          use: [require('nib')()],
+          import: ['~nib/lib/nib/index.styl']
+        }
+      }
+    })
+  ]
 };
