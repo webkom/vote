@@ -19,10 +19,3 @@ block content
     .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
         uib-alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
     .container(ng-view='')
-
-block footer
-    a(href='#', ng-controller='logoutController', ng-click='logout()' tabindex='-1') Logg ut
-    |  | Made by
-    a(href='http://github.com/webkom' tabindex='-1')  webkom
-    |  | Follow us on
-    a.red(href='https://github.com/webkom/vote' tabindex='-1')  GitHub
