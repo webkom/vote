@@ -4,11 +4,14 @@ const authRoutes = require('./auth');
 const helpers = require('./helpers');
 const checkAuthOrRedirect = helpers.checkAuthOrRedirect;
 const checkAdmin = helpers.checkAdmin;
+const checkModerator = helpers.checkModerator;
 const checkAdminPartial = helpers.checkAdminPartial;
+const checkModeratorPartial = helpers.checkModeratorPartial;
 
 // Admin users shouldn't be able to vote, so they don't need to see the election page
 router.get('/', checkAuthOrRedirect, (req, res) => {
   if (req.user.admin) return res.redirect('/admin');
+  if (req.user.moderator) return res.redirect('/moderator');
   res.render('index');
 });
 
@@ -17,9 +20,19 @@ router.get('/admin*', checkAdmin, (req, res) => {
   res.render('adminIndex');
 });
 
+// Make sure all moderator routes are secure
+router.get('/moderator*', checkModerator, (req, res) => {
+  res.render('moderatorIndex');
+});
+
 // Extra check in case someone tries to request an admin partial directly
 router.get('/partials/admin/*', checkAdminPartial, (req, res) => {
   res.render(`partials/admin/${req.params[0]}`);
+});
+
+// Extra check in case someone tries to request an moderator partial directly
+router.get('/partials/moderator/*', checkModeratorPartial, (req, res) => {
+  res.render(`partials/moderator/${req.params[0]}`);
 });
 
 // Loaded by the frontend through Ajax during frontend navigation

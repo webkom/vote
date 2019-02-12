@@ -1,18 +1,18 @@
 const router = require('express-promise-router')();
 const user = require('../../controllers/user');
-const ensureAdmin = require('../helpers').ensureAdmin;
+const ensureModerator = require('../helpers').ensureModerator;
 
 router
   .route('/')
-  .get(ensureAdmin, user.list)
-  .post(ensureAdmin, user.create);
+  .get(ensureModerator, user.list)
+  .post(ensureModerator, user.create);
 
-router.get('/count', ensureAdmin, user.count);
+router.get('/count', ensureModerator, user.count);
 
-router.put('/:username/change_card', ensureAdmin, user.changeCard);
+router.put('/:username/change_card', ensureModerator, user.changeCard);
 
-router.post('/:cardKey/toggle_active', ensureAdmin, user.toggleActive);
+router.post('/:cardKey/toggle_active', ensureModerator, user.toggleActive);
 
-router.post('/deactivate', ensureAdmin, user.deactivateAllNonAdmin);
+router.post('/deactivate', ensureModerator, user.deactivateAllNonAdmin);
 
 module.exports = router;

@@ -10,32 +10,56 @@ const User = require('../app/models/user');
 mongoose.Promise = Bluebird;
 
 function done(err, user) {
-    if (err) throw err;
-    console.log(chalk.green(`Created user ${user.username}`));
-    process.exit(0);
+  if (err) throw err;
+  console.log(chalk.green(`Created user ${user.username}`));
+  process.exit(0);
 }
 
 program
-    .version('1.0.0')
-    .command('create-admin <username> <cardKey>')
-    .description('create an admin user')
-    .action((username, cardKey) => {
-        const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
+  .version('1.0.0')
+  .command('create-admin <username> <cardKey>')
+  .description('create an admin user')
+  .action((username, cardKey) => {
+    const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
 
-        mongoose.connect(mongoURL, connectErr => {
-            if (connectErr) return done(connectErr);
+    mongoose.connect(mongoURL, connectErr => {
+      if (connectErr) return done(connectErr);
 
-            promptly.password('Enter a password: ', (pwErr, password) => {
-                if (pwErr) return done(pwErr);
-                const user = new User({
-                    username: username,
-                    admin: true,
-                    cardKey: cardKey
-                });
-
-                User.register(user, password).nodeify(done);
-            });
+      promptly.password('Enter a password: ', (pwErr, password) => {
+        if (pwErr) return done(pwErr);
+        const user = new User({
+          username: username,
+          admin: true,
+          moderator: true,
+          cardKey: cardKey
         });
+
+        User.register(user, password).nodeify(done);
+      });
     });
+  });
+
+program
+  .version('1.0.0')
+  .command('create-moderator <username> <cardKey>')
+  .description('create an moderator user')
+  .action((username, cardKey) => {
+    const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
+
+    mongoose.connect(mongoURL, connectErr => {
+      if (connectErr) return done(connectErr);
+
+      promptly.password('Enter a password: ', (pwErr, password) => {
+        if (pwErr) return done(pwErr);
+        const user = new User({
+          username: username,
+          moderator: true,
+          cardKey: cardKey
+        });
+
+        User.register(user, password).nodeify(done);
+      });
+    });
+  });
 
 program.parse(process.argv);
