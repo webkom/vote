@@ -63,9 +63,10 @@ describe('Vote API', () => {
     await this.activeElection.addAlternative(this.activeAlternative);
     await this.inactiveElection.addAlternative(this.inactiveAlternative);
     await this.activeElection.addAlternative(this.otherActiveAlternative);
-    const [user, adminUser] = await createUsers();
+    const [user, adminUser, moderatorUser] = await createUsers();
     this.user = user;
     this.adminUser = adminUser;
+    this.moderatorUser = moderatorUser;
     passportStub.login(user);
   });
 
@@ -228,8 +229,16 @@ describe('Vote API', () => {
     body.message.should.equal('Cannot retrieve results on an active election.');
   });
 
-  it('should not be possible to sum votes without being admin', async function() {
+  it('should not be possible to sum votes for a normal user', async function() {
     passportStub.login(this.user);
+    await testAdminResource(
+      'get',
+      `/api/election/${this.activeElection.id}/votes`
+    );
+  });
+
+  it('should not be possible to sum votes for a moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource(
       'get',
       `/api/election/${this.activeElection.id}/votes`
@@ -257,6 +266,19 @@ describe('Vote API', () => {
 
     error.name.should.equal('AdminVotingError');
     error.message.should.equal("Admin users can't vote.");
+    error.status.should.equal(403);
+  });
+
+  it('should return 403 when moderators try to vote', async function() {
+    passportStub.login(this.moderatorUser);
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeAlternative.id))
+      .expect(403)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ModeratorVotingError');
+    error.message.should.equal("Moderator users can't vote.");
     error.status.should.equal(403);
   });
 });
