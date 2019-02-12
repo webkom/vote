@@ -3,7 +3,7 @@ var webpack = require('webpack');
 module.exports = {
   mode: 'none',
   output: {
-    path: `${__dirname}/../public`,
+    path: `${__dirname}/public`,
     filename: 'bundle.js',
     publicPath: '/static/'
   },
