@@ -4,7 +4,7 @@
 $font-gray = #666c77
 $alternative-background = darken($font-gray, 20%)
 $dark-gray = #333
-$abakus-light = #fc0405
+$abakus-light = #cc0000
 $abakus-dark = #bd0005
 $red = #b11b11
 $white = #fdfdfd
@@ -15,7 +15,7 @@ html
 
 body
     font-family 'Raleway', 'Lucida Grande'
-    font-weight 100
+    font-weight 300
     word-break break-word
     margin-bottom 30px
     color $font-gray
@@ -39,7 +39,7 @@ header
             display inline
 
             a
-                font-size 18px
+                font-size 20px
                 color $font-gray
 
                 &:hover
@@ -79,11 +79,14 @@ a
         text-decoration none
 
 h2, h3, .btn
-    font-weight 200
+    font-weight 300
 
 .alert
     margin 15px auto
     max-width 90%
+
+.text-danger
+    font-size 18px
 
 .container
     width 100%
@@ -94,7 +97,8 @@ h2, h3, .btn
     font-size 21px
 
 label
-    font-weight 200
+    font-weight 300
+    font-size 20px
     letter-spacing 0.1em
 
 .fade
@@ -102,6 +106,7 @@ label
     opacity 0
 
 .btn
+    font-size 20px
     &:active:focus
         outline none
 
@@ -121,6 +126,12 @@ label
 
     p
         font-size 18px
+
+.form-control
+    font-size 18px
+    height 40px
+
+          
 
 @media (max-width 1000px)
     .vote-result-form
