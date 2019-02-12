@@ -28,4 +28,12 @@ const adminUser = (exports.adminUser = {
   hash
 });
 
-exports.createUsers = () => User.create([testUser, adminUser]);
+const moderatorUser = (exports.moderatorUser = {
+  username: 'moderator',
+  admin: false,
+  moderator: true,
+  cardKey: '67TESTCARDKEY',
+  hash
+});
+
+exports.createUsers = () => User.create([testUser, adminUser, moderatorUser]);
