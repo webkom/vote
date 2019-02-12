@@ -23,6 +23,7 @@ const testUser = (exports.testUser = {
 const adminUser = (exports.adminUser = {
   username: 'admin',
   admin: true,
+  moderator: true,
   cardKey: '55TESTCARDKEY',
   hash
 });
