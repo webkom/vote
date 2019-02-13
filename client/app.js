@@ -1,7 +1,7 @@
 var angular = require('angular');
 require('angular-route');
 require('angular-local-storage');
-require('angular-ui-bootstrap');
+require('angular1-ui-bootstrap4');
 require('./styles/main');
 
 angular
