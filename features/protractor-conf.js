@@ -9,7 +9,6 @@ exports.config = {
   directConnect: true,
   cucumberOpts: {
     require: ['step_definitions/*.js', 'support/*.js'],
-    backtrace: true,
-    tags: process.env.TAGS
+    backtrace: true
   }
 };
