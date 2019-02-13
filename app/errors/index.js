@@ -137,6 +137,17 @@ class AdminVotingError extends Error {
 
 exports.AdminVotingError = AdminVotingError;
 
+class ModeratorVotingError extends Error {
+  constructor() {
+    super();
+    this.name = 'ModeratorVotingError';
+    this.message = "Moderator users can't vote.";
+    this.status = 403;
+  }
+}
+
+exports.ModeratorVotingError = ModeratorVotingError;
+
 class DuplicateCardError extends Error {
   constructor() {
     super();

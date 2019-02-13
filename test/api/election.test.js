@@ -60,9 +60,10 @@ describe('Election API', () => {
     testAlternative.election = this.activeElection;
     this.alternative = new Alternative(testAlternative);
     await this.activeElection.addAlternative(this.alternative);
-    const [user, adminUser] = await createUsers();
+    const [user, adminUser, moderatorUser] = await createUsers();
     this.user = user;
     this.adminUser = adminUser;
+    this.moderatorUser = moderatorUser;
   });
 
   after(() => {
@@ -139,8 +140,13 @@ describe('Election API', () => {
     error.errors.title.kind.should.equal('required');
   });
 
-  it('should only be possible to create elections as admin', async function() {
+  it('should not be possible to create elections as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource('post', '/api/election');
+  });
+
+  it('should not be possible to create elections as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource('post', '/api/election');
   });
 
@@ -167,8 +173,13 @@ describe('Election API', () => {
     );
   });
 
-  it('should only be possible to get elections jas admin', async function() {
+  it('should not be possible to get elections as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource('get', '/api/election');
+  });
+
+  it('should not be possible to get elections as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource('get', '/api/election');
   });
 
@@ -186,8 +197,13 @@ describe('Election API', () => {
     body.alternatives[0]._id.should.equal(this.alternative.id);
   });
 
-  it('should only be possible to retrieve alternatives as admin', async function() {
+  it('should not be possible to retrieve alternatives as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource('get', `/api/election/${this.activeElection.id}`);
+  });
+
+  it('should not be possible to retrieve alternatives as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource('get', `/api/election/${this.activeElection.id}`);
   });
 
@@ -226,7 +242,15 @@ describe('Election API', () => {
     await test404('post', '/api/election/badid/activate', 'election');
   });
 
-  it('should only be possible to activate elections as admin', async function() {
+  it('should not be possible to activate elections as normal user', async function() {
+    passportStub.login(this.user.username);
+    await testAdminResource(
+      'post',
+      `/api/election/${this.activeElection.id}/activate`
+    );
+  });
+
+  it('should not be possible to activate elections as moderator', async function() {
     passportStub.login(this.user.username);
     await testAdminResource(
       'post',
@@ -255,8 +279,16 @@ describe('Election API', () => {
     await test404('post', '/api/election/badid/deactivate', 'election');
   });
 
-  it('should only be possible to deactivate elections as admin', async function() {
+  it('should not be possible to deactivate elections as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource(
+      'post',
+      `/api/election/${this.activeElection.id}/deactivate`
+    );
+  });
+
+  it('should not be possible to deactivate elections as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource(
       'post',
       `/api/election/${this.activeElection.id}/deactivate`
@@ -301,8 +333,13 @@ describe('Election API', () => {
     error.message.should.equal('Cannot delete an active election.');
   });
 
-  it('should only be possible to delete elections as admin', async function() {
+  it('should not be possible to delete elections as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource('delete', '/api/election/badid');
+  });
+
+  it('should not be possible to delete elections as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource('delete', '/api/election/badid');
   });
 
@@ -356,8 +393,16 @@ describe('Election API', () => {
     body.users.should.equal(1);
   });
 
-  it('should only be possible to count voted users as admin', async function() {
+  it('should not be possible to count voted users as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource(
+      'get',
+      `/api/election/${this.activeElection.id}/count`
+    );
+  });
+
+  it('should not be possible to count voted users as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource(
       'get',
       `/api/election/${this.activeElection.id}/count`

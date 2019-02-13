@@ -26,6 +26,10 @@ const userSchema = new Schema({
     type: Boolean,
     default: false
   },
+  moderator: {
+    type: Boolean,
+    default: false
+  },
   cardKey: {
     type: String,
     required: true,

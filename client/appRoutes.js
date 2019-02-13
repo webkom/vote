@@ -21,13 +21,18 @@ module.exports = [
         controller: 'electionsController'
       })
 
-      .when('/admin/create_user', {
-        templateUrl: 'partials/admin/createUser',
+      .when('/moderator', {
+        templateUrl: 'partials/moderator/createUser',
         controller: 'createUserController'
       })
 
-      .when('/admin/activate_user', {
-        templateUrl: 'partials/admin/activateUser',
+      .when('/moderator/create_user', {
+        templateUrl: 'partials/moderator/createUser',
+        controller: 'createUserController'
+      })
+
+      .when('/moderator/activate_user', {
+        templateUrl: 'partials/moderator/activateUser',
         controller: 'toggleUserController'
       })
 
@@ -36,8 +41,8 @@ module.exports = [
         controller: 'createElectionController'
       })
 
-      .when('/admin/change_card', {
-        templateUrl: 'partials/admin/changeCard',
+      .when('/moderator/change_card', {
+        templateUrl: 'partials/moderator/changeCard',
         controller: 'changeCardController'
       })
 
@@ -46,8 +51,8 @@ module.exports = [
         controller: 'editElectionController'
       })
 
-      .when('/admin/deactivate_users', {
-        templateUrl: 'partials/admin/deactivateUsers',
+      .when('/moderator/deactivate_users', {
+        templateUrl: 'partials/moderator/deactivateUsers',
         controller: 'deactivateUsersController'
       })
 

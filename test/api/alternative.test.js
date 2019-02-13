@@ -45,9 +45,10 @@ describe('Alternatives API', () => {
         this.alternative = alternative;
         return createUsers();
       })
-      .spread(function(user, adminUser) {
+      .spread(function(user, adminUser, moderatorUser) {
         this.user = user;
         this.adminUser = adminUser;
+        this.moderatorUser = moderatorUser;
       });
   });
 
@@ -91,8 +92,16 @@ describe('Alternatives API', () => {
     );
   });
 
-  it('should only be possible to get alternatives as admin', async function() {
+  it('should not be possible to get alternatives as normal user', async function() {
     passportStub.login(this.user.username);
+    await testAdminResource(
+      'get',
+      `/api/election/${this.election.id}/alternatives`
+    );
+  });
+
+  it('should not be possible to get alternatives as moderator', async function() {
+    passportStub.login(this.moderator);
     await testAdminResource(
       'get',
       `/api/election/${this.election.id}/alternatives`
@@ -164,7 +173,15 @@ describe('Alternatives API', () => {
     await test404('post', `/api/election/${badId}/alternatives`, 'election');
   });
 
-  it('should only be possible to create alternatives as admin', async function() {
+  it('should not be possible to create alternatives as normal user', async function() {
+    passportStub.login(this.user.username);
+    await testAdminResource(
+      'post',
+      `/api/election/${this.election.id}/alternatives`
+    );
+  });
+
+  it('should not be possible to create alternatives as moderator', async function() {
     passportStub.login(this.user.username);
     await testAdminResource(
       'post',
