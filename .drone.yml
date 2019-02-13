@@ -2,41 +2,36 @@ pipeline:
   setup:
     image: node:11
     when:
-      event: [push, pull_request]
+      event: [push]
     commands:
       - yarn
   integration-tests:
-    image: node:11
+    image: circleci/node:11-browsers
     when:
       event: [push]
     group: testing
-    secrets:
-      - sauce_access_key
-      - sauce_username
     commands:
-      - wget https://saucelabs.com/downloads/sc-4.4.11-linux.tar.gz
-      - tar -xzf sc-4.4.11-linux.tar.gz
-      - cd sc-*-linux && ./bin/sc --user $SAUCE_USERNAME --api-key $SAUCE_ACCESS_KEY --readyfile ~/sauce_is_ready &
-      - while [ ! -e ~/sauce_is_ready ]; do sleep 0.5; echo -n "."; done
-      - yarn protractor
+      # This image runs with a custom user by default
+      # Has to be root to gain access to
+      - sudo su -c "yarn protractor:ci"
   lint:
     image: node:11
     when:
-      event: [push, pull_request]
+      event: [push]
     group: testing
     commands:
       - yarn lint
   test:
     image: node:11
     when:
-      event: [push, pull_request]
+      event: [push]
     group: testing
     commands:
       - MONGO_URL=mongodb://mongodb:27017/vote-test yarn mocha
   build:
     image: node:11
     when:
-      event: [push, pull_request]
+      event: [push]
       branch:
         exclude: [prod]
     group: testing
