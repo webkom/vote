@@ -33,6 +33,10 @@ const updateAvailableDevices = () =>
       newLi.innerHTML = port.comName;
       ul.appendChild(newLi);
     });
+    // If a device is given, connect right away
+    if (process.env.SERIAL_PORT) {
+      connectToDevice(process.env.SERIAL_PORT);
+    }
   });
 
 const onData = response => {
@@ -42,24 +46,25 @@ const onData = response => {
 };
 
 // Handle the 'Connect' button
-const connectToDevice = () => {
+const handleConnectButton = () => {
   const active = $('.active');
   if (!active) {
-    updateStatus('No device selected');
-  } else {
-    const devicePath = active.getAttribute('data-value');
-    connect(
-      devicePath,
-      onData
-    )
-      .then(() => {
-        $('#overlay').classList.add('hidden');
-      })
-      .catch(() => {
-        updateStatus('Error connecting!');
-      });
+    return updateStatus('No device selected');
   }
+  const devicePath = active.getAttribute('data-value');
+  return connectToDevice(devicePath);
 };
+const connectToDevice = devicePath =>
+  connect(
+    devicePath,
+    onData
+  )
+    .then(() => {
+      $('#overlay').classList.add('hidden');
+    })
+    .catch(e => {
+      updateStatus('Error connecting to serial port: ' + e);
+    });
 
 const setActive = e => {
   if (e.target && e.target.matches('li')) {
@@ -73,6 +78,6 @@ const setActive = e => {
 
 $('#port_ul').addEventListener('click', setActive);
 $('#refresh_button').addEventListener('click', updateAvailableDevices);
-$('#connect_button').addEventListener('click', connectToDevice);
+$('#connect_button').addEventListener('click', handleConnectButton);
 
 updateAvailableDevices();

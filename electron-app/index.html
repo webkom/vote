@@ -6,7 +6,7 @@
   </head>
 
   <body>
-    <webview src='https://vote.abakus.no/admin' preload='./preload.js'></webview>
+    <webview src='http://localhost:3000/admin' preload='./preload.js'></webview>
     <div id='overlay' class="overlay">
       <div class="setupContainer">
         <h1 class="header">Select device</h1>
@@ -22,6 +22,7 @@
       </div>
     <script>
     require('./rfid.js');
+    require('./env.js');
 </script>
   </body>
 </html>

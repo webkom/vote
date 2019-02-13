@@ -16,7 +16,6 @@ const createWindow = () => {
       slashes: true
     })
   );
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
