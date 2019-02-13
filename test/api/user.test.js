@@ -56,7 +56,7 @@ describe('User API', () => {
   });
 
   it('should be possible to create users for moderator', async function() {
-    passportStub.login(this.moderatorUser);
+    passportStub.login(this.moderatorUser.username);
     const { body } = await request(app)
       .post('/api/user')
       .send(testUserData)
@@ -148,6 +148,7 @@ describe('User API', () => {
       .expect('Content-Type', /json/);
 
     users.length.should.equal(3);
+
     should.exist(users[0].username);
     should.exist(users[0].active);
     should.exist(users[0].admin);
@@ -227,7 +228,7 @@ describe('User API', () => {
   });
 
   it('should be possible to count inactive users for moderator', async function() {
-    passportStub.login(this.moderatorUser);
+    passportStub.login(this.moderatorUser.username);
     const { body } = await request(app)
       .get('/api/user/count?active=false')
       .expect(200)
@@ -243,11 +244,11 @@ describe('User API', () => {
       .get('/api/user/count')
       .expect(200)
       .expect('Content-Type', /json/);
-    body.users.should.equal(3);
+    body.users.should.equal(1);
   });
 
   it('should only be possible to count users as admin/moderator', async function() {
-    passportStub.login(this.user);
+    passportStub.login(this.user.username);
     await testAdminResource('get', '/api/user/count');
   });
 
@@ -268,7 +269,7 @@ describe('User API', () => {
   });
 
   it("should be possible to change a user's card key for moderator", async function() {
-    passportStub.login(this.moderatorUser);
+    passportStub.login(this.moderatorUser.username);
 
     const changeCardPayload = {
       password: 'password',
@@ -343,7 +344,7 @@ describe('User API', () => {
   });
 
   it('should be possible to deactivate all non-admin/moderator users for moderator', async function() {
-    passportStub.login(this.moderatorUser);
+    passportStub.login(this.moderatorUser.username);
     await request(app)
       .post('/api/user/deactivate')
       .expect(200)

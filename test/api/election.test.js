@@ -146,7 +146,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to create elections as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource('post', '/api/election');
   });
 
@@ -179,7 +179,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to get elections as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource('get', '/api/election');
   });
 
@@ -203,7 +203,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to retrieve alternatives as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource('get', `/api/election/${this.activeElection.id}`);
   });
 
@@ -288,7 +288,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to deactivate elections as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'post',
       `/api/election/${this.activeElection.id}/deactivate`
@@ -339,7 +339,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to delete elections as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource('delete', '/api/election/badid');
   });
 
@@ -402,7 +402,7 @@ describe('Election API', () => {
   });
 
   it('should not be possible to count voted users as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'get',
       `/api/election/${this.activeElection.id}/count`

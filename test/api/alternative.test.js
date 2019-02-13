@@ -101,7 +101,7 @@ describe('Alternatives API', () => {
   });
 
   it('should not be possible to get alternatives as moderator', async function() {
-    passportStub.login(this.moderator);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'get',
       `/api/election/${this.election.id}/alternatives`

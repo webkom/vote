@@ -36,6 +36,7 @@ alternativeSchema.methods.addVote = async function(user) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();
+  if (user.moderator) throw new errors.ModeratorVotingError();
 
   const election = await Election.findById(this.election).exec();
   if (!election.active) throw new errors.InactiveElectionError();

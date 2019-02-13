@@ -238,7 +238,7 @@ describe('Vote API', () => {
   });
 
   it('should not be possible to sum votes for a moderator', async function() {
-    passportStub.login(this.moderator.username);
+    passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'get',
       `/api/election/${this.activeElection.id}/votes`
@@ -270,7 +270,7 @@ describe('Vote API', () => {
   });
 
   it('should return 403 when moderators try to vote', async function() {
-    passportStub.login(this.moderatorUser);
+    passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.activeAlternative.id))

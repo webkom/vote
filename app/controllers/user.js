@@ -4,7 +4,7 @@ const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
 exports.count = async (req, res) => {
-  const query = { admin: false };
+  const query = { admin: false, moderator: false };
   if (req.query.active === 'true') {
     query.active = true;
   } else if (req.query.active === 'false') {
@@ -16,7 +16,7 @@ exports.count = async (req, res) => {
 };
 
 exports.list = async (req, res) => {
-  const users = await User.find({}, 'username admin active');
+  const users = await User.find({}, 'username admin active moderator');
   res.json(users);
 };
 
@@ -64,7 +64,11 @@ exports.changeCard = (req, res) =>
     });
 
 exports.deactivateAllNonAdmin = async (req, res) => {
-  await User.update({ admin: false }, { active: false }, { multi: true });
+  await User.update(
+    { admin: false, moderator: false },
+    { active: false },
+    { multi: true }
+  );
   res.status(200).json({
     message: 'Users deactivated.',
     status: 200
