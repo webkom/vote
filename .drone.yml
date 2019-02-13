@@ -11,10 +11,13 @@ pipeline:
       event: [push]
     group: testing
     commands:
-      # This image runs with a custom user by default
-      # Has to change the owner of all files to gain access to
+      # This image runs with a custom user (circleci)by default,
+      # and chrome headless doesn't work for the root user.
+      # --> Fix some file permissions before start
+      - sudo su -c "mkdir -p /root/.config/yarn/"
       - sudo su -c "chown -R circleci:circleci ."
-      - HEADLESS=true yarn protractor
+      - sudo su -c "chown -R circleci:circleci /root/"
+      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test HEADLESS=true yarn protractor
   lint:
     image: node:11
     when:
