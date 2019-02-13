@@ -6,7 +6,7 @@ Small wrapper that enables reading of MiFare cards enabled by [Silicon Labs driv
 
 ```bash
 $ git clone git@github.com:webkom/vote.git
-$ cd vote/electron_app
+$ cd vote/electron-app
 $ yarn
 $ yarn start
 ```
@@ -15,11 +15,11 @@ $ yarn start
 
 Prebuilt .zips are found at [releases](https://github.com/webkom/vote/releases)
 
-Outputs a `.zip` with the app in `electron_app/dist/` for the current OS.
+Outputs a `.zip` with the app in `electron-app/dist/` for the current OS.
 
 ```bash
 $ git clone git@github.com:webkom/vote.git
-$ cd vote/electron_app
+$ cd vote/electron-app
 $ yarn
 $ yarn dist
 ```
