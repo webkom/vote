@@ -128,7 +128,7 @@ describe('Auth API', () => {
         .end(newErr => logout(newErr, agent));
     }
 
-    sessions.remove({}, {}, login);
+    sessions.deleteMany({}, {}, login);
   });
 
   it('should redirect from / to /admin for admins', async () => {

@@ -10,7 +10,7 @@ exports.dropDatabase = () =>
 
 exports.clearCollections = () =>
   Bluebird.map([Alternative, Election, Vote, User], collection =>
-    collection.remove()
+    collection.deleteMany()
   );
 
 const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'

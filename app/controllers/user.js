@@ -11,7 +11,7 @@ exports.count = async (req, res) => {
     query.active = false;
   }
 
-  const count = await User.count(query);
+  const count = await User.countDocuments(query);
   res.json({ users: count });
 };
 
@@ -64,7 +64,7 @@ exports.changeCard = (req, res) =>
     });
 
 exports.deactivateAllNonAdmin = async (req, res) => {
-  await User.update(
+  await User.updateMany(
     { admin: false, moderator: false },
     { active: false },
     { multi: true }

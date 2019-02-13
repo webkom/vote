@@ -21,7 +21,11 @@ app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
 
 mongoose.Promise = Bluebird;
-mongoose.connect(app.get('mongourl'));
+mongoose.connect(
+  app.get('mongourl'),
+  { useNewUrlParser: true }
+);
+mongoose.set('useCreateIndex', true);
 
 raven.config(process.env.RAVEN_DSN).install();
 

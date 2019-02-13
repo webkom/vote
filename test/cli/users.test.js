@@ -4,7 +4,7 @@ const User = require('../../app/models/user');
 const should = chai.should();
 
 describe('User CLI', () => {
-  beforeEach(() => User.remove({}));
+  beforeEach(() => User.deleteMany({}));
 
   it('should create normal user', done => {
     const stream = spawn(`${process.cwd()}/bin/users`, [
