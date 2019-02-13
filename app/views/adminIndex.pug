@@ -20,6 +20,6 @@ block navbar
                 a(href='/moderator/deactivate_users') Deaktiver brukere
 
 block content
-    .center(ng-repeat='alert in alerts', ng-class='{"fade": alert.fade}')
-        uib-alert(ng-bind='alert.message', type='{{alert.type}}', close='alert.close()')
+    .center(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
+            div(uib-alert ng-bind='alert.message', ng-class="'alert-' + (alert.type || 'warning')", close='alert.close()')
     .container(ng-view='')
