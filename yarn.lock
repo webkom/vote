@@ -5136,6 +5136,13 @@ prompt@1.0.0:
     utile "0.3.x"
     winston "2.1.x"
 
+promptly@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/promptly/-/promptly-2.1.0.tgz#217643bd6612d58f4bb54fe7e6b4664286073cdf"
+  integrity sha1-IXZDvWYS1Y9LtU/n5rRmQoYHPN8=
+  dependencies:
+    read "^1.0.4"
+
 protractor-cucumber-framework@0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/protractor-cucumber-framework/-/protractor-cucumber-framework-0.6.0.tgz#d1259c7836f5ead010df341c0f6de48b640b7c47"
@@ -5465,7 +5472,7 @@ read-pkg@^3.0.0:
     normalize-package-data "^2.3.2"
     path-type "^3.0.0"
 
-read@1.0.x:
+read@1.0.x, read@^1.0.4:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/read/-/read-1.0.7.tgz#b3da19bd052431a97671d44a42634adf710b40c4"
   integrity sha1-s9oZvQUkMal2cdRKQmNK33ELQMQ=

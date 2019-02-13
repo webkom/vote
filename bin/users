@@ -5,7 +5,7 @@
 const program = require('commander');
 const mongoose = require('mongoose');
 const chalk = require('chalk');
-const prompt = require('prompt');
+const promptly = require('promptly');
 const Bluebird = require('bluebird');
 const User = require('../app/models/user');
 
@@ -39,22 +39,6 @@ program
       { validator, retry: true },
       (modeErr, mode) => {
         mongoose.connect(mongoURL, connectErr => {
-<<<<<<< HEAD
-            if (connectErr) return done(connectErr);
-
-            prompt.start();
-            prompt.get(['password'], (pwErr, result) => {
-                if (pwErr) {
-                    return done(pwErr);
-                }
-                const user = new User({
-                    username: username,
-                    admin: true,
-                    cardKey: cardKey
-                });
-                User.register(user, result.password).nodeify(done);
-
-=======
           if (connectErr) return done(connectErr);
 
           promptly.password('Enter password: ', (pwErr, password) => {
@@ -64,7 +48,6 @@ program
               admin: mode == 3,
               moderator: mode == 2 || mode == 3,
               cardKey: cardKey
->>>>>>> origin/moderator
             });
 
             User.register(user, password).nodeify(done);
