@@ -7,13 +7,12 @@ module.exports = [
     $scope.voteHash = localStorageService.get('voteHash');
 
     $scope.retrieveVote = function(voteHash) {
-      voteService
-        .retrieve(voteHash)
-        .success(function(vote) {
-          $scope.vote = vote;
-        })
-        .error(function(error) {
-          switch (error.name) {
+      voteService.retrieve(voteHash).then(
+        function(response) {
+          $scope.vote = response.data;
+        },
+        function(response) {
+          switch (response.data.name) {
             case 'NotFoundError':
               alertService.addError(
                 'En stemme med denne kvitteringen ble ikke funnet.'
@@ -23,7 +22,8 @@ module.exports = [
             default:
               alertService.addError();
           }
-        });
+        }
+      );
     };
   }
 ];

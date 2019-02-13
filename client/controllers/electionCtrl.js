@@ -22,14 +22,14 @@ module.exports = [
      * Tries to find an active election
      */
     function getActiveElection() {
-      return electionService
-        .getActiveElection()
-        .success(function(election) {
-          $scope.activeElection = election;
-        })
-        .error(function(err) {
-          alertService.addError(err.message);
-        });
+      return electionService.getActiveElection().then(
+        function(response) {
+          $scope.activeElection = response.data;
+        },
+        function(response) {
+          alertService.addError(response.data.message);
+        }
+      );
     }
     getActiveElection();
     socketIOService.listen('election', getActiveElection);
@@ -46,19 +46,18 @@ module.exports = [
      * Persists votes to the backend
      */
     $scope.vote = function() {
-      voteService
-        .vote($scope.selectedAlternative._id)
-        .success(function(vote) {
+      voteService.vote($scope.selectedAlternative._id).then(
+        function(response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
           alertService.addSuccess('Takk for din stemme!');
-          localStorageService.set('voteHash', vote.hash);
+          localStorageService.set('voteHash', response.data.hash);
           getActiveElection();
-        })
-        .error(function(error) {
+        },
+        function(response) {
           $window.scrollTo(0, 0);
           getActiveElection();
-          switch (error.name) {
+          switch (response.data.name) {
             case 'InactiveElectionError':
               alertService.addError(
                 'Denne avstemningen ser ut til å være deaktivert, vennligst prøv igjen.'
@@ -77,7 +76,8 @@ module.exports = [
             default:
               alertService.addError('Noe gikk galt, vennligst prøv igjen.');
           }
-        });
+        }
+      );
     };
 
     /**

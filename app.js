@@ -40,7 +40,7 @@ mongoose.connection.on('disconnected', store.close.bind(store));
 if (['development', 'protractor'].includes(process.env.NODE_ENV)) {
   const webpack = require('webpack');
   const webpackMiddleware = require('webpack-dev-middleware');
-  const config = require('./webpack/dev.config');
+  const config = require('./webpack.config');
   app.use(
     webpackMiddleware(webpack(config), {
       contentBase: 'public/',

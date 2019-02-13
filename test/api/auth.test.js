@@ -133,7 +133,7 @@ describe('Auth API', () => {
 
   it('should redirect from / to /admin for admins', async () => {
     passportStub.install(app);
-    passportStub.login(adminUser);
+    passportStub.login(adminUser.username);
 
     await request(app)
       .get('/')

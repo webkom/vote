@@ -1,6 +1,13 @@
 exports.config = {
   capabilities: {
-    browserName: process.env.BROWSER || 'chrome'
+    browserName: 'chrome',
+    chromeOptions: {
+      args: [
+        process.env.HEADLESS && '--headless',
+        '--disable-gpu',
+        '--disable-dev-shm-usage'
+      ].filter(Boolean)
+    }
   },
   baseUrl: 'http://localhost:3000',
   specs: ['*.feature'],
@@ -9,7 +16,6 @@ exports.config = {
   directConnect: true,
   cucumberOpts: {
     require: ['step_definitions/*.js', 'support/*.js'],
-    backtrace: true,
-    tags: process.env.TAGS
+    backtrace: true
   }
 };

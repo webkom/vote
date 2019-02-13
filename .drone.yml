@@ -1,0 +1,60 @@
+pipeline:
+  setup:
+    image: node:11
+    when:
+      event: [push]
+    commands:
+      - yarn
+  integration-tests:
+    image: circleci/node:11-browsers
+    when:
+      event: [push]
+    group: testing
+    commands:
+      # This image runs with a custom user (circleci)by default,
+      # and chrome headless doesn't work for the root user.
+      # --> Fix some file permissions before start
+      - sudo su -c "mkdir -p /root/.config/yarn/"
+      - sudo su -c "chown -R circleci:circleci ."
+      - sudo su -c "chown -R circleci:circleci /root/"
+      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test HEADLESS=true yarn protractor
+  lint:
+    image: node:11
+    when:
+      event: [push]
+    group: testing
+    commands:
+      - yarn lint
+  test:
+    image: node:11
+    when:
+      event: [push]
+    group: testing
+    commands:
+      - MONGO_URL=mongodb://mongodb:27017/vote-test yarn mocha
+  build:
+    image: node:11
+    when:
+      event: [push]
+      branch:
+        exclude: [prod]
+    group: testing
+    commands:
+      - yarn build
+  docker:
+    image: plugins/docker
+    when:
+      branch:
+        - prod
+      event: push
+      status: success
+    repo: abakus/vote
+    secrets: [docker_username, docker_password]
+    tags:
+      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    build_args:
+      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+
+services:
+  mongodb:
+    image: mongo:3.6

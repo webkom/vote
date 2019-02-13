@@ -75,7 +75,6 @@ Feature: Admin
     When I scan card key "1234"
     And I scan card key "1235"
     Then I see alert "Bruker har blitt aktivert."
-    And I count 1 ".alert"
 
   Scenario: Activating user with invalid card key
     Given There is an active user with card key "1234"

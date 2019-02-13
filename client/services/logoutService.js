@@ -4,7 +4,7 @@ module.exports = [
   function($http, $window) {
     return {
       logout: function() {
-        $http.post('/auth/logout').success(function() {
+        $http.post('/auth/logout').then(function() {
           $window.location.href = '/';
         });
       }

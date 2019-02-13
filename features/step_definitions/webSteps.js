@@ -66,7 +66,7 @@ module.exports = function() {
   );
 
   this.Then(/^I see alert "([^"]*)"$/, text => {
-    const alert = element(by.cssContainingText('.alert', text));
+    const alert = element(by.tagName('uib-alert'));
     return alert.isPresent().then(isPresent => {
       expect(isPresent).to.equal(true);
       return expect(alert.getText()).to.eventually.contain(text);
