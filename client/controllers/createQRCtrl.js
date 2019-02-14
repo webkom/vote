@@ -2,10 +2,11 @@ const cryptoRandomString = require('crypto-random-string');
 
 module.exports = [
   '$scope',
+  '$window',
   'userService',
   'alertService',
   'cardKeyService',
-  function($scope, userService, alertService, cardKeyService) {
+  function($scope, $window, userService, alertService, cardKeyService) {
     $scope.user = {};
 
     $scope.createUser = function(user) {
@@ -35,11 +36,16 @@ module.exports = [
       $scope.user.cardKey = cardKey;
       $scope.$apply();
 
+      const username = cryptoRandomString(10);
+      const password = cryptoRandomString(10);
+      const code = cryptoRandomString(10);
+
       $scope.createUser({
         cardKey,
-        username: cryptoRandomString(10),
-        password: cryptoRandomString(10)
+        username: username,
+        password: password
       });
+      $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}`;
     });
   }
 ];

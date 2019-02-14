@@ -10,4 +10,5 @@ angular
   .controller('electionsController', require('./electionsCtrl'))
   .controller('logoutController', require('./logoutCtrl'))
   .controller('retrieveVoteController', require('./retrieveVoteCtrl'))
+  .controller('showQRController', require('./showQRCtrl'))
   .controller('toggleUserController', require('./toggleUserController'));

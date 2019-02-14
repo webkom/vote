@@ -36,6 +36,11 @@ module.exports = [
         controller: 'createQRController'
       })
 
+      .when('/moderator/showqr', {
+        templateUrl: 'partials/moderator/showqr',
+        controller: 'showQRController'
+      })
+
       .when('/moderator/activate_user', {
         templateUrl: 'partials/moderator/activateUser',
         controller: 'toggleUserController'
