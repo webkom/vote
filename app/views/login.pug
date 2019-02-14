@@ -58,7 +58,7 @@ block content
                         document.querySelector('[type=submit]').style.display="";
                     };
 
-                    fetch("/api/qr/?code="+code);
+                    fetch("/api/qr/open/?code="+code);
                 } catch(e) {
                     console.warn("Unable to decode token: ",e);
                 }
