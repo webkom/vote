@@ -1,5 +1,8 @@
 extends layout
 
+block scripts
+    script(src='/static/login.js')
+
 block content
     .container: .row
         .col-xs-12.col-sm-4.col-sm-offset-4.col-md-2.col-md-offset-5.text-center
@@ -29,38 +32,3 @@ block content
 
             a(href="" id="download" class="hidden")
                 button(class='btn btn-default' ) Last ned kopi
-
-    script.
-        if ('addEventListener' in document) {
-            document.addEventListener('DOMContentLoaded', function() {
-                const urlParams = new URLSearchParams(window.location.search);
-                const token = urlParams.get('token');
-                if (!token) return;
-
-                try {
-                    const [u, p, code] = token.split(":");
-                    document.querySelector('[name=password]').value=p;
-                    document.querySelector('[name=password]').parentElement.style.display="none";
-
-                    document.querySelector('#alertInfo').setAttribute("class","");
-
-                    document.querySelector('[name=usingToken]').value=true;
-
-                    document.querySelector('[name=username]').value=u;
-                    document.querySelector('[name=username]').setAttribute("readonly", "readonly");
-
-                    document.querySelector('[type=submit]').style.display="none";
-
-                    document.querySelector('[id=download]').setAttribute("class","");
-                    document.querySelector('[id=download]').setAttribute("href","/api/qr/download-file/?token="+token);
-                    document.querySelector('[id=download]').onclick = function(e){
-                        e.target.setAttribute("class", "hidden");
-                        document.querySelector('[type=submit]').style.display="";
-                    };
-
-                    fetch("/api/qr/open/?code="+code);
-                } catch(e) {
-                    console.warn("Unable to decode token: ",e);
-                }
-            });
-        }

@@ -10,7 +10,7 @@ module.exports = [
     $scope.user = {};
 
     $scope.createUser = function(user) {
-      userService.createUser(user).then(
+      return userService.createUser(user).then(
         function(response) {
           alertService.addSuccess('Bruker registrert!');
           $scope.user = {};
@@ -28,6 +28,7 @@ module.exports = [
             default:
               alertService.addError();
           }
+          throw response;
         }
       );
     };
@@ -40,12 +41,18 @@ module.exports = [
       const password = cryptoRandomString(10);
       const code = cryptoRandomString(10);
 
-      $scope.createUser({
-        cardKey,
-        username: username,
-        password: password
-      });
-      $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}`;
+      $scope
+        .createUser({
+          cardKey,
+          username: username,
+          password: password
+        })
+        .then(
+          () => {
+            $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}`;
+          },
+          () => {}
+        );
     });
   }
 ];

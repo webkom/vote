@@ -4,13 +4,16 @@ module.exports = {
   mode: 'none',
   output: {
     path: `${__dirname}/public`,
-    filename: 'bundle.js',
+    filename: '[name].js',
     publicPath: '/static/'
   },
   resolve: {
     extensions: ['.js', '.styl']
   },
-  entry: ['./client/app.js'],
+  entry: {
+    bundle: './client/app.js',
+    login: './client/login.js'
+  },
   module: {
     rules: [
       {
