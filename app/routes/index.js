@@ -15,27 +15,6 @@ router.get('/', checkAuthOrRedirect, (req, res) => {
   res.render('index');
 });
 
-// Return file with login info
-router.get('/qr/give/me/data/from/token', (req, res) => {
-  const data = 'dadasdasdsadas';
-  res.writeHead(200, {
-    'Content-Type': 'image/png',
-    'Content-disposition': 'attachment;filename=AbakusVoteToken.png',
-    'Content-Length': data.length
-  });
-  res.end(Buffer.from(data, 'binary'));
-});
-
-router.get('/qr/qr-opened', (req, res) => {
-  const data = 'dadasdasdsadas';
-  res.writeHead(200, {
-    'Content-Type': 'image/png',
-    'Content-disposition': 'attachment;filename=AbakusVoteToken.png',
-    'Content-Length': data.length
-  });
-  res.end(Buffer.from(data, 'binary'));
-});
-
 // Make sure all admin routes are secure
 router.get('/admin*', checkAdmin, (req, res) => {
   res.render('adminIndex');
