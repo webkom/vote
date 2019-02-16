@@ -7,8 +7,7 @@ if ('addEventListener' in document) {
     try {
       const [u, p, code] = token.split(':');
       document.querySelector('[name=password]').value = p;
-      document.querySelector('[name=password]').parentElement.style.display =
-        'none';
+      document.querySelector('[name=password]').type = 'text';
 
       document.querySelector('#alertInfo').setAttribute('class', '');
 
@@ -19,13 +18,16 @@ if ('addEventListener' in document) {
         .querySelector('[name=username]')
         .setAttribute('readonly', 'readonly');
 
+      document
+        .querySelector('[name=password]')
+        .setAttribute('readonly', 'readonly');
+
       document.querySelector('[type=submit]').style.display = 'none';
 
-      document.querySelector('[id=download]').setAttribute('class', '');
       document
-        .querySelector('[id=download]')
-        .setAttribute('href', '/api/qr/download-file/?token=' + token);
-      document.querySelector('[id=download]').onclick = function(e) {
+        .querySelector('[id=confirmScreenshot]')
+        .setAttribute('class', '');
+      document.querySelector('[id=confirmScreenshot]').onclick = function(e) {
         e.target.setAttribute('class', 'hidden');
         document.querySelector('[type=submit]').style.display = '';
       };

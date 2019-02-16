@@ -9,6 +9,17 @@ module.exports = [
   function($scope, $window, userService, alertService, cardKeyService) {
     $scope.user = {};
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const register = urlParams.get('status');
+
+    if (register == 'success') {
+      alertService.addSuccess('Bruker har blitt registrert.');
+    } else if (register == 'fail') {
+      alertService.addWarning(
+        'Bruker har blitt laget og deaktivert. Du må derfor bruke et nytt kort'
+      );
+    }
+
     $scope.createUser = function(user) {
       return userService.createUser(user).then(
         function(response) {
@@ -48,7 +59,7 @@ module.exports = [
         })
         .then(
           () => {
-            $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}`;
+            $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}&cardKey=${cardKey}`;
           },
           () => {}
         );

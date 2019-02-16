@@ -5,7 +5,7 @@ block scripts
 
 block content
     .container: .row
-        .col-xs-12.col-sm-4.col-sm-offset-4.col-md-2.col-md-offset-5.text-center
+        .col-xs-12.col-sm-4.col-sm-offset-4.col-md-4.text-center
             form(action='/auth/login', method='post', role='form')
                 input(type='hidden', name='_csrf', value=csrfToken)
                 .form-group
@@ -24,11 +24,11 @@ block content
                         h5 Velkommen til VOTE
                         p Du har nå fått bruker, og er nesten klar til å logge inn.
                         p 
-                            span Før du logger inn, må du laste ned en kopi av innloggingsinformasjonenen din 
-                            span sånn at du kan logge inn på andre enheter, eller hvis du blir logget ut.
+                            span Før du logger inn, <b>MÅ DU</b> ta screenshot av innloggingsinformasjonenen  
+                            span sånn at du kan logge inn på andre enheter, samt logge inn her hvis du blir logget ut.
 
                         
                 button(class='btn btn-default', type='submit') Logg på
 
-            a(href="" id="download" class="hidden")
-                button(class='btn btn-default' ) Last ned kopi
+            div(id="confirmScreenshot" class="hidden")
+                button(class='btn btn-default' ) JA, jeg har tatt screenshot
