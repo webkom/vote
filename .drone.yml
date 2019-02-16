@@ -2,13 +2,17 @@ pipeline:
   setup:
     image: node:11
     when:
-      event: [push]
+      event:
+        - push
+        - pull_request
     commands:
       - yarn
   integration-tests:
     image: circleci/node:11-browsers
     when:
-      event: [push]
+      event:
+        - push
+        - pull_request
     group: testing
     commands:
       # This image runs with a custom user (circleci)by default,
@@ -21,21 +25,27 @@ pipeline:
   lint:
     image: node:11
     when:
-      event: [push]
+      event:
+        - push
+        - pull_request
     group: testing
     commands:
       - yarn lint
   test:
     image: node:11
     when:
-      event: [push]
+      event:
+        - push
+        - pull_request
     group: testing
     commands:
       - MONGO_URL=mongodb://mongodb:27017/vote-test yarn mocha
   build:
     image: node:11
     when:
-      event: [push]
+      event:
+        - push
+        - pull_request
       branch:
         exclude: [prod]
     group: testing
