@@ -9,9 +9,10 @@
     "test": "yarn lint && yarn mocha && yarn protractor",
     "db:reset": "node --no-deprecation test/scripts/db_reset.js",
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
-    "lint": "yarn lint:eslint && yarn lint:prettier",
+    "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:yaml",
     "lint:eslint": "eslint . --ignore-path .gitignore",
     "lint:prettier": "prettier '**/*.js' --list-different --ignore-path .gitignore",
+    "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.js' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
@@ -84,6 +85,7 @@
     "sinon": "7.2.2",
     "sinon-chai": "3.3.0",
     "supertest": "3.3.0",
-    "webpack-dev-middleware": "3.5.0"
+    "webpack-dev-middleware": "3.5.0",
+    "yaml-lint": "1.2.4"
   }
 }
