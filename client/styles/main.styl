@@ -81,6 +81,9 @@ a
 h2, h3, .btn
     font-weight 300
 
+hr
+  margin 10px 0
+
 .alert
     margin 15px auto
     max-width 90%
@@ -133,12 +136,20 @@ label
 
 .hidden
     display none
-          
 
 @media (max-width 1000px)
     .vote-result-form
         input
-            width 100%
+          width 100%
+
+.usage-flex
+  display flex
+  justify-content space-between
+  margin 0 10px
+
+  a
+    align-self flex-end
+
 
 @import 'election'
 @import 'admin'

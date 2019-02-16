@@ -1,0 +1,24 @@
+extends layout
+
+
+block content
+  .center
+    .usage-flex
+      h2 Anledninger
+      a(href='https://vote.abakus.no') ← Tilbake
+
+  .center
+    .usage-ection
+      for item in usage.slice().reverse()
+        hr
+        .usage-flex
+          b= item.what
+          h4= item.when
+        div(class='usage-flex')
+            h5 Organisasjon:
+            h5= item.who
+        div(class='usage-flex')
+            h5 Antall brukere:
+            h5= item.users
+
+

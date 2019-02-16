@@ -55,6 +55,12 @@ $ yarn test
 $ HEADLESS=true yarn test
 ```
 
+## Vote occasion
+
+We have a list of every occasion vote has been used. If you or your organization use vote for your event we would love if you made a PR where you append your event to the list.
+
+The list is located at `./usage.yml`. Just create a new entry at the bottom.
+
 ---
 
 MIT © webkom, Abakus Linjeforening
