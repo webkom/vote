@@ -2,6 +2,10 @@
   who: Abakus
   what: Generalforsamling
   users: '~100'
+- when: '17.feb 2017'
+  who: Nabla
+  what: Generalforsamling
+  users: '~100'
 - when: '03.mar 2017'
   who: Abakus
   what: Generalforsamling
@@ -18,14 +22,26 @@
   who: Abakus
   what: Generalforsamling
   users: 110
+- when: '26.feb 2018'
+  who: Nabla
+  what: Generalforsamling
+  users: ~100
 - when: '03.okt 2018'
   who: Webkom
   what: Nestledervalg
   users: 12
+- when: '13.nov 2018'
+  who: Nabla
+  what: Ekstraordinær generalforsamling
+  users: ~50
 - when: '28.jan 2019'
   who: Webkom
   what: Ledervalg
   users: 14
+- when: '11.feb 2018'
+  who: Nabla
+  what: Generalforsamling
+  users: ~100
 - when: '22.feb 2019'
   who: Abakus
   what: Generalforsamling
