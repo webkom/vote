@@ -14,8 +14,14 @@ vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vot
 ```bash
 $ git clone git@github.com:webkom/vote.git
 $ cd vote
+
+# Start MongoDB-server
+$ docker-compose up -d
+
 $ yarn
-$ ./bin/users create-admin <username> <cardKey>
+
+# Create a user via the CLI. You are promted to select usertype.
+$ ./bin/users create-user <username> <cardKey>
 ```
 
 ## Usage
