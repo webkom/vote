@@ -24,17 +24,19 @@ html(ng-app='voteApp')
                 .row: block navbar
 
         block content
-        
+
 
         footer
             .container.text-center
-            
+
               block footer
                   a(href='#', ng-controller='logoutController', ng-click='logout()' tabindex='-1') Logg ut
                   |  | Made by
                   a(href='http://github.com/webkom/vote' tabindex='-1' target="_blank")  webkom
                   |  | For
-                  a.red(href='https://abakus.no' tabindex='-1' target="_blank")  Abakus
+                  a(href='https://abakus.no' tabindex='-1' target="_blank")  Abakus
+                  |  | View
+                  a(href='https://vote.abakus.no/usage' tabindex='-1' target="_blank")  Usage
 
         script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
         script.

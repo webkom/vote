@@ -25,6 +25,11 @@ router.get('/moderator*', checkModerator, (req, res) => {
   res.render('moderatorIndex');
 });
 
+// Make sure usage is a open page
+router.get('/usage', (req, res) => {
+  res.render('usage');
+});
+
 // Extra check in case someone tries to request an admin partial directly
 router.get('/partials/admin/*', checkAdminPartial, (req, res) => {
   res.render(`partials/admin/${req.params[0]}`);

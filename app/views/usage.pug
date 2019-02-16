@@ -1,0 +1,36 @@
+extends layout
+
+
+block content
+  .center
+    .usage-flex
+      h2 Anledninger
+      a(href='https://vote.abakus.no') ← Tilbake
+
+  -
+    var list = [
+      {'when': '22.feb 2019', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': 'xxx'},
+      {'when': '28.jan 2019', 'who': 'Webkom', 'what': 'Ledervalg', 'users': '14'},
+      {'when': '03.okt 2018', 'who': 'Webkom', 'what': 'Nestledervalg', 'users': '12'},
+      {'when': '23.feb 2018', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '110'},
+      {'when': '29.jan 2018', 'who': 'Webkom', 'what': 'Ledervalg', 'users': '~13'},
+      {'when': '05.okt 2017', 'who': 'Webkom', 'what': 'Nestledervalg', 'users': '~12'},
+      {'when': '03.mar 2017', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '~100'},
+      {'when': '04.mar 2016', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '~100'}
+    ]
+
+  .center
+    .usage-ection
+      for item in list
+        hr
+        .usage-flex
+          b= item.what
+          h4= item.when
+        div(class='usage-flex')
+            h5 Organization:
+            h5= item.who
+        div(class='usage-flex')
+            h5 Users:
+            h5= item.users
+
+
