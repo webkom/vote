@@ -4,7 +4,7 @@ services:
   mongo:
     image: mongo:3.6
   vote:
-    image: abakus/vote:55a2d3b435455eb8ba65c121e340ebef62afab16
+    image: abakus/vote:latest
     environment:
       MONGO_URL: 'mongodb://mongo:27017/vote'
     ports:
