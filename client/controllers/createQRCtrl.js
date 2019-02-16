@@ -12,7 +12,6 @@ module.exports = [
     $scope.createUser = function(user) {
       return userService.createUser(user).then(
         function(response) {
-          alertService.addSuccess('Bruker registrert!');
           $scope.user = {};
         },
         function(response) {
