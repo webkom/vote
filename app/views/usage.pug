@@ -7,21 +7,9 @@ block content
       h2 Anledninger
       a(href='https://vote.abakus.no') ← Tilbake
 
-  -
-    var list = [
-      {'when': '04.mar 2016', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '~100'},
-      {'when': '03.mar 2017', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '~100'},
-      {'when': '05.okt 2017', 'who': 'Webkom', 'what': 'Nestledervalg', 'users': '~12'},
-      {'when': '29.jan 2018', 'who': 'Webkom', 'what': 'Ledervalg', 'users': '~13'},
-      {'when': '23.feb 2018', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': '110'},
-      {'when': '03.okt 2018', 'who': 'Webkom', 'what': 'Nestledervalg', 'users': '12'},
-      {'when': '28.jan 2019', 'who': 'Webkom', 'what': 'Ledervalg', 'users': '14'},
-      {'when': '22.feb 2019', 'who': 'Abakus', 'what': 'Generalforsamling', 'users': 'xxx'},
-    ]
-
   .center
     .usage-ection
-      for item in list.reverse()
+      for item in usage.slice().reverse()
         hr
         .usage-flex
           b= item.what

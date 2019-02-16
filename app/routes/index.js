@@ -2,11 +2,20 @@ const router = require('express-promise-router')();
 const apiRoutes = require('./api');
 const authRoutes = require('./auth');
 const helpers = require('./helpers');
+
+const fs = require('fs');
+const path = require('path');
+const YAML = require('yaml');
+
 const checkAuthOrRedirect = helpers.checkAuthOrRedirect;
 const checkAdmin = helpers.checkAdmin;
 const checkModerator = helpers.checkModerator;
 const checkAdminPartial = helpers.checkAdminPartial;
 const checkModeratorPartial = helpers.checkModeratorPartial;
+
+const usage = YAML.parse(
+  fs.readFileSync(path.resolve(__dirname, '../../usage.yml'), 'utf8')
+);
 
 // Admin users shouldn't be able to vote, so they don't need to see the election page
 router.get('/', checkAuthOrRedirect, (req, res) => {
@@ -27,7 +36,7 @@ router.get('/moderator*', checkModerator, (req, res) => {
 
 // Make sure usage is a open page
 router.get('/usage', (req, res) => {
-  res.render('usage');
+  res.render('usage', { usage });
 });
 
 // Extra check in case someone tries to request an admin partial directly

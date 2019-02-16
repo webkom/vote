@@ -59,7 +59,7 @@ $ HEADLESS=true yarn test
 
 We have a list of every occasion vote has been used. If you or your organization use vote for your event we would love if you made a PR where you append your event to the list.
 
-The list is located at `app/view/usage.pug`. Just create a new entry in the `list` variable.
+The list is located at `./usage.yml`. Just create a new entry at the bottom.
 
 ---
 
