@@ -38,11 +38,17 @@ An example deployment can be found in the `./deployment` folder.
 $ yarn start
 ```
 
+### Environment variables
+
+- `LOGO_SRC` _(optional)_
+  - Url to the main logo on all pages
+  - `default`: `/static/images/Abakule.jpg`
+
 ### Production
 
 ```bash
 $ yarn build
-$ NODE_ENV=production yarn start
+$ LOGO_SRC=https://my-domain.tld/logo.png NODE_ENV=production yarn start
 ```
 
 ## Tests

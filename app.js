@@ -14,6 +14,7 @@ const favicon = require('serve-favicon');
 const raven = require('raven');
 const router = require('./app/routes');
 const User = require('./app/models/user');
+const env = require('./env');
 
 app.disable('x-powered-by');
 app.set('view engine', 'pug');
@@ -62,8 +63,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(flash());
 
-app.locals.NODE_ENV = process.env.NODE_ENV || 'development';
-
 app.use(
   session({
     cookie: { maxAge: 1000 * 3600 * 24 * 30 * 3 }, // Three months
@@ -73,6 +72,11 @@ app.use(
     resave: false
   })
 );
+const { LOGO_SRC, NODE_ENV } = env;
+app.locals = Object.assign({}, app.locals, {
+  NODE_ENV,
+  LOGO_SRC
+});
 
 /* istanbul ignore if */
 if (process.env.NODE_ENV !== 'test') {

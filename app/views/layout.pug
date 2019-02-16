@@ -18,7 +18,7 @@ html(ng-app='voteApp')
         header
             .container
                 .row.header: .col-xs-12
-                    img(src='/static/images/Abakule.jpg')
+                    img(src=LOGO_SRC)
                     span vote
 
                 .row: block navbar
@@ -36,7 +36,7 @@ html(ng-app='voteApp')
                   |  | For
                   a(href='https://abakus.no' tabindex='-1' target="_blank")  Abakus
                   |  | Se
-                  a(href='https://vote.abakus.no/usage' tabindex='-1' target="_blank")  bruk
+                  a(href='/usage' tabindex='-1' target="_blank")  bruk
 
         script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
         script.
