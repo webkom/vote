@@ -19,6 +19,10 @@ module.exports = function() {
     logIn('admin', 'password');
   });
 
+  this.Given(/^I am logged in as a moderator$/, () => {
+    logIn('moderator', 'password');
+  });
+
   this.When(/^I log in$/, () => {
     logIn('testUser', 'password');
   });

@@ -1,0 +1,8 @@
+.row
+    .text-center.image-block
+        h3 Scan QR-Kode!
+        img.className#IdName(ng-attr-src="{{qrdata}}" alt="Image QR-kode" width="600" height="600")
+
+    .text-center
+        button(class='btn btn-default' ng-click="close()" ) Lukk
+        button(class='btn btn-default' ng-click="closeAndDeactivate()") Lukk og deaktiver bruker

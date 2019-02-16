@@ -1,8 +1,11 @@
 extends layout
 
+block scripts
+    script(src='/static/login.js')
+
 block content
     .container: .row
-        .col-xs-12.col-sm-4.col-sm-offset-4.col-md-2.col-md-offset-5.text-center
+        .col-xs-12.col-sm-4.col-sm-offset-4.col-md-4.text-center
             form(action='/auth/login', method='post', role='form')
                 input(type='hidden', name='_csrf', value=csrfToken)
                 .form-group
@@ -11,6 +14,21 @@ block content
                 .form-group
                     label(for='password') Passord:
                     input(name='password', type='password', class='form-control')
+                
+                input(name='usingToken', class='hidden', value='false')
                 if feedback
                     p= feedback
+
+                div(class="hidden", id="alertInfo")
+                    div(class="alert alert-info")
+                        h5 Velkommen til VOTE
+                        p Du har nå fått bruker, og er nesten klar til å logge inn.
+                        p 
+                            span Før du logger inn, <b>MÅ DU</b> ta screenshot av innloggingsinformasjonenen  
+                            span sånn at du kan logge inn på andre enheter, samt logge inn her hvis du blir logget ut.
+
+                        
                 button(class='btn btn-default', type='submit') Logg på
+
+            div(id="confirmScreenshot" class="hidden")
+                button(class='btn btn-default' ) JA, jeg har tatt screenshot

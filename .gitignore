@@ -34,6 +34,7 @@ node_modules
 dist
 db
 public/bundle.js
+public/login.js
 public/main.css
 screenshots
 *.mp4
