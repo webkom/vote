@@ -6,6 +6,9 @@ services:
   vote:
     image: abakus/vote:latest
     environment:
+      # Reed more about these in the README-file in the base directory
       MONGO_URL: 'mongodb://mongo:27017/vote'
+      COOKIE_SECRET: 'long-secret-here-is-important'
+      LOGO_SRC: 'https://raw.githubusercontent.com/webkom/lego/master/assets/abakus_webkom.png'
     ports:
       - '127.0.0.1:3000:3000'
