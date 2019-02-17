@@ -40,9 +40,17 @@ $ yarn start
 
 ### Environment variables
 
+- `MONGO_URL`
+  - Url to the database connection
+  - `default`: `mongodb://localhost:27017/vote`
 - `LOGO_SRC` _(optional)_
   - Url to the main logo on all pages
   - `default`: `/static/images/Abakule.jpg`
+- `COOKIE_SECRET`
+  - **IMPORTANT** to change this to a secret value in production!!
+  - `default`: in dev: `localsecret`, otherwise empty
+
+See `app.js` for the reset
 
 ### Production
 

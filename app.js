@@ -19,7 +19,7 @@ const env = require('./env');
 app.disable('x-powered-by');
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
-app.set('mongourl', process.env.MONGO_URL || 'mongodb://localhost:27017/vote');
+app.set('mongourl', env.MONGO_URL);
 
 mongoose.Promise = Bluebird;
 mongoose.connect(
@@ -28,7 +28,7 @@ mongoose.connect(
 );
 mongoose.set('useCreateIndex', true);
 
-raven.config(process.env.RAVEN_DSN).install();
+raven.config(env.RAVEN_DSN).install();
 
 app.use(raven.requestHandler());
 
@@ -42,7 +42,7 @@ const store = new MongoStore({
 // TODO: This can also be removed when the above is fixed:
 mongoose.connection.on('disconnected', store.close.bind(store));
 
-if (['development', 'protractor'].includes(process.env.NODE_ENV)) {
+if (['development', 'protractor'].includes(env.NODE_ENV)) {
   const webpack = require('webpack');
   const webpackMiddleware = require('webpack-dev-middleware');
   const config = require('./webpack.config');
@@ -63,10 +63,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(flash());
 
+if (env.NODE_ENV === 'production' && !env.COOKIE_SECRET) {
+  throw 'When running in production, you need to set the COOKIE_SECRET environment variable to something secret, else your setup will be insecure';
+}
+
 app.use(
   session({
     cookie: { maxAge: 1000 * 3600 * 24 * 30 * 3 }, // Three months
-    secret: process.env.COOKIE_SECRET || 'localsecret',
+    secret: env.COOKIE_SECRET || 'localsecret',
     store,
     saveUninitialized: true,
     resave: false
@@ -79,7 +83,7 @@ app.locals = Object.assign({}, app.locals, {
 });
 
 /* istanbul ignore if */
-if (process.env.NODE_ENV !== 'test') {
+if (env.NODE_ENV !== 'test') {
   app.use(csrf());
 
   app.use((req, res, next) => {

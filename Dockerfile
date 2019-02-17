@@ -14,4 +14,5 @@ COPY . /app
 RUN yarn --production
 
 ENV NODE_ENV production
+ENV HOST 0.0.0.0
 ENTRYPOINT ["yarn", "start"]
