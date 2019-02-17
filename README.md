@@ -50,7 +50,7 @@ $ yarn start
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
 
-See `app.js` for the reset
+See `app.js` for the rest
 
 ### Production
 
