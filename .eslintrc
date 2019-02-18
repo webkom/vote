@@ -4,7 +4,8 @@
       "prettier"
     ],
     "parserOptions": {
-      "ecmaVersion": 8
+      "ecmaVersion": 8,
+      "sourceType": "module"
     },
     "rules": {
         "no-unused-vars": [2, { "args": "none" }],

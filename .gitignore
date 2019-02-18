@@ -35,6 +35,7 @@ dist
 db
 public/bundle.js
 public/login.js
+public/*.js
 public/main.css
 screenshots
 *.mp4

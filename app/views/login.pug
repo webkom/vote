@@ -6,6 +6,8 @@ block scripts
 block content
     .container: .row
         .col-xs-12.col-sm-4.col-sm-offset-4.col-md-4.text-center
+            video(id="testing", muted, playsinline, style="width: 100%")
+            br
             form(action='/auth/login', method='post', role='form')
                 input(type='hidden', name='_csrf', value=csrfToken)
                 .form-group
@@ -18,17 +20,17 @@ block content
                 input(name='usingToken', class='hidden', value='false')
                 if feedback
                     p= feedback
-
+                
                 div(class="hidden", id="alertInfo")
-                    div(class="alert alert-info")
-                        h5 Velkommen til VOTE
-                        p Du har nå fått bruker, og er nesten klar til å logge inn.
-                        p 
-                            span Før du logger inn, <b>MÅ DU</b> ta screenshot av innloggingsinformasjonenen  
-                            span sånn at du kan logge inn på andre enheter, samt logge inn her hvis du blir logget ut.
+                    img(id="qrImg" width="50%")
+                    div(class="alert alert-danger")
+                        p
+                            b Velkommen til VOTE
+                        p Ta <b>screenshot</b> av denne siden for å lagre brukernavn og passord
 
                         
                 button(class='btn btn-default', type='submit') Logg på
+            br
 
             div(id="confirmScreenshot" class="hidden")
-                button(class='btn btn-default' ) JA, jeg har tatt screenshot
+                button(class='btn btn-default' ) Jeg har tatt screenshot

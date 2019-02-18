@@ -71,17 +71,6 @@ describe('Auth API', () => {
     header.location.should.equal('/');
   });
 
-  it('should redirect correctly on login', async () => {
-    const agent = request.agent(app);
-    await agent.get('/test').expect(302);
-    const { header } = await agent
-      .post('/auth/login')
-      .send(testUser)
-      .expect(302);
-
-    header.location.should.equal('/test');
-  });
-
   it('should redirect to login with flash on bad auth', async () => {
     const agent = request.agent(app);
     const { header } = await agent
