@@ -5,6 +5,12 @@ const mongoose = require('mongoose');
 const Election = require('./election');
 const Vote = require('./vote');
 const errors = require('../errors');
+const env = require('../../env');
+
+const redisClient = require('redis').createClient(6379, env.REDIS_URL);
+const Redlock = require('redlock');
+
+const redlock = new Redlock([redisClient], {});
 
 const Schema = mongoose.Schema;
 
@@ -38,11 +44,18 @@ alternativeSchema.methods.addVote = async function(user) {
   if (user.admin) throw new errors.AdminVotingError();
   if (user.moderator) throw new errors.ModeratorVotingError();
 
+  const lock = await redlock.lock('vote:' + user.username, 2000);
   const election = await Election.findById(this.election).exec();
-  if (!election.active) throw new errors.InactiveElectionError();
+  if (!election.active) {
+    await lock.unlock();
+    throw new errors.InactiveElectionError();
+  }
   const votedUsers = election.hasVotedUsers.toObject();
   const hasVoted = _.find(votedUsers, { user: user._id });
-  if (hasVoted) throw new errors.AlreadyVotedError();
+  if (hasVoted) {
+    await lock.unlock();
+    throw new errors.AlreadyVotedError();
+  }
 
   // 24 character random string
   const voteHash = crypto.randomBytes(12).toString('hex');
@@ -50,7 +63,11 @@ alternativeSchema.methods.addVote = async function(user) {
 
   election.hasVotedUsers.push({ user: user._id });
   await election.save();
-  return vote.save();
+  const savedVote = await vote.save();
+
+  await lock.unlock();
+
+  return savedVote;
 };
 
 module.exports = mongoose.model('Alternative', alternativeSchema);

@@ -43,6 +43,9 @@ $ yarn start
 - `MONGO_URL`
   - Url to the database connection
   - `default`: `mongodb://localhost:27017/vote`
+- `REDIS_URL`
+  - Hostname of the redis server
+  - `default`: `localhost`
 - `LOGO_SRC` _(optional)_
   - Url to the main logo on all pages
   - `default`: `/static/images/Abakule.jpg`

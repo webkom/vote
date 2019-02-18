@@ -21,7 +21,7 @@ pipeline:
       - sudo su -c "mkdir -p /root/.config/yarn/"
       - sudo su -c "chown -R circleci:circleci ."
       - sudo su -c "chown -R circleci:circleci /root/"
-      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test HEADLESS=true yarn protractor
+      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
   lint:
     image: node:11
     when:
@@ -39,7 +39,7 @@ pipeline:
         - pull_request
     group: testing
     commands:
-      - MONGO_URL=mongodb://mongodb:27017/vote-test yarn mocha
+      - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
   build:
     image: node:11
     when:
@@ -68,3 +68,5 @@ pipeline:
 services:
   mongodb:
     image: mongo:3.6
+  redis:
+    image: redis:latest
