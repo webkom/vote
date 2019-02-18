@@ -10,5 +10,6 @@ module.exports = {
   HOST: process.env.HOST || 'localhost',
   // DSN url for reporting errors to sentry
   RAVEN_DSN: process.env.RAVEN_DSN,
-  MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote'
+  MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote',
+  REDIS_URL: process.env.REDIS_URL || 'localhost'
 };

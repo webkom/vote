@@ -136,6 +136,27 @@ describe('Vote API', () => {
     votes.length.should.equal(1);
   });
 
+  it('should not be vulnerable to race conditions', async function() {
+    const create = () =>
+      request(app)
+        .post('/api/vote')
+        .send(votePayload(this.activeAlternative.id));
+    await Promise.all([
+      create(),
+      create(),
+      create(),
+      create(),
+      create(),
+      create(),
+      create(),
+      create(),
+      create(),
+      create()
+    ]);
+    const votes = await Vote.find({ alternative: this.activeAlternative.id });
+    votes.length.should.equal(1);
+  });
+
   it('should not be possible to vote without logging in', async function() {
     passportStub.logout();
     const { body: error } = await request(app)
