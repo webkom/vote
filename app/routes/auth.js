@@ -24,8 +24,9 @@ router.post(
   }),
   (req, res) => {
     // If the user tried to access a specific page before, redirect there:
-    const path = req.session.originalPath || '/';
-    res.redirect(path);
+    // TODO FIXME
+    //const path = req.session.originalPath || '/';
+    res.redirect('/');
   }
 );
 

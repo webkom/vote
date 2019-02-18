@@ -1,8 +1,22 @@
+import QrScanner from 'qr-scanner';
+import QrScannerWorkerPath from '!!file-loader!qr-scanner/qr-scanner-worker.min.js';
+QrScanner.WORKER_PATH = QrScannerWorkerPath;
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
-    if (!token) return;
+    if (!token) {
+      QrScanner.hasCamera();
+      const qrScanner = new QrScanner(
+        document.getElementById('testing'),
+        result => {
+          window.location = result;
+        }
+      );
+      qrScanner.start();
+      console.log('dRunning');
+      return;
+    }
 
     try {
       const [u, p, code] = token.split(':');
@@ -23,6 +37,7 @@ if ('addEventListener' in document) {
         .setAttribute('readonly', 'readonly');
 
       document.querySelector('[type=submit]').style.display = 'none';
+      document.querySelector('#testing').style.display = 'none';
 
       document
         .querySelector('[id=confirmScreenshot]')
