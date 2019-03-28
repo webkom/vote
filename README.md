@@ -1,4 +1,4 @@
-# vote [![CircleCI](https://circleci.com/gh/webkom/vote.svg?style=shield)](https://circleci.com/gh/webkom/vote) [![Coverage Status](https://coveralls.io/repos/github/webkom/vote/badge.svg?branch=master)](https://coveralls.io/github/webkom/vote?branch=master)
+# vote [![DroneCI](https://ci.abakus.no/api/badges/webkom/vote/status.svg?branch=master)](https://ci.abakus.no/webkom/vote) [![Coverage Status](https://coveralls.io/repos/github/webkom/vote/badge.svg?branch=master)](https://coveralls.io/github/webkom/vote?branch=master) [![dependencies Status](https://david-dm.org/webkom/vote/status.svg)](https://david-dm.org/webkom/vote) [![devdependencies Status](https://david-dm.org/webkom/vote/dev-status.svg)](https://david-dm.org/webkom/vote?type=dev)
 
 > vote optimizes the election
 
