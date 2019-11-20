@@ -29,7 +29,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "angular": "1.7.5",
+    "angular": "1.7.9",
     "angular-local-storage": "0.7.1",
     "angular-route": "1.7.5",
     "angular1-ui-bootstrap4": "2.4.22",
