@@ -55,10 +55,7 @@ const handleConnectButton = () => {
   return connectToDevice(devicePath);
 };
 const connectToDevice = devicePath =>
-  connect(
-    devicePath,
-    onData
-  )
+  connect(devicePath, onData)
     .then(() => {
       $('#overlay').classList.add('hidden');
     })
