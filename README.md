@@ -11,6 +11,8 @@ Relevant (Norwegian) blog post: http://webkom.abakus.no/vote/
 
 vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vote`. To change the URL, export `MONGO_URL` as an environment variable.
 
+> NOTE: Running on Node v11.9.0 dude to bcrypt package
+
 ```bash
 $ git clone git@github.com:webkom/vote.git
 $ cd vote
