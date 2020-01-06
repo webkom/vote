@@ -33,7 +33,7 @@
     "angular-local-storage": "0.7.1",
     "angular-route": "1.7.5",
     "angular1-ui-bootstrap4": "2.4.22",
-    "bcrypt": "3.0.3",
+    "bcryptjs": "2.4.3",
     "bluebird": "3.5.3",
     "body-parser": "1.18.3",
     "chalk": "2.4.2",
