@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "card-scanner": "1.0.1"
+    "card-scanner": "1.0.2"
   },
   "devDependencies": {
     "electron": "4.0.1",
