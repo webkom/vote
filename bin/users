@@ -27,6 +27,12 @@ function validator(value) {
   return value;
 }
 
+const options = {
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+};
+
 program
   .version('1.0.0')
   .command('create-user <username> <cardKey>')
@@ -38,7 +44,7 @@ program
       'Usermode: \n [1] for User \n [2] for Moderator \n [3] for Admin \n Enter mode: ',
       { validator, retry: true },
       (modeErr, mode) => {
-        mongoose.connect(mongoURL, connectErr => {
+        mongoose.connect(mongoURL, options, connectErr => {
           if (connectErr) return done(connectErr);
 
           promptly.password('Enter password: ', (pwErr, password) => {

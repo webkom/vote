@@ -22,8 +22,11 @@ app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
 mongoose.Promise = Bluebird;
-mongoose.connect(app.get('mongourl'), { useNewUrlParser: true });
-mongoose.set('useCreateIndex', true);
+mongoose.connect(app.get('mongourl'), {
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+});
 
 raven.config(env.RAVEN_DSN).install();
 

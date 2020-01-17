@@ -1,6 +1,6 @@
 {
   "name": "vote",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Vote optimizes the election.",
   "main": "app.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "lint:prettier": "prettier '**/*.js' --list-different --ignore-path .gitignore",
     "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.js' --write",
-    "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit",
+    "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 3000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "protractor": "webdriver-manager update --standalone false && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "yarn build"
