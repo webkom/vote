@@ -73,7 +73,6 @@ module.exports = [
 
     return {
       listen: async function(cb) {
-        console.log($window.location.href);
         let port;
         if (!$rootScope.serialWriter || !$rootScope.serialReader) {
           try {
@@ -83,6 +82,9 @@ module.exports = [
             $rootScope.serialWriter = port.writable.getWriter();
             $rootScope.serialReader = port.readable.getReader();
           } catch (e) {
+            alert(
+              'Failed to initialize because of Serial API permission errors. Please navigate to another route to trigger a user action.'
+            );
             throw e;
           }
         }
