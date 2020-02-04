@@ -79,7 +79,6 @@ module.exports = [
             $rootScope.serialWriter = port.writable.getWriter();
             $rootScope.serialReader = port.readable.getReader();
           } catch (e) {
-            console.log(e);
             $rootScope.$apply(() => {
               $location.path('/moderator/serial_error');
             });
