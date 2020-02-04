@@ -3,13 +3,21 @@ const cryptoRandomString = require('crypto-random-string');
 module.exports = [
   '$scope',
   '$window',
+  '$location',
   'userService',
   'alertService',
   'cardKeyService',
-  function($scope, $window, userService, alertService, cardKeyService) {
+  function(
+    $scope,
+    $window,
+    $location,
+    userService,
+    alertService,
+    cardKeyService
+  ) {
     $scope.user = {};
 
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams($window.location.search);
     const register = urlParams.get('status');
 
     if (register == 'success') {
@@ -59,7 +67,9 @@ module.exports = [
         })
         .then(
           () => {
-            $window.location.href = `/moderator/showqr/?token=${username}:${password}:${code}&cardKey=${cardKey}`;
+            $location.url(
+              `/moderator/showqr/?token=${username}:${password}:${code}&cardKey=${cardKey}`
+            );
           },
           () => {}
         );

@@ -26,9 +26,7 @@ $ ./bin/users create-user <username> <cardKey>
 
 ## Usage
 
-vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. To access the RFID-reader vote is also packed as a Electron-app, in the `./electron-app`-folder.
-
-A binary version of the electron app can be found in [releases](https://github.com/webkom/vote/releases). Docker images can be found on dockerhub: [abakus/vote](https://hub.docker.com/r/abakus/vote).
+vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote.
 
 An example deployment can be found in the `./deployment` folder.
 

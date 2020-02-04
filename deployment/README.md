@@ -41,7 +41,8 @@ The vote service can be exposed to the web using a reverse-proxy like nginx, cad
 
 ## Using the card-readers
 
-To register new users, you have to use a version of `vote` wrapped inside of `electron`. The code can be found inside the `electron-app` path, or can be downloaded from the release page, https://github.com/webkom/vote/releases.
+Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Experimental features can be enabled by navigating to: chrome://flags/#enable-experimental-web-platform-features  
+Please check that the USB card reader is connected. When prompted for permissions, please select the card reader (CP210x).
 
 ### Register new users using input form
 
