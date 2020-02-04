@@ -25,15 +25,15 @@ const validate = (data, receivedChecksum) => {
 
 // Constants
 const replies = {
-  '00': 'OK', // eslint-disable-line
-  '01': 'ERROR', // eslint-disable-line
-  '83': 'NO CARD', // eslint-disable-line
-  '87': 'UNKNOWN INTERNAL ERROR', // eslint-disable-line
-  '85': 'UNKNOWN COMMAND', // eslint-disable-line
-  '84': 'RESPONSE ERROR', // eslint-disable-line
-  '82': 'READER TIMEOUT', // eslint-disable-line
-  '90': 'CARD DOES NOT SUPPORT THIS COMMAND', // eslint-disable-line
-  '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE' // eslint-disable-line
+  '00': 'OK',
+  '01': 'ERROR',
+  '83': 'NO CARD',
+  '87': 'UNKNOWN INTERNAL ERROR',
+  '85': 'UNKNOWN COMMAND',
+  '84': 'RESPONSE ERROR',
+  '82': 'READER TIMEOUT',
+  '90': 'CARD DOES NOT SUPPORT THIS COMMAND',
+  '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE'
 };
 
 const readCardCommand = createMessage(0x25, [0x26, 0x00]);
