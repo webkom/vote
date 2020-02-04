@@ -28,7 +28,9 @@ module.exports = [
     });
     socketIOService.listen('qr-opened', function(socketCode) {
       if (socketCode === code) {
-        $location.url('/moderator/qr?status=success');
+        $scope.$apply(() => {
+          $location.url('/moderator/qr?status=success');
+        });
       }
     });
     $scope.close = function() {

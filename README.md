@@ -26,7 +26,7 @@ $ ./bin/users create-user <username> <cardKey>
 
 ## Usage
 
-vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote.
+vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. The RFID-reader needs to be connected to the computer that is logged in to the moderator panel.
 
 An example deployment can be found in the `./deployment` folder.
 
