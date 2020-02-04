@@ -1,6 +1,6 @@
 pipeline:
   setup:
-    image: node:11
+    image: node:13
     when:
       event:
         - push
@@ -8,7 +8,7 @@ pipeline:
     commands:
       - yarn
   integration-tests:
-    image: circleci/node:11-browsers
+    image: circleci/node:13-browsers
     when:
       event:
         - push
@@ -23,7 +23,7 @@ pipeline:
       - sudo su -c "chown -R circleci:circleci /root/"
       - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
   lint:
-    image: node:11
+    image: node:13
     when:
       event:
         - push
@@ -32,7 +32,7 @@ pipeline:
     commands:
       - yarn lint
   test:
-    image: node:11
+    image: node:13
     when:
       event:
         - push
@@ -41,7 +41,7 @@ pipeline:
     commands:
       - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
   build:
-    image: node:11
+    image: node:13
     when:
       event:
         - push

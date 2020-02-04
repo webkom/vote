@@ -22,25 +22,15 @@ app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
 mongoose.Promise = Bluebird;
-mongoose.connect(
-  app.get('mongourl'),
-  { useNewUrlParser: true }
-);
-mongoose.set('useCreateIndex', true);
+mongoose.connect(app.get('mongourl'), {
+  useCreateIndex: true,
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+});
 
 raven.config(env.RAVEN_DSN).install();
 
 app.use(raven.requestHandler());
-
-const store = new MongoStore({
-  url: app.get('mongourl')
-  // TODO: re-enable this when
-  // https://github.com/jdesboeufs/connect-mongo/issues/277 is fixed:
-  // mongooseConnection: mongoose.connection
-});
-
-// TODO: This can also be removed when the above is fixed:
-mongoose.connection.on('disconnected', store.close.bind(store));
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
   const webpack = require('webpack');
@@ -71,7 +61,7 @@ app.use(
   session({
     cookie: { maxAge: 1000 * 3600 * 24 * 30 * 3 }, // Three months
     secret: env.COOKIE_SECRET || 'localsecret',
-    store,
+    store: new MongoStore({ mongooseConnection: mongoose.connection }), //re-use existing connection
     saveUninitialized: true,
     resave: false
   })

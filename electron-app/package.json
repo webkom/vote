@@ -1,6 +1,6 @@
 {
   "name": "vote-client",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Admin client with support for card reader",
   "main": "main.js",
   "scripts": {
@@ -31,7 +31,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "card-scanner": "1.0.1"
+    "card-scanner": "1.0.2"
   },
   "devDependencies": {
     "electron": "4.0.1",

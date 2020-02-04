@@ -1,6 +1,6 @@
 const _ = require('lodash');
 const Bluebird = require('bluebird');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 const errors = require('../errors');
 
