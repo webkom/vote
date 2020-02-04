@@ -100,17 +100,6 @@ module.exports = function() {
     );
   });
 
-  this.When(/^I scan card key "([^"]*)"$/, cardKey => {
-    browser.executeScript(`window.postMessage("${cardKey}", "*");`);
-  });
-
-  this.When(/^I delete users$/, () => {
-    const button = element(by.css('button'));
-
-    button.click();
-    button.click();
-  });
-
   this.Then(/^I should see ([\d]+) in "([^"]*)"$/, (count, binding) => {
     const countElement = element(by.binding(binding));
     return expect(countElement.getText()).to.eventually.equal(String(count));

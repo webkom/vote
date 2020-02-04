@@ -2,7 +2,7 @@ Feature: Election
   Users should be able to log in and out
 
   Background:
-    Given I am logged in as an moderator
+    Given I am logged in as a moderator
 
   Scenario: Log in
     When I log in
