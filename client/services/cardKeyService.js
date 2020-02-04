@@ -70,7 +70,7 @@ module.exports = [
 
     return {
       listen: async function(cb) {
-        // Listen to window messages. This is from the electron-app, but tests also depend on it
+        // Listen to window messages for test compatability.
         angular.element($window).bind('message', function(e) {
           cb(e.data);
         });
