@@ -64,16 +64,19 @@ module.exports = [
   'alertService',
   function($window, $location, $rootScope, alertService) {
     $rootScope.$on('$routeChangeStart', function() {
-      angular.element($window).unbind('click');
+      angular.element($window).unbind('message');
       clearInterval($rootScope.serialInterval);
     });
 
     return {
       listen: async function(cb) {
+        angular.element($window).bind('message', function(e) {
+          cb(e.data);
+        });
         let port;
         if (!$rootScope.serialWriter || !$rootScope.serialReader) {
           try {
-            port = await navigator.serial.requestPort({});
+            port = await $window.navigator.serial.requestPort({});
 
             await port.open({ baudrate: 9600 });
             $rootScope.serialWriter = port.writable.getWriter();
@@ -84,7 +87,9 @@ module.exports = [
             });
           }
         }
-        if (!port) return;
+        if (!$rootScope.serialWriter || !$rootScope.serialReader) {
+          return;
+        }
 
         let lastTime = 0;
         let lastData = 0;
