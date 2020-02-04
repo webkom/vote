@@ -1,17 +1,12 @@
-const calculateChecksum = (command, data) => {
-  const payload = [data.length + 1, command, ...data];
-  const checksum = payload.reduce(
-    (previousValue, currentValue) => previousValue ^ currentValue
-  );
-  return [...payload, checksum];
-};
+const checksum = data =>
+  data.reduce((previousValue, currentValue) => previousValue ^ currentValue);
 
 const createMessage = (command, data) => {
-  const payload = calculateChecksum(command, data);
+  const payload = [data.length + 1, command, ...data];
+  payload.push(checksum(payload));
+
   return new Uint8Array([0xaa, 0x00, ...payload, 0xbb]).buffer;
 };
-
-const command = createMessage(0x25, [0x26, 0x00]);
 
 const convertUID = data => {
   const reversed = data
@@ -22,13 +17,13 @@ const convertUID = data => {
   return parseInt(reversed, 16);
 };
 
-const validate = (data, checksum) => {
+const validate = (data, receivedChecksum) => {
   const dataDecimal = data.map(item => parseInt(item, 16));
-  const calculatedChecksum = dataDecimal.reduce(
-    (previousValue, currentValue) => previousValue ^ currentValue
-  );
-  return Math.abs(calculatedChecksum % 255) === parseInt(checksum, 16);
+  const calculatedChecksum = checksum(dataDecimal);
+  return Math.abs(calculatedChecksum % 255) === parseInt(receivedChecksum, 16);
 };
+
+// Constants
 const replies = {
   '00': 'OK', // eslint-disable-line
   '01': 'ERROR', // eslint-disable-line
@@ -40,6 +35,9 @@ const replies = {
   '90': 'CARD DOES NOT SUPPORT THIS COMMAND', // eslint-disable-line
   '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE' // eslint-disable-line
 };
+
+const readCardCommand = createMessage(0x25, [0x26, 0x00]);
+
 const parseData = response => {
   const hexValues = [];
   for (let i = 0; i < response.length; i += 1) {
@@ -61,14 +59,13 @@ const parseData = response => {
 
 module.exports = [
   '$window',
+  '$location',
   '$rootScope',
   'alertService',
-  function($window, $rootScope, alertService) {
+  function($window, $location, $rootScope, alertService) {
     $rootScope.$on('$routeChangeStart', function() {
       angular.element($window).unbind('click');
       clearInterval($rootScope.serialInterval);
-      // $rootScope.serialWriter.close();
-      // $rootScope.serialReader.close();
     });
 
     return {
@@ -82,12 +79,13 @@ module.exports = [
             $rootScope.serialWriter = port.writable.getWriter();
             $rootScope.serialReader = port.readable.getReader();
           } catch (e) {
-            alert(
-              'Failed to initialize because of Serial API permission errors. Please navigate to another route to trigger a user action.'
-            );
-            throw e;
+            console.log(e);
+            $rootScope.$apply(() => {
+              $location.path('/moderator/serial_error');
+            });
           }
         }
+        if (!port) return;
 
         let lastTime = 0;
         let lastData = 0;
@@ -103,7 +101,7 @@ module.exports = [
         };
 
         const readResult = async () => {
-          let message = [];
+          const message = [];
           let finished = false;
           while (!finished) {
             const { value } = await $rootScope.serialReader.read();
@@ -119,7 +117,7 @@ module.exports = [
         };
 
         $rootScope.serialInterval = setInterval(() => {
-          $rootScope.serialWriter.write(command);
+          $rootScope.serialWriter.write(readCardCommand);
           readResult();
         }, 500);
       }
