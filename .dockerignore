@@ -37,6 +37,3 @@ public/main.css
 screenshots
 
 .git/
-
-# Dont embed electron-app
-electron-app/
