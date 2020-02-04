@@ -70,13 +70,14 @@ module.exports = [
 
     return {
       listen: async function(cb) {
+        // Listen to window messages. This is from the electron-app, but tests also depend on it
         angular.element($window).bind('message', function(e) {
           cb(e.data);
         });
-        let port;
+        // Open serial connections if they are not already open
         if (!$rootScope.serialWriter || !$rootScope.serialReader) {
           try {
-            port = await $window.navigator.serial.requestPort({});
+            const port = await $window.navigator.serial.requestPort({});
 
             await port.open({ baudrate: 9600 });
             $rootScope.serialWriter = port.writable.getWriter();
@@ -96,7 +97,9 @@ module.exports = [
         const onComplete = input => {
           const { valid, status, data } = parseData(input);
           if (valid && status == 'OK') {
+            // Debounce
             if (data !== lastData || Date.now() - lastTime > 2000) {
+              // data = card id
               cb(data);
               lastTime = Date.now();
               lastData = data;
@@ -107,6 +110,8 @@ module.exports = [
         const readResult = async () => {
           const message = [];
           let finished = false;
+          // Keep reading bytes until the "end" byte is sent
+          // The "end" byte is 0xbb
           while (!finished) {
             const { value } = await $rootScope.serialReader.read();
             for (let i = 0; i < value.length; i++) {
@@ -120,6 +125,9 @@ module.exports = [
           onComplete(message);
         };
 
+        // Constantly send the readCardCommand and read the result.
+        // If there is no card, the result will be an error status,
+        // which is handled in the onComplete function
         $rootScope.serialInterval = setInterval(() => {
           $rootScope.serialWriter.write(readCardCommand);
           readResult();
