@@ -8,14 +8,11 @@ const createMessage = (command, data) => {
   return new Uint8Array([0xaa, 0x00, ...payload, 0xbb]).buffer;
 };
 
-const convertUID = data => {
-  const reversed = data
+const convertUID = data =>
+  data
     .join('')
     .match(/.{1,2}/g)
-    .reverse()
-    .join('');
-  return parseInt(reversed, 16);
-};
+    .join(':');
 
 const validate = (data, receivedChecksum) => {
   const dataDecimal = data.map(item => parseInt(item, 16));
