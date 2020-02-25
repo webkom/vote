@@ -39,11 +39,6 @@ $ Created user <username>
 
 The vote service can be exposed to the web using a reverse-proxy like nginx, caddy or traefik. The only port that needs forwarding is port `3000`. Using https is also a must! :100:
 
-## Using the card-readers
-
-Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Experimental features can be enabled by navigating to: chrome://flags/#enable-experimental-web-platform-features  
-Please check that the USB card reader is connected. When prompted for permissions, please select the card reader (CP210x).
-
 ### Register new users using input form
 
 New users can be created in the `Registrer bruker` tab by scanning a card and filling out the form.
