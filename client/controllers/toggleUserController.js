@@ -5,13 +5,19 @@ module.exports = [
   'cardKeyService',
   function($scope, userService, alertService, cardKeyService) {
     var toggleUser = function(cardKey) {
-      alertService.closeAll();
       userService.toggleUser(cardKey).then(
         function(response) {
+          const lastAlert = alertService.getLastAlert();
           if (response.data.active) {
-            alertService.addSuccess('Bruker har blitt aktivert.');
+            if (lastAlert && lastAlert.type != 'success') {
+              alertService.closeAll();
+            }
+            alertService.addSuccess('Kort aktivert, GÅ INN', true);
           } else {
-            alertService.addWarning('Bruker har blitt deaktivert.');
+            if (lastAlert && lastAlert.type != 'warning') {
+              alertService.closeAll();
+            }
+            alertService.addWarning('Kort deaktivert, GÅ UT', true);
           }
         },
         function(response) {
