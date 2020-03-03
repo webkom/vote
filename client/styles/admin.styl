@@ -72,3 +72,22 @@ form.add-alternative
 @media (max-width 1000px)
     .toggle-show
         margin-left 0
+
+.big
+  font-size 50px
+  text-align center
+
+.animated-alert.ng-enter
+    transition 0.3s ease all;
+    opacity: 0;
+
+.animated-alert.ng-enter.ng-enter-active
+    opacity: 1;
+
+.animated-alert.ng-leave
+    transition 1s all;
+    max-height: 200px;
+
+.animated-alert.ng-leave.ng-leave-active
+    max-height: 0;
+    opacity: 0;

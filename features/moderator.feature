@@ -8,13 +8,13 @@ Feature: Moderator
     Given There is an inactive user with card key "1234"
     And I am on page "/moderator/activate_user"
     When I scan card key "1234"
-    Then I see alert "Bruker har blitt aktivert."
+    Then I see alert "Kort aktivert, GÅ INN"
 
   Scenario: Deactivating user
     Given There is an active user with card key "1234"
     And I am on page "/moderator/activate_user"
     When I scan card key "1234"
-    Then I see alert "Bruker har blitt deaktivert."
+    Then I see alert "Kort deaktivert, GÅ UT"
 
   Scenario: Activating users in series should only show one alert
     Given There is an inactive user with card key "1234"
@@ -22,7 +22,7 @@ Feature: Moderator
     And I am on page "/moderator/activate_user"
     When I scan card key "1234"
     And I scan card key "1235"
-    Then I see alert "Bruker har blitt aktivert."
+    Then I see alert "Kort aktivert, GÅ INN"
 
   Scenario: Activating user with invalid card key
     Given There is an active user with card key "1234"

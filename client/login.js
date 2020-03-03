@@ -65,7 +65,6 @@ if ('addEventListener' in document) {
         document.getElementById('testing'),
         result => {
           doTokenThing(result);
-          console.log('dsadasdsads');
         }
       );
       qrScanner.start();

@@ -1,3 +1,6 @@
+const ding = new Audio(require('../../public/ding.mp3'));
+const error = new Audio(require('../../public/error.mp3'));
+
 module.exports = [
   '$scope',
   'userService',
@@ -5,16 +8,24 @@ module.exports = [
   'cardKeyService',
   function($scope, userService, alertService, cardKeyService) {
     var toggleUser = function(cardKey) {
-      alertService.closeAll();
       userService.toggleUser(cardKey).then(
         function(response) {
+          const lastAlert = alertService.getLastAlert();
+          ding.play();
           if (response.data.active) {
-            alertService.addSuccess('Bruker har blitt aktivert.');
+            if (lastAlert && lastAlert.type != 'success') {
+              alertService.closeAll();
+            }
+            alertService.addSuccess('Kort aktivert, GÅ INN', true);
           } else {
-            alertService.addWarning('Bruker har blitt deaktivert.');
+            if (lastAlert && lastAlert.type != 'warning') {
+              alertService.closeAll();
+            }
+            alertService.addWarning('Kort deaktivert, GÅ UT', true);
           }
         },
         function(response) {
+          error.play();
           switch (response.data.name) {
             case 'NotFoundError':
               alertService.addError(

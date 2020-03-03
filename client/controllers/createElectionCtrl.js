@@ -1,3 +1,5 @@
+const activate = new Audio(require('../../public/activate.mp3'));
+
 module.exports = [
   '$scope',
   '$location',
@@ -16,6 +18,7 @@ module.exports = [
     $scope.createElection = function(election) {
       adminElectionService.createElection(election).then(
         function(response) {
+          activate.play();
           alertService.addSuccess('Avstemning lagret');
           $location.path('/admin/election/' + response.data._id + '/edit');
         },

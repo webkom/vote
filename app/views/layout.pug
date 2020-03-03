@@ -30,8 +30,9 @@ html(ng-app='voteApp')
             .container.text-center
 
               block footer
-                  a(href='#', ng-controller='logoutController', ng-click='logout()' tabindex='-1') Logg ut
-                  |  | Laget av
+                  span(id="logoutSpan")
+                    a(href='#', ng-controller='logoutController', ng-click='logout()' tabindex='-1') Logg ut
+                    |  | Laget av
                   a(href='http://github.com/webkom/vote' tabindex='-1' target="_blank")  Webkom
                   |  | For
                   a(href='https://abakus.no' tabindex='-1' target="_blank")  Abakus
@@ -44,4 +45,8 @@ html(ng-app='voteApp')
                 document.addEventListener('DOMContentLoaded', function() {
                     FastClick.attach(document.body);
                 });
+            }
+        script.
+            if (window.location.pathname.split("/").includes("login")) {
+                document.getElementById("logoutSpan").style.display = "none";
             }

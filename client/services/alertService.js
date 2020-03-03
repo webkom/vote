@@ -5,13 +5,14 @@ module.exports = [
     $rootScope.alerts = [];
 
     var CLOSE_DELAY = 500;
-    var FADE_DELAY = 10000;
+    var FADE_DELAY = 5000;
 
     var AlertService = {
-      add: function(type, message) {
+      add: function(type, large, message) {
         var alert = {
           type: type,
           message: message,
+          large,
           close: function() {
             AlertService.close(this);
           }
@@ -22,19 +23,19 @@ module.exports = [
         this.timeoutRemove(alert);
       },
 
-      addError: function(message) {
+      addError: function(message, large = false) {
         var errMessage = message || 'Noe gikk galt!';
-        this.add('danger', errMessage);
+        this.add('danger', large, errMessage);
       },
 
-      addWarning: function(message) {
-        var errMessage = message || 'Noe gikk galt.';
-        this.add('warning', errMessage);
+      addWarning: function(message, large = false) {
+        var warnMessage = message || 'Noe gikk galt.';
+        this.add('warning', large, warnMessage);
       },
 
-      addSuccess: function(message) {
-        var errMessage = message || 'Ferdig!';
-        this.add('success', errMessage);
+      addSuccess: function(message, large = false) {
+        var succMessage = message || 'Ferdig!';
+        this.add('success', large, succMessage);
       },
 
       close: function(alert) {
@@ -47,6 +48,13 @@ module.exports = [
 
       closeAll: function() {
         $rootScope.alerts.splice(0, $rootScope.alerts.length);
+      },
+
+      getLastAlert: function() {
+        var index = $rootScope.alerts.length - 1;
+        if (index >= 0) {
+          return $rootScope.alerts[index];
+        }
       },
 
       timeoutRemove: function(alert) {
