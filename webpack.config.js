@@ -19,6 +19,10 @@ module.exports = {
       {
         test: /\.styl$/,
         loader: 'file-loader?name=[name].css!stylus-loader'
+      },
+      {
+        test: /\.mp3$/,
+        loader: 'file-loader?name=[name].mp3'
       }
     ]
   },

@@ -1,3 +1,6 @@
+const ding = new Audio(require('../../public/ding.mp3'));
+const error = new Audio(require('../../public/error.mp3'));
+
 module.exports = [
   '$scope',
   'userService',
@@ -8,6 +11,7 @@ module.exports = [
       userService.toggleUser(cardKey).then(
         function(response) {
           const lastAlert = alertService.getLastAlert();
+          ding.play();
           if (response.data.active) {
             if (lastAlert && lastAlert.type != 'success') {
               alertService.closeAll();
@@ -21,6 +25,7 @@ module.exports = [
           }
         },
         function(response) {
+          error.play();
           switch (response.data.name) {
             case 'NotFoundError':
               alertService.addError(
