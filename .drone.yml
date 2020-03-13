@@ -1,5 +1,10 @@
-pipeline:
-  setup:
+---
+kind: pipeline
+type: docker
+name: default
+
+steps:
+  - name: setup
     image: node:13
     when:
       event:
@@ -7,13 +12,17 @@ pipeline:
         - pull_request
     commands:
       - yarn
-#  integration-tests:
+    depends_on:
+      - clone
+
+#  - name: integration-tests
 #    image: circleci/node:13-browsers
 #    when:
 #      event:
 #        - push
 #        - pull_request
-#    group: testing
+#    depends_on:
+#      - setup
 #    commands:
 #      # This image runs with a custom user (circleci)by default,
 #      # and chrome headless doesn't work for the root user.
@@ -22,25 +31,30 @@ pipeline:
 #      - sudo su -c "chown -R circleci:circleci ."
 #      - sudo su -c "chown -R circleci:circleci /root/"
 #      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
-  lint:
+
+  - name: lint
     image: node:13
     when:
       event:
         - push
         - pull_request
-    group: testing
+    depends_on:
+      - setup
     commands:
       - yarn lint
-  test:
+
+  - name: test
     image: node:13
     when:
       event:
         - push
         - pull_request
-    group: testing
+    depends_on:
+      - setup
     commands:
       - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
-  build:
+
+  - name: build
     image: node:13
     when:
       event:
@@ -48,25 +62,37 @@ pipeline:
         - pull_request
       branch:
         exclude: [prod]
-    group: testing
+    depends_on:
+      - setup
     commands:
       - yarn build
-  docker:
+
+  - name: docker
     image: plugins/docker
     when:
       branch:
         - prod
       event: push
       status: success
-    repo: abakus/vote
-    secrets: [docker_username, docker_password]
-    tags:
-      - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
-    build_args:
-      - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+    depends_on:
+      #- integration-tests
+      - lint
+      - test
+      - build
+    settings:
+      repo: abakus/vote
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      tags:
+        - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+      build_args:
+        - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
 
 services:
-  mongodb:
+  - name: mongodb
     image: mongo:3.6
-  redis:
+
+  - name: redis
     image: redis:latest
