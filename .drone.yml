@@ -17,6 +17,10 @@ steps:
 
 #  - name: integration-tests
 #    image: circleci/node:13-browsers
+#    # We run as root, because the docker daemon
+#    # no-new-priviliges flag
+#    # prohibits us from running sudo
+#    user: root
 #    when:
 #      event:
 #        - push
@@ -27,9 +31,10 @@ steps:
 #      # This image runs with a custom user (circleci)by default,
 #      # and chrome headless doesn't work for the root user.
 #      # --> Fix some file permissions before start
-#      - sudo su -c "mkdir -p /root/.config/yarn/"
-#      - sudo su -c "chown -R circleci:circleci ."
-#      - sudo su -c "chown -R circleci:circleci /root/"
+#      - mkdir -p /root/.config/yarn/
+#      - chown -R circleci:circleci .
+#      - chown -R circleci:circleci /root/
+#      - su circleci
 #      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
 
   - name: lint
