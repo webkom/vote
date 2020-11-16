@@ -108,7 +108,7 @@ class ValidationError extends Error {
       name: this.name,
       message: this.message,
       status: this.status,
-      errors: this.errors
+      errors: this.errors,
     };
   }
 }
@@ -176,7 +176,7 @@ exports.handleError = (res, err, status) => {
     err.payload || {
       name: err.name,
       status: statusCode,
-      message: err.message
+      message: err.message,
     }
   );
 };

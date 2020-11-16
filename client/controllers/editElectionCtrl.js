@@ -5,7 +5,7 @@ module.exports = [
   'userService',
   'adminElectionService',
   'alertService',
-  function(
+  function (
     $scope,
     $interval,
     $location,
@@ -24,64 +24,64 @@ module.exports = [
     }
 
     function countActiveUsers() {
-      userService.countActiveUsers().then(function(response) {
+      userService.countActiveUsers().then(function (response) {
         $scope.activeUsers = response.data.users;
       }, handleIntervalError);
     }
     countActiveUsers();
 
     function countVotedUsers() {
-      adminElectionService.countVotedUsers().then(function(response) {
+      adminElectionService.countVotedUsers().then(function (response) {
         $scope.votedUsers = response.data.users;
       }, handleIntervalError);
     }
     countVotedUsers();
 
-    countInterval = $interval(function() {
+    countInterval = $interval(function () {
       countActiveUsers();
       countVotedUsers();
     }, 3000);
 
-    $scope.$on('$destroy', function() {
+    $scope.$on('$destroy', function () {
       $interval.cancel(countInterval);
     });
 
-    adminElectionService.getElection().then(function(response) {
+    adminElectionService.getElection().then(function (response) {
       $scope.election = response.data;
     });
 
-    $scope.addAlternative = function(alternative) {
+    $scope.addAlternative = function (alternative) {
       adminElectionService.addAlternative(alternative).then(
-        function(response) {
+        function (response) {
           $scope.election.alternatives.push(response.data);
           $scope.newAlternative = {};
           $scope.alternativeForm.$setPristine();
           alertService.addSuccess('Alternativ lagret');
         },
-        function(response) {
+        function (response) {
           alertService.addError(response.data.message);
         }
       );
     };
 
-    $scope.toggleElection = function() {
+    $scope.toggleElection = function () {
       if ($scope.election.active) {
         adminElectionService.deactivateElection().then(
-          function(response) {
+          function (response) {
             $scope.election.active = response.data.active;
             alertService.addWarning('Avstemning er deaktivert');
           },
-          function(response) {
+          function (response) {
             alertService.addError(response.data.message);
           }
         );
       } else {
         adminElectionService.activateElection().then(
-          function(response) {
+          function (response) {
             $scope.election.active = response.data.active;
             alertService.addSuccess('Avstemning er aktivert');
           },
-          function(response) {
+          function (response) {
             alertService.addError(response.data.message);
           }
         );
@@ -89,9 +89,9 @@ module.exports = [
     };
 
     function getCount() {
-      adminElectionService.countVotes().then(function(response) {
-        $scope.election.alternatives.forEach(function(alternative) {
-          response.data.some(function(resultAlternative) {
+      adminElectionService.countVotes().then(function (response) {
+        $scope.election.alternatives.forEach(function (alternative) {
+          response.data.some(function (resultAlternative) {
             if (resultAlternative.alternative === alternative._id) {
               alternative.votes = resultAlternative.votes;
               return true;
@@ -103,10 +103,10 @@ module.exports = [
       }, handleIntervalError);
     }
 
-    $scope.getPercentage = function(count) {
+    $scope.getPercentage = function (count) {
       if (count !== undefined) {
         var sum = 0;
-        $scope.election.alternatives.forEach(function(alternative) {
+        $scope.election.alternatives.forEach(function (alternative) {
           sum += alternative.votes;
         });
 
@@ -114,15 +114,15 @@ module.exports = [
       }
     };
 
-    $scope.toggleCount = function() {
+    $scope.toggleCount = function () {
       $scope.showCount = !$scope.showCount;
       if ($scope.showCount) {
         getCount();
       }
     };
 
-    $scope.copyElection = function() {
-      var alternatives = $scope.election.alternatives.map(function(
+    $scope.copyElection = function () {
+      var alternatives = $scope.election.alternatives.map(function (
         alternative
       ) {
         return { description: alternative.description };
@@ -131,12 +131,12 @@ module.exports = [
       var election = {
         title: $scope.election.title,
         description: $scope.election.description,
-        alternatives: alternatives
+        alternatives: alternatives,
       };
 
       $location
         .path('/admin/create_election')
         .search({ election: JSON.stringify(election) });
     };
-  }
+  },
 ];

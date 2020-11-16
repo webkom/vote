@@ -11,16 +11,17 @@
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:yaml",
     "lint:eslint": "eslint . --ignore-path .gitignore",
-    "lint:prettier": "prettier '**/*.js' --list-different --ignore-path .gitignore",
+    "lint:prettier": "prettier '**/*.{js,pug}' --list-different --ignore-path .gitignore",
     "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
-    "prettier": "prettier '**/*.js' --write",
+    "prettier": "prettier '**/*.{js,pug}' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 3000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "protractor": "webdriver-manager update --standalone false && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "yarn build"
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "trailingComma": "es5"
   },
   "author": "Webkom <webkom@abakus.no>",
   "repository": {
@@ -75,6 +76,7 @@
     "yaml": "1.3.2"
   },
   "devDependencies": {
+    "@prettier/plugin-pug": "1.10.1",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "coveralls": "3.0.9",
@@ -83,7 +85,7 @@
     "eslint-config-prettier": "6.7.0",
     "mkdirp": "^0.5.1",
     "mocha": "6.2.3",
-    "prettier": "1.19.1",
+    "prettier": "2.1.2",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "0.6.0",
     "sinon": "7.2.2",

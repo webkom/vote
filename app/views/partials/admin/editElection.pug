@@ -1,39 +1,59 @@
 .row
-    .center.text-center
-        .election-info.admin
-            h2 {{election.title}}
-            p {{election.description}}
+  .center.text-center
+    .election-info.admin
+      h2 {{ election.title }}
+      p {{ election.description }}
 
-        .election-info.admin
-            h3.user-status
-                span(ng-bind='votedUsers')
-                | /
-                span(ng-bind='activeUsers')
-                i.fa.fa-users
+    .election-info.admin
+      h3.user-status
+        span(ng-bind='votedUsers')
+        | /
+        span(ng-bind='activeUsers')
+        i.fa.fa-users
 
-            button.toggle-election.btn.btn-default.btn-lg(ng-click='toggleElection()')
-                | {{election.active ? "Deaktiver" : "Aktiver"}}
+      button.toggle-election.btn.btn-default.btn-lg(
+        ng-click='toggleElection()'
+      )
+        | {{ election.active ? "Deaktiver" : "Aktiver" }}
 
-        .alternatives.admin
-            h3 Alternativer
+    .alternatives.admin
+      h3 Alternativer
 
-            ul.list-unstyled
-                li(ng-repeat='alternative in election.alternatives')
-                    p {{alternative.description}}
-                        span(ng-if='showCount')
-                            | {{alternative.votes}} - {{getPercentage(alternative.votes)}} %
+      ul.list-unstyled
+        li(ng-repeat='alternative in election.alternatives')
+          p {{ alternative.description }}
+            span(ng-if='showCount')
+              | {{ alternative.votes }} - {{ getPercentage(alternative.votes) }} %
 
-            form.add-alternative.form-group(name='alternativeForm', ng-submit='addAlternative(newAlternative)')
-                input.form-control#new-alternative(type='text', name='alternative', placeholder='Skriv inn alternativ',
-                    ng-if='!election.active', ng-model='newAlternative.description', required)
+      form.add-alternative.form-group(
+        name='alternativeForm',
+        ng-submit='addAlternative(newAlternative)'
+      )
+        input#new-alternative.form-control(
+          type='text',
+          name='alternative',
+          placeholder='Skriv inn alternativ',
+          ng-if='!election.active',
+          ng-model='newAlternative.description',
+          required
+        )
 
-                button.add-alternative.btn.btn-default(type='submit', value='Submit',
-                    ng-if='!election.active',
-                    ng-disabled='alternativeForm.$invalid') Legg til alternativ
-                button.toggle-show.btn.btn-default(type='button', ng-click='toggleCount()',
-                    ng-if='!election.active',
-                    ng-class='{"alone": election.active}')
-                    | {{showCount ? 'Skjul resultat': 'Vis resultat'}}
-                button.toggle-show.btn.btn-default(type='button', ng-click='copyElection()',
-                    ng-if='!election.active')
-                    | Kopier avstemning
+        button.add-alternative.btn.btn-default(
+          type='submit',
+          value='Submit',
+          ng-if='!election.active',
+          ng-disabled='alternativeForm.$invalid'
+        ) Legg til alternativ
+        button.toggle-show.btn.btn-default(
+          type='button',
+          ng-click='toggleCount()',
+          ng-if='!election.active',
+          ng-class='{"alone": election.active}'
+        )
+          | {{ showCount ? "Skjul resultat" : "Vis resultat" }}
+        button.toggle-show.btn.btn-default(
+          type='button',
+          ng-click='copyElection()',
+          ng-if='!election.active'
+        )
+          | Kopier avstemning

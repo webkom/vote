@@ -9,7 +9,7 @@ exports.dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
 exports.clearCollections = () =>
-  Bluebird.map([Alternative, Election, Vote, User], collection =>
+  Bluebird.map([Alternative, Election, Vote, User], (collection) =>
     collection.deleteMany()
   );
 
@@ -17,7 +17,7 @@ const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 
 const testUser = (exports.testUser = {
   username: 'testuser',
   cardKey: '99TESTCARDKEY',
-  hash
+  hash,
 });
 
 const adminUser = (exports.adminUser = {
@@ -25,7 +25,7 @@ const adminUser = (exports.adminUser = {
   admin: true,
   moderator: true,
   cardKey: '55TESTCARDKEY',
-  hash
+  hash,
 });
 
 const moderatorUser = (exports.moderatorUser = {
@@ -33,7 +33,7 @@ const moderatorUser = (exports.moderatorUser = {
   admin: false,
   moderator: true,
   cardKey: '67TESTCARDKEY',
-  hash
+  hash,
 });
 
 exports.createUsers = () => User.create([testUser, adminUser, moderatorUser]);

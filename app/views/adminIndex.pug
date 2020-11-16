@@ -1,17 +1,22 @@
 extends layout
 
 block scripts
-    script(src='/static/bundle.js')
+  script(src='/static/bundle.js')
 
 block navbar
-    nav
-        ul.list-unstyled
-            li
-                a(href='/admin') Avstemninger
-            li
-                a(href='/admin/create_election') Lag avstemning
+  nav
+    ul.list-unstyled
+      li
+        a(href='/admin') Avstemninger
+      li
+        a(href='/admin/create_election') Lag avstemning
 
 block content
-    .center(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
-            div(uib-alert ng-bind='alert.message', ng-class="'alert-' + (alert.type || 'warning')", close='alert.close()')
-    .container(ng-view='')
+  .center(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
+    div(
+      uib-alert,
+      ng-bind='alert.message',
+      ng-class='\'alert-\' + (alert.type || \'warning\')',
+      close='alert.close()'
+    )
+  .container(ng-view='')

@@ -6,14 +6,14 @@ const expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
-module.exports = function() {
-  this.Given(/^There is an (in)?active election$/, function(arg) {
+module.exports = function () {
+  this.Given(/^There is an (in)?active election$/, function (arg) {
     const active = arg !== 'in';
     this.election.active = active;
     return this.election.save();
   });
 
-  this.Given(/^The election is (de)?activated/, function(arg) {
+  this.Given(/^The election is (de)?activated/, function (arg) {
     const active = arg !== 'de';
     this.election.active = active;
     return this.election.save();
@@ -23,7 +23,7 @@ module.exports = function() {
     element(by.tagName('form')).submit();
   });
 
-  this.Then(/^I see an active election$/, function() {
+  this.Then(/^I see an active election$/, function () {
     const title = element(by.binding('activeElection.title'));
     const description = element(by.binding('activeElection.description'));
     const alternatives = element.all(
@@ -40,7 +40,7 @@ module.exports = function() {
       expect(alternatives.count()).to.eventually.equal(1),
       expect(alternatives.first().getText()).to.eventually.contain(
         this.alternative.description.toUpperCase()
-      )
+      ),
     ]);
   });
 
@@ -60,9 +60,11 @@ module.exports = function() {
 
   this.When(/^I vote on an election$/, vote);
 
-  this.Then(/^I see my hash in "([^"]*)"$/, function(name) {
+  this.Then(/^I see my hash in "([^"]*)"$/, function (name) {
     const input = element(by.name(name));
-    return Vote.findOne({ alternative: this.alternative.id }).then(foundVote =>
+    return Vote.findOne({
+      alternative: this.alternative.id,
+    }).then((foundVote) =>
       expect(input.getAttribute('value')).to.eventually.equal(foundVote.hash)
     );
   });

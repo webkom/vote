@@ -1,39 +1,57 @@
 .row
-    .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-        form.form-group(ng-submit='createElection(election)', name='createElectionForm')
-            .form-group(required)
-                label Tittel
-                input.form-control(type='text',
-                    name='title',
-                    placeholder='Skriv inn tittel',
-                    ng-model='election.title',
-                    required='required')
-                p.text-danger(ng-show='createElectionForm.title.$invalid') Tittel er påkrevd
+  .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    form.form-group(
+      ng-submit='createElection(election)',
+      name='createElectionForm'
+    )
+      .form-group(required)
+        label Tittel
+        input.form-control(
+          type='text',
+          name='title',
+          placeholder='Skriv inn tittel',
+          ng-model='election.title',
+          required='required'
+        )
+        p.text-danger(ng-show='createElectionForm.title.$invalid') Tittel er påkrevd
 
-            .form-group
-                label Beskrivelse
-                input.form-control(type='text',
-                    name='beskrivelse',
-                    placeholder='Skriv inn beskrivelse',
-                    ng-model='election.description')
+      .form-group
+        label Beskrivelse
+        input.form-control(
+          type='text',
+          name='beskrivelse',
+          placeholder='Skriv inn beskrivelse',
+          ng-model='election.description'
+        )
 
-            .alternatives.admin
-                label Alternativer
-                    a.new-alternative(ng-click='addAlternative()')
-                        i.fa.fa-plus-square
+      .alternatives.admin
+        label Alternativer
+          a.new-alternative(ng-click='addAlternative()')
+            i.fa.fa-plus-square
 
-                ng-form(name='alternativeForm', ng-repeat='alternative in election.alternatives')
-                    .form-group
-                        div(ng-class='{"input-group": election.alternatives.length > 1}')
-                            input.form-control(type='text',
-                                name='alternative{{$index}}',
-                                placeholder='Skriv inn en beskrivelse',
-                                ng-model='alternative.description',
-                                required)
+        ng-form(
+          name='alternativeForm',
+          ng-repeat='alternative in election.alternatives'
+        )
+          .form-group
+            div(ng-class='{"input-group": election.alternatives.length > 1}')
+              input.form-control(
+                type='text',
+                name='alternative{{$index}}',
+                placeholder='Skriv inn en beskrivelse',
+                ng-model='alternative.description',
+                required
+              )
 
-                            .input-group-addon(ng-if='election.alternatives.length > 1',
-                                ng-click='deleteAlternative(alternative)') Slett
-                        p.text-danger(ng-show='alternativeForm.alternative{{$index}}.$invalid') Alternativ er påkrevd
+              .input-group-addon(
+                ng-if='election.alternatives.length > 1',
+                ng-click='deleteAlternative(alternative)'
+              ) Slett
+            p.text-danger(
+              ng-show='alternativeForm.alternative{{$index}}.$invalid'
+            ) Alternativ er påkrevd
 
-            button#submit.btn.btn-default.btn-lg(type='submit',
-                ng-disabled='createElectionForm.$invalid') Submit
+      button#submit.btn.btn-default.btn-lg(
+        type='submit',
+        ng-disabled='createElectionForm.$invalid'
+      ) Submit

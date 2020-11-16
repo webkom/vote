@@ -1,36 +1,57 @@
 .row
-    .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-        form.form-group(ng-submit='createUser(user)', name='createUserForm')
-            .form-group
-                label Kortnummer
-                input.form-control(type='text', name='cardKey',
-                    placeholder='Scan kort', ng-model='user.cardKey',
-                    required='required', disabled)
+  .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    form.form-group(ng-submit='createUser(user)', name='createUserForm')
+      .form-group
+        label Kortnummer
+        input.form-control(
+          type='text',
+          name='cardKey',
+          placeholder='Scan kort',
+          ng-model='user.cardKey',
+          required='required',
+          disabled
+        )
 
-            .form-group
-                label Brukernavn
-                input.form-control(type='text', name='username', placeholder='Skriv inn brukernavn',
-                    ng-model='user.username', ng-minlength='5', ng-pattern='/^[a-zA-Z0-9]+$/')
-                p.text-danger(ng-show='createUserForm.username.$error.minlength')
-                    | Brukernavn må være minst 5 tegn
-                p.text-danger(ng-show='createUserForm.username.$error.pattern')
-                    | Brukernavn kan bare inneholde tall eller bokstaver fra A-Z
+      .form-group
+        label Brukernavn
+        input.form-control(
+          type='text',
+          name='username',
+          placeholder='Skriv inn brukernavn',
+          ng-model='user.username',
+          ng-minlength='5',
+          ng-pattern='/^[a-zA-Z0-9]+$/'
+        )
+        p.text-danger(ng-show='createUserForm.username.$error.minlength')
+          | Brukernavn må være minst 5 tegn
+        p.text-danger(ng-show='createUserForm.username.$error.pattern')
+          | Brukernavn kan bare inneholde tall eller bokstaver fra A-Z
 
-            .form-group
-                label Password
-                input.form-control(type='password', name='password',
-                    placeholder='Skriv inn ønsket passord', ng-model='user.password',
-                    ng-minlength='6')
-                p.text-danger(ng-show='createUserForm.password.$invalid')
-                    | Passord må være minst 6 tegn
+      .form-group
+        label Password
+        input.form-control(
+          type='password',
+          name='password',
+          placeholder='Skriv inn ønsket passord',
+          ng-model='user.password',
+          ng-minlength='6'
+        )
+        p.text-danger(ng-show='createUserForm.password.$invalid')
+          | Passord må være minst 6 tegn
 
-            .form-group
-                label Bekreft password
-                input.form-control(type='password', name='confirmPassword',
-                    placeholder='Bekreft passord', ng-model='user.confirmPassword',
-                    match-password='user.password')
-                p.text-danger(ng-show='createUserForm.confirmPassword.$invalid')
-                    | Må være lik passordet
+      .form-group
+        label Bekreft password
+        input.form-control(
+          type='password',
+          name='confirmPassword',
+          placeholder='Bekreft passord',
+          ng-model='user.confirmPassword',
+          match-password='user.password'
+        )
+        p.text-danger(ng-show='createUserForm.confirmPassword.$invalid')
+          | Må være lik passordet
 
-            button#submit.btn.btn-default.btn-lg(type='submit',
-                ng-disabled='createUserForm.$invalid') Lag ny bruker
+      button#submit.btn.btn-default.btn-lg(
+        type='submit',
+        ng-disabled='createUserForm.$invalid'
+      ) Lag ny bruker

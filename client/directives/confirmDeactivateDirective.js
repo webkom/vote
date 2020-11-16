@@ -1,22 +1,22 @@
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'E',
     replace: true,
     scope: {
       deactivateHandler: '&',
-      buttonText: '@'
+      buttonText: '@',
     },
     template:
       '' +
       '<button type="button" ng-click="click()" class="btn btn-lg btn-default">' +
       '{{buttonText || "Deaktiver brukere"}}' +
       '</button>',
-    link: function(scope, elem, attrs) {
+    link: function (scope, elem, attrs) {
       var clicked = false;
 
       var originalText = scope.buttonText;
 
-      scope.click = function() {
+      scope.click = function () {
         if (!clicked) {
           clicked = true;
           scope.buttonText = 'Er du sikker?';
@@ -26,6 +26,6 @@ module.exports = function() {
           scope.buttonText = originalText;
         }
       };
-    }
+    },
   };
 };

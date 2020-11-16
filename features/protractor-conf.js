@@ -5,9 +5,9 @@ exports.config = {
       args: [
         process.env.HEADLESS && '--headless',
         '--disable-gpu',
-        '--disable-dev-shm-usage'
-      ].filter(Boolean)
-    }
+        '--disable-dev-shm-usage',
+      ].filter(Boolean),
+    },
   },
   baseUrl: 'http://localhost:3000',
   specs: ['*.feature'],
@@ -16,6 +16,6 @@ exports.config = {
   directConnect: true,
   cucumberOpts: {
     require: ['step_definitions/*.js', 'support/*.js'],
-    backtrace: true
-  }
+    backtrace: true,
+  },
 };

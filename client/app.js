@@ -10,7 +10,7 @@ angular
     'ngRoute',
     'ngAnimate',
     'ui.bootstrap',
-    'LocalStorageModule'
+    'LocalStorageModule',
   ])
   .config(require('./appRoutes'));
 

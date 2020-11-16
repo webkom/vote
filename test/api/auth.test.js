@@ -12,20 +12,20 @@ describe('Auth API', () => {
   const testUser = {
     username: 'testuser',
     password: 'test121312313',
-    cardKey: '99TESTCARDKEY'
+    cardKey: '99TESTCARDKEY',
   };
 
   const adminUser = {
     username: 'admin',
     password: 'admin',
     admin: true,
-    cardKey: '11TESTCARDKEY'
+    cardKey: '11TESTCARDKEY',
   };
 
   const badTestUser = {
     username: 'testuser',
     password: 'notthecorrectpw',
-    cardKey: '00TESTCARDKEY'
+    cardKey: '00TESTCARDKEY',
   };
 
   beforeEach(() => {
@@ -33,7 +33,7 @@ describe('Auth API', () => {
     passportStub.uninstall();
     return Bluebird.all([
       User.register(testUser, testUser.password),
-      User.register(adminUser, adminUser.password)
+      User.register(adminUser, adminUser.password),
     ]);
   });
 
@@ -48,7 +48,7 @@ describe('Auth API', () => {
 
   it('should make sure usernames are case-insensitive', async () => {
     const newUser = Object.assign(testUser, {
-      username: testUser.username.toUpperCase()
+      username: testUser.username.toUpperCase(),
     });
 
     const { header } = await request(app)
@@ -64,7 +64,7 @@ describe('Auth API', () => {
       .post('/auth/login')
       .send({
         username: `${testUser.username}    `,
-        password: testUser.password
+        password: testUser.password,
       })
       .expect(302);
 
@@ -86,7 +86,7 @@ describe('Auth API', () => {
     text.should.include('Brukernavn og/eller passord er feil.');
   });
 
-  it('should be possible to logout', done => {
+  it('should be possible to logout', (done) => {
     const sessions = mongoose.connection.db.collection('sessions');
 
     function checkSessions(err, res) {
@@ -101,10 +101,7 @@ describe('Auth API', () => {
 
     function logout(err, agent) {
       if (err) return done(err);
-      agent
-        .post('/auth/logout')
-        .expect(302)
-        .end(checkSessions);
+      agent.post('/auth/logout').expect(302).end(checkSessions);
     }
 
     function login(err) {
@@ -114,7 +111,7 @@ describe('Auth API', () => {
         .post('/auth/login')
         .expect(302)
         .send(testUser)
-        .end(newErr => logout(newErr, agent));
+        .end((newErr) => logout(newErr, agent));
     }
 
     sessions.deleteMany({}, {}, login);
@@ -124,9 +121,6 @@ describe('Auth API', () => {
     passportStub.install(app);
     passportStub.login(adminUser.username);
 
-    await request(app)
-      .get('/')
-      .expect(302)
-      .expect('Location', '/admin');
+    await request(app).get('/').expect(302).expect('Location', '/admin');
   });
 });

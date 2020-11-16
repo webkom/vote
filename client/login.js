@@ -3,17 +3,17 @@ import QRCode from 'qrcode';
 import QrScannerWorkerPath from '!!file-loader!qr-scanner/qr-scanner-worker.min.js';
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
 if ('addEventListener' in document) {
-  document.addEventListener('DOMContentLoaded', function() {
-    const getTokenFromUrl = url => {
+  document.addEventListener('DOMContentLoaded', function () {
+    const getTokenFromUrl = (url) => {
       const urlParams = new URLSearchParams(getLocation(url).search);
       return urlParams.get('token');
     };
-    const getLocation = function(href) {
+    const getLocation = function (href) {
       var l = document.createElement('a');
       l.href = href;
       return l;
     };
-    const doTokenThing = url => {
+    const doTokenThing = (url) => {
       try {
         const [u, p, code] = getTokenFromUrl(url).split(':');
         document.querySelector('[name=password]').value = p;
@@ -38,13 +38,15 @@ if ('addEventListener' in document) {
         document
           .querySelector('[id=confirmScreenshot]')
           .setAttribute('class', '');
-        document.querySelector('[id=confirmScreenshot]').onclick = function(e) {
+        document.querySelector('[id=confirmScreenshot]').onclick = function (
+          e
+        ) {
           e.target.setAttribute('class', 'hidden');
           document.querySelector('[type=submit]').style.display = '';
         };
 
         fetch('/api/qr/open/?code=' + code);
-        QRCode.toDataURL(url, { type: 'image/png', width: 300 }, function(
+        QRCode.toDataURL(url, { type: 'image/png', width: 300 }, function (
           err,
           url
         ) {
@@ -63,7 +65,7 @@ if ('addEventListener' in document) {
       QrScanner.hasCamera();
       const qrScanner = new QrScanner(
         document.getElementById('testing'),
-        result => {
+        (result) => {
           doTokenThing(result);
         }
       );

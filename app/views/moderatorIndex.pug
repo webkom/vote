@@ -1,24 +1,29 @@
 extends layout
 
 block scripts
-    script(src='/socket.io/socket.io.js')
-    script(src='/static/bundle.js')
+  script(src='/socket.io/socket.io.js')
+  script(src='/static/bundle.js')
 
 block navbar
-    nav
-        ul.list-unstyled
-            li
-                a(href='/moderator/create_user') Registrer bruker
-            li
-                a(href='/moderator/qr') QR
-            li
-                a(href='/moderator/activate_user') Aktiver bruker
-            li
-                a(href='/moderator/change_card') Mistet kort
-            li
-                a(href='/moderator/deactivate_users') Deaktiver brukere
+  nav
+    ul.list-unstyled
+      li
+        a(href='/moderator/create_user') Registrer bruker
+      li
+        a(href='/moderator/qr') QR
+      li
+        a(href='/moderator/activate_user') Aktiver bruker
+      li
+        a(href='/moderator/change_card') Mistet kort
+      li
+        a(href='/moderator/deactivate_users') Deaktiver brukere
 
 block content
-    .center(ng-repeat='alert in alerts', class='animated-alert', class='{"fade": alert.fade}')
-      div(uib-alert ng-bind='alert.message', ng-class="['alert-' + (alert.type || 'warning'), (alert.large && 'big')]", close='alert.close()')
-    .container(ng-view='')
+  .center.animated-alert(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
+    div(
+      uib-alert,
+      ng-bind='alert.message',
+      ng-class='[\'alert-\' + (alert.type || \'warning\'), (alert.large && \'big\')]',
+      close='alert.close()'
+    )
+  .container(ng-view='')

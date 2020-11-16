@@ -1,5 +1,5 @@
-module.exports = function() {
-  this.When(/^I scan card key "([^"]*)"$/, cardKey => {
+module.exports = function () {
+  this.When(/^I scan card key "([^"]*)"$/, (cardKey) => {
     browser.executeScript(`window.postMessage("${cardKey}", "*");`);
   });
 

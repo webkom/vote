@@ -6,7 +6,7 @@ module.exports = [
   'voteService',
   'socketIOService',
   'localStorageService',
-  function(
+  function (
     $scope,
     $window,
     electionService,
@@ -23,10 +23,10 @@ module.exports = [
      */
     function getActiveElection() {
       return electionService.getActiveElection().then(
-        function(response) {
+        function (response) {
           $scope.activeElection = response.data;
         },
-        function(response) {
+        function (response) {
           alertService.addError(response.data.message);
         }
       );
@@ -38,23 +38,23 @@ module.exports = [
      * Sets the given alternative to $scope
      * @param  {Object} alternative
      */
-    $scope.selectAlternative = function(alternative) {
+    $scope.selectAlternative = function (alternative) {
       $scope.selectedAlternative = alternative;
     };
 
     /**
      * Persists votes to the backend
      */
-    $scope.vote = function() {
+    $scope.vote = function () {
       voteService.vote($scope.selectedAlternative._id).then(
-        function(response) {
+        function (response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
           alertService.addSuccess('Takk for din stemme!');
           localStorageService.set('voteHash', response.data.hash);
           getActiveElection();
         },
-        function(response) {
+        function (response) {
           $window.scrollTo(0, 0);
           getActiveElection();
           switch (response.data.name) {
@@ -85,8 +85,8 @@ module.exports = [
      * @param  {Object}  alternative
      * @return {Boolean}
      */
-    $scope.isChosen = function(alternative) {
+    $scope.isChosen = function (alternative) {
       return alternative === $scope.selectedAlternative;
     };
-  }
+  },
 ];

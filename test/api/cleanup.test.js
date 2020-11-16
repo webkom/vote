@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const helpers = require('../helpers');
 
-before(done => {
+before((done) => {
   mongoose.connection.on('connected', done);
 });
 
