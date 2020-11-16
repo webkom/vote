@@ -15,28 +15,6 @@ steps:
     depends_on:
       - clone
 
-#  - name: integration-tests
-#    image: circleci/node:13-browsers
-#    # We run as root, because the docker daemon
-#    # no-new-priviliges flag
-#    # prohibits us from running sudo
-#    user: root
-#    when:
-#      event:
-#        - push
-#        - pull_request
-#    depends_on:
-#      - setup
-#    commands:
-#      # This image runs with a custom user (circleci)by default,
-#      # and chrome headless doesn't work for the root user.
-#      # --> Fix some file permissions before start
-#      - mkdir -p /root/.config/yarn/
-#      - chown -R circleci:circleci .
-#      - chown -R circleci:circleci /root/
-#      - su circleci
-#      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
-
   - name: lint
     image: node:13
     when:
@@ -72,6 +50,28 @@ steps:
     commands:
       - yarn build
 
+  - name: protractor
+    image: circleci/node:14-browsers
+    # We run as root, because the docker daemon
+    # no-new-priviliges flag
+    # prohibits us from running sudo
+    user: root
+    when:
+      event:
+        - push
+        - pull_request
+    depends_on:
+      - setup
+    commands:
+      # This image runs with a custom user (circleci)by default,
+      # and chrome headless doesn't work for the root user.
+      # --> Fix some file permissions before start
+      - mkdir -p /root/.config/yarn/
+      - chown -R circleci:circleci .
+      - chown -R circleci:circleci /root/
+      - su circleci
+      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
+
   - name: docker
     image: plugins/docker
     when:
@@ -80,9 +80,9 @@ steps:
       event: push
       status: success
     depends_on:
-      #- integration-tests
       - lint
       - test
+      - protractor
       - build
     settings:
       repo: abakus/vote
