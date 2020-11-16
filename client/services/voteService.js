@@ -1,13 +1,13 @@
 module.exports = [
   '$http',
-  function($http) {
+  function ($http) {
     return {
-      vote: function(alternativeId) {
+      vote: function (alternativeId) {
         return $http.post('/api/vote', { alternativeId: alternativeId });
       },
-      retrieve: function(voteHash) {
+      retrieve: function (voteHash) {
         return $http.get('/api/vote', { headers: { 'Vote-Hash': voteHash } });
-      }
+      },
     };
-  }
+  },
 ];

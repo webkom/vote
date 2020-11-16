@@ -7,7 +7,7 @@ module.exports = [
   'userService',
   'alertService',
   'cardKeyService',
-  function(
+  function (
     $scope,
     $window,
     $location,
@@ -28,12 +28,12 @@ module.exports = [
       );
     }
 
-    $scope.createUser = function(user) {
+    $scope.createUser = function (user) {
       return userService.createUser(user).then(
-        function(response) {
+        function (response) {
           $scope.user = {};
         },
-        function(response) {
+        function (response) {
           switch (response.data.name) {
             case 'DuplicateUsernameError':
               alertService.addError('Dette brukernavnet er allerede i bruk.');
@@ -51,7 +51,7 @@ module.exports = [
       );
     };
 
-    cardKeyService.listen(function(cardKey) {
+    cardKeyService.listen(function (cardKey) {
       $scope.user.cardKey = cardKey;
       $scope.$apply();
 
@@ -63,7 +63,7 @@ module.exports = [
         .createUser({
           cardKey,
           username: username,
-          password: password
+          password: password,
         })
         .then(
           () => {
@@ -74,5 +74,5 @@ module.exports = [
           () => {}
         );
     });
-  }
+  },
 ];

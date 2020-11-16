@@ -7,60 +7,60 @@ const Schema = mongoose.Schema;
 const hasVotedSchema = new Schema({
   user: {
     type: Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: 'User',
+  },
 });
 
 const electionSchema = new Schema({
   title: {
     type: String,
     required: true,
-    index: true
+    index: true,
   },
   description: {
-    type: String
+    type: String,
   },
   alternatives: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Alternative'
-    }
+      ref: 'Alternative',
+    },
   ],
   active: {
     type: Boolean,
-    default: false
+    default: false,
   },
-  hasVotedUsers: [hasVotedSchema]
+  hasVotedUsers: [hasVotedSchema],
 });
 
-electionSchema.pre('remove', function(next) {
+electionSchema.pre('remove', function (next) {
   // Use mongoose.model getter to avoid circular dependencies
   return mongoose
     .model('Alternative')
     .find({ election: this.id })
-    .then(alternatives =>
+    .then((alternatives) =>
       // Have to call remove on each document to activate Alternative's remove-middleware
-      Bluebird.map(alternatives, alternative => alternative.remove())
+      Bluebird.map(alternatives, (alternative) => alternative.remove())
     )
     .nodeify(next);
 });
 
-electionSchema.methods.sumVotes = function() {
+electionSchema.methods.sumVotes = function () {
   if (this.active) {
     throw new errors.ActiveElectionError(
       'Cannot retrieve results on an active election.'
     );
   }
 
-  return Bluebird.map(this.alternatives, alternativeId =>
-    Vote.find({ alternative: alternativeId }).then(votes => ({
+  return Bluebird.map(this.alternatives, (alternativeId) =>
+    Vote.find({ alternative: alternativeId }).then((votes) => ({
       alternative: alternativeId,
-      votes: votes.length
+      votes: votes.length,
     }))
   );
 };
 
-electionSchema.methods.addAlternative = async function(alternative) {
+electionSchema.methods.addAlternative = async function (alternative) {
   alternative.election = this._id;
   const savedAlternative = await alternative.save();
   this.alternatives = [...this.alternatives, savedAlternative];

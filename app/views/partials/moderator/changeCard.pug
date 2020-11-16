@@ -1,21 +1,36 @@
 .row
-    .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-        form.form-group(ng-submit='changeCard(user)', name='createUserForm')
-            .form-group
-                label(for='card-number') Nytt kortnummer
-                input.form-control(type='text', name='cardKey',
-                    placeholder='Vennligst skann kortet', ng-model='user.cardKey',
-                    required='required', disabled)
+  .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    form.form-group(ng-submit='changeCard(user)', name='createUserForm')
+      .form-group
+        label(for='card-number') Nytt kortnummer
+        input.form-control(
+          type='text',
+          name='cardKey',
+          placeholder='Vennligst skann kortet',
+          ng-model='user.cardKey',
+          required='required',
+          disabled
+        )
 
-            .form-group
-                label(for='username') Brukernavn
-                input.form-control(type='text', name='username',
-                    placeholder='Skriv inn brukernavn', ng-model='user.username')
+      .form-group
+        label(for='username') Brukernavn
+        input.form-control(
+          type='text',
+          name='username',
+          placeholder='Skriv inn brukernavn',
+          ng-model='user.username'
+        )
 
-            .form-group
-                label(for='password') Password
-                input.form-control(type='password', name='password',
-                    placeholder='Skriv inn passord', ng-model='user.password')
+      .form-group
+        label(for='password') Password
+        input.form-control(
+          type='password',
+          name='password',
+          placeholder='Skriv inn passord',
+          ng-model='user.password'
+        )
 
-            button#submit.btn.btn-default.btn-lg(type='submit',
-                ng-disabled='createUserForm.$invalid') Registrer nytt kort
+      button#submit.btn.btn-default.btn-lg(
+        type='submit',
+        ng-disabled='createUserForm.$invalid'
+      ) Registrer nytt kort

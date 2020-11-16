@@ -6,13 +6,13 @@ exports.list = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
-    .then(election => res.json(election.alternatives));
+    .then((election) => res.json(election.alternatives));
 
 exports.create = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
-    .then(election => {
+    .then((election) => {
       if (election.active) {
         throw new errors.ActiveElectionError(
           'Cannot create alternatives for active elections.'
@@ -21,12 +21,12 @@ exports.create = (req, res) =>
 
       const alternative = new Alternative({
         title: req.body.title,
-        description: req.body.description
+        description: req.body.description,
       });
 
       return election.addAlternative(alternative);
     })
-    .then(alternative => res.status(201).send(alternative))
-    .catch(mongoose.Error.ValidationError, err => {
+    .then((alternative) => res.status(201).send(alternative))
+    .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);
     });

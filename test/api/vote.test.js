@@ -15,29 +15,29 @@ describe('Vote API', () => {
   const activeElectionData = {
     title: 'activeElection',
     description: 'test election',
-    active: true
+    active: true,
   };
 
   const inactiveElectionData = {
     title: 'inactiveElection',
-    description: 'inactive election'
+    description: 'inactive election',
   };
 
   const activeData = {
-    description: 'active election alt'
+    description: 'active election alt',
   };
 
   const otherActiveData = {
-    description: 'other active election alt'
+    description: 'other active election alt',
   };
 
   const inactiveData = {
-    description: 'inactive election alt'
+    description: 'inactive election alt',
   };
 
   function votePayload(alternativeId) {
     return {
-      alternativeId: alternativeId
+      alternativeId: alternativeId,
     };
   }
 
@@ -45,10 +45,10 @@ describe('Vote API', () => {
     passportStub.install(app);
   });
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     const [activeCreated, inactiveCreated] = await Election.create([
       activeElectionData,
-      inactiveElectionData
+      inactiveElectionData,
     ]);
 
     this.activeElection = activeCreated;
@@ -105,7 +105,7 @@ describe('Vote API', () => {
     error.message.should.equal('Missing property alternativeId from payload.');
   });
 
-  it('should be able to vote on alternative', async function() {
+  it('should be able to vote on alternative', async function () {
     const { body: vote } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.activeAlternative.id))
@@ -120,7 +120,7 @@ describe('Vote API', () => {
     votes.length.should.equal(1);
   });
 
-  it('should be able to vote only once', async function() {
+  it('should be able to vote only once', async function () {
     await this.activeAlternative.addVote(this.user);
     const { body: error } = await request(app)
       .post('/api/vote')
@@ -136,7 +136,7 @@ describe('Vote API', () => {
     votes.length.should.equal(1);
   });
 
-  it('should not be vulnerable to race conditions', async function() {
+  it('should not be vulnerable to race conditions', async function () {
     const create = () =>
       request(app)
         .post('/api/vote')
@@ -151,13 +151,13 @@ describe('Vote API', () => {
       create(),
       create(),
       create(),
-      create()
+      create(),
     ]);
     const votes = await Vote.find({ alternative: this.activeAlternative.id });
     votes.length.should.equal(1);
   });
 
-  it('should not be possible to vote without logging in', async function() {
+  it('should not be possible to vote without logging in', async function () {
     passportStub.logout();
     const { body: error } = await request(app)
       .post('/api/vote')
@@ -170,7 +170,7 @@ describe('Vote API', () => {
     );
   });
 
-  it('should not be able to vote with inactive user', async function() {
+  it('should not be able to vote with inactive user', async function () {
     this.user.active = false;
     await this.user.save();
     const { body: error } = await request(app)
@@ -187,7 +187,7 @@ describe('Vote API', () => {
     votes.length.should.equal(0, 'no vote should be added');
   });
 
-  it('should not be able to vote on a deactivated election', async function() {
+  it('should not be able to vote on a deactivated election', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.inactiveAlternative.id))
@@ -201,7 +201,7 @@ describe('Vote API', () => {
     votes.length.should.equal(0, 'no vote should be added');
   });
 
-  it('should be possible to retrieve a vote', async function() {
+  it('should be possible to retrieve a vote', async function () {
     const vote = await this.activeAlternative.addVote(this.user);
     const { body: receivedVote } = await request(app)
       .get('/api/vote')
@@ -213,7 +213,7 @@ describe('Vote API', () => {
     receivedVote.alternative._id.should.equal(String(vote.alternative));
     receivedVote.alternative.election.should.deep.equal({
       _id: String(this.activeElection.id),
-      title: this.activeElection.title
+      title: this.activeElection.title,
     });
   });
 
@@ -227,7 +227,7 @@ describe('Vote API', () => {
     error.status.should.equal(400);
   });
 
-  it('should be possible to sum votes', async function() {
+  it('should be possible to sum votes', async function () {
     passportStub.login(this.adminUser.username);
 
     await this.otherActiveAlternative.addVote(this.user);
@@ -240,7 +240,7 @@ describe('Vote API', () => {
     body[0].votes.should.equal(0);
   });
 
-  it('should not be possible to get votes on an active election', async function() {
+  it('should not be possible to get votes on an active election', async function () {
     passportStub.login(this.adminUser.username);
 
     const { body } = await request(app)
@@ -250,7 +250,7 @@ describe('Vote API', () => {
     body.message.should.equal('Cannot retrieve results on an active election.');
   });
 
-  it('should not be possible to sum votes for a normal user', async function() {
+  it('should not be possible to sum votes for a normal user', async function () {
     passportStub.login(this.user.username);
     await testAdminResource(
       'get',
@@ -258,7 +258,7 @@ describe('Vote API', () => {
     );
   });
 
-  it('should not be possible to sum votes for a moderator', async function() {
+  it('should not be possible to sum votes for a moderator', async function () {
     passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'get',
@@ -266,18 +266,18 @@ describe('Vote API', () => {
     );
   });
 
-  it('should get 404 when summing votes for invalid electionIds', async function() {
+  it('should get 404 when summing votes for invalid electionIds', async function () {
     passportStub.login(this.adminUser.username);
     test404('get', '/api/election/badid/votes', 'election');
   });
 
-  it('should get 404 when summing votes for nonexistent electionIds', async function() {
+  it('should get 404 when summing votes for nonexistent electionIds', async function () {
     passportStub.login(this.adminUser.username);
     const badId = new ObjectId();
     test404('get', `/api/election/${badId}/votes`, 'election');
   });
 
-  it('should return 403 when admins try to vote', async function() {
+  it('should return 403 when admins try to vote', async function () {
     passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
@@ -290,7 +290,7 @@ describe('Vote API', () => {
     error.status.should.equal(403);
   });
 
-  it('should return 403 when moderators try to vote', async function() {
+  it('should return 403 when moderators try to vote', async function () {
     passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')

@@ -1,4 +1,4 @@
-const checksum = data =>
+const checksum = (data) =>
   data.reduce((previousValue, currentValue) => previousValue ^ currentValue);
 
 const createMessage = (command, data) => {
@@ -8,7 +8,7 @@ const createMessage = (command, data) => {
   return new Uint8Array([0xaa, 0x00, ...payload, 0xbb]).buffer;
 };
 
-const convertUID = data => {
+const convertUID = (data) => {
   const reversed = data
     .join('')
     .match(/.{1,2}/g)
@@ -18,12 +18,12 @@ const convertUID = data => {
 };
 
 const validate = (data, receivedChecksum) => {
-  const dataDecimal = data.map(item => parseInt(item, 16));
+  const dataDecimal = data.map((item) => parseInt(item, 16));
   const calculatedChecksum = checksum(dataDecimal);
   return Math.abs(calculatedChecksum % 255) === parseInt(receivedChecksum, 16);
 };
 
-// Constants
+// prettier-ignore
 const replies = {
   '00': 'OK',
   '01': 'ERROR',
@@ -33,12 +33,12 @@ const replies = {
   '84': 'RESPONSE ERROR',
   '82': 'READER TIMEOUT',
   '90': 'CARD DOES NOT SUPPORT THIS COMMAND',
-  '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE'
+  '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE',
 };
 
 const readCardCommand = createMessage(0x25, [0x26, 0x00]);
 
-const parseData = response => {
+const parseData = (response) => {
   const hexValues = [];
   for (let i = 0; i < response.length; i += 1) {
     hexValues.push((response[i] < 16 ? '0' : '') + response[i].toString(16));
@@ -53,7 +53,7 @@ const parseData = response => {
   return {
     valid: valid,
     status: replies[status],
-    data: valid && replies[status] === 'OK' ? convertUID(data) : data
+    data: valid && replies[status] === 'OK' ? convertUID(data) : data,
   };
 };
 
@@ -62,16 +62,16 @@ module.exports = [
   '$location',
   '$rootScope',
   'alertService',
-  function($window, $location, $rootScope, alertService) {
-    $rootScope.$on('$routeChangeStart', function() {
+  function ($window, $location, $rootScope, alertService) {
+    $rootScope.$on('$routeChangeStart', function () {
       angular.element($window).unbind('message');
       clearInterval($rootScope.serialInterval);
     });
 
     return {
-      listen: async function(cb) {
+      listen: async function (cb) {
         // Listen to window messages for test compatability.
-        angular.element($window).bind('message', function(e) {
+        angular.element($window).bind('message', function (e) {
           cb(e.data);
         });
         // Open serial connections if they are not already open
@@ -94,7 +94,7 @@ module.exports = [
 
         let lastTime = 0;
         let lastData = 0;
-        const onComplete = input => {
+        const onComplete = (input) => {
           const { valid, status, data } = parseData(input);
           if (valid && status == 'OK') {
             // Debounce
@@ -132,7 +132,7 @@ module.exports = [
           $rootScope.serialWriter.write(readCardCommand);
           readResult();
         }, 500);
-      }
+      },
     };
-  }
+  },
 ];

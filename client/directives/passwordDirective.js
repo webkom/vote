@@ -1,19 +1,19 @@
-module.exports = function() {
+module.exports = function () {
   return {
     require: 'ngModel',
     restrict: 'A',
     scope: {
-      matchPassword: '='
+      matchPassword: '=',
     },
-    link: function(scope, elem, attrs, ctrl) {
+    link: function (scope, elem, attrs, ctrl) {
       scope.$watch(
-        function() {
+        function () {
           return ctrl.$pristine || scope.matchPassword === ctrl.$modelValue;
         },
-        function(currentValue) {
+        function (currentValue) {
           ctrl.$setValidity('matchPassword', currentValue);
         }
       );
-    }
+    },
   };
 };

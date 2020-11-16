@@ -12,13 +12,13 @@ exports.create = (req, res) => {
   return Alternative.findById(alternativeId)
     .populate('votes')
     .exec()
-    .then(alternative => {
+    .then((alternative) => {
       if (!alternative) throw new errors.NotFoundError('alternative');
       return alternative.addVote(req.user);
     })
-    .then(vote => vote.populate('alternative').execPopulate())
-    .then(vote => res.status(201).send(vote))
-    .catch(mongoose.Error.CastError, err => {
+    .then((vote) => vote.populate('alternative').execPopulate())
+    .then((vote) => res.status(201).send(vote))
+    .catch(mongoose.Error.CastError, (err) => {
       throw new errors.NotFoundError('alternative');
     });
 };
@@ -32,7 +32,7 @@ exports.retrieve = async (req, res) => {
 
   const vote = await Vote.findOne({ hash: hash }).populate({
     path: 'alternative',
-    populate: { path: 'election', select: 'title _id' }
+    populate: { path: 'election', select: 'title _id' },
   });
 
   if (!vote) throw new errors.NotFoundError('vote');

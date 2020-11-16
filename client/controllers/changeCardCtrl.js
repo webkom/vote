@@ -3,16 +3,16 @@ module.exports = [
   'userService',
   'alertService',
   'cardKeyService',
-  function($scope, userService, alertService, cardKeyService) {
+  function ($scope, userService, alertService, cardKeyService) {
     $scope.user = {};
 
-    $scope.changeCard = function(user) {
+    $scope.changeCard = function (user) {
       userService.changeCard(user).then(
-        function(response) {
+        function (response) {
           alertService.addSuccess('Det nye kortet er nå registert.');
           $scope.user = {};
         },
-        function(response) {
+        function (response) {
           switch (response.data.name) {
             case 'DuplicateCardError':
               alertService.addError(
@@ -29,9 +29,9 @@ module.exports = [
       );
     };
 
-    cardKeyService.listen(function(cardKey) {
+    cardKeyService.listen(function (cardKey) {
       $scope.user.cardKey = cardKey;
       $scope.$apply();
     });
-  }
+  },
 ];

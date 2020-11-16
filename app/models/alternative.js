@@ -17,17 +17,17 @@ const Schema = mongoose.Schema;
 const alternativeSchema = new Schema({
   description: {
     type: String,
-    required: true
+    required: true,
   },
   election: {
     type: Schema.Types.ObjectId,
-    ref: 'Election'
-  }
+    ref: 'Election',
+  },
 });
 
-alternativeSchema.pre('remove', function(next) {
+alternativeSchema.pre('remove', function (next) {
   return Vote.find({ alternative: this.id })
-    .then(votes =>
+    .then((votes) =>
       Bluebird.map(votes, (
         vote // Have to call remove on each document to activate Vote's
       ) =>
@@ -38,7 +38,7 @@ alternativeSchema.pre('remove', function(next) {
     .nodeify(next);
 });
 
-alternativeSchema.methods.addVote = async function(user) {
+alternativeSchema.methods.addVote = async function (user) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();

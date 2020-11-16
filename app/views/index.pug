@@ -1,19 +1,24 @@
 extends layout
 
 block scripts
-    script(src='/socket.io/socket.io.js')
-    script(src='/static/bundle.js')
+  script(src='/socket.io/socket.io.js')
+  script(src='/static/bundle.js')
 
 block navbar
-    nav
-        ul.list-unstyled
-            li
-                a(href='/') Stem
-            li
-                a(href='/retrieve') Valider stemme
+  nav
+    ul.list-unstyled
+      li
+        a(href='/') Stem
+      li
+        a(href='/retrieve') Valider stemme
 
 block content
-    .center(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
-            div(uib-alert ng-bind='alert.message', ng-class="'alert-' + (alert.type || 'warning')", close='alert.close()')
+  .center(ng-repeat='alert in alerts', class='{"fade": alert.fade}')
+    div(
+      uib-alert,
+      ng-bind='alert.message',
+      ng-class='\'alert-\' + (alert.type || \'warning\')',
+      close='alert.close()'
+    )
 
-    .container(ng-view='')
+  .container(ng-view='')

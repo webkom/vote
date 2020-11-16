@@ -25,7 +25,7 @@ mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), {
   useCreateIndex: true,
   useUnifiedTopology: true,
-  useNewUrlParser: true
+  useNewUrlParser: true,
 });
 
 raven.config(env.RAVEN_DSN).install();
@@ -39,7 +39,7 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
   app.use(
     webpackMiddleware(webpack(config), {
       contentBase: 'public/',
-      publicPath: config.output.publicPath
+      publicPath: config.output.publicPath,
     })
   );
 }
@@ -63,13 +63,13 @@ app.use(
     secret: env.COOKIE_SECRET || 'localsecret',
     store: new MongoStore({ mongooseConnection: mongoose.connection }), //re-use existing connection
     saveUninitialized: true,
-    resave: false
+    resave: false,
   })
 );
 const { LOGO_SRC, NODE_ENV } = env;
 app.locals = Object.assign({}, app.locals, {
   NODE_ENV,
-  LOGO_SRC
+  LOGO_SRC,
 });
 
 /* istanbul ignore if */
@@ -89,12 +89,12 @@ passport.use(
   new LocalStrategy((username, password, done) => {
     let _user;
     User.findByUsername(username)
-      .then(user => {
+      .then((user) => {
         if (!user) return false;
         _user = user;
         return user.authenticate(password);
       })
-      .then(result => result && _user)
+      .then((result) => result && _user)
       .nodeify(done);
   })
 );
@@ -103,9 +103,7 @@ passport.serializeUser((user, cb) => {
   cb(null, user.username);
 });
 passport.deserializeUser((username, cb) => {
-  User.findByUsername(username)
-    .exec()
-    .nodeify(cb);
+  User.findByUsername(username).exec().nodeify(cb);
 });
 
 app.use('/', router);
@@ -116,7 +114,7 @@ app.use((err, req, res, next) => {
   res.status(403).json({
     type: 'InvalidCSRFTokenError',
     message: 'Invalid or missing CSRF token',
-    status: 403
+    status: 403,
   });
 });
 

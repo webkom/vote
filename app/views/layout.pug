@@ -1,55 +1,72 @@
 doctype html
 html(ng-app='voteApp')
-    head
-        title Abavote
-        base(href='/')
-        meta(charset='utf-8')
-        meta(name='viewport', content='width=device-width, initial-scale=1')
-        meta(http-equiv='X-UA-Compatible', content='IE=edge')
-        meta(name='description', content='')
-        link(href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css', rel='stylesheet')
-        link(href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css', rel='stylesheet')
-        link(href='/static/main.css', rel='stylesheet')
+  head
+    title Abavote
+    base(href='/')
+    meta(charset='utf-8')
+    meta(name='viewport', content='width=device-width, initial-scale=1')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='description', content='')
+    link(
+      href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css',
+      rel='stylesheet'
+    )
+    link(
+      href='//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css',
+      rel='stylesheet'
+    )
+    link(href='/static/main.css', rel='stylesheet')
 
-        block scripts
+    block scripts
 
+  body
+    header
+      .container
+        .row.header: .col-xs-12
+          //img(src=LOGO_SRC)
+          span
+            | v
+            img(src=LOGO_SRC)
+            | te
 
-    body
-        header
-            .container
-                .row.header: .col-xs-12
-                    //img(src=LOGO_SRC)
-                    span
-                      | v
-                      img(src=LOGO_SRC)
-                      | te
+        .row: block navbar
 
-                .row: block navbar
+    block content
 
-        block content
+    footer
+      .container.text-center
+        block footer
+          span#logoutSpan
+            a(
+              href='#',
+              ng-controller='logoutController',
+              ng-click='logout()',
+              tabindex='-1'
+            ) Logg ut
+            |
+            | | Laget av
+          a(
+            href='http://github.com/webkom/vote',
+            tabindex='-1',
+            target='_blank'
+          ) Webkom
+          |
+          | | For
+          a(href='https://abakus.no', tabindex='-1', target='_blank') Abakus
+          |
+          | | Se
+          a(href='/usage', tabindex='-1', target='_blank') bruk
 
-
-        footer
-            .container.text-center
-
-              block footer
-                  span(id="logoutSpan")
-                    a(href='#', ng-controller='logoutController', ng-click='logout()' tabindex='-1') Logg ut
-                    |  | Laget av
-                  a(href='http://github.com/webkom/vote' tabindex='-1' target="_blank")  Webkom
-                  |  | For
-                  a(href='https://abakus.no' tabindex='-1' target="_blank")  Abakus
-                  |  | Se
-                  a(href='/usage' tabindex='-1' target="_blank")  bruk
-
-        script(src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js')
-        script.
-            if ('addEventListener' in document) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    FastClick.attach(document.body);
-                });
-            }
-        script.
-            if (window.location.pathname.split("/").includes("login")) {
-                document.getElementById("logoutSpan").style.display = "none";
-            }
+    script(
+      src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js'
+    )
+    script.
+      if ('addEventListener' in document) {
+          document.addEventListener('DOMContentLoaded', function() {
+              FastClick.attach(document.body);
+          });
+      }
+    script.
+      if (window.location.pathname.split("/").includes("login")) {
+          document.getElementById("logoutSpan").style.display = "none";
+      }

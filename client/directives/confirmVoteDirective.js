@@ -1,10 +1,10 @@
-module.exports = function() {
+module.exports = function () {
   return {
     restrict: 'E',
     replace: true,
     scope: {
       selectedAlternative: '=',
-      voteHandler: '&'
+      voteHandler: '&',
     },
     template:
       '' +
@@ -13,17 +13,17 @@ module.exports = function() {
       '{{buttonText || "Velg et alternativ"}}' +
       '</button>',
 
-    link: function(scope, elem, attrs) {
+    link: function (scope, elem, attrs) {
       var clicked = false;
 
-      scope.$watch('selectedAlternative', function(newValue) {
+      scope.$watch('selectedAlternative', function (newValue) {
         if (newValue) {
           scope.buttonText = 'Avgi stemme';
           clicked = false;
         }
       });
 
-      scope.click = function() {
+      scope.click = function () {
         if (!clicked) {
           clicked = true;
           scope.buttonText = 'Er du sikker?';
@@ -31,6 +31,6 @@ module.exports = function() {
           scope.voteHandler();
         }
       };
-    }
+    },
   };
 };

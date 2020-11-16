@@ -15,9 +15,7 @@ describe('API', () => {
   });
 
   it('should return 200 for /healthz', async () => {
-    const { body } = await request(app)
-      .get('/healthz')
-      .expect(200);
+    const { body } = await request(app).get('/healthz').expect(200);
 
     body.should.deep.equal({});
   });

@@ -1,19 +1,26 @@
 .center.text-center
-    form.form-group.vote-result-form(ng-submit='retrieveVote(voteHash)', name='retrieveVoteForm')
-        .form-group(required)
-            label Skriv inn kvittering
-            input.form-control(type='text',
-                name='voteHash',
-                ng-model='voteHash',
-                placeholder='Kvittering',
-                required='required')
-            p.text-danger(ng-show='retrieveVoteForm.hash.$invalid') Kvittering er påkrevd
+  form.form-group.vote-result-form(
+    ng-submit='retrieveVote(voteHash)',
+    name='retrieveVoteForm'
+  )
+    .form-group(required)
+      label Skriv inn kvittering
+      input.form-control(
+        type='text',
+        name='voteHash',
+        ng-model='voteHash',
+        placeholder='Kvittering',
+        required='required'
+      )
+      p.text-danger(ng-show='retrieveVoteForm.hash.$invalid') Kvittering er påkrevd
 
-        button#submit.btn.btn-default.btn-lg(type='submit',
-        ng-disabled='retrieveVoteForm.$invalid') Hent avstemning
+    button#submit.btn.btn-default.btn-lg(
+      type='submit',
+      ng-disabled='retrieveVoteForm.$invalid'
+    ) Hent avstemning
 
-    .text-center.vote-result-feedback(ng-if='vote')
-        h3 Avstemning
-        p.vote-result-election {{vote.alternative.election.title}}
-        h3 Valgt alternativ
-        p.vote-result-alternative {{vote.alternative.description}}
+  .text-center.vote-result-feedback(ng-if='vote')
+    h3 Avstemning
+    p.vote-result-election {{ vote.alternative.election.title }}
+    h3 Valgt alternativ
+    p.vote-result-alternative {{ vote.alternative.description }}

@@ -1,9 +1,9 @@
-module.exports = function() {
+module.exports = function () {
   var socket = io();
 
   return {
-    listen: function(message, callback) {
+    listen: function (message, callback) {
       socket.on(message, callback);
-    }
+    },
   };
 };

@@ -6,10 +6,10 @@ module.exports = [
   'userService',
   'alertService',
   'cardKeyService',
-  function($scope, userService, alertService, cardKeyService) {
-    var toggleUser = function(cardKey) {
+  function ($scope, userService, alertService, cardKeyService) {
+    var toggleUser = function (cardKey) {
       userService.toggleUser(cardKey).then(
-        function(response) {
+        function (response) {
           const lastAlert = alertService.getLastAlert();
           ding.play();
           if (response.data.active) {
@@ -24,7 +24,7 @@ module.exports = [
             alertService.addWarning('Kort deaktivert, GÅ UT', true);
           }
         },
-        function(response) {
+        function (response) {
           error.play();
           switch (response.data.name) {
             case 'NotFoundError':
@@ -40,5 +40,5 @@ module.exports = [
     };
 
     cardKeyService.listen(toggleUser);
-  }
+  },
 ];

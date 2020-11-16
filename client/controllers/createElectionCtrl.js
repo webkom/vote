@@ -5,36 +5,36 @@ module.exports = [
   '$location',
   'adminElectionService',
   'alertService',
-  function($scope, $location, adminElectionService, alertService) {
+  function ($scope, $location, adminElectionService, alertService) {
     var existingElection = $location.search().election;
     if (existingElection) {
       $scope.election = JSON.parse(existingElection);
     } else {
       $scope.election = {
-        alternatives: [{}]
+        alternatives: [{}],
       };
     }
 
-    $scope.createElection = function(election) {
+    $scope.createElection = function (election) {
       adminElectionService.createElection(election).then(
-        function(response) {
+        function (response) {
           activate.play();
           alertService.addSuccess('Avstemning lagret');
           $location.path('/admin/election/' + response.data._id + '/edit');
         },
-        function(response) {
+        function (response) {
           alertService.addError(response.data.message);
         }
       );
     };
 
-    $scope.addAlternative = function() {
+    $scope.addAlternative = function () {
       $scope.election.alternatives.push({});
     };
 
-    $scope.deleteAlternative = function(alternative) {
+    $scope.deleteAlternative = function (alternative) {
       var index = $scope.election.alternatives.indexOf(alternative);
       $scope.election.alternatives.splice(index, 1);
     };
-  }
+  },
 ];

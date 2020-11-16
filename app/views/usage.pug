@@ -1,6 +1,5 @@
 extends layout
 
-
 block content
   .center
     .usage-flex
@@ -9,16 +8,14 @@ block content
 
   .center
     .usage-ection
-      for item in usage.slice().reverse()
+      each item in usage.slice().reverse()
         hr
         .usage-flex
           b= item.what
           h4= item.when
-        div(class='usage-flex')
-            h5 Organisasjon:
-            h5= item.who
-        div(class='usage-flex')
-            h5 Antall brukere:
-            h5= item.users
-
-
+        .usage-flex
+          h5 Organisasjon:
+          h5= item.who
+        .usage-flex
+          h5 Antall brukere:
+          h5= item.users

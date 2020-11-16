@@ -7,32 +7,32 @@ const createUsers = helpers.createUsers;
 const clearCollections = helpers.clearCollections;
 const dropDatabase = helpers.dropDatabase;
 
-module.exports = function() {
+module.exports = function () {
   const activeElectionData = {
     title: 'activeElection1',
     description: 'active election 1',
-    active: true
+    active: true,
   };
 
   const testAlternative = {
-    description: 'test alternative'
+    description: 'test alternative',
   };
 
-  this.Before(function() {
+  this.Before(function () {
     return clearCollections()
       .bind(this)
       .then(() => {
         const election = new Election(activeElectionData);
         return election.save();
       })
-      .then(function(election) {
+      .then(function (election) {
         this.election = election;
         testAlternative.election = election;
         this.alternative = new Alternative(testAlternative);
         return election.addAlternative(this.alternative);
       })
       .then(() => createUsers())
-      .spread(function(user, adminUser) {
+      .spread(function (user, adminUser) {
         this.user = user;
         this.adminUser = adminUser;
       });
@@ -48,7 +48,7 @@ module.exports = function() {
   ) =>
     // waiting for Angular after each step.
 
-    browser.waitForAngular().then(callback, err => {
+    browser.waitForAngular().then(callback, (err) => {
       const message = err.message || err;
       if (message.includes('window.angular')) callback();
       else callback(err);

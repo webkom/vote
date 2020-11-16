@@ -6,7 +6,7 @@ router.get('/login', (req, res) => {
   const csrfToken = process.env.NODE_ENV !== 'test' ? req.csrfToken() : 'test';
   res.render('login', {
     csrfToken: csrfToken,
-    feedback: req.flash('error')
+    feedback: req.flash('error'),
   });
 });
 
@@ -20,7 +20,7 @@ router.post(
   stripUsername,
   passport.authenticate('local', {
     failureRedirect: '/auth/login',
-    failureFlash: 'Brukernavn og/eller passord er feil.'
+    failureFlash: 'Brukernavn og/eller passord er feil.',
   }),
   (req, res) => {
     // If the user tried to access a specific page before, redirect there:
@@ -31,7 +31,7 @@ router.post(
 );
 
 router.post('/logout', (req, res) => {
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) return errors.handleError(res, err);
     res.redirect('/auth/login');
   });

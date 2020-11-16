@@ -16,10 +16,7 @@ router.get('/active', ensureAuthenticated, election.retrieveActive);
 router.param('electionId', ensureAdmin);
 router.param('electionId', election.load);
 
-router
-  .route('/:electionId')
-  .get(election.retrieve)
-  .delete(election.delete);
+router.route('/:electionId').get(election.retrieve).delete(election.delete);
 
 router.get('/:electionId/count', election.count);
 

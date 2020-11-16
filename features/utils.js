@@ -4,7 +4,7 @@ const mkdirp = require('mkdirp');
 
 exports.writeScreenshot = (data, filename) => {
   const folder = path.resolve('screenshots');
-  mkdirp(folder, err => {
+  mkdirp(folder, (err) => {
     if (err) throw err;
     const writePath = path.resolve(folder, filename);
     const stream = fs.createWriteStream(writePath);

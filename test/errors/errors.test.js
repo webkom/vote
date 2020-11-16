@@ -11,9 +11,9 @@ describe('handleError', () => {
   const res = {
     status() {
       return {
-        json: stub
+        json: stub,
       };
-    }
+    },
   };
 
   it('should set status code 500 as default', () => {
@@ -22,7 +22,7 @@ describe('handleError', () => {
     stub.should.have.been.calledWith({
       name: 'Error',
       status: 500,
-      message: 'test error'
+      message: 'test error',
     });
   });
 
@@ -32,7 +32,7 @@ describe('handleError', () => {
     stub.should.have.been.calledWith({
       name: 'LoginError',
       status: 417,
-      message: testError.message
+      message: testError.message,
     });
   });
 });

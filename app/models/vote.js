@@ -6,12 +6,12 @@ const voteSchema = new Schema({
   hash: {
     type: String,
     required: true,
-    index: true
+    index: true,
   },
   alternative: {
     type: Schema.Types.ObjectId,
-    ref: 'Alternative'
-  }
+    ref: 'Alternative',
+  },
 });
 
 module.exports = mongoose.model('Vote', voteSchema);
