@@ -91,3 +91,17 @@ form.add-alternative
 .animated-alert.ng-leave.ng-leave-active
     max-height: 0;
     opacity: 0;
+
+@keyframes zoom {
+    0% {
+        transform:scale(1);
+    }
+    100% {
+        transform:scale(0.3);
+    }
+}
+.animated-qr
+    animation-name: zoom
+    animation-duration: 4s
+    animation-iteration-count: infinite
+    animation-direction: alternate
