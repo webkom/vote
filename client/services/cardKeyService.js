@@ -79,7 +79,7 @@ module.exports = [
           try {
             const port = await $window.navigator.serial.requestPort({});
 
-            await port.open({ baudrate: 9600 });
+            await port.open({ baudRate: 9600 });
             $rootScope.serialWriter = port.writable.getWriter();
             $rootScope.serialReader = port.readable.getReader();
           } catch (e) {
