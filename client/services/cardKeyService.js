@@ -23,16 +23,16 @@ const validate = (data, receivedChecksum) => {
   return Math.abs(calculatedChecksum % 255) === parseInt(receivedChecksum, 16);
 };
 
-// Constants
+// prettier-ignore
 const replies = {
   '00': 'OK',
   '01': 'ERROR',
-  83: 'NO CARD',
-  87: 'UNKNOWN INTERNAL ERROR',
-  85: 'UNKNOWN COMMAND',
-  84: 'RESPONSE ERROR',
-  82: 'READER TIMEOUT',
-  90: 'CARD DOES NOT SUPPORT THIS COMMAND',
+  '83': 'NO CARD',
+  '87': 'UNKNOWN INTERNAL ERROR',
+  '85': 'UNKNOWN COMMAND',
+  '84': 'RESPONSE ERROR',
+  '82': 'READER TIMEOUT',
+  '90': 'CARD DOES NOT SUPPORT THIS COMMAND',
   '8f': 'UNSUPPORTED CARD IN NFC WRITE MODE',
 };
 
