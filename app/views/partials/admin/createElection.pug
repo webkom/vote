@@ -24,6 +24,22 @@
           ng-model='election.description'
         )
 
+      .form-group(required)
+        label Plasser
+        input.form-control(
+          type='number',
+          name='seats',
+          placeholder='Antall plasser (vinnere)',
+          required='required',
+          ng-model='election.seats',
+          ng-min='1',
+          ng-max='election.alternatives.length'
+        )
+        p.text-danger(ng-show='createElectionForm.seats.$invalid')
+          | Antall plasser er ikke gyldig
+          br
+          | Må være minst 1 og maks {{ election.alternatives.length }}
+
       .alternatives.admin
         label Alternativer
           a.new-alternative(ng-click='addAlternative()')
