@@ -69,15 +69,15 @@ Please check that the USB card reader is connected. When prompted for permission
 
 ### Serial permissions (Linux)
 
-When using the card readers on a linux based system **google-chrome** there can be permission problems. Chrome needs access to the ports,
-and often the ports are controlled by another group, so chrome cannot use them. Therefore you must do one of the following:
+When using the card readers on a linux based system there can be permission problems with **google-chrome**. Chrome needs access to the ports, and often the ports are controlled by another group, so chrome cannot use them. Therefore you must do one of the following:
 
 1. Run google-chrome as `root`
-  ```sh
-  $ sudo google-chrome
-  ```
 
-   **OR**
+```sh
+$ sudo google-chrome
+```
+
+**OR**
 
 2. Add your user to the `dialout` group.
    - Check what group the tty(USBPORT) is:
