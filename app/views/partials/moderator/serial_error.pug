@@ -1,8 +1,22 @@
-.jumbotron.center.text-center
-  h3 Serial error
-  p Click on any tab above to start a permission request.
-  br
-  p Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Experimental features can be enabled by navigating to:
-    b chrome://flags/#enable-experimental-web-platform-features
-  br
-  p Please check that the USB card reader is connected. When prompted for permissions, please select the card reader (CP210x).
+.jumbotron.center
+  .text-center
+    h3 Serial error
+    h4 The card reader is not fully linked with the browser
+    hr
+    div
+      a(href='/moderator/create_user') Click here to start a permission request.
+
+  b Tips
+  hr
+  h5 1) Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Learn how to enable this feature by going to#{' '}
+    a(
+      href='https://github.com/webkom/vote#using-the-card-readers',
+      target='_blank'
+    ) README.md
+  h5 2) Please check that the USB card reader is connected. When prompted for permissions, please select the card reader (CP210x).
+  h5 3) If you are running Linux, run Google Chrome as root to gain access to tty. See#{' '}
+    a(
+      href='https://github.com/webkom/vote#serial-permissions-linux',
+      target='_blank'
+    ) README.md
+  hr
