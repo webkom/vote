@@ -131,7 +131,6 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       action: 'ITERATION',
       iteration,
       winners: winners.slice(),
-      // TODO find a better way to return this?
       //alternatives: alternatives.slice(),
       //votes: votes.slice(),
       counts,
