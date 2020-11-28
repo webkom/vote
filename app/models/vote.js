@@ -8,10 +8,16 @@ const voteSchema = new Schema({
     required: true,
     index: true,
   },
-  alternative: {
+  election: {
     type: Schema.Types.ObjectId,
-    ref: 'Alternative',
+    ref: 'Election',
   },
+  priorities: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Alternative',
+    },
+  ],
 });
 
 module.exports = mongoose.model('Vote', voteSchema);
