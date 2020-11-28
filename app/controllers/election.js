@@ -77,9 +77,11 @@ exports.activate = (req, res) =>
   });
 
 exports.deactivate = (req, res) =>
-  setElectionStatus(req, res, false).then((election) =>
-    res.status(200).json(election)
-  );
+  setElectionStatus(req, res, false).then((election) => {
+    const io = app.get('io');
+    io.emit('election');
+    res.status(200).json(election);
+  });
 
 exports.elect = (req, res) =>
   req.election.elect().then((result) => res.json(result));
