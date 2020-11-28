@@ -64,6 +64,28 @@ class InvalidPayloadError extends Error {
 
 exports.InvalidPayloadError = InvalidPayloadError;
 
+class InvalidPriorityError extends Error {
+  constructor() {
+    super();
+    this.name = 'InvalidPriorityError';
+    this.message = `One or more alternatives does not exist on election.`;
+    this.status = 400;
+  }
+}
+
+exports.InvalidPriorityError = InvalidPriorityError;
+
+class InvalidPrioritiesLengthError extends Error {
+  constructor(priorities, election) {
+    super();
+    this.name = 'InvalidPrioritiesLengthError';
+    this.message = `Priorities is of length ${priorities.length}, election has ${election.alternatives.length} alternatives.`;
+    this.status = 400;
+  }
+}
+
+exports.InvalidPrioritiesLengthError = InvalidPrioritiesLengthError;
+
 class MissingHeaderError extends Error {
   constructor(header) {
     super();
