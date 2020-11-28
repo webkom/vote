@@ -264,7 +264,7 @@ describe('Election API', () => {
       .post(`/api/election/${this.activeElection.id}/deactivate`)
       .expect(200)
       .expect('Content-Type', /json/);
-    ioStub.emit.should.not.have.been.called;
+    ioStub.emit.should.have.been.called;
     body.active.should.equal(false, 'db election should not be active');
   });
 
@@ -299,14 +299,17 @@ describe('Election API', () => {
     passportStub.login(this.adminUser.username);
 
     const vote = new Vote({
-      alternative: this.alternative.id,
+      priorities: [this.alternative],
+      election: this.activeElection,
       hash: 'thisisahash',
     });
 
     this.activeElection.active = false;
 
     await vote.save();
+    this.activeElection.votes = [vote];
     await this.activeElection.save();
+
     const { body } = await request(app)
       .delete(`/api/election/${this.activeElection.id}`)
       .expect(200)
@@ -314,9 +317,11 @@ describe('Election API', () => {
 
     body.message.should.equal('Election deleted.');
     body.status.should.equal(200);
+
     const elections = await Election.find();
     const alternatives = await Alternative.find();
     const votes = await Vote.find();
+
     elections.length.should.equal(0);
     alternatives.length.should.equal(0);
     votes.length.should.equal(0);
@@ -384,7 +389,7 @@ describe('Election API', () => {
   it('should be possible to list the number of users that have voted', async function () {
     passportStub.login(this.adminUser.username);
 
-    await this.alternative.addVote(this.user);
+    await this.activeElection.addVote(this.user, [this.alternative]);
     const { body } = await request(app)
       .get(`/api/election/${this.activeElection.id}/count`)
       .expect(200)
