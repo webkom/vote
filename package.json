@@ -79,6 +79,7 @@
     "@prettier/plugin-pug": "1.10.1",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
+    "chai-subset": "1.6.0",
     "coveralls": "3.0.9",
     "cucumber": "0.10.3",
     "eslint": "5.14.1",
