@@ -81,8 +81,8 @@ exports.deactivate = (req, res) =>
     res.status(200).json(election)
   );
 
-exports.sumVotes = (req, res) =>
-  req.election.sumVotes().then((alternatives) => res.json(alternatives));
+exports.elect = (req, res) =>
+  req.election.elect().then((result) => res.json(result));
 
 exports.delete = (req, res) => {
   if (req.election.active) {
