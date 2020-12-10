@@ -114,12 +114,12 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
 
     for (let i in votes) {
       // @const { Vote } vote - The vote for this loop
-      const vote = votes[i];
+      const vote = Object.create(votes[i]);
 
       // @const { Alternative } currentAlternative - We always count the first value (priorities[0])
       // because there is a mutation step that removed values that are "done". These are values
       // connected to candidates that have either won or been eliminated from the election.
-      const currentAlternative = vote.priorities[0];
+      const currentAlternative = Object.create(vote.priorities[0]);
 
       // Use the alternatives description as key in the counts, and add one for each count
       counts[currentAlternative.description] =
@@ -147,7 +147,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
     // Loop over the different alternatives
     for (let i in alternatives) {
       // @const { Alternative } alternative - Get an alternative
-      const alternative = alternatives[i];
+      const alternative = Object.create(alternatives[i]);
       // @const { float } voteCount - Find the number number of votes for this alternative
       const voteCount = counts[alternative.description] || 0;
 
@@ -173,7 +173,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
         // Find the done Votes
         for (let i in votes) {
           // @const { Vote } vote - The vote for this loop
-          const vote = votes[i];
+          const vote = Object.create(votes[i]);
 
           // Votes that have the winning alternative as their first pick
           if (vote.priorities[0]._id === alternative._id) doneVotes[i] = {};
@@ -207,10 +207,10 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       // Go through all done votes
       for (let i in doneVotes) {
         // @const { Vote } vote - The vote for this loop
-        const vote = votes[i];
+        const vote = Object.create(votes[i]);
 
         // @const { Alternative } alternative - Take the first choice of the done vote
-        const alternative = vote.priorities[0];
+        const alternative = Object.create(vote.priorities[0]);
 
         // @const { float } fraction - Find the excess fraction for this alternative
         const fraction = excessFractions[alternative._id] || 0;
