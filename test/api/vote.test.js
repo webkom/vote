@@ -8,10 +8,8 @@ const Election = require('../../app/models/election');
 const Vote = require('../../app/models/vote');
 const { test404, testAdminResource } = require('./helpers');
 const { createUsers } = require('../helpers');
-const chaiSubset = require('chai-subset');
 
 const should = chai.should();
-chai.use(chaiSubset);
 
 describe('Vote API', () => {
   const activeElectionData = {
@@ -359,12 +357,7 @@ describe('Vote API', () => {
       .expect(200)
       .expect('Content-Type', /json/);
 
-    body.should.containSubset({
-      thr: 1,
-      result: {
-        status: 'RESOLVED',
-      },
-    });
+    body.result.status.should.equal('RESOLVED');
   });
 
   it('should not be possible to get votes on an active election', async function () {
