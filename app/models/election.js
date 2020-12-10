@@ -4,14 +4,7 @@ const errors = require('../errors');
 const mongoose = require('mongoose');
 const Vote = require('./vote');
 const Schema = mongoose.Schema;
-
 const stv = require('../stv/stv.js');
-
-const env = require('../../env');
-const redisClient = require('redis').createClient(6379, env.REDIS_URL);
-const Redlock = require('redlock');
-const redlock = new Redlock([redisClient], {});
-
 const crypto = require('crypto');
 
 const hasVotedSchema = new Schema({
@@ -112,16 +105,13 @@ electionSchema.methods.addVote = async function (user, priorities) {
   if (user.admin) throw new errors.AdminVotingError();
   if (user.moderator) throw new errors.ModeratorVotingError();
 
-  const lock = await redlock.lock('vote:' + user.username, 2000);
   if (!this.active) {
-    await lock.unlock();
     throw new errors.InactiveElectionError();
   }
   const votedUsers = this.hasVotedUsers.toObject();
   const hasVoted = _.find(votedUsers, { user: user._id });
 
   if (hasVoted) {
-    await lock.unlock();
     throw new errors.AlreadyVotedError();
   }
 
@@ -140,8 +130,6 @@ electionSchema.methods.addVote = async function (user, priorities) {
   this.votes.push(savedVote._id);
 
   await this.save();
-
-  await lock.unlock();
 
   return savedVote;
 };

@@ -2,8 +2,14 @@ const Election = require('../models/election');
 const Vote = require('../models/vote');
 const errors = require('../errors');
 
+const env = require('../../env');
+const redisClient = require('redis').createClient(6379, env.REDIS_URL);
+const Redlock = require('redlock');
+const redlock = new Redlock([redisClient], {});
+
 exports.create = async (req, res) => {
   const { election, priorities } = req.body;
+  const { user } = req;
 
   if (typeof election !== 'object' || Array.isArray(election)) {
     throw new errors.InvalidPayloadError('election');
@@ -13,8 +19,10 @@ exports.create = async (req, res) => {
     throw new errors.InvalidPayloadError('priorities');
   }
 
+  // Create a new lock for this user to ensure nobody double-votes
+  const lock = await redlock.lock('vote:' + user._id, 1000);
   return Election.findById(req.body.election._id)
-    .then((election) => {
+    .then(async (election) => {
       // Election does not exist
       if (!election) throw new errors.NotFoundError('election');
 
@@ -30,8 +38,11 @@ exports.create = async (req, res) => {
       if (diff.length > 0) {
         throw new errors.InvalidPriorityError(diff[0], election);
       }
+      const vote = await election.addVote(user, priorities);
+      // Unlock when voted
+      await lock.unlock();
 
-      return election.addVote(req.user, priorities);
+      return vote;
     })
     .then((vote) => res.json(vote));
 };
