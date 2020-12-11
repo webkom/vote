@@ -49,9 +49,24 @@ module.exports = {
  *
  * =============================================================================
  *
- * When adding up the multiple fractions creaded above the result should be that the
+ * When adding up the multiple fractions created above the result should be that the
  * 3 bottom candidates 'B', 'C' and 'D' at some point should have 46.33333333333326
  *
  * Therefore it's important that this case ensures that all 3 candidates are treated
  * equal at this iteration.
+ *
+ * At the point above (iteration 5), all candidates have the same score, and we
+ * must issue a "TIE". But before we abort the election and return UNRESOLVED we
+ * can use backtracking to check if the election ever had a state where the
+ * candidates had unequal score. This is the Scottish STV method for breaking TIES.
+ *
+ * In this case we iterate backward and find that one iteration back the score
+ * looked like this:
+    counts: {
+      B: 46.3333,
+      C: 46.3333,
+      D: 42.7444,
+      E: 3.5889,
+    },
+ * Therefore, according to the algorithm, D can be eliminated with a score of 42.7
  */
