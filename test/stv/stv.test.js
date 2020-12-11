@@ -153,7 +153,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'Pear' }],
+          alternative: { description: 'Pear' },
           minScore: 2,
         },
         {
@@ -182,7 +182,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'Hamburger' }],
+          alternative: { description: 'Hamburger' },
           minScore: 3,
         },
         {
@@ -194,7 +194,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'Strawberry' }],
+          alternative: { description: 'Strawberry' },
           minScore: 5,
         },
         {
@@ -260,7 +260,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'PEARSON' }],
+          alternative: { description: 'PEARSON' },
           minScore: 34,
         },
         {
@@ -279,7 +279,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'LENNON' }],
+          alternative: { description: 'LENNON' },
           minScore: 58,
         },
         {
@@ -314,7 +314,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'WILCOCKS' }],
+          alternative: { description: 'WILCOCKS' },
           minScore: 60,
         },
         {
@@ -354,7 +354,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'COHEN' }],
+          alternative: { description: 'COHEN' },
           minScore: 72,
         },
         {
@@ -366,7 +366,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'VINE' }],
+          alternative: { description: 'VINE' },
           minScore: 104,
         },
       ],
@@ -396,7 +396,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'Siv Jensen' }],
+          alternative: { description: 'Siv Jensen' },
           minScore: 44,
         },
         {
@@ -455,7 +455,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'D' }],
+          alternative: { description: 'D' },
           minScore: 3.3333,
         },
         {
@@ -469,7 +469,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'C' }],
+          alternative: { description: 'C' },
           minScore: 4.3333,
         },
         {
@@ -529,7 +529,12 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'G' }, { description: 'H' }],
+          alternative: { description: 'G' },
+          minScore: 0,
+        },
+        {
+          action: 'ELIMINATE',
+          alternative: { description: 'H' },
           minScore: 0,
         },
         {
@@ -546,7 +551,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'F' }],
+          alternative: { description: 'F' },
           minScore: 2.7444,
         },
         {
@@ -562,7 +567,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
-          alternatives: [{ description: 'E' }],
+          alternative: { description: 'E' },
           minScore: 3.5889,
         },
         {
@@ -576,13 +581,34 @@ describe('STV Logic', () => {
           },
         },
         {
+          action: 'TIE',
+          description:
+            'There are 3 candidates with a score of 46.3333 at iteration 5',
+        },
+        // Egde case iteration. See the dataset for explanation
+        {
           action: 'ELIMINATE',
-          alternatives: [
-            { description: 'B' },
-            { description: 'C' },
-            { description: 'D' },
-          ],
-          minScore: 46.3333,
+          alternative: { description: 'D' },
+          minScore: 42.7444,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 6,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+          },
+        },
+        {
+          action: 'TIE',
+          description:
+            'There are 2 candidates with a score of 46.3333 at iteration 6',
+        },
+        {
+          action: 'TIE',
+          description:
+            'The backward checking went to iteration 1 without breaking the tie',
         },
       ],
     });
