@@ -1,4 +1,3 @@
-const mongoose = require('mongoose');
 const Alternative = require('../../app/models/alternative');
 const Election = require('../../app/models/election');
 const Vote = require('../../app/models/vote');
@@ -7,7 +6,6 @@ const chai = require('chai');
 const chaiSubset = require('chai-subset');
 const dataset = require('./datasets');
 
-const should = chai.should();
 chai.use(chaiSubset);
 
 describe('STV Logic', () => {
@@ -422,12 +420,171 @@ describe('STV Logic', () => {
   it('should calculate floating points correctly for dataset5', async function () {
     const election = await prepareElection(dataset.dataset5);
     const electionResult = await election.elect();
-    //TODO
+    electionResult.should.containSubset({
+      thr: 8,
+      result: {
+        status: 'RESOLVED',
+        winners: [{ description: 'A' }, { description: 'B' }],
+      },
+      log: [
+        {
+          action: 'ITERATION',
+          iteration: 1,
+          winners: [],
+          counts: {
+            A: 9,
+            B: 7,
+            C: 4,
+            D: 3,
+          },
+        },
+        {
+          action: 'WIN',
+          alternative: { description: 'A' },
+          voteCount: 9,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 2,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 7.3333,
+            C: 4.3333,
+            D: 3.3333,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [{ description: 'D' }],
+          minScore: 3.3333,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 3,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 7.6667,
+            C: 4.3333,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [{ description: 'C' }],
+          minScore: 4.3333,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 4,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 8,
+          },
+        },
+        {
+          action: 'WIN',
+          alternative: { description: 'B' },
+          voteCount: 8,
+        },
+      ],
+    });
   });
 
   it('should calculate floating points correctly for dataset6', async function () {
     const election = await prepareElection(dataset.dataset6);
     const electionResult = await election.elect();
-    //TODO
+    electionResult.should.containSubset({
+      thr: 71,
+      result: {
+        status: 'UNRESOLVED',
+        winners: [{ description: 'A' }],
+      },
+      log: [
+        {
+          action: 'ITERATION',
+          iteration: 1,
+          winners: [],
+          counts: {
+            A: 90,
+            B: 40,
+            C: 40,
+            D: 40,
+          },
+        },
+        {
+          action: 'WIN',
+          alternative: { description: 'A' },
+          voteCount: 90,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 2,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+            D: 40,
+            E: 3.5889,
+            F: 2.7444,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [{ description: 'G' }, { description: 'H' }],
+          minScore: 0,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 3,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+            D: 40,
+            E: 3.5889,
+            F: 2.7444,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [{ description: 'F' }],
+          minScore: 2.7444,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 4,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+            D: 42.7444,
+            E: 3.5889,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [{ description: 'E' }],
+          minScore: 3.5889,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 5,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+            D: 46.3333,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternatives: [
+            { description: 'B' },
+            { description: 'C' },
+            { description: 'D' },
+          ],
+          minScore: 46.3333,
+        },
+      ],
+    });
   });
 });
