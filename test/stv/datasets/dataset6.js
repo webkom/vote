@@ -43,9 +43,9 @@ module.exports = {
  *
  * =============================================================================
  *
- * So with the test above there are 2 seats and a total of 21 votes.
+ * So with the test above there are 2 seats and a total of 210 votes.
  *
- * This will give a quota of Floor(21/(2+1)) + 1 which is 8
+ * This will give a quota of Floor(210/(2+1)) + 1 which is 71
  *
  * =============================================================================
  *
@@ -53,5 +53,5 @@ module.exports = {
  * 3 bottom candidates 'B', 'C' and 'D' at some point should have 46.33333333333326
  *
  * Therefore it's important that this case ensures that all 3 candidates are treated
- * equal at this point in the iterations.
+ * equal at this iteration.
  */
