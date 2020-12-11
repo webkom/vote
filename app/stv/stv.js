@@ -77,21 +77,13 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
   // Stringify and clean the votes
   votes = votes.map((vote) => ({
     _id: String(vote._id),
-    priorities: vote.priorities.map((alternative) => ({
-      _id: String(alternative._id),
-      election: String(alternative.election),
-      description: alternative.description,
-    })),
+    priorities: JSON.parse(JSON.stringify(vote.priorities)),
     hash: vote.hash,
     weight: 1,
   }));
 
   // Stingify and clean the alternatives
-  alternatives = alternatives.map((alternative) => ({
-    _id: String(alternative._id),
-    description: alternative.description,
-    election: String(alternative.election),
-  }));
+  alternatives = JSON.parse(JSON.stringify(alternatives));
 
   // @const { int } thr - The threshold value needed to win
   const thr = winningThreshold(votes, seats);
@@ -131,10 +123,9 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       action: 'ITERATION',
       iteration,
       winners: winners.slice(),
-      // TODO find a better way to return this?
-      //alternatives: alternatives.slice(),
-      //votes: votes.slice(),
-      counts,
+      alternatives: alternatives.slice(),
+      votes: votes.slice(),
+      counts: handleFloatsInOutput(counts),
     });
 
     // @let { [key: string]: {} } roundWinner - Dict of winners
@@ -167,7 +158,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
         log.push({
           action: 'WIN',
           alternative,
-          voteCount,
+          voteCount: Number(voteCount.toFixed(4)),
         });
 
         // Find the done Votes
@@ -242,7 +233,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       log.push({
         action: 'ELIMINATE',
         alternatives: minAlternatives,
-        minScore,
+        minScore: Number(minScore.toFixed(4)),
       });
       minAlternatives.forEach(
         (alternatives) => (doneAlternatives[alternatives._id] = {})
@@ -271,8 +262,8 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
 };
 
 // Round floats to fixed in output
-// const handleFloatsInOutput = (obj) => {
-//   let newObj = {};
-//   Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
-//   return newObj;
-// };
+const handleFloatsInOutput = (obj) => {
+  let newObj = {};
+  Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
+  return newObj;
+};
