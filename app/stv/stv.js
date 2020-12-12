@@ -38,8 +38,8 @@
  *       minScore: number;
  *     }
  *   | {
- *       action: 'TIEELIMINATE';
- *       alternative: Alternative;
+ *       action: 'MULTI_TIE_ELIMINATIONS';
+ *       alternatives: Alternative[];
  *       minScore: number;
  *     }
  *   | {
@@ -255,8 +255,6 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
 
         // As long as the reveseindex is still larger then 1 we can look further back
         while (reverseIteration >= 1) {
-          reverseIteration--;
-
           // Find the log object for the last iteration
           const logObject = log.find(
             (entry) => entry.iteration === reverseIteration
@@ -282,18 +280,18 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
                 'The backward checking went to iteration 1 without breaking the tie',
             });
             // Eliminate all candidates that are in the last iterationMinAlternatives
-            iterationMinAlternatives.forEach((alternative) => {
-              // Log the tie elimination
-              log.push({
-                action: 'TIEELIMINATE',
-                alternative: alternative,
-                minScore: Number(minScore.toFixed(4)),
-              });
-              doneAlternatives[alternative._id] = {};
+            log.push({
+              action: 'MULTI_TIE_ELIMINATIONS',
+              alternatives: alternatives,
+              minScore: Number(minScore.toFixed(4)),
             });
+            iterationMinAlternatives.forEach(
+              (alternative) => (doneAlternatives[alternative._id] = {})
+            );
             break;
           }
 
+          reverseIteration--;
           // If there is a tie at this iteration as well we must continue the loop
           if (iterationMinAlternatives.length > 1) continue;
 
@@ -321,8 +319,6 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           doneAlternatives[minAlternative._id] = {};
         }
       }
-
-      // ==================================================================================
       nextRoundVotes = votes;
     }
 
