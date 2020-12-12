@@ -38,7 +38,7 @@
  *       minScore: number;
  *     }
  *   | {
- *       action: 'RANDOMELIMINATE';
+ *       action: 'TIEELIMINATE';
  *       alternative: Alternative;
  *       minScore: number;
  *     }
@@ -77,10 +77,10 @@ const EPSILON = 0.000001;
  * @param { Alternative[] } alternatives - All possible alternatives for the election
  * @param { int } seats - The number of seats in this election
  *
- * @return { SVT } The full election, including result, log and threshold value
+ * @return { STV } The full election, including result, log and threshold value
  */
 exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
-  // @let { SVTEvent[] } log - Will hold the log for the entire election
+  // @let { STVEvent[] } log - Will hold the log for the entire election
   let log = [];
 
   // Stringify and clean the votes
@@ -91,7 +91,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
     weight: 1,
   }));
 
-  // Stingify and clean the alternatives
+  // Stringify and clean the alternatives
   alternatives = JSON.parse(JSON.stringify(alternatives));
 
   // @const { int } thr - The threshold value needed to win
@@ -103,7 +103,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
   // @let { int } iteration - The election is a while loop, and with each iteration
   // we count the number of first place votes each candidate has.
   let iteration = 0;
-  while (votes.length > 0) {
+  while (votes.length > 0 && iteration < 100) {
     iteration += 1;
 
     // Remove empty votes, this happens after the threshold is calculated
@@ -242,6 +242,8 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       // There is a tie for eliminating candidates. Per Scottish STV we must look at the previous rounds
       if (minAlternatives.length > 1) {
         let reverseIteration = iteration;
+
+        // Log the Tie
         log.push({
           action: 'TIE',
           description: `There are ${
@@ -251,70 +253,61 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           )} at iteration ${reverseIteration}`,
         });
 
-        // If the minScore is 0 we eliminate a random candidate as Scottish STV specifies
-        // This is only done in the low case of 0, and we would rather return an unresolved
-        // election if the TIE cannot be solved by backtracking.
-        if (minScore === 0) {
-          const randomAlternative =
-            minAlternatives[Math.floor(Math.random() * minAlternatives.length)];
-          log.push({
-            action: 'RANDOMELIMINATE',
-            alternative: randomAlternative,
-            minScore: Number(minScore.toFixed(4)),
-          });
-          doneAlternatives[randomAlternative._id] = {};
-        } else {
-          while (reverseIteration > 0) {
-            // If we are at iteartion one with a tie
-            if (reverseIteration === 1) {
-              // There is nothing we can do
+        // As long as the reveseindex is still larger then 1 we can look further back
+        while (reverseIteration >= 1) {
+          reverseIteration--;
+
+          // Find the log object for the last iteration
+          const logObject = log.find(
+            (entry) => entry.iteration === reverseIteration
+          );
+
+          // Find the lowest score (with regard to the alternatives in the actual iteration)
+          const iterationMinScore = Math.min(
+            ...minAlternatives.map((a) => logObject.counts[a.description] || 0)
+          );
+
+          // Find the candidates (in regard to the actual iteration) that has the lowest score
+          const iterationMinAlternatives = minAlternatives.filter(
+            (alternative) =>
+              (logObject.counts[alternative.description] || 0) <=
+              iterationMinScore + EPSILON
+          );
+
+          // If we are at iteration lvl 1 and there is still a tie we cannot do anything
+          if (reverseIteration === 1 && iterationMinAlternatives.length > 1) {
+            log.push({
+              action: 'TIE',
+              description:
+                'The backward checking went to iteration 1 without breaking the tie',
+            });
+            // Eliminate all candidates that are in the last iterationMinAlternatives
+            iterationMinAlternatives.forEach((alternative) => {
+              // Log the tie elimination
               log.push({
-                action: 'TIE',
-                description:
-                  'The backward checking went to iteration 1 without breaking the tie',
+                action: 'TIEELIMINATE',
+                alternative: alternative,
+                minScore: Number(minScore.toFixed(4)),
               });
-              return {
-                result: { status: 'UNRESOLVED', winners },
-                log,
-                thr,
-              };
-            }
-            // If we are not at iteration one we can enumerate backwards to see if we can find a diff
-            else {
-              reverseIteration--;
-              // Find the log object for the last iteration
-              const logObject = log.find(
-                (entry) => entry.iteration === reverseIteration
-              );
-
-              // Find the lowest score (with regard to the alternatives in the actual iteration)
-              const iterationMinScore = Math.min(
-                ...minAlternatives.map((a) => logObject.counts[a.description])
-              );
-
-              // Find the candidates (in regard to the actual iteration) that has the lowest score
-              const iterationMinAlternatives = minAlternatives.filter(
-                (alternative) =>
-                  (logObject.counts[alternative.description] || 0) <=
-                  iterationMinScore + EPSILON
-              );
-
-              // If there is a tie at this iteration as well we must continue the loop
-              if (iterationMinAlternatives.length > 1) continue;
-
-              // There is only one candidate with the lowest score
-              const minAlternative = iterationMinAlternatives[0];
-              if (minAlternative) {
-                log.push({
-                  action: 'ELIMINATE',
-                  alternative: minAlternative,
-                  minScore: Number(iterationMinScore.toFixed(4)),
-                });
-                doneAlternatives[minAlternative._id] = {};
-              }
-              break;
-            }
+              doneAlternatives[alternative._id] = {};
+            });
+            break;
           }
+
+          // If there is a tie at this iteration as well we must continue the loop
+          if (iterationMinAlternatives.length > 1) continue;
+
+          // There is only one candidate with the lowest score
+          const minAlternative = iterationMinAlternatives[0];
+          if (minAlternative) {
+            log.push({
+              action: 'ELIMINATE',
+              alternative: minAlternative,
+              minScore: Number(iterationMinScore.toFixed(4)),
+            });
+            doneAlternatives[minAlternative._id] = {};
+          }
+          break;
         }
       } else {
         // There is only one candidate with the lowest score
