@@ -38,6 +38,11 @@
  *       minScore: number;
  *     }
  *   | {
+ *       action: 'RANDOMELIMINATE';
+ *       alternative: Alternative;
+ *       minScore: number;
+ *     }
+ *   | {
  *       action: 'TIE';
  *       description: string;
  *     };
@@ -127,8 +132,9 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       action: 'ITERATION',
       iteration,
       winners: winners.slice(),
-      alternatives: alternatives.slice(),
-      votes: votes.slice(),
+      // TODO Find a better way to this, the test assertions are slow AF with this
+      //alternatives: alternatives.slice(),
+      //votes: votes.slice(),
       counts: handleFloatsInOutput(counts),
     });
 
@@ -245,16 +251,18 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           )} at iteration ${reverseIteration}`,
         });
 
-        // if the minScore is 0 then we just dont bother, and just expell all the candidates with 0
-        if (minScore === 0) {
-          minAlternatives.forEach((alternative) => {
-            log.push({
-              action: 'ELIMINATE',
-              alternative: alternative,
-              minScore: Number(minScore.toFixed(4)),
-            });
-            doneAlternatives[alternative._id] = {};
+        // If the minScore is 0 or 1 we eliminate a random candidate as Scottish STV specifies
+        // This is only done in the low cases of 0 or 1, and we would rather return an unresolved
+        // election if the TIE cannot be solved by backtracking.
+        if (minScore === 0 || minScore === 1) {
+          const randomAlternative =
+            minAlternatives[Math.floor(Math.random() * minAlternatives.length)];
+          log.push({
+            action: 'RANDOMELIMINATE',
+            alternative: randomAlternative,
+            minScore: Number(minScore.toFixed(4)),
           });
+          doneAlternatives[randomAlternative._id] = {};
         } else {
           while (reverseIteration > 0) {
             // If we are at iteartion one with a tie
@@ -285,7 +293,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
               );
 
               // Find the candidates (in regard to the actual iteration) that has the lowest score
-              const iterationMinAlternatives = alternatives.filter(
+              const iterationMinAlternatives = minAlternatives.filter(
                 (alternative) =>
                   (logObject.counts[alternative.description] || 0) <=
                   iterationMinScore + EPSILON
