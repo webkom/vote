@@ -16,7 +16,7 @@ module.exports = [
     localStorageService
   ) {
     $scope.activeElection = null;
-    $scope.selectedAlternative = null;
+    $scope.priorities = [];
 
     /**
      * Tries to find an active election
@@ -34,19 +34,38 @@ module.exports = [
     getActiveElection();
     socketIOService.listen('election', getActiveElection);
 
+    $scope.getPossibleAlternatives = function () {
+      return $scope.activeElection.alternatives.filter(
+        (e) => !$scope.priorities.includes(e)
+      );
+    };
+
+    $scope.updatePriority = function (oldIndex, newIndex) {
+      const alternative = $scope.priorities.splice(oldIndex, 1)[0];
+      $scope.priorities.splice(newIndex, 0, alternative);
+    };
+
     /**
-     * Sets the given alternative to $scope
+     * Adds the given alternative to $scope.priorities
      * @param  {Object} alternative
      */
     $scope.selectAlternative = function (alternative) {
-      $scope.selectedAlternative = alternative;
+      $scope.priorities.push(alternative);
+    };
+
+    /**
+     * Removes the given alternative to $scope.priorities
+     * @param  {Object} alternative
+     */
+    $scope.deselectAlternative = function (alternative) {
+      $scope.priorities = $scope.priorities.filter((a) => a !== alternative);
     };
 
     /**
      * Persists votes to the backend
      */
     $scope.vote = function () {
-      voteService.vote($scope.selectedAlternative._id).then(
+      voteService.vote($scope.activeElection, $scope.priorities).then(
         function (response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
@@ -86,7 +105,7 @@ module.exports = [
      * @return {Boolean}
      */
     $scope.isChosen = function (alternative) {
-      return alternative === $scope.selectedAlternative;
+      return $scope.priorities.includes(alternative);
     };
   },
 ];

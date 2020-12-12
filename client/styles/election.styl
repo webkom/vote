@@ -4,6 +4,9 @@
     h2
         text-transform uppercase
 
+.helptext
+    line-height 60px
+
 .alternatives
     margin-bottom 30px
     border-top 1px solid rgba(177, 181, 188, 0.3)
@@ -32,7 +35,6 @@
         border-radius 2px
         border 1px solid transparent
         background-color alpha($alternative-background, 0.15)
-        transition all 0.5s
 
         &:hover
             cursor pointer
@@ -54,9 +56,30 @@
             text-transform uppercase
             margin-bottom 0
             font-weight 200
-            transition all 0.3s
+            transition color 0.3s
             vertical-align middle
+    .numbered
+        counter-reset item
 
+        .sortable-drag
+            display none
+
+        li
+            display inline-block
+            counter-increment item
+            position relative
+            width 90%
+
+            &:before
+                position absolute
+                top 0
+                left -25px
+                margin-right 10px
+                content counter(item)
+                font-size 35px
+                color $abakus-dark
+                display inline-block
+                text-align center
 
 @media (max-width 1000px)
     .alternatives
