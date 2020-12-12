@@ -5,18 +5,35 @@
       p {{ activeElection.description }}
 
     .alternatives
+      h3 Din prioritering
+      p(ng-if="priorities.length == 0").helptext.
+        Velg et alternativ fra listen for å begynne
+
+      ul.list-unstyled.numbered(
+        sortable,
+        sortable-on-update="updatePriority",
+        sortable-list="priorities",
+        sortable-animation='150',
+        sortable-delay='50'
+        )
+        li(
+          ng-repeat='alternative in priorities',
+          ng-click='deselectAlternative(alternative)',
+        )
+          p {{ alternative.description }}
+
+    .alternatives
       h3 Alternativer
       ul.list-unstyled
         li(
-          ng-repeat='alternative in activeElection.alternatives',
+          ng-repeat='alternative in getPossibleAlternatives()',
           ng-click='selectAlternative(alternative)',
-          ng-class='{"selected": isChosen(alternative)}'
         )
           p {{ alternative.description }}
 
       confirm-vote(
         vote-handler='vote()',
-        selected-alternative='selectedAlternative'
+        selected-alternatives='priorities'
       )
 
   div(ng-switch-default)
