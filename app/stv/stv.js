@@ -251,10 +251,10 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           )} at iteration ${reverseIteration}`,
         });
 
-        // If the minScore is 0 or 1 we eliminate a random candidate as Scottish STV specifies
-        // This is only done in the low cases of 0 or 1, and we would rather return an unresolved
+        // If the minScore is 0 we eliminate a random candidate as Scottish STV specifies
+        // This is only done in the low case of 0, and we would rather return an unresolved
         // election if the TIE cannot be solved by backtracking.
-        if (minScore === 0 || minScore === 1) {
+        if (minScore === 0) {
           const randomAlternative =
             minAlternatives[Math.floor(Math.random() * minAlternatives.length)];
           log.push({
