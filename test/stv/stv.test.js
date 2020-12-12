@@ -533,13 +533,8 @@ describe('STV Logic', () => {
             'There are 2 candidates with a score of 0 at iteration 2',
         },
         {
-          action: 'TIEELIMINATE',
-          alternative: { description: 'G' },
-          minScore: 0,
-        },
-        {
-          action: 'TIEELIMINATE',
-          alternative: { description: 'H' },
+          action: 'MULTI_TIE_ELIMINATIONS',
+          alternatives: [{ description: 'G' }, { description: 'H' }],
           minScore: 0,
         },
         {
@@ -611,14 +606,15 @@ describe('STV Logic', () => {
             'There are 2 candidates with a score of 46.3333 at iteration 6',
         },
         {
-          action: 'TIEELIMINATE',
-          alternative: { description: 'B' },
-          minScore: 46.3333,
+          action: 'MULTI_TIE_ELIMINATIONS',
+          alternatives: [{ description: 'B' }, { description: 'C' }],
+          minScore: 0,
         },
         {
-          action: 'TIEELIMINATE',
-          alternative: { description: 'C' },
-          minScore: 46.3333,
+          action: 'ITERATION',
+          iteration: 7,
+          winners: [{ description: 'A' }],
+          counts: {},
         },
       ],
     });
