@@ -17,9 +17,7 @@ exports.load = (req, res, next, electionId) =>
     });
 
 exports.retrieveActive = (req, res) =>
-  Election.findOne({ active: true })
-    .where('hasVotedUsers.user')
-    .ne(req.user.id)
+  Election.findOne({ active: true, hasVotedUsers: { $ne: req.user._id } })
     .select('-hasVotedUsers')
     .populate('alternatives')
     .exec()

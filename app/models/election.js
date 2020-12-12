@@ -7,13 +7,6 @@ const Schema = mongoose.Schema;
 const stv = require('../stv/stv.js');
 const crypto = require('crypto');
 
-const hasVotedSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-  },
-});
-
 const electionSchema = new Schema({
   title: {
     type: String,
@@ -27,7 +20,12 @@ const electionSchema = new Schema({
     type: Boolean,
     default: false,
   },
-  hasVotedUsers: [hasVotedSchema],
+  hasVotedUsers: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
   alternatives: [
     {
       type: Schema.Types.ObjectId,
@@ -46,7 +44,6 @@ const electionSchema = new Schema({
   ],
 });
 
-// TODO
 electionSchema.pre('remove', function (next) {
   // Use mongoose.model getter to avoid circular dependencies
   mongoose
@@ -109,7 +106,7 @@ electionSchema.methods.addVote = async function (user, priorities) {
     throw new errors.InactiveElectionError();
   }
   const votedUsers = this.hasVotedUsers.toObject();
-  const hasVoted = _.find(votedUsers, { user: user._id });
+  const hasVoted = _.find(votedUsers, { _id: user._id });
 
   if (hasVoted) {
     throw new errors.AlreadyVotedError();
@@ -123,7 +120,7 @@ electionSchema.methods.addVote = async function (user, priorities) {
     priorities: priorities,
   });
 
-  this.hasVotedUsers.push({ user: user._id });
+  this.hasVotedUsers.push(user._id);
   await this.save();
 
   const savedVote = await vote.save();

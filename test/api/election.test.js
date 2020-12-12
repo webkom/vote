@@ -374,9 +374,7 @@ describe('Election API', () => {
 
   it('should filter out elections the user has voted on', async function () {
     passportStub.login(this.user.username);
-    this.activeElection.hasVotedUsers.push({
-      user: this.user.id,
-    });
+    this.activeElection.hasVotedUsers.push(this.user._id);
 
     await this.activeElection.save();
     const { body } = await request(app)
