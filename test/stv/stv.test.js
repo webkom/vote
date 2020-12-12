@@ -528,13 +528,13 @@ describe('STV Logic', () => {
           },
         },
         {
-          action: 'ELIMINATE',
-          alternative: { description: 'G' },
-          minScore: 0,
+          action: 'TIE',
+          description:
+            'There are 2 candidates with a score of 0 at iteration 2',
         },
         {
-          action: 'ELIMINATE',
-          alternative: { description: 'H' },
+          action: 'RANDOMELIMINATE',
+          // We don't know if G or H will be eliminated here
           minScore: 0,
         },
         {
@@ -551,12 +551,29 @@ describe('STV Logic', () => {
         },
         {
           action: 'ELIMINATE',
+          // We don't know if G or H will be eliminated here
+          minScore: 0,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 4,
+          winners: [{ description: 'A' }],
+          counts: {
+            B: 46.3333,
+            C: 46.3333,
+            D: 40,
+            E: 3.5889,
+            F: 2.7444,
+          },
+        },
+        {
+          action: 'ELIMINATE',
           alternative: { description: 'F' },
           minScore: 2.7444,
         },
         {
           action: 'ITERATION',
-          iteration: 4,
+          iteration: 5,
           winners: [{ description: 'A' }],
           counts: {
             B: 46.3333,
@@ -572,7 +589,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ITERATION',
-          iteration: 5,
+          iteration: 6,
           winners: [{ description: 'A' }],
           counts: {
             B: 46.3333,
@@ -583,7 +600,7 @@ describe('STV Logic', () => {
         {
           action: 'TIE',
           description:
-            'There are 3 candidates with a score of 46.3333 at iteration 5',
+            'There are 3 candidates with a score of 46.3333 at iteration 6',
         },
         // Egde case iteration. See the dataset for explanation
         {
@@ -593,7 +610,7 @@ describe('STV Logic', () => {
         },
         {
           action: 'ITERATION',
-          iteration: 6,
+          iteration: 7,
           winners: [{ description: 'A' }],
           counts: {
             B: 46.3333,
@@ -603,7 +620,7 @@ describe('STV Logic', () => {
         {
           action: 'TIE',
           description:
-            'There are 2 candidates with a score of 46.3333 at iteration 6',
+            'There are 2 candidates with a score of 46.3333 at iteration 7',
         },
         {
           action: 'TIE',
