@@ -5,7 +5,7 @@
         text-transform uppercase
 
 .helptext
-    line-height 60px
+    height 70px
 
 .alternatives
     margin-bottom 30px
@@ -31,44 +31,50 @@
 
     ul li
         margin-bottom 10px
-        line-height 60px
+        height 60px
         border-radius 2px
         border 1px solid transparent
         background-color alpha($alternative-background, 0.15)
 
         &:hover
+        &.sortable-chosen
             cursor pointer
             border 1px solid alpha($alternative-background, 0.15)
             background-color alpha($alternative-background, 0.05)
+            box-shadow 1px 2px 5px #ccc, 0px -2px 5px #ccc
+
+        .content
+            line-height 60px
+            text-align center
+            display inline-block
+
+                p
+                    color $abakus-light
+                    opacity 1
+
+            &.selected
+                background-color alpha($alternative-background, 0.4)
+
+                p
+                    color white
 
             p
-                color $abakus-light
-                opacity 1
+                color darken($font-gray, 20%)
+                text-transform uppercase
+                font-weight 200
+                transition color 0.3s
+                vertical-align middle
+                display inline-block
+                line-height 30px
 
-        &.selected
-            background-color alpha($alternative-background, 0.4)
-
-            p
-                color white
-
-        p
-            color darken($font-gray, 20%)
-            text-transform uppercase
-            margin-bottom 0
-            font-weight 200
-            transition color 0.3s
-            vertical-align middle
     .numbered
         counter-reset item
 
-        .sortable-drag
-            display none
-
         li
-            display inline-block
+            width 90%
             counter-increment item
             position relative
-            width 90%
+            display inline-block
 
             &:before
                 position absolute
@@ -81,7 +87,43 @@
                 display inline-block
                 text-align center
 
+            .content
+                width 85%
+                display inline-block
+
+                p
+                    user-select: none;
+                    -webkit-touch-callout: none;
+
+                .drag
+                    position absolute
+                    height 100%
+                    line-height 60px
+                    left 10px
+                    height 100%
+                    vertical-align middle
+
+            .close
+                display flex
+                align-items center
+                justify-content center
+                height 100%
+                width 15%
+                color $abakus-dark
+                background-color alpha($abakus-dark, 0.4)
+
 @media (max-width 1000px)
     .alternatives
         button.btn
             min-width 60%
+
+        ul
+            .sortable-drag
+                display none
+
+            li
+                .close
+                    opacity .5
+
+                &:hover
+                    background-color inherit

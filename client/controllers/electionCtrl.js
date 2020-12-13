@@ -40,9 +40,13 @@ module.exports = [
       );
     };
 
-    $scope.updatePriority = function (oldIndex, newIndex) {
+    $scope.updatePriority = function (evt) {
+      const { oldIndex, newIndex } = evt;
       const alternative = $scope.priorities.splice(oldIndex, 1)[0];
       $scope.priorities.splice(newIndex, 0, alternative);
+
+      // There might be a bug where angular does not re-render, so we force refresh
+      $scope.$apply();
     };
 
     /**
@@ -57,8 +61,8 @@ module.exports = [
      * Removes the given alternative to $scope.priorities
      * @param  {Object} alternative
      */
-    $scope.deselectAlternative = function (alternative) {
-      $scope.priorities = $scope.priorities.filter((a) => a !== alternative);
+    $scope.deselectAlternative = function (id) {
+      $scope.priorities = $scope.priorities.filter((a) => a._id !== id);
     };
 
     /**

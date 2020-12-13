@@ -8,6 +8,7 @@ module.exports = function () {
       sortableAnimation: '=',
       sortableOnUpdate: '=',
       sortableDelay: '=',
+      sortableHandle: '@sortableHandle',
     },
     link: function (scope, elem) {
       let img;
@@ -15,6 +16,7 @@ module.exports = function () {
         delay: scope.sortableDelay,
         delayOnTouchOnly: true,
         animation: scope.sortableAnimation,
+        handle: scope.sortableHandle,
         setData: function (dataTransfer, el) {
           img = el.cloneNode(true);
           img.style.visibility = 'hidden';
@@ -27,9 +29,18 @@ module.exports = function () {
           dataTransfer.setDragImage(img, 0, 0);
         },
         onEnd: function () {
-          img.parentNode.removeChild(img);
+          img && img.parentNode && img.parentNode.removeChild(img);
         },
         onUpdate: scope.sortableOnUpdate,
+        onChoose: function () {
+          setTimeout(
+            () => window.navigator.vibrate && window.navigator.vibrate(100),
+            200
+          );
+        },
+        onMove: function () {
+          window.navigator.vibrate && window.navigator.vibrate(50);
+        },
       });
     },
   };
