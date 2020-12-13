@@ -6,35 +6,35 @@
 
     .alternatives
       h3 Din prioritering
-      p(ng-if="priorities.length == 0").helptext.
-        Velg et alternativ fra listen for å begynne
+      p.helptext(ng-if='priorities.length == 0')
+        em Velg et alternativ fra listen
 
       ul.list-unstyled.numbered(
         sortable,
-        sortable-on-update="updatePriority",
-        sortable-list="priorities",
-        sortable-animation='150',
-        sortable-delay='50'
-        )
-        li(
-          ng-repeat='alternative in priorities',
-          ng-click='deselectAlternative(alternative)',
-        )
-          p {{ alternative.description }}
+        sortable-on-update='updatePriority',
+        sortable-list='priorities',
+        sortable-animation='100',
+        sortable-delay='0',
+        sortable-handle='.content'
+      )
+        li(ng-repeat='alternative in priorities track by alternative._id')
+          .content
+            i.fa.fa-bars.drag
+            p {{ alternative.description }}
+          .close(ng-click='deselectAlternative(alternative._id)')
+            i.fa.fa-close
 
     .alternatives
       h3 Alternativer
       ul.list-unstyled
         li(
           ng-repeat='alternative in getPossibleAlternatives()',
-          ng-click='selectAlternative(alternative)',
+          ng-click='selectAlternative(alternative)'
         )
-          p {{ alternative.description }}
+          .content
+            p {{ alternative.description }}
 
-      confirm-vote(
-        vote-handler='vote()',
-        selected-alternatives='priorities'
-      )
+      confirm-vote(vote-handler='vote()', selected-alternatives='priorities')
 
   div(ng-switch-default)
     h2.

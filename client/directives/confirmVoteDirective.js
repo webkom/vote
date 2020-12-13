@@ -3,21 +3,21 @@ module.exports = function () {
     restrict: 'E',
     replace: true,
     scope: {
-      selectedAlternative: '=',
+      selectedAlternatives: '=',
       voteHandler: '&',
     },
     template:
       '' +
       '<button type="button" ng-click="click()" ' +
-      'ng-disabled="!selectedAlternative" class="btn btn-lg btn-default">' +
-      '{{buttonText || "Velg et alternativ"}}' +
+      'ng-disabled="selectedAlternatives.length === 0" class="btn btn-lg btn-default">' +
+      '{{buttonText || "Velg noen alternativer"}}' +
       '</button>',
 
     link: function (scope, elem, attrs) {
       var clicked = false;
 
-      scope.$watch('selectedAlternative', function (newValue) {
-        if (newValue) {
+      scope.$watch('selectedAlternatives', function (newValue) {
+        if (newValue.length > 0) {
           scope.buttonText = 'Avgi stemme';
           clicked = false;
         }
