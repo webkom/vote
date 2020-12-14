@@ -37,6 +37,22 @@ steps:
     commands:
       - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
 
+  - name: coverage
+    image: node:13
+    when:
+      event:
+        - pull_request
+    depends_on:
+      - test
+    commands:
+      - yarn coverage
+    environment:
+      COVERALLS_REPO_TOKEN:
+        from_secret: coveralls_token
+      COVERALLS_SERVICE_NAME: drone
+      COVERALLS_GIT_BRANCH: ${DRONE_BRANCH}
+      COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
+
   - name: build
     image: node:13
     when:
