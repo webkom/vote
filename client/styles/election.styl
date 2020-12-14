@@ -1,16 +1,13 @@
-.election-info
-    margin-bottom 40px
-
-    h2
+.election-info h2
         text-transform uppercase
 
 .helptext
     height 70px
 
 .alternatives
-    margin-bottom 30px
+    margin-bottom 20px
+    padding-top 20px
     border-top 1px solid rgba(177, 181, 188, 0.3)
-    padding-top 40px
 
     h3
         margin-bottom 25px
@@ -29,12 +26,22 @@
             background-color #f9f9f9
             color $abakus-dark
 
+    ul
+        min-height 60px
+        text-align right
+
+    .numbered
+        min-height initial
+
     ul li
         margin-bottom 10px
         height 60px
         border-radius 2px
         border 1px solid transparent
         background-color alpha($alternative-background, 0.15)
+        display flex
+        justify-content space-between
+        margin-left auto
 
         &:hover
         &.sortable-chosen
@@ -46,11 +53,7 @@
         .content
             line-height 60px
             text-align center
-            display inline-block
-
-                p
-                    color $abakus-light
-                    opacity 1
+            flex-grow 1
 
             &.selected
                 background-color alpha($alternative-background, 0.4)
@@ -59,58 +62,86 @@
                     color white
 
             p
+                color $abakus-light
+                opacity 1
+                margin 0
                 color darken($font-gray, 20%)
                 text-transform uppercase
                 font-weight 200
                 transition color 0.3s
                 vertical-align middle
                 display inline-block
-                line-height 30px
+                line-height 24px
 
-    .numbered
-        counter-reset item
+        .icon
+            display flex
+            align-items center
+            justify-content center
+            height 100%
+            width 15%
 
-        li
-            width 90%
-            counter-increment item
-            position relative
-            display inline-block
-
-            &:before
-                position absolute
-                top 0
-                left -25px
-                margin-right 10px
-                content counter(item)
-                font-size 35px
-                color $abakus-dark
-                display inline-block
-                text-align center
-
-            .content
-                width 85%
-                display inline-block
-
-                p
-                    user-select: none;
-                    -webkit-touch-callout: none;
-
-                .drag
-                    position absolute
-                    height 100%
-                    line-height 60px
-                    left 10px
-                    height 100%
-                    vertical-align middle
-
-            .close
-                display flex
-                align-items center
-                justify-content center
-                height 100%
-                width 15%
+            &.remove
                 color $abakus-dark
                 background-color alpha($abakus-dark, 0.4)
+            &.add
+                color green
+                background-color alpha(green, 0.4)
+
+
+.numbered
+    counter-reset item
+    text-align right
+
+    li
+        width 95%
+        counter-increment item
+        position relative
+        display inline-block
+
+        &:before
+            position absolute
+            top 0
+            left -25px
+            margin-right 10px
+            content counter(item)
+            font-size 35px
+            color $abakus-dark
+            display inline-block
+            text-align center
+
+        .content p
+            user-select: none;
+            -webkit-touch-callout: none;
+            width 90%
+
+
+        .drag
+            position absolute
+            height 100%
+            line-height 60px
+            width 10%
+            height 100%
+            vertical-align middle
+
+.btn
+    margin 20px
+
+.ballot
+    border 1px solid alpha($alternative-background, 0.3)
+    background-color alpha($alternative-background, 0.05)
+    border-radius 8px
+
+    ol
+        margin 0
+
+        .confirm-pri
+            text-align left
+            line-height 40px
+
+            p
+                vertical-align middle
+                margin 0
+
 
 @media (max-width 1000px)
     .alternatives
