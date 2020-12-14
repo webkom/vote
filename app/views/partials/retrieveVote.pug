@@ -20,7 +20,9 @@
     ) Hent avstemning
 
   .text-center.vote-result-feedback(ng-if='vote')
-    h3 Avstemning
-    p.vote-result-election {{ vote.alternative.election.title }}
-    h3 Valgt alternativ
-    p.vote-result-alternative {{ vote.alternative.description }}
+    h4 Din prioritering på: {{ vote.election.title }}
+    table.table.mono
+      tbody
+        tr(ng-repeat='priority in vote.priorities')
+          th.th-right Prioritering {{ $index + 1 }}:
+          th.th-left {{ priority.description }}

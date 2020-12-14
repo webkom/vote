@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,200,100')
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
 $font-gray = #666c77
 $alternative-background = darken($font-gray, 20%)
@@ -99,6 +100,10 @@ hr
     margin 0 auto
     font-size 21px
 
+.mono
+  font-family 'Cutive Mono', monospace
+  font-size 16px
+
 label
     font-weight 300
     font-size 20px
@@ -155,6 +160,14 @@ label
 
   a
     align-self flex-end
+
+.th-right
+  text-align right
+  width 50%
+
+.th-left
+  text-align left
+  width 50%
 
 
 @import 'election'
