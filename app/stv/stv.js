@@ -3,6 +3,8 @@
  *   result: STVResult;
  *   log: STVEvent[];
  *   thr: number;
+ *   seats: number;
+ *   voteCount: number;
  * };
  *
  * type Alternative = {
@@ -196,6 +198,8 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           result: { status: 'RESOLVED', winners },
           log,
           thr,
+          seats,
+          voteCount: votes.length,
         };
       }
 
@@ -282,7 +286,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
             // Eliminate all candidates that are in the last iterationMinAlternatives
             log.push({
               action: 'MULTI_TIE_ELIMINATIONS',
-              alternatives: alternatives,
+              alternatives: iterationMinAlternatives,
               minScore: Number(minScore.toFixed(4)),
             });
             iterationMinAlternatives.forEach(
@@ -338,6 +342,8 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
     result: { status: 'UNRESOLVED', winners },
     log,
     thr,
+    seats,
+    voteCount: votes.length,
   };
 };
 
