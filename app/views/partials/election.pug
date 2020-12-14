@@ -1,40 +1,61 @@
 .center.text-center(ng-switch='!!activeElection')
-  div(ng-switch-when='true')
-    .election-info
-      h2 {{ activeElection.title }}
-      p {{ activeElection.description }}
+  div(ng-switch-when='true', ng-switch='confirmVote')
+    div(ng-switch-when='false')
+      .election-info
+        h2 {{ activeElection.title }}
+        p {{ activeElection.description }}
 
-    .alternatives
-      h3 Din prioritering
-      p.helptext(ng-if='priorities.length == 0')
-        em Velg et alternativ fra listen
+      .alternatives
+        ul.list-unstyled
+          li(
+            ng-repeat='alternative in getPossibleAlternatives()',
+            ng-click='selectAlternative(alternative)'
+          )
+            .content
+              p {{ alternative.description }}
+            .icon.add(ng-click='deselectAlternative(alternative._id)')
+              i.fa.fa-plus
 
-      ul.list-unstyled.numbered(
-        sortable,
-        sortable-on-update='updatePriority',
-        sortable-list='priorities',
-        sortable-animation='100',
-        sortable-delay='0',
-        sortable-handle='.content'
-      )
-        li(ng-repeat='alternative in priorities track by alternative._id')
-          .content
-            i.fa.fa-bars.drag
-            p {{ alternative.description }}
-          .close(ng-click='deselectAlternative(alternative._id)')
-            i.fa.fa-close
+      .alternatives
+        h3 Din prioritering
+        p.helptext(ng-if='priorities.length == 0')
+          em Velg et alternativ fra listen
 
-    .alternatives
-      h3 Alternativer
-      ul.list-unstyled
-        li(
-          ng-repeat='alternative in getPossibleAlternatives()',
-          ng-click='selectAlternative(alternative)'
+        ul.list-unstyled.numbered(
+          sortable,
+          sortable-on-update='updatePriority',
+          sortable-list='priorities',
+          sortable-animation='100',
+          sortable-delay='0',
+          sortable-handle='.content'
         )
-          .content
-            p {{ alternative.description }}
+          li(ng-repeat='alternative in priorities track by alternative._id')
+            .content
+              .drag
+                i.fa.fa-bars
+              div
+                p {{ alternative.description }}
+            .icon.remove(ng-click='deselectAlternative(alternative._id)')
+              i.fa.fa-close
 
-      confirm-vote(vote-handler='vote()', selected-alternatives='priorities')
+      button.btn.btn-lg.btn-default(type='button', ng-click='confirm()') {{ priorities.length === 0 ? "Stem Blank" : "Avgi stemme" }}
+
+    div(ng-switch-when='true')
+      h3 Bekreft din stemme
+      .confirmVotes(ng-switch='priorities.length === 0')
+        .ballot
+          div(ng-switch-when='true')
+            h3 Blank stemme
+            p
+              em Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
+          div(ng-switch-when='false')
+            ol
+              li.confirm-pri(ng-repeat='alternative in priorities')
+                p {{ alternative.description }}
+
+      button.btn.btn-lg.btn-danger(type='button', ng-click='denyVote()') Avbryt
+
+      button.btn.btn-lg.btn-success(type='button', ng-click='vote()') Bekreft
 
   div(ng-switch-default)
     h2.

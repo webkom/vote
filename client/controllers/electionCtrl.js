@@ -17,6 +17,7 @@ module.exports = [
   ) {
     $scope.activeElection = null;
     $scope.priorities = [];
+    $scope.confirmVote = false;
 
     /**
      * Tries to find an active election
@@ -63,6 +64,14 @@ module.exports = [
      */
     $scope.deselectAlternative = function (id) {
       $scope.priorities = $scope.priorities.filter((a) => a._id !== id);
+    };
+
+    $scope.confirm = function () {
+      $scope.confirmVote = true;
+    };
+
+    $scope.denyVote = function () {
+      $scope.confirmVote = false;
     };
 
     /**
