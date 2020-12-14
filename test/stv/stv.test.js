@@ -533,6 +533,11 @@ describe('STV Logic', () => {
             'There are 2 candidates with a score of 0 at iteration 2',
         },
         {
+          action: 'TIE',
+          description:
+            'The backward checking went to iteration 1 without breaking the tie',
+        },
+        {
           action: 'MULTI_TIE_ELIMINATIONS',
           alternatives: [{ description: 'G' }, { description: 'H' }],
           minScore: 0,
@@ -606,9 +611,14 @@ describe('STV Logic', () => {
             'There are 2 candidates with a score of 46.3333 at iteration 6',
         },
         {
+          action: 'TIE',
+          description:
+            'The backward checking went to iteration 1 without breaking the tie',
+        },
+        {
           action: 'MULTI_TIE_ELIMINATIONS',
           alternatives: [{ description: 'B' }, { description: 'C' }],
-          minScore: 0,
+          minScore: 46.3333,
         },
         {
           action: 'ITERATION',
