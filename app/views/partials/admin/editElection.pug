@@ -22,8 +22,6 @@
       ul.list-unstyled
         li(ng-repeat='alternative in election.alternatives')
           p {{ alternative.description }}
-            span(ng-if='showCount')
-              | {{ alternative.votes }} - {{ getPercentage(alternative.votes) }} %
 
       form.add-alternative.form-group(
         name='alternativeForm',
@@ -44,16 +42,58 @@
           ng-if='!election.active',
           ng-disabled='alternativeForm.$invalid'
         ) Legg til alternativ
-        button.toggle-show.btn.btn-default(
-          type='button',
-          ng-click='toggleCount()',
-          ng-if='!election.active',
-          ng-class='{"alone": election.active}'
-        )
-          | {{ showCount ? "Skjul resultat" : "Vis resultat" }}
+
         button.toggle-show.btn.btn-default(
           type='button',
           ng-click='copyElection()',
           ng-if='!election.active'
         )
           | Kopier avstemning
+
+        button.toggle-show.btn.btn-default(
+          type='button',
+          ng-click='toggleResult()',
+          ng-if='!election.active',
+          ng-class='{"alone": election.active}'
+        )
+          | {{ showResult ? "Fjern resultat" : "Kalkuler resultat" }}
+
+    div(ng-if='showResult')
+      h2 Oppsummering
+      table.table.mono
+        tbody
+          tr 
+            th.th-left Stemmer
+            th.th-right = {{ election.voteCount }}
+          tr 
+            th.th-left Plasser
+            th.th-right = {{ election.seats }}
+          tr 
+            th.th-left Terskel
+            th.th-right ⌊{{ election.voteCount }}/{{ election.seats + 1 }}⌋ + 1 = {{ election.thr }}
+      h2 Logg
+      ul.list-unstyled.log.mono
+        li(ng-repeat='elem in election.log')(ng-switch='elem.action')
+          div(ng-switch-when='ITERATION')
+            h5 {{ elem.action }} {{ elem.iteration }}
+            p(ng-repeat='(key, value) in elem.counts') {{ key }} with {{ value }} votes
+          div(ng-switch-when='WIN')
+            h5 {{ elem.action }}
+            p Elected: {{ elem.alternative.description }} with {{ elem.voteCount }} votes
+          div(ng-switch-when='ELIMINATE')
+            h5 {{ elem.action }}
+            p Eliminated: {{ elem.alternative.description }} with {{ elem.minScore }} votes
+          div(ng-switch-when='MULTI_TIE_ELIMINATIONS')
+            h5 {{ elem.action }}
+            p(ng-repeat='alt in elem.alternatives') Eliminated: {{ alt.description }} with {{ elem.minScore }} votes
+          div(ng-switch-when='TIE')
+            h5 {{ elem.action }}
+            p {{ elem.description }}
+      hr
+      h2 Resultat
+      div(ng-class='\'alert-\' + election.status') {{ election.result.status }}
+      table.table.mono
+        tbody
+          tr(ng-repeat='winner in election.result.winners')
+            th.th-right Vinner {{ $index + 1 }}:
+            th.th-left {{ winner.description }}
