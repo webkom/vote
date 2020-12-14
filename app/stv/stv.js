@@ -81,12 +81,12 @@ const EPSILON = 0.000001;
  *
  * @return { STV } The full election, including result, log and threshold value
  */
-exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
+exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats) => {
   // @let { STVEvent[] } log - Will hold the log for the entire election
   let log = [];
 
   // Stringify and clean the votes
-  votes = votes.map((vote) => ({
+  let votes = inputVotes.map((vote) => ({
     _id: String(vote._id),
     priorities: JSON.parse(JSON.stringify(vote.priorities)),
     hash: vote.hash,
@@ -94,7 +94,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
   }));
 
   // Stringify and clean the alternatives
-  alternatives = JSON.parse(JSON.stringify(alternatives));
+  let alternatives = JSON.parse(JSON.stringify(inputAlternatives));
 
   // @const { int } thr - The threshold value needed to win
   const thr = winningThreshold(votes, seats);
@@ -134,9 +134,6 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
       action: 'ITERATION',
       iteration,
       winners: winners.slice(),
-      // TODO Find a better way to this, the test assertions are slow AF with this
-      //alternatives: alternatives.slice(),
-      //votes: votes.slice(),
       counts: handleFloatsInOutput(counts),
     });
 
@@ -199,7 +196,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
           log,
           thr,
           seats,
-          voteCount: votes.length,
+          voteCount: inputVotes.length,
         };
       }
 
@@ -343,7 +340,7 @@ exports.calculateWinnerUsingSTV = (votes, alternatives, seats) => {
     log,
     thr,
     seats,
-    voteCount: votes.length,
+    voteCount: inputVotes.length,
   };
 };
 
