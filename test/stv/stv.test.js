@@ -74,6 +74,8 @@ describe('STV Logic', () => {
 
     electionResult.should.containSubset({
       thr: 34,
+      seats: 2,
+      voteCount: 100,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'Andrea' }, { description: 'Carter' }],
@@ -118,6 +120,8 @@ describe('STV Logic', () => {
 
     electionResult.should.containSubset({
       thr: 6,
+      seats: 3,
+      voteCount: 20,
       result: {
         status: 'UNRESOLVED',
         winners: [{ description: 'Chocolate' }, { description: 'Orange' }],
@@ -212,6 +216,8 @@ describe('STV Logic', () => {
 
     electionResult.should.containSubset({
       thr: 108,
+      seats: 5,
+      voteCount: 647,
       result: {
         status: 'UNRESOLVED',
         winners: [
@@ -379,6 +385,8 @@ describe('STV Logic', () => {
 
     electionResult.should.containSubset({
       thr: 103,
+      seats: 1,
+      voteCount: 204,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'Erna Solberg' }],
@@ -422,6 +430,8 @@ describe('STV Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 8,
+      seats: 2,
+      voteCount: 23,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'A' }, { description: 'B' }],
@@ -494,6 +504,8 @@ describe('STV Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 71,
+      seats: 2,
+      voteCount: 210,
       result: {
         status: 'UNRESOLVED',
         winners: [{ description: 'A' }],
@@ -625,6 +637,89 @@ describe('STV Logic', () => {
           iteration: 7,
           winners: [{ description: 'A' }],
           counts: {},
+        },
+      ],
+    });
+  });
+
+  it('should calculate the result correctly for the OpaVote datase', async function () {
+    const election = await prepareElection(dataset.datasetOpaVote);
+    const electionResult = await election.elect();
+    electionResult.should.containSubset({
+      thr: 3750,
+      seats: 2,
+      voteCount: 11248,
+      result: {
+        status: 'RESOLVED',
+        winners: [{ description: 'Steve' }, { description: 'Bill' }],
+      },
+      log: [
+        {
+          action: 'ITERATION',
+          iteration: 1,
+          winners: [],
+          counts: {
+            Steve: 2146,
+            Elon: 1926,
+            Bill: 2219,
+            Warren: 1757,
+            Richard: 1586,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternative: { description: 'Richard' },
+          minScore: 1586,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 2,
+          winners: [],
+          counts: {
+            Steve: 2590,
+            Elon: 2243,
+            Bill: 2551,
+            Warren: 2125,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternative: { description: 'Warren' },
+          minScore: 2125,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 3,
+          winners: [],
+          counts: {
+            Steve: 3152,
+            Elon: 2735,
+            Bill: 3342,
+          },
+        },
+        {
+          action: 'ELIMINATE',
+          alternative: { description: 'Elon' },
+          minScore: 2735,
+        },
+        {
+          action: 'ITERATION',
+          iteration: 4,
+          winners: [],
+          counts: {
+            Steve: 4259,
+            Bill: 4502,
+          },
+        },
+        {
+          action: 'WIN',
+          alternative: { description: 'Steve' },
+          voteCount: 4259,
+        },
+        {
+          action: 'WIN',
+          alternative: { description: 'Bill' },
+          voteCount: 4502,
         },
       ],
     });
