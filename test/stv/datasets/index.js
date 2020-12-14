@@ -1,4 +1,5 @@
 module.exports = {
+  datasetOpaVote: require('./datasetOpaVote'),
   dataset1: require('./dataset1'),
   dataset2: require('./dataset2'),
   dataset3: require('./dataset3'),
