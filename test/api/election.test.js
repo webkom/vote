@@ -140,6 +140,136 @@ describe('Election API', () => {
     error.errors.title.kind.should.equal('required');
   });
 
+  it('should be able to create elections with one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 1,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('Election');
+    body.description.should.equal('ElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should be able to create elections with two seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 2,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('Election');
+    body.description.should.equal('ElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should return 400 when creating elections with zero seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 0,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.seats.message.should.equal(
+      'An election should have at least one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should return 400 when creating elections with negative seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: -1,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.seats.message.should.equal(
+      'An election should have at least one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should be able to create strict elections with one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: 1,
+        useStrict: true,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('StrictElection');
+    body.description.should.equal('StrictElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should return 400 when creating strict elections with more then one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: 2,
+        useStrict: true,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.useStrict.message.should.equal(
+      'Strict elections must have exactly one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should return 400 when creating strict elections with less then one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: -1,
+        useStrict: true,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.useStrict.message.should.equal(
+      'Strict elections must have exactly one seat'
+    );
+    error.status.should.equal(400);
+  });
+
   it('should not be possible to create elections as normal user', async function () {
     passportStub.login(this.user.username);
     await testAdminResource('post', '/api/election');

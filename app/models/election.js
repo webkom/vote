@@ -35,6 +35,7 @@ const electionSchema = new Schema({
   seats: {
     type: Number,
     default: 1,
+    min: [1, 'An election should have at least one seat'],
   },
   votes: [
     {
@@ -42,6 +43,16 @@ const electionSchema = new Schema({
       ref: 'Vote',
     },
   ],
+  useStrict: {
+    type: Boolean,
+    default: false,
+    validate: {
+      validator: function (v) {
+        return v && this.seats !== 1 ? false : true;
+      },
+      message: 'Strict elections must have exactly one seat',
+    },
+  },
 });
 
 electionSchema.pre('remove', function (next) {
@@ -84,7 +95,8 @@ electionSchema.methods.elect = async function () {
   return stv.calculateWinnerUsingSTV(
     cleanElection.votes,
     cleanElection.alternatives,
-    cleanElection.seats
+    cleanElection.seats,
+    cleanElection.useStrict
   );
 };
 
