@@ -29,6 +29,8 @@ exports.create = (req, res) =>
   Election.create({
     title: req.body.title,
     description: req.body.description,
+    seats: req.body.seats,
+    useStrict: req.body.useStrict,
   })
     .then((election) => {
       const alternatives = req.body.alternatives;
