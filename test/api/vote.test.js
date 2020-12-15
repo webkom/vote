@@ -189,6 +189,7 @@ describe('Vote API', () => {
     const { body: vote } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.activeElection, []))
+      .expect(201)
       .expect('Content-Type', /json/);
 
     should.exist(vote.hash);
@@ -202,6 +203,7 @@ describe('Vote API', () => {
     const { body: vote } = await request(app)
       .post('/api/vote')
       .send(votePayload(this.activeElection, [this.activeAlternative]))
+      .expect(201)
       .expect('Content-Type', /json/);
 
     should.exist(vote.hash);
@@ -221,6 +223,7 @@ describe('Vote API', () => {
           this.otherActiveAlternative,
         ])
       )
+      .expect(201)
       .expect('Content-Type', /json/);
 
     should.exist(vote.hash);
@@ -270,7 +273,7 @@ describe('Vote API', () => {
     passportStub.logout();
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload({}, []))
+      .send(votePayload(this.activeElection, [this.activeAlternative]))
       .expect(401)
       .expect('Content-Type', /json/);
     error.status.should.equal(401);
@@ -323,6 +326,7 @@ describe('Vote API', () => {
   it('should be possible to retrieve a vote with correct election', async function () {
     const vote = await this.activeElection.addVote(this.user, [
       this.activeAlternative,
+      this.otherActiveAlternative,
     ]);
     const { body: receivedVote } = await request(app)
       .get('/api/vote')
@@ -331,6 +335,11 @@ describe('Vote API', () => {
       .expect('Content-Type', /json/);
     receivedVote.election._id.should.equal(String(this.activeElection.id));
     receivedVote.election.title.should.equal(String(this.activeElection.title));
+    receivedVote.priorities.length.should.equal(2);
+    receivedVote.priorities[0].description.should.equal(activeData.description);
+    receivedVote.priorities[1].description.should.equal(
+      otherActiveData.description
+    );
   });
 
   it('should return 400 when retrieving votes without header', async () => {

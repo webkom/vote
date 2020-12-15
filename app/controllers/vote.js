@@ -44,7 +44,7 @@ exports.create = async (req, res) => {
 
       return vote;
     })
-    .then((vote) => res.json(vote));
+    .then((vote) => res.status(201).json(vote));
 };
 
 exports.retrieve = async (req, res) => {
@@ -56,8 +56,8 @@ exports.retrieve = async (req, res) => {
 
   const vote = await Vote.findOne({ hash: hash })
     .populate('priorities')
-    .populate('election');
+    .populate('election', 'title _id');
 
   if (!vote) throw new errors.NotFoundError('vote');
-  res.json(vote);
+  res.status(200).json(vote);
 };
