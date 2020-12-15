@@ -1,3 +1,5 @@
+const errors = require('../errors');
+
 /** Types used in this file
  * type STV = {
  *   result: STVResult;
@@ -5,6 +7,7 @@
  *   thr: number;
  *   seats: number;
  *   voteCount: number;
+ *   useStrict: boolean;
  * };
  *
  * type Alternative = {
@@ -63,10 +66,14 @@
  * The Droop qouta https://en.wikipedia.org/wiki/Droop_quota
  * @param { Vote[] } votes - All votes for the election
  * @param { int } seats - The number of seats in this election
+ * @param { boolean } useStrict - Sets the threshold to 67% no matter what
  *
  * @return { int } The amount votes needed to be elected
  */
-const winningThreshold = (votes, seats) => {
+const winningThreshold = (votes, seats, useStrict) => {
+  if (useStrict) {
+    return Math.floor((2 * votes.length) / 3) + 1;
+  }
   return Math.floor(votes.length / (seats + 1) + 1);
 };
 
@@ -77,11 +84,20 @@ const EPSILON = 0.000001;
  * Will calculate the election result using Single Transferable Vote
  * @param { Vote[] } votes - All votes for the election
  * @param { Alternative[] } alternatives - All possible alternatives for the election
- * @param { int } seats - The number of seats in this election
+ * @param { int } seats - The number of seats in this election. Default 1
+ * @param { boolean } useStrict - This election will require a qualified majority. Default false
  *
  * @return { STV } The full election, including result, log and threshold value
  */
-exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats) => {
+exports.calculateWinnerUsingSTV = (
+  inputVotes,
+  inputAlternatives,
+  seats = 1,
+  useStrict = false
+) => {
+  // Check that this election does not violate the strict constraint
+  if (useStrict && seats !== 1) throw new errors.StrictWithoutOneSeatError();
+
   // @let { STVEvent[] } log - Will hold the log for the entire election
   let log = [];
 
@@ -97,7 +113,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats) => {
   let alternatives = JSON.parse(JSON.stringify(inputAlternatives));
 
   // @const { int } thr - The threshold value needed to win
-  const thr = winningThreshold(votes, seats);
+  const thr = winningThreshold(votes, seats, useStrict);
 
   // @let { Alternative[] } winners - Winners for the election
   let winners = [];
@@ -197,6 +213,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats) => {
           thr,
           seats,
           voteCount: inputVotes.length,
+          useStrict,
         };
       }
 
@@ -341,6 +358,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats) => {
     thr,
     seats,
     voteCount: inputVotes.length,
+    useStrict,
   };
 };
 
