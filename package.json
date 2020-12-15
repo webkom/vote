@@ -14,11 +14,7 @@
     "lint:prettier": "prettier '**/*.{js,ts,pug}' --list-different",
     "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.{js,pug}' --write",
-<<<<<<< HEAD
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 30000",
-=======
-    "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 10000",
->>>>>>> 79fdfb1... Add OpaVote testcase and dataset
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "protractor": "webdriver-manager update --standalone false --versions.chrome 86.0.4240.22 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "yarn build"
