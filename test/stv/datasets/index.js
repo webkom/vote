@@ -6,4 +6,8 @@ module.exports = {
   dataset4: require('./dataset4'),
   dataset5: require('./dataset5'),
   dataset6: require('./dataset6'),
+  dataset7: require('./dataset7'),
+  dataset8: require('./dataset8'),
+  dataset9: require('./dataset9'),
+  dataset10: require('./dataset10'),
 };

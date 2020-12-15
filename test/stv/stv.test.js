@@ -29,6 +29,7 @@ describe('STV Logic', () => {
       description: 'Description',
       active: true,
       seats: dataset.seats,
+      useStrict: dataset.useStrict,
     });
     // Step 2) Mutate alternatives and create a new Alternative for each
     const alternatives = await Promise.all(
@@ -76,6 +77,7 @@ describe('STV Logic', () => {
       thr: 34,
       seats: 2,
       voteCount: 100,
+      useStrict: false,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'Andrea' }, { description: 'Carter' }],
@@ -122,6 +124,7 @@ describe('STV Logic', () => {
       thr: 6,
       seats: 3,
       voteCount: 20,
+      useStrict: false,
       result: {
         status: 'UNRESOLVED',
         winners: [{ description: 'Chocolate' }, { description: 'Orange' }],
@@ -218,6 +221,7 @@ describe('STV Logic', () => {
       thr: 108,
       seats: 5,
       voteCount: 647,
+      useStrict: false,
       result: {
         status: 'UNRESOLVED',
         winners: [
@@ -387,6 +391,7 @@ describe('STV Logic', () => {
       thr: 103,
       seats: 1,
       voteCount: 204,
+      useStrict: false,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'Erna Solberg' }],
@@ -432,6 +437,7 @@ describe('STV Logic', () => {
       thr: 8,
       seats: 2,
       voteCount: 23,
+      useStrict: false,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'A' }, { description: 'B' }],
@@ -506,6 +512,7 @@ describe('STV Logic', () => {
       thr: 71,
       seats: 2,
       voteCount: 210,
+      useStrict: false,
       result: {
         status: 'UNRESOLVED',
         winners: [{ description: 'A' }],
@@ -649,6 +656,7 @@ describe('STV Logic', () => {
       thr: 3750,
       seats: 2,
       voteCount: 11248,
+      useStrict: false,
       result: {
         status: 'RESOLVED',
         winners: [{ description: 'Steve' }, { description: 'Bill' }],
@@ -722,6 +730,62 @@ describe('STV Logic', () => {
           voteCount: 4502,
         },
       ],
+    });
+  });
+  it('should not resolve for the strict election in dataset 7', async function () {
+    const election = await prepareElection(dataset.dataset7);
+    const electionResult = await election.elect();
+    electionResult.should.containSubset({
+      thr: 14,
+      seats: 1,
+      voteCount: 20,
+      useStrict: true,
+      result: {
+        status: 'UNRESOLVED',
+        winners: [],
+      },
+    });
+  });
+  it('should not resolve for the strict election in dataset 8', async function () {
+    const election = await prepareElection(dataset.dataset8);
+    const electionResult = await election.elect();
+    electionResult.should.containSubset({
+      thr: 15,
+      seats: 1,
+      voteCount: 21,
+      useStrict: true,
+      result: {
+        status: 'UNRESOLVED',
+        winners: [],
+      },
+    });
+  });
+  it('should not resolve for the strict election in dataset 9', async function () {
+    const election = await prepareElection(dataset.dataset9);
+    const electionResult = await election.elect();
+    electionResult.should.containSubset({
+      thr: 21,
+      seats: 1,
+      voteCount: 30,
+      useStrict: true,
+      result: {
+        status: 'UNRESOLVED',
+        winners: [],
+      },
+    });
+  });
+  it('should resolve for the strict election in dataset 10', async function () {
+    const election = await prepareElection(dataset.dataset10);
+    const electionResult = await election.elect();
+    electionResult.should.containSubset({
+      thr: 21,
+      seats: 1,
+      voteCount: 31,
+      useStrict: true,
+      result: {
+        status: 'RESOLVED',
+        winners: [{ description: 'A' }],
+      },
     });
   });
 });
