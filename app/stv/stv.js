@@ -136,7 +136,7 @@ exports.calculateWinnerUsingSTV = (
       const vote = JSON.parse(JSON.stringify(votes[i]));
 
       // @const { Alternative } currentAlternative - We always count the first value (priorities[0])
-      // because there is a mutation step that removed values that are "done". These are values
+      // because there is a mutation step that removes values that are "done". These are values
       // connected to candidates that have either won or been eliminated from the election.
       const currentAlternative = JSON.parse(JSON.stringify(vote.priorities[0]));
 
@@ -164,7 +164,7 @@ exports.calculateWinnerUsingSTV = (
     for (let i in alternatives) {
       // @const { Alternative } alternative - Get an alternative
       const alternative = JSON.parse(JSON.stringify(alternatives[i]));
-      // @const { float } voteCount - Find the number number of votes for this alternative
+      // @const { float } voteCount - Find the number of votes for this alternative
       const voteCount = counts[alternative.description] || 0;
 
       // If an alternative has enough votes, add them as round winner
@@ -271,7 +271,7 @@ exports.calculateWinnerUsingSTV = (
           )} at iteration ${reverseIteration}`,
         });
 
-        // As long as the reveseindex is still larger then 1 we can look further back
+        // As long as the reverseIteration is larger than 1 we can look further back
         while (reverseIteration >= 1) {
           // Find the log object for the last iteration
           const logObject = log.find(
