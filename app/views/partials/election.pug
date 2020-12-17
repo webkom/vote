@@ -46,8 +46,7 @@
         .ballot
           div(ng-switch-when='true')
             h3 Blank stemme
-            p
-              em Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
+            i Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
           div(ng-switch-when='false')
             ol
               li.confirm-pri(ng-repeat='alternative in priorities')
