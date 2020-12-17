@@ -41,6 +41,10 @@ module.exports = [
       );
     };
 
+    /**
+     * Update the priorities with a sortable event.
+     * @param {Object} evt
+     */
     $scope.updatePriority = function (evt) {
       const { oldIndex, newIndex } = evt;
       const alternative = $scope.priorities.splice(oldIndex, 1)[0];
@@ -60,7 +64,7 @@ module.exports = [
 
     /**
      * Removes the given alternative to $scope.priorities
-     * @param  {Object} alternative
+     * @param  {string} id
      */
     $scope.deselectAlternative = function (id) {
       $scope.priorities = $scope.priorities.filter((a) => a._id !== id);
