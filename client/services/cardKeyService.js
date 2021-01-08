@@ -65,7 +65,7 @@ module.exports = [
   function ($window, $location, $rootScope, alertService) {
     $rootScope.$on('$routeChangeStart', function () {
       angular.element($window).unbind('message');
-      clearInterval($rootScope.serialInterval);
+      clearTimeout($rootScope.serialTimeout);
     });
 
     return {
@@ -115,7 +115,20 @@ module.exports = [
           while (!finished) {
             const { value } = await $rootScope.serialReader.read();
             for (let i = 0; i < value.length; i++) {
-              if (value[i] == 0xbb) {
+              // First byte in a message should be 170, otherwise ignore and keep on going
+              if (message.length === 0 && value[i] !== 170) {
+                continue;
+              }
+              // Second byte in a message should be 255, otherwise discard and keep on going
+              if (message.length === 1 && value[i] !== 255) {
+                // If value is 170, treat it as the first value, and keep on. Otherwise discard
+                if (value[i] !== 170) {
+                  message.length = 0;
+                }
+                continue;
+              }
+
+              if (message.length > 3 && message.length >= message[2] + 4) {
                 finished = true;
                 break;
               }
@@ -128,10 +141,12 @@ module.exports = [
         // Constantly send the readCardCommand and read the result.
         // If there is no card, the result will be an error status,
         // which is handled in the onComplete function
-        $rootScope.serialInterval = setInterval(() => {
+        const runPoll = async () => {
           $rootScope.serialWriter.write(readCardCommand);
-          readResult();
-        }, 500);
+          await readResult();
+          $rootScope.serialTimeout = setTimeout(runPoll, 150);
+        };
+        runPoll();
       },
     };
   },
