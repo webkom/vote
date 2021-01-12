@@ -11,7 +11,7 @@
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:yaml",
     "lint:eslint": "eslint . --ignore-path .gitignore",
-    "lint:prettier": "prettier '**/*.{js,pug}' --list-different --ignore-path .gitignore",
+    "lint:prettier": "prettier '**/*.{js,ts,pug}' --list-different",
     "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.{js,pug}' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 3000",
@@ -30,6 +30,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@types/lodash": "4.14.167",
     "angular": "1.8.0",
     "angular-animate": "1.7.9",
     "angular-local-storage": "0.7.1",

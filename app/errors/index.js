@@ -170,17 +170,6 @@ class DuplicateUsernameError extends Error {
 
 exports.DuplicateUsernameError = DuplicateUsernameError;
 
-class StrictWithoutOneSeatError extends Error {
-  constructor() {
-    super();
-    this.name = 'StrictWithoutOneSeatError';
-    this.message = 'Cannot have a strict election with more then one seat.';
-    this.status = 400;
-  }
-}
-
-exports.StrictWithoutOneSeatError = StrictWithoutOneSeatError;
-
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
