@@ -28,6 +28,6 @@ router
   .get(alternative.list)
   .post(alternative.create);
 
-router.get('/:electionId/votes', election.sumVotes);
+router.get('/:electionId/votes', election.elect);
 
 module.exports = router;

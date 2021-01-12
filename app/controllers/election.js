@@ -17,9 +17,7 @@ exports.load = (req, res, next, electionId) =>
     });
 
 exports.retrieveActive = (req, res) =>
-  Election.findOne({ active: true })
-    .where('hasVotedUsers.user')
-    .ne(req.user.id)
+  Election.findOne({ active: true, hasVotedUsers: { $ne: req.user._id } })
     .select('-hasVotedUsers')
     .populate('alternatives')
     .exec()
@@ -31,6 +29,8 @@ exports.create = (req, res) =>
   Election.create({
     title: req.body.title,
     description: req.body.description,
+    seats: req.body.seats,
+    useStrict: req.body.useStrict,
   })
     .then((election) => {
       const alternatives = req.body.alternatives;
@@ -77,12 +77,14 @@ exports.activate = (req, res) =>
   });
 
 exports.deactivate = (req, res) =>
-  setElectionStatus(req, res, false).then((election) =>
-    res.status(200).json(election)
-  );
+  setElectionStatus(req, res, false).then((election) => {
+    const io = app.get('io');
+    io.emit('election');
+    res.status(200).json(election);
+  });
 
-exports.sumVotes = (req, res) =>
-  req.election.sumVotes().then((alternatives) => res.json(alternatives));
+exports.elect = (req, res) =>
+  req.election.elect().then((result) => res.json(result));
 
 exports.delete = (req, res) => {
   if (req.election.active) {

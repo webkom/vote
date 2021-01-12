@@ -140,6 +140,136 @@ describe('Election API', () => {
     error.errors.title.kind.should.equal('required');
   });
 
+  it('should be able to create elections with one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 1,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('Election');
+    body.description.should.equal('ElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should be able to create elections with two seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 2,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('Election');
+    body.description.should.equal('ElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should return 400 when creating elections with zero seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: 0,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.seats.message.should.equal(
+      'An election should have at least one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should return 400 when creating elections with negative seats', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'Election',
+        description: 'ElectionDesc',
+        seats: -1,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.seats.message.should.equal(
+      'An election should have at least one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should be able to create strict elections with one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: 1,
+        useStrict: true,
+      })
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal('StrictElection');
+    body.description.should.equal('StrictElectionDesc');
+    body.active.should.equal(false);
+  });
+
+  it('should return 400 when creating strict elections with more then one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: 2,
+        useStrict: true,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.useStrict.message.should.equal(
+      'Strict elections must have exactly one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should return 400 when creating strict elections with less then one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'StrictElection',
+        description: 'StrictElectionDesc',
+        seats: -1,
+        useStrict: true,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.useStrict.message.should.equal(
+      'Strict elections must have exactly one seat'
+    );
+    error.status.should.equal(400);
+  });
+
   it('should not be possible to create elections as normal user', async function () {
     passportStub.login(this.user.username);
     await testAdminResource('post', '/api/election');
@@ -264,7 +394,7 @@ describe('Election API', () => {
       .post(`/api/election/${this.activeElection.id}/deactivate`)
       .expect(200)
       .expect('Content-Type', /json/);
-    ioStub.emit.should.not.have.been.called;
+    ioStub.emit.should.have.been.called;
     body.active.should.equal(false, 'db election should not be active');
   });
 
@@ -299,14 +429,17 @@ describe('Election API', () => {
     passportStub.login(this.adminUser.username);
 
     const vote = new Vote({
-      alternative: this.alternative.id,
+      priorities: [this.alternative],
+      election: this.activeElection,
       hash: 'thisisahash',
     });
 
     this.activeElection.active = false;
 
     await vote.save();
+    this.activeElection.votes = [vote];
     await this.activeElection.save();
+
     const { body } = await request(app)
       .delete(`/api/election/${this.activeElection.id}`)
       .expect(200)
@@ -314,9 +447,11 @@ describe('Election API', () => {
 
     body.message.should.equal('Election deleted.');
     body.status.should.equal(200);
+
     const elections = await Election.find();
     const alternatives = await Alternative.find();
     const votes = await Vote.find();
+
     elections.length.should.equal(0);
     alternatives.length.should.equal(0);
     votes.length.should.equal(0);
@@ -369,9 +504,7 @@ describe('Election API', () => {
 
   it('should filter out elections the user has voted on', async function () {
     passportStub.login(this.user.username);
-    this.activeElection.hasVotedUsers.push({
-      user: this.user.id,
-    });
+    this.activeElection.hasVotedUsers.push(this.user._id);
 
     await this.activeElection.save();
     const { body } = await request(app)
@@ -384,7 +517,7 @@ describe('Election API', () => {
   it('should be possible to list the number of users that have voted', async function () {
     passportStub.login(this.adminUser.username);
 
-    await this.alternative.addVote(this.user);
+    await this.activeElection.addVote(this.user, [this.alternative]);
     const { body } = await request(app)
       .get(`/api/election/${this.activeElection.id}/count`)
       .expect(200)
