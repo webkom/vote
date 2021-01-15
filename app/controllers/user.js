@@ -3,6 +3,10 @@ const User = require('../models/user');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
+const { v4: uuidv4 } = require('uuid');
+const crypto = require('crypto');
+const { mailHandler } = require('../digital/mail');
+
 exports.count = async (req, res) => {
   const query = { admin: false, moderator: false };
   if (req.query.active === 'true') {
@@ -35,6 +39,37 @@ exports.create = (req, res) => {
       throw new errors.DuplicateUsernameError();
     })
     .catch(errorChecks.BadRequestError, (err) => {
+      throw new errors.InvalidRegistrationError(err.message);
+    });
+};
+
+exports.generate = (req, res) => {
+  const randomPassword = crypto.randomBytes(5).toString('hex');
+  const cardKey = uuidv4();
+  const userObject = {
+    username: req.body.username,
+    cardKey: cardKey,
+  };
+
+  const user = new User(userObject);
+  return User.register(user, randomPassword)
+    .then(async (createdUser) => {
+      mailHandler(createdUser, randomPassword).then(() =>
+        res.status(201).json(createdUser.getCleanUser())
+      );
+    })
+    .catch(mongoose.Error.ValidationError, (err) => {
+      throw new errors.ValidationError(err.errors);
+    })
+    .catch(errorChecks.DuplicateError, (err) => {
+      if (err.message.includes('cardKey')) {
+        throw new errors.DuplicateCardError();
+      }
+
+      throw new errors.DuplicateUsernameError();
+    })
+    .catch(errorChecks.BadRequestError, (err) => {
+      // Comment to make git diff not be dumb
       throw new errors.InvalidRegistrationError(err.message);
     });
 };
