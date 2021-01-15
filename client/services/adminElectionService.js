@@ -21,7 +21,7 @@ module.exports = [
       return $http.post('/api/election/' + $routeParams.param + '/deactivate');
     };
 
-    this.countVotes = function () {
+    this.elect = function () {
       return $http.get('/api/election/' + $routeParams.param + '/votes');
     };
 
