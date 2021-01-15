@@ -31,6 +31,11 @@ module.exports = [
         controller: 'createUserController',
       })
 
+      .when('/moderator/generate_user', {
+        templateUrl: 'partials/moderator/generateUser',
+        controller: 'generateUserController',
+      })
+
       .when('/moderator/qr', {
         templateUrl: 'partials/moderator/qr',
         controller: 'createQRController',
