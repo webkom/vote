@@ -53,6 +53,10 @@ const electionSchema = new Schema({
       message: 'Strict elections must have exactly one seat',
     },
   },
+  accessCode: {
+    type: Number,
+    default: Math.floor(Math.random() * (10000 - 1000) + 1000),
+  },
 });
 
 electionSchema.pre('remove', function (next) {
@@ -108,7 +112,7 @@ electionSchema.methods.addAlternative = async function (alternative) {
   return savedAlternative;
 };
 
-electionSchema.methods.addVote = async function (user, priorities) {
+electionSchema.methods.addVote = async function (user, priorities, accessCode) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();

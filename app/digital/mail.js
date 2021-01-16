@@ -29,7 +29,7 @@ exports.mailHandler = async (user, pass) => {
     .readFileSync(path.resolve(__dirname, './template.html'), 'utf8')
     .replace('{{USERNAME}}', user.username)
     .replace('{{PASSWORD}}', pass);
-  return transporter.sendMail({
+  return transporterTest.sendMail({
     from: `"Abakus <${creds.abakus_from_mail}>`,
     to: `${user.username} <${user.username}@stud.ntnu.no}>`,
     subject: `VOTE Login Credentials: ${user.username}`,
