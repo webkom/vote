@@ -28,12 +28,12 @@ exports.retrieveActive = (req, res) =>
     .then((election) => {
       // There is no active election (that the user has not voted on)
       if (!election) {
-        res.status(404).send();
+        return res.sendStatus(404);
       }
       // If the user is active, then we can return the election right
       // away, since they have allready passed the access code prompt
       if (req.user.active) {
-        res.status(200).json(election);
+        return res.status(200).json(election);
       }
       // There is an active election that the user has not voted on
       // but they did not pass any (or the correct) access code,
@@ -42,15 +42,16 @@ exports.retrieveActive = (req, res) =>
         !req.query.accessCode ||
         election.accessCode !== Number(req.query.accessCode)
       ) {
-        res.status(403).send();
+        return res.sendStatus(403);
       }
       // There is an active election that the user and the user has
       // the correct access code. Therefore we activate the users
       // account (allowing them to vote), and return the elction.
       else {
-        User.findByIdAndUpdate({ _id: req.user._id }, { active: true }).then(
-          res.status(200).json(election)
-        );
+        return User.findByIdAndUpdate(
+          { _id: req.user._id },
+          { active: true }
+        ).then(res.status(200).json(election));
       }
     });
 
