@@ -47,16 +47,20 @@ exports.generate = (req, res) => {
   const randomPassword = crypto.randomBytes(5).toString('hex');
   const cardKey = uuidv4();
   const userObject = {
-    username: req.body.username,
+    username: req.body.email
+      .split('@')[0]
+      .match(/[a-zA-Z]+/g)
+      .join(''),
     cardKey: cardKey,
   };
-
   const user = new User(userObject);
   return User.register(user, randomPassword)
     .then(async (createdUser) => {
-      mailHandler(createdUser, randomPassword).then(() =>
-        res.status(201).json(createdUser.getCleanUser())
-      );
+      mailHandler(
+        createdUser.username,
+        req.body.email,
+        randomPassword
+      ).then(() => res.status(201).json(createdUser.getCleanUser()));
     })
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);

@@ -1,25 +1,13 @@
 .row
   .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
-    form.form-group(
-      ng-submit='generateUser(ntnuUsername)',
-      name='createUserForm'
-    )
+    form.form-group(ng-submit='generateUser(email)', name='generateUserForm')
       .form-group
-        label NTNU brukernavn
+        label Epost
         input.form-control(
           type='text',
-          name='username',
-          placeholder='Skriv inn NTNU brukernavn',
-          ng-model='ntnuUsername',
-          ng-minlength='5',
-          ng-pattern='/^[a-zA-Z0-9]+$/'
+          name='email',
+          placeholder='Skriv inn epost',
+          ng-model='email'
         )
-        p.text-danger(ng-show='createUserForm.username.$error.minlength')
-          | NTNU-Brukernavn må være minst 5 tegn
-        p.text-danger(ng-show='createUserForm.username.$error.pattern')
-          | NTNU-Brukernavn kan bare inneholde tall eller bokstaver fra A-Z
 
-      button#submit.btn.btn-default.btn-lg(
-        type='submit',
-        ng-disabled='createUserForm.$invalid'
-      ) Generer bruker
+      button#submit.btn.btn-default.btn-lg(type='submit') Generer bruker
