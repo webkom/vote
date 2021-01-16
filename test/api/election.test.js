@@ -19,6 +19,7 @@ describe('Election API', () => {
     title: 'activeElection1',
     description: 'active election 1',
     active: true,
+    accessCode: 1234,
   };
 
   const inactiveElectionData = {
@@ -489,7 +490,7 @@ describe('Election API', () => {
     await test404('delete', `/api/election/${badId}`, 'election');
   });
 
-  it('should be possible to retrieve active elections', async function () {
+  it('should be possible to retrieve active elections for active user', async function () {
     passportStub.login(this.user.username);
     const { body } = await request(app)
       .get('/api/election/active')
@@ -502,16 +503,41 @@ describe('Election API', () => {
     should.not.exist(body.hasVotedUsers);
   });
 
+  it('should not be possible to retrieve active elections for inactive user', async function () {
+    this.user.active = false;
+    await this.user.save();
+    passportStub.login(this.user.username);
+    await request(app).get('/api/election/active').expect(403);
+  });
+
+  it('should be possible to retrieve active elections for inactive users with the correct accesscode', async function () {
+    this.user.active = false;
+    await this.user.save();
+    passportStub.login(this.user.username);
+    const { body } = await request(app)
+      .get('/api/election/active?accessCode=1234')
+      .expect(200)
+      .expect('Content-Type', /json/);
+
+    body.title.should.equal(this.activeElection.title);
+    body.description.should.equal(this.activeElection.description);
+    body.alternatives[0].description.should.equal(this.alternative.description);
+    should.not.exist(body.hasVotedUsers);
+  });
+
+  it('should not be possible to retrieve active elections for inactive users with wrong accesscode', async function () {
+    this.user.active = false;
+    await this.user.save();
+    passportStub.login(this.user.username);
+    await request(app).get('/api/election/active?accessCode=1235').expect(403);
+  });
+
   it('should filter out elections the user has voted on', async function () {
     passportStub.login(this.user.username);
     this.activeElection.hasVotedUsers.push(this.user._id);
 
     await this.activeElection.save();
-    const { body } = await request(app)
-      .get('/api/election/active')
-      .expect(200)
-      .expect('Content-Type', /json/);
-    should.not.exist(body);
+    await request(app).get('/api/election/active').expect(404);
   });
 
   it('should be possible to list the number of users that have voted', async function () {
