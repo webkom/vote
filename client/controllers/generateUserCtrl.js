@@ -5,11 +5,11 @@ module.exports = [
   function ($scope, userService, alertService) {
     $scope.generateUser = {};
 
-    $scope.generateUser = function (username) {
-      userService.generateUser({ username }).then(
+    $scope.generateUser = function (email) {
+      userService.generateUser({ email }).then(
         function (response) {
           alertService.addSuccess('Bruker generert!');
-          $scope.username = '';
+          $scope.email = '';
         },
         function (response) {
           switch (response.data.name) {
