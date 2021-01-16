@@ -1,6 +1,7 @@
 const Bluebird = require('bluebird');
 const mongoose = require('mongoose');
 const Election = require('../models/election');
+const User = require('../models/user');
 const Alternative = require('../models/alternative');
 const errors = require('../errors');
 const app = require('../../app');
@@ -17,12 +18,40 @@ exports.load = (req, res, next, electionId) =>
     });
 
 exports.retrieveActive = (req, res) =>
-  Election.findOne({ active: true, hasVotedUsers: { $ne: req.user._id } })
+  Election.findOne({
+    active: true,
+    hasVotedUsers: { $ne: req.user._id },
+  })
     .select('-hasVotedUsers')
     .populate('alternatives')
     .exec()
     .then((election) => {
-      res.status(200).json(election);
+      // There is no active election (that the user has not voted on)
+      if (!election) {
+        res.status(404).send();
+      }
+      // If the user is active, then we can return the election right
+      // away, since they have allready passed the access code prompt
+      if (req.user.active) {
+        res.status(200).json(election);
+      }
+      // There is an active election that the user has not voted on
+      // but they did not pass any (or the correct) access code,
+      // so we return 403 which prompts a access code input field.
+      else if (
+        !req.query.accessCode ||
+        election.accessCode !== Number(req.query.accessCode)
+      ) {
+        res.status(403).send();
+      }
+      // There is an active election that the user and the user has
+      // the correct access code. Therefore we activate the users
+      // account (allowing them to vote), and return the elction.
+      else {
+        User.findByIdAndUpdate({ _id: req.user._id }, { active: true }).then(
+          res.status(200).json(election)
+        );
+      }
     });
 
 exports.create = (req, res) =>

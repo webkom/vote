@@ -1,9 +1,8 @@
 module.exports = [
   '$http',
-  '$routeParams',
-  function ($http, $routeParams) {
-    this.getActiveElection = function () {
-      return $http.get('/api/election/active');
+  function ($http) {
+    this.getActiveElection = function (accessCode) {
+      return $http.get(`/api/election/active?accessCode=${accessCode}`);
     };
   },
 ];
