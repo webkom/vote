@@ -64,16 +64,15 @@
         .form-group.access-code(required)
           label Kode
           input.form-control(
-            type='text',
+            type='number',
             name='accessCode',
             ng-model='accessCode',
-            maxLength='4',
             placeholder='----'
           )
 
         button#submit.btn.btn-default.btn-lg.btn-success(
           type='submit',
-          ng-disabled='accessCode.length != 4'
+          ng-disabled='accessCode.toString().length != 4'
         ) Verifiser
 
   div(ng-switch-default)
