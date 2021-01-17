@@ -74,8 +74,23 @@ module.exports = [
         angular.element($window).bind('message', function (e) {
           cb(e.data);
         });
+        if ($window.location.href.includes('dummyReader')) {
+          $rootScope.dummyReader = true;
+          $window.scanCard = (cardKey) =>
+            $window.window.postMessage(cardKey, '*');
+
+          $window.console.error(`VOTE DUMMY READER MODE
+
+You are now in dummy reader mode of VOTE. Use the global function "scanCard" to scan a card. The function takes the card UID as the first (and only) parameter, and the UID can be both a string or a number.
+
+Usage: scanCard(123) // where 123 is the cardId `);
+        }
         // Open serial connections if they are not already open
-        if (!$rootScope.serialDevice && !$rootScope.ndef) {
+        if (
+          !$rootScope.serialDevice &&
+          !$rootScope.ndef &&
+          !$rootScope.dummyReader
+        ) {
           try {
             if (
               $window.navigator.userAgent.includes('Android') &&
@@ -107,7 +122,7 @@ module.exports = [
             const data = convertUID(serialNumber.split(':'));
             cb(data);
           };
-        } else if (!$rootScope.serialDevice) {
+        } else if ($rootScope.serialDevice) {
           let lastTime = 0;
           let lastData = 0;
           const onComplete = (input) => {
