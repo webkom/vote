@@ -112,7 +112,7 @@ electionSchema.methods.addAlternative = async function (alternative) {
   return savedAlternative;
 };
 
-electionSchema.methods.addVote = async function (user, priorities, accessCode) {
+electionSchema.methods.addVote = async function (user, priorities) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();

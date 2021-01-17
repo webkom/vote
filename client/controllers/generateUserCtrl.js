@@ -3,8 +3,6 @@ module.exports = [
   'userService',
   'alertService',
   function ($scope, userService, alertService) {
-    $scope.generateUser = {};
-
     $scope.generateUser = function (email) {
       userService.generateUser({ email }).then(
         function (response) {
