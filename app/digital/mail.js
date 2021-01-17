@@ -15,16 +15,20 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-exports.mailHandler = async (username, email, pass) => {
+exports.mailHandler = async (user) => {
+  const { username, password, unActivatedEmail } = user;
+  // Safe username and password
+  const cleanUsername = username.replace(/\W/g, '');
+  const cleanPassword = password.replace(/\W/g, '');
   const html = fs
     .readFileSync(path.resolve(__dirname, './template.html'), 'utf8')
-    .replace('{{USERNAME}}', username)
-    .replace('{{PASSWORD}}', pass);
+    .replace('{{USERNAME}}', cleanUsername)
+    .replace('{{PASSWORD}}', cleanPassword);
   return transporter.sendMail({
     from: `VOTE - Abakus <${creds.abakus_from_mail}>`,
-    to: `${username} <${email}>`,
-    subject: `VOTE Login Credentials: ${username}`,
-    text: `Username: ${username}, Password: ${pass}`,
+    to: `${cleanUsername} <${unActivatedEmail}>`,
+    subject: `VOTE Login Credentials`,
+    text: `Username: ${cleanUsername}, Password: ${cleanPassword}`,
     html: html,
   });
 };

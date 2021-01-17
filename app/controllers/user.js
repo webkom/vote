@@ -3,9 +3,9 @@ const User = require('../models/user');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
-const { v4: uuidv4 } = require('uuid');
 const crypto = require('crypto');
 const { mailHandler } = require('../digital/mail');
+const short = require('short-uuid');
 
 exports.count = async (req, res) => {
   const query = { admin: false, moderator: false };
@@ -44,24 +44,23 @@ exports.create = (req, res) => {
 };
 
 exports.generate = (req, res) => {
-  const randomPassword = crypto.randomBytes(5).toString('hex');
-  const cardKey = uuidv4();
+  const username = short.generate();
+  const cardKey = short.generate();
+  const password = crypto.randomBytes(10).toString('hex');
+  const unActivatedEmail = req.body.email;
   const userObject = {
-    username: req.body.email
-      .split('@')[0]
-      .match(/[a-zA-Z]+/g)
-      .join(''),
-    cardKey: cardKey,
+    username,
+    password,
+    cardKey,
+    unActivatedEmail,
   };
   const user = new User(userObject);
-  return User.register(user, randomPassword)
-    .then(async (createdUser) => {
-      mailHandler(
-        createdUser.username,
-        req.body.email,
-        randomPassword
-      ).then(() => res.status(201).json(createdUser.getCleanUser()));
-    })
+  return User.register(user, password)
+    .then((createdUser) =>
+      mailHandler(userObject)
+        .then(() => createdUser.getCleanUser())
+        .then((user) => res.status(201).json(user))
+    )
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);
     })
