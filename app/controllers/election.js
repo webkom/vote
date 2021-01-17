@@ -25,34 +25,31 @@ exports.retrieveActive = (req, res) =>
     .select('-hasVotedUsers')
     .populate('alternatives')
     .exec()
-    .then((election) => {
+    .then(async (election) => {
+      const { user, query } = req;
       // There is no active election (that the user has not voted on)
       if (!election) {
         return res.sendStatus(404);
       }
-      // If the user is active, then we can return the election right
-      // away, since they have allready passed the access code prompt
-      if (req.user.active) {
+
+      // User is active, return the election
+      if (user.active) {
         return res.status(200).json(election);
       }
-      // There is an active election that the user has not voted on
-      // but they did not pass any (or the correct) access code,
+
+      // Active election but wrong or not access code submitted,
       // so we return 403 which prompts a access code input field.
-      else if (
-        !req.query.accessCode ||
-        election.accessCode !== Number(req.query.accessCode)
+      if (
+        !query.accessCode ||
+        election.accessCode !== Number(query.accessCode)
       ) {
         return res.sendStatus(403);
       }
-      // There is an active election that the user and the user has
-      // the correct access code. Therefore we activate the users
-      // account (allowing them to vote), and return the elction.
-      else {
-        return User.findByIdAndUpdate(
-          { _id: req.user._id },
-          { active: true }
-        ).then(res.status(200).json(election));
-      }
+
+      // Active election and the inactive user has the correct access code.
+      // Therefore we activate the users account, and return the elction.
+      await User.findByIdAndUpdate({ _id: user._id }, { active: true });
+      return res.status(200).json(election);
     });
 
 exports.create = (req, res) =>
