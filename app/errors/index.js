@@ -64,6 +64,17 @@ class InvalidPayloadError extends Error {
 
 exports.InvalidPayloadError = InvalidPayloadError;
 
+class AccessCodeError extends Error {
+  constructor() {
+    super();
+    this.name = 'AccessCodeError';
+    this.message = 'Incorrect accesscode supplied';
+    this.status = 403;
+  }
+}
+
+exports.AccessCodeError = AccessCodeError;
+
 class InvalidPriorityError extends Error {
   constructor() {
     super();
@@ -191,6 +202,17 @@ class DuplicateUsernameError extends Error {
 }
 
 exports.DuplicateUsernameError = DuplicateUsernameError;
+
+class DuplicateEmailError extends Error {
+  constructor() {
+    super();
+    this.name = 'DuplicateEmailError';
+    this.message = "There's already a user with this email.";
+    this.status = 400;
+  }
+}
+
+exports.DuplicateEmailError = DuplicateEmailError;
 
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;

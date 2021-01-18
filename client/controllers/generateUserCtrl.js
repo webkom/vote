@@ -4,16 +4,21 @@ module.exports = [
   'alertService',
   function ($scope, userService, alertService) {
     $scope.generateUser = function (email) {
+      $scope.pending = true;
       userService.generateUser({ email }).then(
         function (response) {
-          alertService.addSuccess('Bruker generert!');
+          alertService.addSuccess(
+            `Bruker laget for ${response.data} generert!`
+          );
           $scope.email = '';
+          $scope.pending = false;
         },
         function (response) {
+          $scope.pending = false;
           switch (response.data.name) {
-            case 'DuplicateUsernameError':
+            case 'DuplicateEmailError':
               alertService.addError(
-                'Dette ntnu-brukernavnet er allerede registrert.'
+                'Denne eposten har allerede fått en bruker.'
               );
               break;
             case 'DuplicateCardError':
