@@ -59,7 +59,7 @@ exports.generate = (req, res) => {
     .then((createdUser) =>
       mailHandler(userObject)
         .then(() => createdUser.getCleanUser())
-        .then((user) => res.status(201).json(user))
+        .then(() => res.sendStatus(201))
     )
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);
