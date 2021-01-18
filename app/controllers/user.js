@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const Email = require('../models/email');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
@@ -43,23 +44,30 @@ exports.create = (req, res) => {
     });
 };
 
-exports.generate = (req, res) => {
+exports.generate = async (req, res) => {
   const username = short.generate();
   const cardKey = short.generate();
-  const password = crypto.randomBytes(10).toString('hex');
-  const unActivatedEmail = req.body.email;
+  const password = crypto.randomBytes(15).toString('hex');
+  const email = req.body.email;
+
+  // Check that this email has not been allocated a user before
+  const check = await Email.findOne({ email }).exec();
+  if (check) {
+    throw new errors.DuplicateEmailError();
+  }
+
   const userObject = {
     username,
     password,
     cardKey,
-    unActivatedEmail,
   };
   const user = new User(userObject);
   return User.register(user, password)
     .then((createdUser) =>
-      mailHandler(userObject)
+      mailHandler(userObject, email)
         .then(() => createdUser.getCleanUser())
-        .then(() => res.sendStatus(201))
+        .then(() => new Email({ email, user }).save())
+        .then((email) => res.status(201).json(email.email))
     )
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);

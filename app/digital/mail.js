@@ -15,8 +15,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-exports.mailHandler = async (user) => {
-  const { username, password, unActivatedEmail } = user;
+exports.mailHandler = async (user, email) => {
+  const { username, password } = user;
   // Safe username and password
   const cleanUsername = username.replace(/\W/g, '');
   const cleanPassword = password.replace(/\W/g, '');
@@ -26,7 +26,7 @@ exports.mailHandler = async (user) => {
     .replace('{{PASSWORD}}', cleanPassword);
   return transporter.sendMail({
     from: `VOTE - Abakus <${creds.abakus_from_mail}>`,
-    to: `${cleanUsername} <${unActivatedEmail}>`,
+    to: `${email}`,
     subject: `VOTE Login Credentials`,
     text: `Username: ${cleanUsername}, Password: ${cleanPassword}`,
     html: html,

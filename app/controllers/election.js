@@ -29,7 +29,7 @@ exports.retrieveActive = (req, res) =>
       const { user, query } = req;
       // There is no active election (that the user has not voted on)
       if (!election) {
-        return res.sendStatus(404);
+        throw new errors.NotFoundError('election');
       }
 
       // User is active, return the election
@@ -43,7 +43,7 @@ exports.retrieveActive = (req, res) =>
         !query.accessCode ||
         election.accessCode !== Number(query.accessCode)
       ) {
-        return res.sendStatus(403);
+        throw new errors.AccessCodeError();
       }
 
       // Active election and the inactive user has the correct access code.

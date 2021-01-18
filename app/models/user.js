@@ -35,12 +35,6 @@ const userSchema = new Schema({
     required: true,
     unique: true,
   },
-  // unActivatedEmail is used to by the digital implementation to ensure we can track
-  // down users that didn't get their initial user, so it an be deleted before recreating.
-  unActivatedEmail: {
-    type: String,
-    required: true,
-  },
 });
 
 userSchema.pre('save', function (next) {

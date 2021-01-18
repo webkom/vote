@@ -10,4 +10,7 @@
           ng-model='email'
         )
 
-      button#submit.btn.btn-default.btn-lg(type='submit') Generer bruker
+      button#submit.btn.btn-default.btn-lg(
+        type='submit',
+        ng-disabled='pending'
+      ) Generer bruker

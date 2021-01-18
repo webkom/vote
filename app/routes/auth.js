@@ -2,6 +2,7 @@ const router = require('express-promise-router')();
 const passport = require('passport');
 const errors = require('../errors');
 const User = require('../models/user');
+const Email = require('../models/email');
 
 router.get('/login', (req, res) => {
   const csrfToken = process.env.NODE_ENV !== 'test' ? req.csrfToken() : 'test';
@@ -24,13 +25,8 @@ router.post(
     failureFlash: 'Brukernavn og/eller passord er feil.',
   }),
   async (req, res) => {
-    const { _id, unActivatedEmail } = req.user;
-    // If they can login with an unActivatedEmail user we'll set the user's
-    // unActivatedEmail to blank to show that this user has been able to login
-    if (unActivatedEmail) {
-      await User.findByIdAndUpdate({ _id: _id }, { unActivatedEmail: '' });
-    }
-
+    // Set the Email index.user to null for the spesific email
+    await Email.findOneAndUpdate({ user: req.user._id }, { user: null });
     // If the user tried to access a specific page before, redirect there:
     // TODO FIXME
     //const path = req.session.originalPath || '/';
