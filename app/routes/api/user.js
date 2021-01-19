@@ -7,6 +7,8 @@ router
   .get(ensureModerator, user.list)
   .post(ensureModerator, user.create);
 
+router.post('/generate', ensureModerator, user.generate);
+
 router.get('/count', ensureModerator, user.count);
 
 router.put('/:username/change_card', ensureModerator, user.changeCard);

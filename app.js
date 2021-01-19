@@ -26,6 +26,7 @@ mongoose.connect(app.get('mongourl'), {
   useCreateIndex: true,
   useUnifiedTopology: true,
   useNewUrlParser: true,
+  useFindAndModify: true,
 });
 
 raven.config(env.RAVEN_DSN).install();

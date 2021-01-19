@@ -1,60 +1,79 @@
-.center.text-center(ng-switch='!!activeElection')
-  div(ng-switch-when='true', ng-switch='confirmVote')
-    div(ng-switch-when='false')
-      .election-info
-        h2 {{ activeElection.title }}
-        p {{ activeElection.description }}
+.center.text-center(ng-switch='electionExists')
+  div(ng-switch-when='true', ng-switch='correctCode')
+    div(ng-switch-when='true', ng-switch='confirmVote')
+      div(ng-switch-when='false')
+        .election-info
+          h2 {{ activeElection.title }}
+          p {{ activeElection.description }}
 
-      .alternatives
-        ul.list-unstyled
-          li(
-            ng-repeat='alternative in getPossibleAlternatives()',
-            ng-click='selectAlternative(alternative)'
+        .alternatives
+          ul.list-unstyled
+            li(
+              ng-repeat='alternative in getPossibleAlternatives()',
+              ng-click='selectAlternative(alternative)'
+            )
+              .content
+                p {{ alternative.description }}
+              .icon.add(ng-click='deselectAlternative(alternative._id)')
+                i.fa.fa-plus
+
+        .alternatives
+          h3 Din prioritering
+          p.helptext(ng-if='priorities.length == 0')
+            em Velg et alternativ fra listen
+
+          ul.list-unstyled.numbered(
+            sortable,
+            sortable-on-update='updatePriority',
+            sortable-list='priorities',
+            sortable-animation='100',
+            sortable-delay='0',
+            sortable-handle='.content'
           )
-            .content
-              p {{ alternative.description }}
-            .icon.add(ng-click='deselectAlternative(alternative._id)')
-              i.fa.fa-plus
+            li(ng-repeat='alternative in priorities track by alternative._id')
+              .content
+                .drag
+                  i.fa.fa-bars
+                div
+                  p {{ alternative.description }}
+              .icon.remove(ng-click='deselectAlternative(alternative._id)')
+                i.fa.fa-close
 
-      .alternatives
-        h3 Din prioritering
-        p.helptext(ng-if='priorities.length == 0')
-          em Velg et alternativ fra listen
+        button.btn.btn-lg.btn-default(type='button', ng-click='confirm()') {{ priorities.length === 0 ? "Stem Blank" : "Avgi stemme" }}
 
-        ul.list-unstyled.numbered(
-          sortable,
-          sortable-on-update='updatePriority',
-          sortable-list='priorities',
-          sortable-animation='100',
-          sortable-delay='0',
-          sortable-handle='.content'
-        )
-          li(ng-repeat='alternative in priorities track by alternative._id')
-            .content
-              .drag
-                i.fa.fa-bars
-              div
-                p {{ alternative.description }}
-            .icon.remove(ng-click='deselectAlternative(alternative._id)')
-              i.fa.fa-close
+      div(ng-switch-when='true')
+        h3 Bekreft din stemme
+        .confirmVotes(ng-switch='priorities.length === 0')
+          .ballot
+            div(ng-switch-when='true')
+              h3 Blank stemme
+              i Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
+            div(ng-switch-when='false')
+              ol
+                li.confirm-pri(ng-repeat='alternative in priorities')
+                  p {{ alternative.description }}
 
-      button.btn.btn-lg.btn-default(type='button', ng-click='confirm()') {{ priorities.length === 0 ? "Stem Blank" : "Avgi stemme" }}
+        button.btn.btn-lg.btn-danger(type='button', ng-click='denyVote()') Avbryt
 
-    div(ng-switch-when='true')
-      h3 Bekreft din stemme
-      .confirmVotes(ng-switch='priorities.length === 0')
-        .ballot
-          div(ng-switch-when='true')
-            h3 Blank stemme
-            i Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
-          div(ng-switch-when='false')
-            ol
-              li.confirm-pri(ng-repeat='alternative in priorities')
-                p {{ alternative.description }}
+        button.btn.btn-lg.btn-success(type='button', ng-click='vote()') Bekreft
+    .access-code(ng-switch-when='false')
+      form.form-group.enter-code-form(
+        ng-submit='getActiveElection(accessCode)',
+        name='enterCodeForm'
+      )
+        .form-group.access-code(required)
+          label Kode
+          input.form-control(
+            type='number',
+            name='accessCode',
+            ng-model='accessCode',
+            placeholder='----'
+          )
 
-      button.btn.btn-lg.btn-danger(type='button', ng-click='denyVote()') Avbryt
-
-      button.btn.btn-lg.btn-success(type='button', ng-click='vote()') Bekreft
+        button#submit.btn.btn-default.btn-lg.btn-success(
+          type='submit',
+          ng-disabled='accessCode.toString().length != 4'
+        ) Verifiser
 
   div(ng-switch-default)
     h2.

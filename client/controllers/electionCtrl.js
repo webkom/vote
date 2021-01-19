@@ -16,23 +16,41 @@ module.exports = [
     localStorageService
   ) {
     $scope.activeElection = null;
+    $scope.electionExists = false;
     $scope.priorities = [];
     $scope.confirmVote = false;
+    $scope.correctCode = false;
+    $scope.accessCode = '';
 
     /**
      * Tries to find an active election
      */
-    function getActiveElection() {
-      return electionService.getActiveElection().then(
+    function getActiveElection(accessCode) {
+      return electionService.getActiveElection(accessCode).then(
         function (response) {
+          $scope.electionExists = true;
           $scope.activeElection = response.data;
+          $scope.correctCode = true;
         },
         function (response) {
-          alertService.addError(response.data.message);
+          if (response.status == '404') {
+            $scope.electionExists = false;
+            $scope.activeElection = null;
+            $scope.accessCode = '';
+            $scope.correctCode = false;
+          } else if (response.status == '403') {
+            $scope.electionExists = true;
+            $scope.activeElection = null;
+            $scope.accessCode = '';
+            $scope.correctCode = false;
+          } else {
+            alertService.addError(response.data.message);
+          }
         }
       );
     }
     getActiveElection();
+    $scope.getActiveElection = getActiveElection;
     socketIOService.listen('election', getActiveElection);
 
     $scope.getPossibleAlternatives = function () {
@@ -86,6 +104,10 @@ module.exports = [
         function (response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
+          $scope.electionExists = false;
+          $scope.confirmVote = false;
+          $scope.correctCode = false;
+          $scope.accessCode = '';
           alertService.addSuccess('Takk for din stemme!');
           localStorageService.set('voteHash', response.data.hash);
           getActiveElection();

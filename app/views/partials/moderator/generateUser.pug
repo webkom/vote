@@ -1,0 +1,16 @@
+.row
+  .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    form.form-group(ng-submit='generateUser(email)', name='generateUserForm')
+      .form-group
+        label Epost
+        input.form-control(
+          type='text',
+          name='email',
+          placeholder='Skriv inn epost',
+          ng-model='email'
+        )
+
+      button#submit.btn.btn-default.btn-lg(
+        type='submit',
+        ng-disabled='pending'
+      ) Generer bruker

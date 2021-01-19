@@ -53,6 +53,10 @@ const electionSchema = new Schema({
       message: 'Strict elections must have exactly one seat',
     },
   },
+  accessCode: {
+    type: Number,
+    default: Math.floor(Math.random() * (10000 - 1000) + 1000),
+  },
 });
 
 electionSchema.pre('remove', function (next) {
