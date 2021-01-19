@@ -2,10 +2,11 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const emailSchema = new Schema({
+const registerSchema = new Schema({
   email: {
     type: String,
     required: true,
+    unique: true,
   },
   user: {
     type: Schema.Types.ObjectId,
@@ -17,4 +18,4 @@ const emailSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Email', emailSchema);
+module.exports = mongoose.model('Register', registerSchema);
