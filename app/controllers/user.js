@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
-const Email = require('../models/email');
+const Register = require('../models/register');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
 
@@ -51,7 +51,7 @@ exports.generate = async (req, res) => {
   const email = req.body.email;
 
   // Check that this email has not been allocated a user before
-  const check = await Email.findOne({ email }).exec();
+  const check = await Register.findOne({ email }).exec();
   if (check) {
     throw new errors.DuplicateEmailError();
   }
@@ -66,7 +66,7 @@ exports.generate = async (req, res) => {
     .then((createdUser) =>
       mailHandler(userObject, email)
         .then(() => createdUser.getCleanUser())
-        .then(() => new Email({ email, user }).save())
+        .then(() => new Register({ email, user }).save())
         .then((email) => res.status(201).json(email.email))
     )
     .catch(mongoose.Error.ValidationError, (err) => {
