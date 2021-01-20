@@ -5,7 +5,7 @@ name: default
 
 steps:
   - name: setup
-    image: node:13
+    image: node:14
     when:
       event:
         - push
@@ -16,7 +16,7 @@ steps:
       - clone
 
   - name: lint
-    image: node:13
+    image: node:14
     when:
       event:
         - push
@@ -27,7 +27,7 @@ steps:
       - yarn lint
 
   - name: test
-    image: node:13
+    image: node:14
     when:
       event:
         - push
@@ -38,7 +38,7 @@ steps:
       - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
 
   - name: coverage
-    image: node:13
+    image: node:14
     when:
       event:
         - pull_request
@@ -54,7 +54,7 @@ steps:
       COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
 
   - name: build
-    image: node:13
+    image: node:14
     when:
       event:
         - push
@@ -114,7 +114,7 @@ steps:
 
 services:
   - name: mongodb
-    image: mongo:3.6
+    image: mongo:4.4
 
   - name: redis
-    image: redis:latest
+    image: redis:6.0

@@ -2,10 +2,10 @@ version: '2'
 
 services:
   mongo:
-    image: mongo:3.6
+    image: mongo:4.4
     ports:
       - '127.0.0.1:27017:27017'
   redis:
-    image: redis:latest
+    image: redis:6.0
     ports:
       - '127.0.0.1:6379:6379'
