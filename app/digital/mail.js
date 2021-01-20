@@ -6,7 +6,8 @@ const path = require('path');
 let creds = {};
 let transporter = {};
 if (env.NODE_ENV === 'production') {
-  creds = require('./client_secret.json');
+  // Get google auth creds from env
+  creds = JSON.parse(Buffer.from(env.GOOGLE_AUTH, 'base64').toString());
   transporter = nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 465,
@@ -32,7 +33,7 @@ exports.mailHandler = async (user, email) => {
 
   if (env.NODE_ENV === 'development') {
     console.log('MAIL IS NOT SENT IN DEVELOPMENT'); // eslint-disable-line no-console
-    return new Promise(function (res, rej) {
+    return new Promise(function (res, _) {
       console.log('username:', cleanUsername, 'password:', cleanPassword); // eslint-disable-line no-console
       res('');
     })
