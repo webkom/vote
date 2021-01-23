@@ -9,8 +9,8 @@ module.exports = [
       return $http.post('/api/user', user);
     };
 
-    this.generateUser = function (email) {
-      return $http.post('/api/user/generate', email);
+    this.generateUser = function (user) {
+      return $http.post('/api/user/generate', user);
     };
 
     this.changeCard = function (user) {
