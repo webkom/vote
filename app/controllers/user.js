@@ -56,7 +56,11 @@ exports.generate = async (req, res) => {
 
   // Entry has no user this user is allready activated
   if (entry && !entry.user) {
-    return mailHandler('reject', { email });
+    return mailHandler('reject', { email })
+      .then(() => {
+        throw new errors.DuplicateLegoUserError();
+      })
+      .catch((err) => res.status(500).json(err));
   }
 
   const password = crypto.randomBytes(11).toString('hex');
