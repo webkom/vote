@@ -208,7 +208,7 @@ class DuplicateLegoUserError extends Error {
     super();
     this.name = 'DuplicateLegoUserError';
     this.message = 'This LEGO user has allready gotten a user.';
-    this.status = 400;
+    this.status = 409;
   }
 }
 
