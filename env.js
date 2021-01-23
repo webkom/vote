@@ -8,10 +8,10 @@ module.exports = {
   PORT: process.env.PORT || 3000,
   // Host used when binding. Use 0.0.0.0 to bind all interfaces
   HOST: process.env.HOST || 'localhost',
-  // DSN url for reporting errors to sentry
-  RAVEN_DSN: process.env.RAVEN_DSN,
   MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote',
   REDIS_URL: process.env.REDIS_URL || 'localhost',
   // Mail auth
-  GOOGLE_AUTH: process.env.GOOGLE_AUTH || '',
+  GOOGLE_AUTH: process.env.GOOGLE_AUTH,
+  // Dev mail auth
+  ETHEREAL: process.env.ETHEREAL,
 };

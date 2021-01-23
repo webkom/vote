@@ -3,22 +3,23 @@ module.exports = [
   'userService',
   'alertService',
   function ($scope, userService, alertService) {
-    $scope.generateUser = function (email) {
+    $scope.generateUser = function (user) {
+      $scope.user = {};
       $scope.pending = true;
-      userService.generateUser({ email }).then(
+      userService.generateUser(user).then(
         function (response) {
           alertService.addSuccess(
-            `Bruker laget for ${response.data} generert!`
+            `Bruker generert/oppdatert for ${response.data}!`
           );
-          $scope.email = '';
+          $scope.user = {};
           $scope.pending = false;
         },
         function (response) {
           $scope.pending = false;
           switch (response.data.name) {
-            case 'DuplicateEmailError':
+            case 'DuplicateLegoUserError':
               alertService.addError(
-                'Denne eposten har allerede fått en bruker.'
+                'Denne LEGO brukern har allerede fått en bruker.'
               );
               break;
             case 'DuplicateCardError':
