@@ -83,9 +83,11 @@ exports.generate = async (req, res) => {
     username,
     password,
     cardKey,
+    active: false,
   };
 
   const user = new User(userObject);
+  console.log(userObject, user);
   return User.register(user, password)
     .then((createdUser) =>
       mailHandler('send', { email, username: createdUser.username, password })
