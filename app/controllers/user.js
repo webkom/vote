@@ -45,7 +45,7 @@ exports.create = (req, res) => {
 };
 
 exports.generate = async (req, res) => {
-  const { legoUser, email } = req.body;
+  const { legoUser, email, ignoreExistingUser } = req.body;
 
   if (!legoUser || !email) {
     throw new errors.InvalidPayloadError('Params legoUser or email provided.');
@@ -53,6 +53,10 @@ exports.generate = async (req, res) => {
 
   // Try to fetch an entry from the register with this username
   const entry = await Register.findOne({ legoUser }).exec();
+  
+  if (entry && ignoreExistingUser) {
+    return res.status(409).json(legoUser);
+  }
 
   // Entry has no user this user is allready activated
   if (entry && !entry.user) {
