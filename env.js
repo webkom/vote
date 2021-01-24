@@ -12,6 +12,7 @@ module.exports = {
   REDIS_URL: process.env.REDIS_URL || 'localhost',
   // Mail auth
   GOOGLE_AUTH: process.env.GOOGLE_AUTH,
+  GOOGLE_FROM_MAIL: process.env.GOOGLE_FROM_MAIL || '',
   // Dev mail auth
   ETHEREAL: process.env.ETHEREAL,
 };
