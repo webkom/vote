@@ -18,16 +18,17 @@ if (env.NODE_ENV === 'production') {
     secure: true,
     auth: {
       type: 'OAuth2',
-      user: creds.abakus_from_mail,
+      user: process.env.GOOGLE_FROM_MAIL,
       serviceClient: creds.client_id,
       privateKey: creds.private_key,
     },
   });
-  from = `VOTE - Abakus <${creds.abakus_from_mail}>`;
+  from = `VOTE - Abakus <${process.env.GOOGLE_FROM_MAIL}>`;
 }
 
 // Mail transporter object for dev Ethereal mail
 if (env.NODE_ENV === 'development' && env.ETHEREAL) {
+  // The ethereal string should be on the format "user:pass"
   const [user, pass] = env.ETHEREAL.split(':');
   transporter = nodemailer.createTransport({
     host: 'smtp.ethereal.email',
