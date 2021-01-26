@@ -1,4 +1,4 @@
-module github.com/webkom/vote/sync
+module github.com/webkom/vote/deployment/sync
 
 go 1.15
 

@@ -1,6 +1,6 @@
 # Daemon to sync from LEGO to VOTE
 
-This use a websocketn connection from LEGO and create new VOTE users when a user registers on an event.
+This use a websocket connection from LEGO and create new VOTE users when a user registers on an event.
 
 ```
 Usage of ./sync:
