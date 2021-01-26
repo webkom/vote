@@ -203,16 +203,16 @@ class DuplicateUsernameError extends Error {
 
 exports.DuplicateUsernameError = DuplicateUsernameError;
 
-class DuplicateEmailError extends Error {
+class DuplicateLegoUserError extends Error {
   constructor() {
     super();
-    this.name = 'DuplicateEmailError';
-    this.message = "There's already a user with this email.";
-    this.status = 400;
+    this.name = 'DuplicateLegoUserError';
+    this.message = 'This LEGO user has allready gotten a user.';
+    this.status = 409;
   }
 }
 
-exports.DuplicateEmailError = DuplicateEmailError;
+exports.DuplicateLegoUserError = DuplicateLegoUserError;
 
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;

@@ -45,29 +45,62 @@ exports.create = (req, res) => {
 };
 
 exports.generate = async (req, res) => {
-  const username = short.generate();
-  const cardKey = short.generate();
-  const password = crypto.randomBytes(15).toString('hex');
-  const email = req.body.email;
+  const { legoUser, email, ignoreExistingUser } = req.body;
 
-  // Check that this email has not been allocated a user before
-  const check = await Register.findOne({ email }).exec();
-  if (check) {
-    throw new errors.DuplicateEmailError();
+  if (!legoUser || !email) {
+    throw new errors.InvalidPayloadError('Params legoUser or email provided.');
   }
 
+  // Try to fetch an entry from the register with this username
+  const entry = await Register.findOne({ legoUser }).exec();
+  
+  if (entry && ignoreExistingUser) {
+    return res.status(409).json(legoUser);
+  }
+
+  // Entry has no user this user is allready activated
+  if (entry && !entry.user) {
+    return mailHandler('reject', { email })
+      .then(() => {
+        throw new errors.DuplicateLegoUserError();
+      })
+      .catch((err) => res.status(500).json(err));
+  }
+
+  const password = crypto.randomBytes(11).toString('hex');
+
+  // Entry has a user but has not activated
+  if (entry && entry.user) {
+    const fetchedUser = await User.findByIdAndUpdate({ _id: entry.user });
+    // Use the register function to "re-register" the user with a new password
+    return User.register(fetchedUser, password).then((updatedUser) =>
+      mailHandler('resend', { email, username: updatedUser.username, password })
+        .then(() => {
+          entry.email = email;
+          return entry.save();
+        })
+        .then(() => res.status(201).json(legoUser))
+        .catch((err) => res.status(500).json(err))
+    );
+  }
+
+  // The user does not exist, so we generate as usual
+  const username = short.generate();
+  const cardKey = short.generate();
   const userObject = {
     username,
     password,
     cardKey,
+    active: false,
   };
+
   const user = new User(userObject);
   return User.register(user, password)
     .then((createdUser) =>
-      mailHandler(userObject, email)
-        .then(() => createdUser.getCleanUser())
-        .then(() => new Register({ email, user }).save())
-        .then((email) => res.status(201).json(email.email))
+      mailHandler('send', { email, username: createdUser.username, password })
+        .then(() => new Register({ legoUser, email, user }).save())
+        .then(() => res.status(201).json(legoUser))
+        .catch((err) => res.status(500).json(err))
     )
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);

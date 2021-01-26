@@ -1,38 +1,40 @@
 # vote [![DroneCI](https://ci.webkom.dev/api/badges/webkom/vote/status.svg?branch=master)](https://ci.webkom.dev/webkom/vote) [![Coverage Status](https://coveralls.io/repos/github/webkom/vote/badge.svg?branch=master)](https://coveralls.io/github/webkom/vote?branch=master) [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/webkom/vote)](https://libraries.io/github/webkom/vote#dependencies) ![GitHub](https://img.shields.io/github/license/webkom/vote)
 
-> vote optimizes the election
+> Digital voting system for Abakus' generral assembly
 
-Digital voting system for Abakus' general assembly, built using the MEAN-stack (mongoDB, Express, AngularJS, Node.js).
-Relevant (Norwegian) blog post: http://webkom.abakus.no/vote/
+Irrelevant [blog post](http://webkom.abakus.no/vote/)
 
-![vote](http://i.imgur.com/DU1CXQx.png)
+![vote](https://i.imgur.com/DIMAJfj.png)
 
 ## Setup
 
-vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vote` and a redis-server running as `localhost:6379`. To
-change the URL, export `MONGO_URL` and `REDIS_URL` as an environment variable.
+vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vote` and a redis-server running as `localhost:6379`. To change the URL, export `MONGO_URL` and `REDIS_URL` as an environment variable.
 
 ```bash
-$ git clone git@github.com:webkom/vote.git
-$ cd vote
-
 # Start MongoDB and Redis, both required for development and production
 $ docker-compose up -d
-
 # Install all dependencies
-$ yarn
-
-# Create a user via the CLI. You are promted to select usertype.
-$ ./bin/users create-user <username> <cardKey>
+$ yarn && yarn start
 ```
 
 ## Usage
 
-vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. The RFID-reader needs to be connected to the computer that is logged in to the moderator panel.
+#### Users
 
-An example deployment can be found in the `./deployment` folder.
+Initially you will need to create a moderator and or admin user in order to login
+
+```bash
+# Create a user via the CLI. You are prompted to select usertype.
+$ ./bin/users create-user <username> <cardKey>
+```
+
+#### Card-readers
+
+vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. The RFID-reader needs to be connected to the computer that is logged in to the moderator panel. See section about using the card reader further down this readme.
 
 ### Development
+
+> Check docs for the environment variable `ETHEREAL` if you intend to develop email related features
 
 ```bash
 $ yarn start
@@ -52,19 +54,29 @@ $ yarn start
 - `COOKIE_SECRET`
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
+- `GOOGLE_AUTH`
+  - A base64 encoded string with the json data of a service account that can send mail. We also store
+    the `abakus_from_email` in the data object. Note that the `GOOGLE_AUTH` variable is only used when
+    VOTE is running in production, in development the `ETHERAL` variable can be used.
+- `ETHEREAL`
+  - A optional variable you can set that allows emails to be routed to a test `smtp` server. This is
+    useful if you intend to make changes to the way emails are sent, or the way the template looks.
+    The variable must be on the format `user:pass`, that you can find [here](https://ethereal.email/create).
 
-See `app.js` for the rest
+See `app.js` and `env.js` for the rest
 
 ### Production
 
+An example deployment can be found in the `./deployment` folder.
+
 ```bash
 $ yarn build
-$ LOGO_SRC=https://my-domain.tld/logo.png NODE_ENV=production yarn start
+$ LOGO_SRC=https://my-domain.tld/logo.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
 ```
 
 ## Using the card-readers
 
-Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Experimental features can be enabled by navigating to: chrome://flags/#enable-experimental-web-platform-features.
+Make sure you have enabled Experimental Web Platform features and are using Google Chrome. Experimental features can be enabled by navigating to: **chrome://flags/#enable-experimental-web-platform-features**.
 Please check that the USB card reader is connected. When prompted for permissions, please select the card reader (CP210x).
 
 ### Serial permissions (Linux)
@@ -105,7 +117,7 @@ $ yarn test
 $ HEADLESS=true yarn test
 ```
 
-## Vote occasion
+## Vote Occasion
 
 We have a list of every occasion vote has been used. If you or your organization use vote for your event we would love if you made a PR where you append your event to the list.
 
