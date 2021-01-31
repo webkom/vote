@@ -349,8 +349,24 @@ describe('Election API', () => {
     await test404('get', '/api/election/badelection', 'election');
   });
 
-  it('should be able to activate an election', async function () {
+  it('should not be possible to have two activate elections', async function () {
     passportStub.login(this.adminUser.username);
+    // There is by default an active election on the database
+    const election = await Election.create(inactiveElectionData);
+    await request(app)
+      .post(`/api/election/${election.id}/activate`)
+      .expect(409)
+      .expect('Content-Type', /json/);
+    ioStub.emit.should.not.have.been.calledWith('election');
+  });
+
+  it('should be possible to activate an election', async function () {
+    // Deactivate the one default elections
+    this.activeElection.active = false;
+    this.activeElection.save();
+
+    passportStub.login(this.adminUser.username);
+
     const election = await Election.create(inactiveElectionData);
     const { body } = await request(app)
       .post(`/api/election/${election.id}/activate`)
