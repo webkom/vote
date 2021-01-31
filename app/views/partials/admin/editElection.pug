@@ -63,15 +63,24 @@
       h2 Oppsummering
       table.table.mono
         tbody
-          tr 
+          tr
             th.th-left Stemmer
             th.th-right = {{ election.voteCount }}
-          tr 
+          tr
+            th.th-left ∟ Hvorav blanke stemmer
+            th.th-right = {{ election.blankVoteCount }}
+          tr
             th.th-left Plasser
             th.th-right = {{ election.seats }}
-          tr 
+          tr
             th.th-left Terskel
-            th.th-right ⌊{{ election.voteCount }}/{{ election.seats + 1 }}⌋ + 1 = {{ election.thr }}
+            th.th-right ⌊
+              span.cs-tooltip {{ election.voteCount }}
+                span.cs-tooltiptext Antall stemmer
+              span /
+              span.cs-tooltip {{ election.seats + 1 }}
+                span.cs-tooltiptext Antall stemmer + 1
+              span ⌋ + 1 = {{ election.thr }}
       h2 Logg
       ul.list-unstyled.log.mono
         li(ng-repeat='elem in election.log')(ng-switch='elem.action')
@@ -93,7 +102,7 @@
       hr
       h2 Resultat
       div(ng-class='\'alert-\' + election.status') {{ election.result.status }}
-      table.table.mono
+      table.table.mono.large(style='margin-bottom: 100px;')
         tbody
           tr(ng-repeat='winner in election.result.winners')
             th.th-right Vinner {{ $index + 1 }}:
