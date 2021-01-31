@@ -47,9 +47,8 @@ exports.create = (req, res) => {
 exports.generate = async (req, res) => {
   const { legoUser, email, ignoreExistingUser } = req.body;
 
-  if (!legoUser || !email) {
-    throw new errors.InvalidPayloadError('Params legoUser or email provided.');
-  }
+  if (!legoUser) throw new errors.InvalidPayloadError('legoUser');
+  if (!email) throw new errors.InvalidPayloadError('email');
 
   // Try to fetch an entry from the register with this username
   const entry = await Register.findOne({ legoUser }).exec();
@@ -61,10 +60,15 @@ exports.generate = async (req, res) => {
   // Entry has no user this user is allready activated
   if (entry && !entry.user) {
     return mailHandler('reject', { email })
-      .then(() => {
-        throw new errors.DuplicateLegoUserError();
-      })
-      .catch((err) => res.status(500).json(err));
+      .then(() =>
+        res.status(409).json({
+          status: 'allready signed in',
+          user: legoUser,
+        })
+      )
+      .catch((err) => {
+        throw new errors.MailError(err);
+      });
   }
 
   const password = crypto.randomBytes(11).toString('hex');
@@ -79,8 +83,15 @@ exports.generate = async (req, res) => {
           entry.email = email;
           return entry.save();
         })
-        .then(() => res.status(201).json(legoUser))
-        .catch((err) => res.status(500).json(err))
+        .then(() =>
+          res.status(201).json({
+            status: 'regenerated',
+            user: legoUser,
+          })
+        )
+        .catch((err) => {
+          throw new errors.MailError(err);
+        })
     );
   }
 
@@ -99,8 +110,12 @@ exports.generate = async (req, res) => {
     .then((createdUser) =>
       mailHandler('send', { email, username: createdUser.username, password })
         .then(() => new Register({ legoUser, email, user }).save())
-        .then(() => res.status(201).json(legoUser))
-        .catch((err) => res.status(500).json(err))
+        .then(() =>
+          res.status(201).json({ status: 'generated', user: legoUser })
+        )
+        .catch((err) => {
+          throw new errors.MailError(err);
+        })
     )
     .catch(mongoose.Error.ValidationError, (err) => {
       throw new errors.ValidationError(err.errors);

@@ -4,6 +4,7 @@ const passportStub = require('passport-stub');
 const chai = require('chai');
 const app = require('../../app');
 const User = require('../../app/models/user');
+const Register = require('../../app/models/register');
 const { test404, testAdminResource } = require('./helpers');
 const { testUser, createUsers } = require('../helpers');
 
@@ -38,6 +39,11 @@ describe('User API', () => {
     username: 'hi',
     password: 'password',
     cardKey: '11TESTCARDKEY',
+  };
+
+  const genUserData = {
+    legoUser: 'legoUsername',
+    email: 'test@user.com',
   };
 
   it('should be possible to create users for admin', async function () {
@@ -360,5 +366,103 @@ describe('User API', () => {
   it('should not be possible to deactivate all users without being admin/moderator', async function () {
     passportStub.login(this.user.username);
     await testAdminResource('post', '/api/user/deactivate');
+  });
+
+  it('should be possible to generate a user while being a moderator', async function () {
+    passportStub.login(this.moderatorUser.username);
+    const { body } = await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(201)
+      .expect('Content-Type', /json/);
+    body.status.should.equal('generated');
+    body.user.should.equal(genUserData.legoUser);
+  });
+
+  it('should be not be possible to generate a user for a user', async function () {
+    passportStub.login(this.user.username);
+    const { body: error } = await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(403)
+      .expect('Content-Type', /json/);
+    error.name.should.equal('PermissionError');
+    error.status.should.equal(403);
+  });
+
+  it('should get an error when generating user with no legoUser', async function () {
+    passportStub.login(this.moderatorUser.username);
+    const { body: error } = await request(app)
+      .post('/api/user/generate')
+      .send({ username: 'wrong', email: 'correct@email.com' })
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.name.should.equal('InvalidPayloadError');
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property legoUser from payload.');
+  });
+
+  it('should get an error when generating user with no email', async function () {
+    passportStub.login(this.moderatorUser.username);
+    const { body: error } = await request(app)
+      .post('/api/user/generate')
+      .send({ legoUser: 'correct', password: 'wrong' })
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.name.should.equal('InvalidPayloadError');
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property email from payload.');
+  });
+
+  it('should be possible to generate the same user twice if they are not active', async function () {
+    passportStub.login(this.moderatorUser.username);
+    const { body: bodyOne } = await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(201)
+      .expect('Content-Type', /json/);
+    bodyOne.status.should.equal('generated');
+    bodyOne.user.should.equal(genUserData.legoUser);
+
+    // Check that the register index and the user was created
+    const register = await Register.findOne({ legoUser: genUserData.legoUser });
+    register.legoUser.should.equal(genUserData.legoUser);
+    register.email.should.equal(genUserData.email);
+    const user = await User.findOne({ _id: register.user });
+    should.exist(user);
+
+    // Check that the register index and the user was created
+    passportStub.login(this.moderatorUser.username);
+    const { body: bodyTwo } = await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(201)
+      .expect('Content-Type', /json/);
+    bodyTwo.status.should.equal('regenerated');
+    bodyTwo.user.should.equal(genUserData.legoUser);
+  });
+
+  it('should not be possible to generate the same user twice if they are active', async function () {
+    passportStub.login(this.moderatorUser.username);
+    const { body: bodyOne } = await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(201)
+      .expect('Content-Type', /json/);
+    bodyOne.status.should.equal('generated');
+    bodyOne.user.should.equal(genUserData.legoUser);
+
+    // Get the register and fake that they have logged in
+    const register = await Register.findOne({ legoUser: genUserData.legoUser });
+    register.user = null;
+    await register.save();
+
+    // Check that the register index and the user was created
+    passportStub.login(this.moderatorUser.username);
+    await request(app)
+      .post('/api/user/generate')
+      .send(genUserData)
+      .expect(409)
+      .expect('Content-Type', /json/);
   });
 });

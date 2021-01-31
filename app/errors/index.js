@@ -225,6 +225,17 @@ class AllreadyActiveElectionError extends Error {
 
 exports.AllreadyActiveElectionError = AllreadyActiveElectionError;
 
+class MailError extends Error {
+  constructor(err) {
+    super();
+    this.name = 'MailError';
+    this.message = `Something went wrong with the email. Err: ${err}`;
+    this.status = 500;
+  }
+}
+
+exports.MailError = MailError;
+
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(

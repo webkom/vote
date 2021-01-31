@@ -9,22 +9,17 @@ module.exports = [
       userService.generateUser(user).then(
         function (response) {
           alertService.addSuccess(
-            `Bruker generert/oppdatert for ${response.data}!`
+            `Bruker ${response.data.user} ble ${response.data.status}!`
           );
           $scope.user = {};
           $scope.pending = false;
         },
         function (response) {
           $scope.pending = false;
-          switch (response.data.name) {
-            case 'DuplicateLegoUserError':
+          switch (response.status) {
+            case 409:
               alertService.addError(
                 'Denne LEGO brukern har allerede fått en bruker.'
-              );
-              break;
-            case 'DuplicateCardError':
-              alertService.addError(
-                'Dette kortet er allerede blitt registrert.'
               );
               break;
             default:
