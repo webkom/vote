@@ -52,8 +52,8 @@ $ yarn start
   - Url to the main icon on all pages
   - `default`: `/static/images/Abakule.jpg`
 - `LOGO_SRC` _(optional)_
-  - Url to the main logo
-  - `default`: `/static/images/Abakus_logo.png`
+  - External email to url to the main logo
+  - `default`: `https://abakus.no/185f9aa436cf7f5da598fd7e07700efd.png`
 - `COOKIE_SECRET`
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
