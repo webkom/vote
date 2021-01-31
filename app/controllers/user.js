@@ -53,7 +53,7 @@ exports.generate = async (req, res) => {
 
   // Try to fetch an entry from the register with this username
   const entry = await Register.findOne({ legoUser }).exec();
-  
+
   if (entry && ignoreExistingUser) {
     return res.status(409).json(legoUser);
   }

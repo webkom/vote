@@ -22,6 +22,10 @@ type Alternative = {
   election: string;
 };
 
+type STVCounts = {
+  [key: string]: number;
+};
+
 type Vote = {
   _id: string;
   priorities: Alternative[];
@@ -167,7 +171,13 @@ exports.calculateWinnerUsingSTV = (
     votes = votes.filter((vote: Vote) => vote.priorities.length > 0);
 
     // Dict with the counts for each candidate
-    const counts: { [key: string]: number } = {};
+    const counts: STVCounts = alternatives.reduce(
+      (counts: STVCounts, alternative: Alternative) => ({
+        ...counts,
+        [alternative.description]: 0,
+      }),
+      {}
+    );
 
     for (const i in votes) {
       // The vote for this loop
