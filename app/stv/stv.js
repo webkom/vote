@@ -44,7 +44,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
     while (votes.length > 0 && iteration < 100) {
         iteration += 1;
         votes = votes.filter((vote) => vote.priorities.length > 0);
-        const counts = {};
+        const counts = alternatives.reduce((counts, alternative) => (Object.assign(Object.assign({}, counts), { [alternative.description]: 0 })), {});
         for (const i in votes) {
             const vote = cloneDeep(votes[i]);
             const currentAlternative = cloneDeep(vote.priorities[0]);
