@@ -6,10 +6,9 @@ const handlebars = require('handlebars');
 
 let creds = {};
 let transporter = null;
-let from = '';
 
-// Mail transporter object for production Google mail
-if (env.NODE_ENV === 'production') {
+// Mail transporter object Google service account
+if (env.GOOGLE_AUTH) {
   // Get google auth creds from env
   creds = JSON.parse(Buffer.from(env.GOOGLE_AUTH, 'base64').toString());
   transporter = nodemailer.createTransport({
@@ -18,27 +17,30 @@ if (env.NODE_ENV === 'production') {
     secure: true,
     auth: {
       type: 'OAuth2',
-      user: process.env.GOOGLE_FROM_MAIL,
+      user: process.env.FROM_MAIL,
       serviceClient: creds.client_id,
       privateKey: creds.private_key,
     },
   });
-  from = `VOTE - Abakus <${process.env.GOOGLE_FROM_MAIL}>`;
+  transporter.verify(function (error, success) {
+    if (error) {
+      console.log('SMTP connection error', error); // eslint-disable-line no-console
+    } else {
+      console.log('SMTP connection success', success); // eslint-disable-line no-console
+    }
+  });
 }
 
-// Mail transporter object for dev Ethereal mail
-if (env.NODE_ENV === 'development' && env.ETHEREAL) {
-  // The ethereal string should be on the format "user:pass"
-  const [user, pass] = env.ETHEREAL.split(':');
-  transporter = nodemailer.createTransport({
-    host: 'smtp.ethereal.email',
-    port: 587,
-    auth: {
-      user,
-      pass,
-    },
+// Mail transporter if STMP connection string is used
+if (env.SMTP_URL) {
+  transporter = nodemailer.createTransport(env.SMTP_URL);
+  transporter.verify(function (error, success) {
+    if (error) {
+      console.log('SMTP connection error', error); // eslint-disable-line no-console
+    } else {
+      console.log('SMTP connection success', success); // eslint-disable-line no-console
+    }
   });
-  from = `VOTE(TEST) - Abakus <${user}>`;
 }
 
 exports.mailHandler = async (action, data) => {
@@ -93,7 +95,7 @@ exports.mailHandler = async (action, data) => {
   }
 
   return transporter.sendMail({
-    from,
+    from: `VOTE - ${process.env.FROM} <${process.env.FROM_MAIL}>`,
     to: `${email}`,
     subject: `VOTE Login Credentials`,
     text: `Username: ${username}, Password: ${password}`,

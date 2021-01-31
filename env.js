@@ -13,11 +13,12 @@ module.exports = {
   HOST: process.env.HOST || 'localhost',
   MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote',
   REDIS_URL: process.env.REDIS_URL || 'localhost',
-  // Mail auth
-  GOOGLE_AUTH: process.env.GOOGLE_AUTH,
-  GOOGLE_FROM_MAIL: process.env.GOOGLE_FROM_MAIL || '',
-  // Dev mail auth
-  ETHEREAL: process.env.ETHEREAL,
-  //
   FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
+
+  // Mail settings
+  FROM: process.env.FROM || 'Abakus',
+  FROM_MAIL: process.env.FROM_MAIL || 'admin@abakus.no',
+  // Use one of the below
+  GOOGLE_AUTH: process.env.GOOGLE_AUTH,
+  SMTP_URL: process.env.SMTP_URL,
 };
