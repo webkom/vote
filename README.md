@@ -67,7 +67,7 @@ See `app.js` and `env.js` for the rest
 
 ### Production
 
-An example deployment can be found in the `./deployment` folder.
+> For a production deployment example, see [deployment](./deployment/README.md) in the `deployment` folder
 
 ```bash
 $ yarn build
