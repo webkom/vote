@@ -5,7 +5,7 @@ const path = require('path');
 const handlebars = require('handlebars');
 
 let creds = {};
-let transporter = {};
+let transporter = null;
 let from = '';
 
 // Mail transporter object for production Google mail
@@ -47,35 +47,49 @@ exports.mailHandler = async (action, data) => {
     'utf8'
   );
   const template = handlebars.compile(html);
-  const { email, username, password } = data;
+  let { email, username, password } = data;
+  username = username && username.replace(/\W/g, '');
+  password = password && password.replace(/\W/g, '');
 
-  let replacements = {};
+  let replacements = {
+    logo: env.LOGO_SRC,
+    username,
+    password,
+    link: `${env.FRONTEND_URL}/auth/login?token=${username}:${password}:`,
+  };
   switch (action) {
     case 'reject':
       replacements = {
-        title: 'Allerede aktivert bruker',
-        description:
-          'Du har allerede motatt en bruker, og vi har registrert at du har klart å logge inn.',
+        ...replacements,
+        new: false,
+        title: 'Allerede aktivert bruker!',
       };
       break;
     case 'resend':
       replacements = {
-        title: 'Velkommen til Genfors',
-        description:
-          'Dette er din digitale bruker. Dette er den samme brukeren, men med nytt generert passord.',
-        username: username.replace(/\W/g, ''),
-        password: password.replace(/\W/g, ''),
+        ...replacements,
+        new: true,
+        title: 'Velkommen til Genfors!',
       };
       break;
     case 'send':
       replacements = {
-        title: 'Velkommen til Genfors',
-        description:
-          'Dette er din digital bruker til stemmesystemet VOTE. Mer info kommer på Genfors.',
-        username: username.replace(/\W/g, ''),
-        password: password.replace(/\W/g, ''),
+        ...replacements,
+        new: true,
+        title: 'Velkommen til Genfors!',
       };
       break;
+  }
+  const templatedHTML = template(replacements);
+
+  // If we have not set any custom transporter we just use console mail
+  // We do this after the the templating to make sure the template still
+  // works even tho we dont use it.
+  if (!transporter) {
+    return new Promise(function (resolve, _) {
+      console.log('MAIL:', action, data); // eslint-disable-line no-console
+      resolve('Done');
+    });
   }
 
   return transporter.sendMail({
@@ -83,6 +97,6 @@ exports.mailHandler = async (action, data) => {
     to: `${email}`,
     subject: `VOTE Login Credentials`,
     text: `Username: ${username}, Password: ${password}`,
-    html: template(replacements),
+    html: templatedHTML,
   });
 };

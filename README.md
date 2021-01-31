@@ -48,9 +48,12 @@ $ yarn start
 - `REDIS_URL`
   - Hostname of the redis server
   - `default`: `localhost`
-- `LOGO_SRC` _(optional)_
-  - Url to the main logo on all pages
+- `ICON_SRC` _(optional)_
+  - Url to the main icon on all pages
   - `default`: `/static/images/Abakule.jpg`
+- `LOGO_SRC` _(optional)_
+  - Url to the main logo
+  - `default`: `/static/images/Abakus_logo.png`
 - `COOKIE_SECRET`
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
@@ -71,7 +74,7 @@ See `app.js` and `env.js` for the rest
 
 ```bash
 $ yarn build
-$ LOGO_SRC=https://my-domain.tld/logo.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
+$ ICON_SRC=https://someicon.png LOGO_SRC=https://somelogo.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
 ```
 
 ## Using the card-readers
