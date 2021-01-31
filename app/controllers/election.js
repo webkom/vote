@@ -96,12 +96,17 @@ function setElectionStatus(req, res, active) {
   return req.election.save();
 }
 
-exports.activate = (req, res) =>
-  setElectionStatus(req, res, true).then((election) => {
+exports.activate = async (req, res) => {
+  const otherActiveElection = await Election.findOne({ active: true });
+  if (otherActiveElection) {
+    throw new errors.AllreadyActiveElectionError();
+  }
+  return setElectionStatus(req, res, true).then((election) => {
     const io = app.get('io');
     io.emit('election');
     return res.status(200).json(election);
   });
+};
 
 exports.deactivate = (req, res) =>
   setElectionStatus(req, res, false).then((election) => {
