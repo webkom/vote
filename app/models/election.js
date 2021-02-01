@@ -55,7 +55,8 @@ const electionSchema = new Schema({
   },
   accessCode: {
     type: Number,
-    default: Math.floor(Math.random() * (10000 - 1000) + 1000),
+    // https://mongoosejs.com/docs/defaults.html#default-functions
+    default: () => Math.floor(Math.random() * 9000 + 1000),
   },
 });
 
