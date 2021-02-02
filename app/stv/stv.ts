@@ -13,6 +13,7 @@ type STV = {
   thr: number;
   seats: number;
   voteCount: number;
+  blankVoteCount: number;
   useStrict: boolean;
 };
 
@@ -20,6 +21,10 @@ type Alternative = {
   _id: string;
   description: string;
   election: string;
+};
+
+type STVCounts = {
+  [key: string]: number;
 };
 
 type Vote = {
@@ -155,6 +160,11 @@ exports.calculateWinnerUsingSTV = (
   // The threshold value needed to win
   const thr: number = winningThreshold(votes, seats, useStrict);
 
+  // The number of blank votes
+  const blankVoteCount = inputVotes.filter(
+    (vote: Vote) => vote.priorities.length === 0
+  ).length;
+
   // Winners for the election
   const winners: Alternative[] = [];
 
@@ -167,7 +177,13 @@ exports.calculateWinnerUsingSTV = (
     votes = votes.filter((vote: Vote) => vote.priorities.length > 0);
 
     // Dict with the counts for each candidate
-    const counts: { [key: string]: number } = {};
+    const counts: STVCounts = alternatives.reduce(
+      (counts: STVCounts, alternative: Alternative) => ({
+        ...counts,
+        [alternative.description]: 0,
+      }),
+      {}
+    );
 
     for (const i in votes) {
       // The vote for this loop
@@ -253,6 +269,7 @@ exports.calculateWinnerUsingSTV = (
           thr,
           seats,
           voteCount: inputVotes.length,
+          blankVoteCount,
           useStrict,
         };
       }
@@ -403,6 +420,7 @@ exports.calculateWinnerUsingSTV = (
     thr,
     seats,
     voteCount: inputVotes.length,
+    blankVoteCount,
     useStrict,
   };
 };

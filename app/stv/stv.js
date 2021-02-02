@@ -39,12 +39,13 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
         election: String(alternative._id),
     }));
     const thr = winningThreshold(votes, seats, useStrict);
+    const blankVoteCount = inputVotes.filter((vote) => vote.priorities.length === 0).length;
     const winners = [];
     let iteration = 0;
     while (votes.length > 0 && iteration < 100) {
         iteration += 1;
         votes = votes.filter((vote) => vote.priorities.length > 0);
-        const counts = {};
+        const counts = alternatives.reduce((counts, alternative) => (Object.assign(Object.assign({}, counts), { [alternative.description]: 0 })), {});
         for (const i in votes) {
             const vote = cloneDeep(votes[i]);
             const currentAlternative = cloneDeep(vote.priorities[0]);
@@ -91,6 +92,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
                     thr,
                     seats,
                     voteCount: inputVotes.length,
+                    blankVoteCount,
                     useStrict,
                 };
             }
@@ -178,6 +180,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
         thr,
         seats,
         voteCount: inputVotes.length,
+        blankVoteCount,
         useStrict,
     };
 };
