@@ -28,6 +28,7 @@ module.exports = [
     function getActiveElection(accessCode) {
       return electionService.getActiveElection(accessCode).then(
         function (response) {
+          $scope.priorities = [];
           $scope.electionExists = true;
           $scope.activeElection = response.data;
           $scope.correctCode = true;
@@ -104,6 +105,7 @@ module.exports = [
         function (response) {
           $window.scrollTo(0, 0);
           $scope.activeElection = null;
+          $scope.priorities = [];
           $scope.electionExists = false;
           $scope.confirmVote = false;
           $scope.correctCode = false;
