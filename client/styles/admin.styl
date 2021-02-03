@@ -56,6 +56,19 @@ form
         cursor pointer
         color $abakus-dark
 
+span.access-code
+    font-weight 800
+    font-size 30px
+    padding-left 15px
+
+.copy-icon
+    font-size initial
+    vertical-align middle
+    cursor pointer
+
+    &:hover
+        color $abakus-light
+
 .alternatives.admin
     padding-top 10px
     margin-bottom 0
@@ -67,6 +80,7 @@ form
         &:hover
             cursor default
             background-color alpha($alternative-background, 0.15)
+            box-shadow none
 
         span
             position absolute

@@ -3,7 +3,12 @@
     .election-info.admin
       h2 {{ election.title }}
       p {{ election.description }}
-      h3 Tilgangskode: {{ election.accessCode }}
+      h3 Tilgangskode:
+        span.access-code.mono {{ election.accessCode }}
+        i.fa.fa-copy.copy-icon.cs-tooltip(
+          ng-click="copyToClipboard(election.accessCode)"
+          )
+            .cs-tooltiptext {{ copySuccess ? "Kopiert!" : "Kopier" }}
 
     .election-info.admin
       h3.user-status
@@ -22,7 +27,9 @@
 
       ul.list-unstyled
         li(ng-repeat='alternative in election.alternatives')
-          p {{ alternative.description }}
+          .content
+            div
+              p {{ alternative.description }}
 
       form.add-alternative.form-group(
         name='alternativeForm',
