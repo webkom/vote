@@ -214,6 +214,17 @@ class DuplicateLegoUserError extends Error {
 
 exports.DuplicateLegoUserError = DuplicateLegoUserError;
 
+class AllreadyActiveElectionError extends Error {
+  constructor() {
+    super();
+    this.name = 'AllreadyActiveElection';
+    this.message = 'There is allready an active election';
+    this.status = 409;
+  }
+}
+
+exports.AllreadyActiveElectionError = AllreadyActiveElectionError;
+
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
