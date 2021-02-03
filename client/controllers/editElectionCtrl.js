@@ -139,5 +139,21 @@ module.exports = [
         .path('/admin/create_election')
         .search({ election: JSON.stringify(election) });
     };
+
+    $scope.copyToClipboard = function (text) {
+      const copyEl = document.createElement('textarea');
+      copyEl.style.opacity = '0';
+      copyEl.style.position = 'fixed';
+      copyEl.textContent = text;
+      document.body.appendChild(copyEl);
+      copyEl.select();
+      try {
+        document.execCommand('copy');
+        $scope.copySuccess = true;
+        setTimeout(() => ($scope.copySuccess = null), 1000);
+      } finally {
+        document.body.removeChild(copyEl);
+      }
+    };
   },
 ];
