@@ -99,7 +99,7 @@ function setElectionStatus(req, res, active) {
 exports.activate = async (req, res) => {
   const otherActiveElection = await Election.findOne({ active: true });
   if (otherActiveElection) {
-    throw new errors.AllreadyActiveElectionError();
+    throw new errors.AlreadyActiveElectionError();
   }
   return setElectionStatus(req, res, true).then((election) => {
     const io = app.get('io');
