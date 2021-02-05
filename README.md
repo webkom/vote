@@ -48,20 +48,25 @@ $ yarn start
 - `REDIS_URL`
   - Hostname of the redis server
   - `default`: `localhost`
-- `LOGO_SRC` _(optional)_
-  - Url to the main logo on all pages
+- `ICON_SRC` _(optional)_
+  - Url to the main icon on all pages
   - `default`: `/static/images/Abakule.jpg`
 - `COOKIE_SECRET`
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
+- `FRONTEND_URL`
+  - The site where vote should run
+  - `defualt`: `http://localhost:3000`
+- `FROM`
+  - The name we send mail from
+  - `default`: `Abakus`
+- `FROM_MAIL`
+  - The email we send mail from
+  - `default`: `admin@abakus.no`
+- `SMTP_URL`
+  - An SMTP connection string of the form `smtps://username:password@smtp.example.com/?pool=true`
 - `GOOGLE_AUTH`
-  - A base64 encoded string with the json data of a service account that can send mail. We also store
-    the `abakus_from_email` in the data object. Note that the `GOOGLE_AUTH` variable is only used when
-    VOTE is running in production, in development the `ETHERAL` variable can be used.
-- `ETHEREAL`
-  - A optional variable you can set that allows emails to be routed to a test `smtp` server. This is
-    useful if you intend to make changes to the way emails are sent, or the way the template looks.
-    The variable must be on the format `user:pass`, that you can find [here](https://ethereal.email/create).
+  - A base64 encoded string with the json data of a service account that can send mail.
 
 See `app.js` and `env.js` for the rest
 
@@ -71,7 +76,7 @@ See `app.js` and `env.js` for the rest
 
 ```bash
 $ yarn build
-$ LOGO_SRC=https://my-domain.tld/logo.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
+$ ICON_SRC=https://some-domain/image.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
 ```
 
 ## Using the card-readers

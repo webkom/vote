@@ -1,6 +1,6 @@
 module.exports = {
   // URL/source to the logo on all pages
-  LOGO_SRC: process.env.LOGO_SRC || '/static/images/Abakule.jpg',
+  ICON_SRC: process.env.ICON_SRC || '/static/images/Abakule.jpg',
   // Node environment. 'development' or 'production'
   NODE_ENV: process.env.NODE_ENV || 'development',
   // This cannot be empty when running in production
@@ -10,9 +10,12 @@ module.exports = {
   HOST: process.env.HOST || 'localhost',
   MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote',
   REDIS_URL: process.env.REDIS_URL || 'localhost',
-  // Mail auth
+  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
+
+  // Mail settings
+  FROM: process.env.FROM || 'Abakus',
+  FROM_MAIL: process.env.FROM_MAIL || 'admin@abakus.no',
+  // Use one of the below
   GOOGLE_AUTH: process.env.GOOGLE_AUTH,
-  GOOGLE_FROM_MAIL: process.env.GOOGLE_FROM_MAIL || '',
-  // Dev mail auth
-  ETHEREAL: process.env.ETHEREAL,
+  SMTP_URL: process.env.SMTP_URL,
 };

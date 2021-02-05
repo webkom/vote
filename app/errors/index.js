@@ -214,16 +214,27 @@ class DuplicateLegoUserError extends Error {
 
 exports.DuplicateLegoUserError = DuplicateLegoUserError;
 
-class AllreadyActiveElectionError extends Error {
+class AlreadyActiveElectionError extends Error {
   constructor() {
     super();
-    this.name = 'AllreadyActiveElection';
-    this.message = 'There is allready an active election';
+    this.name = 'AlreadyActiveElection';
+    this.message = 'There is already an active election';
     this.status = 409;
   }
 }
 
-exports.AllreadyActiveElectionError = AllreadyActiveElectionError;
+exports.AlreadyActiveElectionError = AlreadyActiveElectionError;
+
+class MailError extends Error {
+  constructor(err) {
+    super();
+    this.name = 'MailError';
+    this.message = `Something went wrong with the email. Err: ${err}`;
+    this.status = 500;
+  }
+}
+
+exports.MailError = MailError;
 
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
