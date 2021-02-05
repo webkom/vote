@@ -17,7 +17,7 @@ if (env.GOOGLE_AUTH) {
     secure: true,
     auth: {
       type: 'OAuth2',
-      user: process.env.FROM_MAIL,
+      user: env.FROM_MAIL,
       serviceClient: creds.client_id,
       privateKey: creds.private_key,
     },
@@ -54,7 +54,7 @@ exports.mailHandler = async (action, data) => {
   password = password && password.replace(/\W/g, '');
 
   let replacements = {
-    logo: env.LOGO_SRC,
+    from: env.FROM,
     username,
     password,
     link: `${env.FRONTEND_URL}/auth/login?token=${username}:${password}:`,
@@ -89,7 +89,10 @@ exports.mailHandler = async (action, data) => {
   // works even tho we dont use it.
   if (!transporter) {
     return new Promise(function (resolve, _) {
-      console.log('MAIL:', action, data); // eslint-disable-line no-console
+      // Don't log all the console mail when running tests
+      if (process.env.NODE_ENV != 'test') {
+        console.log('MAIL:', action, data); // eslint-disable-line no-console
+      }
       resolve('Done');
     });
   }
