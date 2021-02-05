@@ -142,9 +142,14 @@ module.exports = [
         // If there is no card, the result will be an error status,
         // which is handled in the onComplete function
         const runPoll = async () => {
-          $rootScope.serialWriter.write(readCardCommand);
-          await readResult();
-          $rootScope.serialTimeout = setTimeout(runPoll, 150);
+          try {
+            $rootScope.serialWriter.write(readCardCommand);
+            await readResult();
+          } catch (e) {
+            console.err('Error doing card stuff', e);
+          } finally {
+            $rootScope.serialTimeout = setTimeout(runPoll, 150);
+          }
         };
         runPoll();
       },
