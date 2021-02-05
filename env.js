@@ -1,9 +1,6 @@
 module.exports = {
   // URL/source to the logo on all pages
   ICON_SRC: process.env.ICON_SRC || '/static/images/Abakule.jpg',
-  LOGO_SRC:
-    process.env.LOGO_SRC ||
-    'https://abakus.no/185f9aa436cf7f5da598fd7e07700efd.png',
   // Node environment. 'development' or 'production'
   NODE_ENV: process.env.NODE_ENV || 'development',
   // This cannot be empty when running in production

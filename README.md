@@ -51,9 +51,6 @@ $ yarn start
 - `ICON_SRC` _(optional)_
   - Url to the main icon on all pages
   - `default`: `/static/images/Abakule.jpg`
-- `LOGO_SRC` _(optional)_
-  - External email to url to the main logo
-  - `default`: `https://abakus.no/185f9aa436cf7f5da598fd7e07700efd.png`
 - `COOKIE_SECRET`
   - **IMPORTANT** to change this to a secret value in production!!
   - `default`: in dev: `localsecret`, otherwise empty
@@ -79,7 +76,7 @@ See `app.js` and `env.js` for the rest
 
 ```bash
 $ yarn build
-$ ICON_SRC=https://someicon.png LOGO_SRC=https://somelogo.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
+$ ICON_SRC=https://some-domain/image.png NODE_ENV=production GOOGLE_AUTH=base64encoding yarn start
 ```
 
 ## Using the card-readers
