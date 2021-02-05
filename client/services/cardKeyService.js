@@ -143,7 +143,7 @@ Usage: scanCard(123) // where 123 is the cardId `);
             // Keep reading bytes until the "end" byte is sent
             // The "end" byte is 0xbb
             while (!finished) {
-              const { value } = await $rootScope.serialReader.read();
+              const { value } = await $rootScope.serialDevice.reader.read();
               for (let i = 0; i < value.length; i++) {
                 // First byte in a message should be 170, otherwise ignore and keep on going
                 if (message.length === 0 && value[i] !== 170) {
