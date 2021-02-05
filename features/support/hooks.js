@@ -17,25 +17,31 @@ module.exports = function () {
   const testAlternative = {
     description: 'test alternative',
   };
+  const testAlternative2 = {
+    description: 'another test alternative',
+  };
+  const testAlternative3 = {
+    description: 'last test alternative',
+  };
 
-  this.Before(function () {
-    return clearCollections()
-      .bind(this)
-      .then(() => {
-        const election = new Election(activeElectionData);
-        return election.save();
-      })
-      .then(function (election) {
-        this.election = election;
-        testAlternative.election = election;
-        this.alternative = new Alternative(testAlternative);
-        return election.addAlternative(this.alternative);
-      })
-      .then(() => createUsers())
-      .spread(function (user, adminUser) {
-        this.user = user;
-        this.adminUser = adminUser;
-      });
+  const alternatives = [testAlternative, testAlternative2, testAlternative3];
+
+  this.Before(async function () {
+    await clearCollections();
+    const election = await new Election(activeElectionData);
+    this.election = election;
+    this.alternatives = await Promise.all(
+      alternatives.map((alternative) => new Alternative(alternative))
+    );
+
+    for (let i = 0; i < alternatives.length; i++) {
+      await election.addAlternative(this.alternatives[i]);
+    }
+
+    await createUsers().spread((user, adminUser) => {
+      this.user = user;
+      this.adminUser = adminUser;
+    });
   });
 
   this.registerHandler('BeforeFeatures', (event, callback) => {

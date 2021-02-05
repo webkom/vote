@@ -80,7 +80,7 @@ module.exports = function () {
   });
 
   this.Then(/^I see "([^"]*)" in "([^"]*)"$/, (value, className) => {
-    const field = element(by.className(className));
+    const field = element(by.css(className));
     expect(field.getText()).to.eventually.equal(value);
   });
 
