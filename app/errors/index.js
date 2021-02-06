@@ -241,7 +241,7 @@ class NoAssociatedUserError extends Error {
     super();
     this.name = 'NoAssociatedUserError';
     this.message = "Can't delete a register with no associated user";
-    this.status = 500;
+    this.status = 400;
   }
 }
 
