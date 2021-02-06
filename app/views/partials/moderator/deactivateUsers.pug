@@ -1,21 +1,7 @@
 .row
   .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    h3 Deaktivere alle brukere slik at all alle må reaktivere sin bruker.
+    ol
+      li Fysisk: Scanne seg inn i lokale med adgangskort
+      li Digitalt: Skrive inn kode ved neste valg
     deactivate-users(deactivate-handler='deactivateNonAdminUsers()') Deaktiver brukere
-
-.center
-  table(style='width:100%')
-    thead
-      tr
-        th Navn
-        th Email
-        th Status
-    tbody
-      tr(ng-repeat='register in registers')
-        th {{ register.legoUser }}
-        th {{ register.email }}
-        th {{ register.user ? "Ikke Aktivert" : "Aktivert" }}
-        th 
-          button.btn.btn-default(
-            ng-disabled='!register.user',
-            ng-click='deleteRegister(register._id)'
-          ) Slett
