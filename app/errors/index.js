@@ -236,6 +236,17 @@ class MailError extends Error {
 
 exports.MailError = MailError;
 
+class NoAssociatedUserError extends Error {
+  constructor() {
+    super();
+    this.name = 'NoAssociatedUserError';
+    this.message = "Can't delete a register with no associated user";
+    this.status = 500;
+  }
+}
+
+exports.NoAssociatedUserError = NoAssociatedUserError;
+
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
