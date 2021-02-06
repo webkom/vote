@@ -75,6 +75,11 @@ module.exports = [
         controller: 'deactivateUsersController',
       })
 
+      .when('/moderator/manage_register', {
+        templateUrl: 'partials/moderator/manageRegister',
+        controller: 'manageRegisterController',
+      })
+
       .otherwise({
         templateUrl: 'partials/404',
       });
