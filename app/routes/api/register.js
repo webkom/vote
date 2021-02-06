@@ -4,6 +4,6 @@ const ensureModerator = require('../helpers').ensureModerator;
 
 router.route('/').get(ensureModerator, register.list);
 
-router.route('/:registerId').delete(register.delete);
+router.route('/:registerId').delete(ensureModerator, register.delete);
 
 module.exports = router;
