@@ -7,4 +7,5 @@ angular
   .factory('voteService', require('./voteService'))
   .service('adminElectionService', require('./adminElectionService'))
   .service('electionService', require('./electionService'))
-  .service('userService', require('./userService'));
+  .service('userService', require('./userService'))
+  .service('registerService', require('./registerService'));

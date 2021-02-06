@@ -19,4 +19,13 @@ const registerSchema = new Schema({
   },
 });
 
+// Delete the associated user when deleting a register entry
+registerSchema.pre('remove', function (next) {
+  mongoose
+    .model('User')
+    .findOne({ _id: this.user })
+    .then((user) => user.remove())
+    .nodeify(next);
+});
+
 module.exports = mongoose.model('Register', registerSchema);
