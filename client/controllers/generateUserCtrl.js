@@ -19,7 +19,7 @@ module.exports = [
           switch (response.status) {
             case 409:
               alertService.addError(
-                'Denne LEGO brukeren har allerede fått en bruker.'
+                'Denne idenfikatoren har allerede fått en bruker.'
               );
               break;
             default:

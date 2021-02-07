@@ -193,11 +193,11 @@ func runLegoToVoteSync(interrupt chan os.Signal, url *url.URL, jwt string) error
 				}
 
 				voteFormData := struct {
-					Email    string `json:"email"`
-					LegoUser string `json:"legoUser"`
+					Email      string `json:"email"`
+					Identifier string `json:"identifier"`
 				}{
-					Email:    legoUserData.Email,
-					LegoUser: action.Payload.User.Username,
+					Email:      legoUserData.Email,
+					Identifier: action.Payload.User.Username,
 				}
 
 				out, err := json.Marshal(voteFormData)

@@ -203,16 +203,16 @@ class DuplicateUsernameError extends Error {
 
 exports.DuplicateUsernameError = DuplicateUsernameError;
 
-class DuplicateLegoUserError extends Error {
+class DuplicateIdentifierError extends Error {
   constructor() {
     super();
-    this.name = 'DuplicateLegoUserError';
-    this.message = 'This LEGO user has allready gotten a user.';
+    this.name = 'DuplicateIdentifierError';
+    this.message = 'This identifier has allready gotten a user.';
     this.status = 409;
   }
 }
 
-exports.DuplicateLegoUserError = DuplicateLegoUserError;
+exports.DuplicateIdentifierError = DuplicateIdentifierError;
 
 class AlreadyActiveElectionError extends Error {
   constructor() {

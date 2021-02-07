@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const registerSchema = new Schema({
-  legoUser: {
+  identifier: {
     type: String,
     required: true,
     unique: true,
