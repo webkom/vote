@@ -45,16 +45,16 @@ exports.create = (req, res) => {
 };
 
 exports.generate = async (req, res) => {
-  const { legoUser, email, ignoreExistingUser } = req.body;
+  const { identifier, email, ignoreExistingUser } = req.body;
 
-  if (!legoUser) throw new errors.InvalidPayloadError('legoUser');
+  if (!identifier) throw new errors.InvalidPayloadError('identifier');
   if (!email) throw new errors.InvalidPayloadError('email');
 
   // Try to fetch an entry from the register with this username
-  const entry = await Register.findOne({ legoUser }).exec();
+  const entry = await Register.findOne({ identifier }).exec();
 
   if (entry && ignoreExistingUser) {
-    return res.status(409).json(legoUser);
+    return res.status(409).json(identifier);
   }
 
   // Entry has no user this user is allready activated
@@ -63,7 +63,7 @@ exports.generate = async (req, res) => {
       .then(() =>
         res.status(409).json({
           status: 'allready signed in',
-          user: legoUser,
+          user: identifier,
         })
       )
       .catch((err) => {
@@ -86,7 +86,7 @@ exports.generate = async (req, res) => {
         .then(() =>
           res.status(201).json({
             status: 'regenerated',
-            user: legoUser,
+            user: identifier,
           })
         )
         .catch((err) => {
@@ -109,9 +109,9 @@ exports.generate = async (req, res) => {
   return User.register(user, password)
     .then((createdUser) =>
       mailHandler('send', { email, username: createdUser.username, password })
-        .then(() => new Register({ legoUser, email, user }).save())
+        .then(() => new Register({ identifier, email, user }).save())
         .then(() =>
-          res.status(201).json({ status: 'generated', user: legoUser })
+          res.status(201).json({ status: 'generated', user: identifier })
         )
         .catch((err) => {
           throw new errors.MailError(err);

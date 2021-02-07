@@ -7,7 +7,7 @@
     | laget med "Registrer bruker" eller "QR" vil ikke vises under.
 .center(style='margin-top: 50px')
   hr
-  .usage-flex
+  .usage-flex(style='margin: 0')
     h4(style='text-align:right') Totalt {{ registers.length }} genererte brukere
     label Search:
       input(ng-model='searchText')
@@ -15,12 +15,12 @@
   table(style='width:100%; margin-top: 30px')
     thead(style='border-bottom:2px solid black')
       tr
-        th Brukernavn
+        th Identifikator
         th Email
         th(style='text-align:center') Fullført registrering
     tbody(style='font-size:18px')
       tr(ng-repeat='register in registers | filter:searchText')
-        th {{ register.legoUser }}
+        th {{ register.identifier }}
         th {{ register.email }}
         th(style='text-align:center') {{ register.user ? "Nei" : "Ja" }}
         th(style='text-align:right')

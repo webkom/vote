@@ -42,7 +42,7 @@ describe('User API', () => {
   };
 
   const genUserData = {
-    legoUser: 'legoUsername',
+    identifier: 'identifiername',
     email: 'test@user.com',
   };
 
@@ -376,7 +376,7 @@ describe('User API', () => {
       .expect(201)
       .expect('Content-Type', /json/);
     body.status.should.equal('generated');
-    body.user.should.equal(genUserData.legoUser);
+    body.user.should.equal(genUserData.identifier);
   });
 
   it('should be not be possible to generate a user for a user', async function () {
@@ -390,7 +390,7 @@ describe('User API', () => {
     error.status.should.equal(403);
   });
 
-  it('should get an error when generating user with no legoUser', async function () {
+  it('should get an error when generating user with no identifier', async function () {
     passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/user/generate')
@@ -399,14 +399,14 @@ describe('User API', () => {
       .expect('Content-Type', /json/);
     error.name.should.equal('InvalidPayloadError');
     error.status.should.equal(400);
-    error.message.should.equal('Missing property legoUser from payload.');
+    error.message.should.equal('Missing property identifier from payload.');
   });
 
   it('should get an error when generating user with no email', async function () {
     passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/user/generate')
-      .send({ legoUser: 'correct', password: 'wrong' })
+      .send({ identifier: 'correct', password: 'wrong' })
       .expect(400)
       .expect('Content-Type', /json/);
     error.name.should.equal('InvalidPayloadError');
@@ -422,11 +422,13 @@ describe('User API', () => {
       .expect(201)
       .expect('Content-Type', /json/);
     bodyOne.status.should.equal('generated');
-    bodyOne.user.should.equal(genUserData.legoUser);
+    bodyOne.user.should.equal(genUserData.identifier);
 
     // Check that the register index and the user was created
-    const register = await Register.findOne({ legoUser: genUserData.legoUser });
-    register.legoUser.should.equal(genUserData.legoUser);
+    const register = await Register.findOne({
+      identifier: genUserData.identifier,
+    });
+    register.identifier.should.equal(genUserData.identifier);
     register.email.should.equal(genUserData.email);
     const user = await User.findOne({ _id: register.user });
     should.exist(user);
@@ -439,7 +441,7 @@ describe('User API', () => {
       .expect(201)
       .expect('Content-Type', /json/);
     bodyTwo.status.should.equal('regenerated');
-    bodyTwo.user.should.equal(genUserData.legoUser);
+    bodyTwo.user.should.equal(genUserData.identifier);
   });
 
   it('should not be possible to generate the same user twice if they are active', async function () {
@@ -450,10 +452,12 @@ describe('User API', () => {
       .expect(201)
       .expect('Content-Type', /json/);
     bodyOne.status.should.equal('generated');
-    bodyOne.user.should.equal(genUserData.legoUser);
+    bodyOne.user.should.equal(genUserData.identifier);
 
     // Get the register and fake that they have logged in
-    const register = await Register.findOne({ legoUser: genUserData.legoUser });
+    const register = await Register.findOne({
+      identifier: genUserData.identifier,
+    });
     register.user = null;
     await register.save();
 

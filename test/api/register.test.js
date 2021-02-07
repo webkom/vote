@@ -19,7 +19,7 @@ describe('Register API', () => {
     passportStub.login(this.moderatorUser.username);
     await request(app)
       .post('/api/user/generate')
-      .send({ legoUser: 'username', email: 'email@domain.com' });
+      .send({ identifier: 'username', email: 'email@domain.com' });
   });
 
   after(() => {
@@ -34,7 +34,7 @@ describe('Register API', () => {
       .expect(200)
       .expect('Content-Type', /json/);
     body.length.should.equal(1);
-    body[0].legoUser.should.equal('username');
+    body[0].identifier.should.equal('username');
     body[0].email.should.equal('email@domain.com');
   });
 
