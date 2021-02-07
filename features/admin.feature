@@ -19,8 +19,10 @@ Feature: Admin
     And The election has votes
     And The election is deactivated
     And I am on the edit election page
-    When I click "Vis resultat"
+    When I click "Kalkuler resultat"
     Then I should see votes
+    And There should be 1 winner
+    And I should see "test alternative" as winner 1
 
   Scenario: Count votes for active elections
     Given There is an active election
