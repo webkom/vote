@@ -65,7 +65,7 @@ module.exports = [
   function ($window, $location, $rootScope, alertService) {
     $rootScope.$on('$routeChangeStart', function () {
       angular.element($window).unbind('message');
-      clearInterval($rootScope.serialInterval);
+      clearTimeout($rootScope.serialTimeout);
     });
 
     return {
@@ -74,64 +74,116 @@ module.exports = [
         angular.element($window).bind('message', function (e) {
           cb(e.data);
         });
-        // Open serial connections if they are not already open
-        if (!$rootScope.serialWriter || !$rootScope.serialReader) {
-          try {
-            const port = await $window.navigator.serial.requestPort({});
+        if ($window.location.href.includes('dummyReader')) {
+          $rootScope.dummyReader = true;
+          $window.scanCard = (cardKey) =>
+            $window.window.postMessage(cardKey, '*');
 
-            await port.open({ baudRate: 9600 });
-            $rootScope.serialWriter = port.writable.getWriter();
-            $rootScope.serialReader = port.readable.getReader();
+          $window.console.error(`VOTE DUMMY READER MODE
+
+You are now in dummy reader mode of VOTE. Use the global function "scanCard" to scan a card. The function takes the card UID as the first (and only) parameter, and the UID can be both a string or a number.
+
+Usage: scanCard(123) // where 123 is the cardId `);
+        }
+        // Open serial connections if they are not already open
+        if (
+          !$rootScope.serialDevice &&
+          !$rootScope.ndef &&
+          !$rootScope.dummyReader
+        ) {
+          try {
+            if (
+              $window.navigator.userAgent.includes('Android') &&
+              $window.NDEFReader &&
+              (!$window.navigator.serial ||
+                $window.confirm(
+                  'You are using an Android device that (might) support web nfc. Click OK to use web nfc, and cancel to fallback to using a usb serial device.'
+                ))
+            ) {
+              const ndef = new $window.NDEFReader();
+              await ndef.scan();
+              $rootScope.ndef = ndef;
+            } else {
+              const port = await $window.navigator.serial.requestPort({});
+              await port.open({ baudRate: 9600 });
+              $rootScope.serialDevice = {
+                writer: port.writable.getWriter(),
+                reader: port.readable.getReader(),
+              };
+            }
           } catch (e) {
             $rootScope.$apply(() => {
               $location.path('/moderator/serial_error');
             });
           }
         }
-        if (!$rootScope.serialWriter || !$rootScope.serialReader) {
-          return;
-        }
-
-        let lastTime = 0;
-        let lastData = 0;
-        const onComplete = (input) => {
-          const { valid, status, data } = parseData(input);
-          if (valid && status == 'OK') {
-            // Debounce
-            if (data !== lastData || Date.now() - lastTime > 2000) {
-              // data = card id
-              cb(data);
-              lastTime = Date.now();
-              lastData = data;
-            }
-          }
-        };
-
-        const readResult = async () => {
-          const message = [];
-          let finished = false;
-          // Keep reading bytes until the "end" byte is sent
-          // The "end" byte is 0xbb
-          while (!finished) {
-            const { value } = await $rootScope.serialReader.read();
-            for (let i = 0; i < value.length; i++) {
-              if (value[i] == 0xbb) {
-                finished = true;
-                break;
+        if ($rootScope.ndef) {
+          $rootScope.ndef.onreading = ({ message, serialNumber }) => {
+            const data = convertUID(serialNumber.split(':'));
+            cb(data);
+          };
+        } else if ($rootScope.serialDevice) {
+          let lastTime = 0;
+          let lastData = 0;
+          const onComplete = (input) => {
+            const { valid, status, data } = parseData(input);
+            if (valid && status == 'OK') {
+              // Debounce
+              if (data !== lastData || Date.now() - lastTime > 2000) {
+                // data = card id
+                cb(data);
+                lastTime = Date.now();
+                lastData = data;
               }
-              message.push(value[i]);
             }
-          }
-          onComplete(message);
-        };
+          };
+          const readResult = async () => {
+            const message = [];
+            let finished = false;
+            // Keep reading bytes until the "end" byte is sent
+            // The "end" byte is 0xbb
+            while (!finished) {
+              const { value } = await $rootScope.serialDevice.reader.read();
+              for (let i = 0; i < value.length; i++) {
+                // First byte in a message should be 170, otherwise ignore and keep on going
+                if (message.length === 0 && value[i] !== 170) {
+                  continue;
+                }
+                // Second byte in a message should be 255, otherwise discard and keep on going
+                if (message.length === 1 && value[i] !== 255) {
+                  // If value is 170, treat it as the first value, and keep on. Otherwise discard
+                  if (value[i] !== 170) {
+                    message.length = 0;
+                  }
+                  continue;
+                }
 
-        // Constantly send the readCardCommand and read the result.
-        // If there is no card, the result will be an error status,
-        // which is handled in the onComplete function
-        $rootScope.serialInterval = setInterval(() => {
-          $rootScope.serialWriter.write(readCardCommand);
-          readResult();
-        }, 500);
+                if (message.length > 3 && message.length >= message[2] + 4) {
+                  finished = true;
+                  break;
+                }
+                message.push(value[i]);
+              }
+            }
+            onComplete(message);
+          };
+
+          // Constantly send the readCardCommand and read the result.
+          // If there is no card, the result will be an error status,
+          // which is handled in the onComplete function
+          const runPoll = async () => {
+            try {
+              $rootScope.serialDevice.writer.write(readCardCommand);
+              await readResult();
+            } catch (e) {
+              /* eslint no-console: 0 */
+              console.error('Error doing card stuff', e);
+            } finally {
+              $rootScope.serialTimeout = setTimeout(runPoll, 150);
+            }
+          };
+          runPoll();
+        }
       },
     };
   },
