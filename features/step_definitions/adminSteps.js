@@ -26,7 +26,9 @@ module.exports = function () {
     const election = alternatives.first();
 
     Bluebird.all([
-      expect(election.getText()).to.eventually.equal(this.election.title),
+      expect(election.element(by.css('span')).getText()).to.eventually.equal(
+        this.election.title
+      ),
       expect(alternatives.count()).to.eventually.equal(1),
     ]);
   });
@@ -65,22 +67,48 @@ module.exports = function () {
       })
   );
 
-  this.Given(/^The election has votes$/, function () {
-    this.alternative.addVote(this.user);
+  this.Given(/^The election has votes$/, async function () {
+    await this.election.addVote(this.user, [this.alternatives[0]]);
   });
 
   this.Given(/^I am on the edit election page$/, function () {
     browser.get(`/admin/election/${this.election.id}/edit`);
   });
 
-  this.Then(/^I should see votes$/, () => {
+  this.Then(/^I should see votes$/, function () {
     const alternatives = element.all(
-      by.repeater('alternative in election.alternatives')
+      by.repeater('(key, value) in elem.counts')
     );
     const alternative = alternatives.first();
-    const span = alternative.element(by.tagName('span'));
 
-    return expect(span.getText()).to.eventually.equal('1 - 100 %');
+    return Bluebird.all([
+      expect(alternative.getText()).to.eventually.equal(
+        `${this.alternatives[0].description} with 1 votes`
+      ),
+      expect(alternatives.get(1).getText()).to.eventually.equal(
+        `${this.alternatives[1].description} with 0 votes`
+      ),
+      expect(alternatives.get(2).getText()).to.eventually.equal(
+        `${this.alternatives[2].description} with 0 votes`
+      ),
+    ]);
+  });
+
+  this.Then(/^There should be (\d+) winners?$/, (count) => {
+    const winners = element.all(
+      by.repeater('winner in election.result.winners')
+    );
+    return expect(winners.count()).to.eventually.equal(Number(count));
+  });
+
+  this.Then(/^I should see "([^"]*)" as winner (\d+)$/, (winner, number) => {
+    const winners = element.all(
+      by.repeater('winner in election.result.winners')
+    );
+
+    return expect(
+      winners.get(Number(number) - 1).getText()
+    ).to.eventually.equal(`Vinner ${number}: ${winner}`);
   });
 
   this.When(/^I enter a new alternative "([^"]*)"$/, (alternative) => {

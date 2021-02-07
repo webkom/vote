@@ -86,11 +86,11 @@
                 span.cs-tooltiptext Antall stemmer
               span /
               span.cs-tooltip {{ election.seats + 1 }}
-                span.cs-tooltiptext Antall stemmer + 1
+                span.cs-tooltiptext Antall plasser + 1
               span ⌋ + 1 = {{ election.thr }}
       h2 Logg
       ul.list-unstyled.log.mono
-        li(ng-repeat='elem in election.log')(ng-switch='elem.action')
+        li(ng-repeat='elem in election.log', ng-switch='elem.action')
           div(ng-switch-when='ITERATION')
             h5 {{ elem.action }} {{ elem.iteration }}
             p(ng-repeat='(key, value) in elem.counts') {{ key }} with {{ value }} votes
