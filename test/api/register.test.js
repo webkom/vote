@@ -89,4 +89,20 @@ describe('Register API', () => {
     error.name.should.equal('NotFoundError');
     error.message.should.equal("Couldn't find register.");
   });
+
+  it('should not be possible for a moderator to delete a register with no user', async function () {
+    const entry = await Register.findOne({});
+    entry.user = null;
+    await entry.save();
+
+    passportStub.login(this.moderatorUser.username);
+    const { body: error } = await request(app)
+      .delete(`/api/register/${entry._id}`)
+      .expect(400);
+    error.status.should.equal(400);
+    error.name.should.equal('NoAssociatedUserError');
+    error.message.should.equal(
+      "Can't delete a register with no associated user"
+    );
+  });
 });
