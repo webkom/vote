@@ -27,7 +27,7 @@ describe('Register API', () => {
     passportStub.uninstall();
   });
 
-  it('should be possible for a moderator to a list of registers', async function () {
+  it('should be possible for a moderator to get a list of registers', async function () {
     passportStub.login(this.moderatorUser.username);
     const { body } = await request(app)
       .get('/api/register')
