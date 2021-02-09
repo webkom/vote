@@ -1,0 +1,31 @@
+.row
+  .col-xs-12.col-sm-offset-3.col-sm-6.col-md-offset-4.col-md-4.text-center
+    h3 Genererte brukere
+    p Tabellen under viser en oversikt over alle genererte brukere.
+    | Brukere havner kun i denne oversikten hvis de er opprettet med
+    | "Generer bruker" fanen, eller direkte fra API'et. Brukere
+    | laget med "Registrer bruker" eller "QR" vil ikke vises under.
+.center(style='margin-top: 50px')
+  hr
+  .usage-flex(style='margin: 0')
+    h4(style='text-align:right') Totalt {{ registers.length }} genererte brukere
+    label Search:
+      input(ng-model='searchText')
+
+  table(style='width:100%; margin-top: 30px')
+    thead(style='border-bottom:2px solid black')
+      tr
+        th Identifikator
+        th Email
+        th(style='text-align:center') Fullført registrering
+    tbody(style='font-size:18px')
+      tr(ng-repeat='register in registers | filter:searchText')
+        th {{ register.identifier }}
+        th {{ register.email }}
+        th(style='text-align:center') {{ register.user ? "Nei" : "Ja" }}
+        th(style='text-align:right')
+          button.btn.btn-default(
+            ng-disabled='!register.user',
+            ng-click='deleteRegister(register._id)',
+            style='margin: 10px 0'
+          ) Slett

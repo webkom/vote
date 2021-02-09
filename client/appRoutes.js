@@ -31,6 +31,11 @@ module.exports = [
         controller: 'createUserController',
       })
 
+      .when('/moderator/generate_user', {
+        templateUrl: 'partials/moderator/generateUser',
+        controller: 'generateUserController',
+      })
+
       .when('/moderator/qr', {
         templateUrl: 'partials/moderator/qr',
         controller: 'createQRController',
@@ -68,6 +73,11 @@ module.exports = [
       .when('/moderator/deactivate_users', {
         templateUrl: 'partials/moderator/deactivateUsers',
         controller: 'deactivateUsersController',
+      })
+
+      .when('/moderator/manage_register', {
+        templateUrl: 'partials/moderator/manageRegister',
+        controller: 'manageRegisterController',
       })
 
       .otherwise({

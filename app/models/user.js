@@ -38,8 +38,7 @@ const userSchema = new Schema({
 });
 
 userSchema.pre('save', function (next) {
-  // Usernames are case-insensitive, so store them
-  // in lowercase:
+  // Usernames are case-insensitive, so store them in lowercase:
   this.username = this.username.toLowerCase();
   next();
 });

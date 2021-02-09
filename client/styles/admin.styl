@@ -10,6 +10,10 @@ form
             cursor pointer
             color $abakus-dark
 
+    input[type='checkbox']
+        transform scale(1.5)
+        margin-left 10px
+
 .user-status
     color $abakus-light
 
@@ -52,6 +56,19 @@ form
         cursor pointer
         color $abakus-dark
 
+span.access-code
+    font-weight 800
+    font-size 30px
+    padding-left 15px
+
+.copy-icon
+    font-size initial
+    vertical-align middle
+    cursor pointer
+
+    &:hover
+        color $abakus-light
+
 .alternatives.admin
     padding-top 10px
     margin-bottom 0
@@ -63,6 +80,7 @@ form
         &:hover
             cursor default
             background-color alpha($alternative-background, 0.15)
+            box-shadow none
 
         span
             position absolute
@@ -91,6 +109,10 @@ form.add-alternative
 @media (max-width 1000px)
     .toggle-show
         margin-left 0
+
+.large
+    font-size 25px
+    text-align center
 
 .big
   font-size 50px
@@ -124,3 +146,18 @@ form.add-alternative
     animation-duration: 4s
     animation-iteration-count: infinite
     animation-direction: alternate
+
+.log
+  li
+      margin-bottom 10px
+      border-radius 2px
+      border 1px solid transparent
+      background-color alpha(#000080, 0.15)
+    p
+      margin 0
+      font-size 16px
+      line-height 20px
+    h5
+      margin 5px
+      text-decoration underline
+      font-weight 1000

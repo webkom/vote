@@ -9,6 +9,10 @@ module.exports = [
       return $http.post('/api/user', user);
     };
 
+    this.generateUser = function (user) {
+      return $http.post('/api/user/generate', user);
+    };
+
     this.changeCard = function (user) {
       return $http.put('/api/user/' + user.username + '/change_card', user);
     };

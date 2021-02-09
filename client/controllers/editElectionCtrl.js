@@ -15,7 +15,7 @@ module.exports = [
   ) {
     $scope.newAlternative = {};
     $scope.election = null;
-    $scope.showCount = false;
+    $scope.showResult = false;
     var countInterval;
 
     function handleIntervalError(response) {
@@ -64,7 +64,14 @@ module.exports = [
       );
     };
 
+    function clearResults() {
+      $scope.showResult = false;
+      $scope.election.result = {};
+      $scope.election.log = [];
+    }
+
     $scope.toggleElection = function () {
+      clearResults();
       if ($scope.election.active) {
         adminElectionService.deactivateElection().then(
           function (response) {
@@ -88,21 +95,6 @@ module.exports = [
       }
     };
 
-    function getCount() {
-      adminElectionService.countVotes().then(function (response) {
-        $scope.election.alternatives.forEach(function (alternative) {
-          response.data.some(function (resultAlternative) {
-            if (resultAlternative.alternative === alternative._id) {
-              alternative.votes = resultAlternative.votes;
-              return true;
-            }
-
-            return false;
-          });
-        });
-      }, handleIntervalError);
-    }
-
     $scope.getPercentage = function (count) {
       if (count !== undefined) {
         var sum = 0;
@@ -114,10 +106,19 @@ module.exports = [
       }
     };
 
-    $scope.toggleCount = function () {
-      $scope.showCount = !$scope.showCount;
-      if ($scope.showCount) {
-        getCount();
+    $scope.toggleResult = function () {
+      $scope.showResult = !$scope.showResult;
+      if ($scope.showResult) {
+        adminElectionService.elect().then(function (response) {
+          $scope.election = {
+            ...$scope.election,
+            ...response.data,
+            status:
+              response.data.result.status == 'RESOLVED' ? 'success' : 'warning',
+          };
+        });
+      } else {
+        clearResults();
       }
     };
 
@@ -137,6 +138,22 @@ module.exports = [
       $location
         .path('/admin/create_election')
         .search({ election: JSON.stringify(election) });
+    };
+
+    $scope.copyToClipboard = function (text) {
+      const copyEl = document.createElement('textarea');
+      copyEl.style.opacity = '0';
+      copyEl.style.position = 'fixed';
+      copyEl.textContent = text;
+      document.body.appendChild(copyEl);
+      copyEl.select();
+      try {
+        document.execCommand('copy');
+        $scope.copySuccess = true;
+        setTimeout(() => ($scope.copySuccess = null), 1000);
+      } finally {
+        document.body.removeChild(copyEl);
+      }
     };
   },
 ];

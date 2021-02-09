@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 const User = require('../models/user');
+const Register = require('../models/register');
 const errors = require('../errors');
 const errorChecks = require('../errors/error-checks');
+
+const crypto = require('crypto');
+const { mailHandler } = require('../digital/mail');
+const short = require('short-uuid');
 
 exports.count = async (req, res) => {
   const query = { admin: false, moderator: false };
@@ -35,6 +40,95 @@ exports.create = (req, res) => {
       throw new errors.DuplicateUsernameError();
     })
     .catch(errorChecks.BadRequestError, (err) => {
+      throw new errors.InvalidRegistrationError(err.message);
+    });
+};
+
+exports.generate = async (req, res) => {
+  const { identifier, email, ignoreExistingUser } = req.body;
+
+  if (!identifier) throw new errors.InvalidPayloadError('identifier');
+  if (!email) throw new errors.InvalidPayloadError('email');
+
+  // Try to fetch an entry from the register with this username
+  const entry = await Register.findOne({ identifier }).exec();
+
+  if (entry && ignoreExistingUser) {
+    return res.status(409).json(identifier);
+  }
+
+  // Entry has no user this user is allready activated
+  if (entry && !entry.user) {
+    return mailHandler('reject', { email })
+      .then(() =>
+        res.status(409).json({
+          status: 'allready signed in',
+          user: identifier,
+        })
+      )
+      .catch((err) => {
+        throw new errors.MailError(err);
+      });
+  }
+
+  const password = crypto.randomBytes(11).toString('hex');
+
+  // Entry has a user but has not activated
+  if (entry && entry.user) {
+    const fetchedUser = await User.findByIdAndUpdate({ _id: entry.user });
+    // Use the register function to "re-register" the user with a new password
+    return User.register(fetchedUser, password).then((updatedUser) =>
+      mailHandler('resend', { email, username: updatedUser.username, password })
+        .then(() => {
+          entry.email = email;
+          return entry.save();
+        })
+        .then(() =>
+          res.status(201).json({
+            status: 'regenerated',
+            user: identifier,
+          })
+        )
+        .catch((err) => {
+          throw new errors.MailError(err);
+        })
+    );
+  }
+
+  // The user does not exist, so we generate as usual
+  const username = short.generate();
+  const cardKey = short.generate();
+  const userObject = {
+    username,
+    password,
+    cardKey,
+    active: false,
+  };
+
+  const user = new User(userObject);
+  return User.register(user, password)
+    .then((createdUser) =>
+      mailHandler('send', { email, username: createdUser.username, password })
+        .then(() => new Register({ identifier, email, user }).save())
+        .then(() =>
+          res.status(201).json({ status: 'generated', user: identifier })
+        )
+        .catch((err) => {
+          throw new errors.MailError(err);
+        })
+    )
+    .catch(mongoose.Error.ValidationError, (err) => {
+      throw new errors.ValidationError(err.errors);
+    })
+    .catch(errorChecks.DuplicateError, (err) => {
+      if (err.message.includes('cardKey')) {
+        throw new errors.DuplicateCardError();
+      }
+
+      throw new errors.DuplicateUsernameError();
+    })
+    .catch(errorChecks.BadRequestError, (err) => {
+      // Comment to make git diff not be dumb
       throw new errors.InvalidRegistrationError(err.message);
     });
 };

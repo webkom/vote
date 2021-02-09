@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css?family=Raleway:300,200,100')
+@import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
 $font-gray = #666c77
 $alternative-background = darken($font-gray, 20%)
@@ -99,6 +100,10 @@ hr
     margin 0 auto
     font-size 21px
 
+.mono
+  font-family 'Cutive Mono', monospace
+  font-size 16px
+
 label
     font-weight 300
     font-size 20px
@@ -142,6 +147,12 @@ label
         input
           width 100%
 
+    .header
+        padding-top 0
+
+    footer
+        padding-top 20px
+
 .usage-flex
   display flex
   justify-content space-between
@@ -149,6 +160,48 @@ label
 
   a
     align-self flex-end
+
+.th-right
+  text-align right
+  width 50%
+
+.th-left
+  text-align left
+  width 50%
+
+
+.cs-tooltip
+    position relative
+    display inline-block
+    border-bottom 1px dotted black
+
+    .cs-tooltiptext
+        visibility hidden
+        width 120px
+        bottom 130%
+        left 50%
+        margin-left -60px
+        background-color black
+        color #fff
+        text-align center
+        padding 5px 0
+        border-radius 6px
+        position absolute
+        z-index 1
+
+        &::after
+              content " "
+              position absolute
+              top 100%
+              left 50%
+              margin-left -5px
+              border-width 5px
+              border-style solid
+              border-color black transparent transparent transparent
+
+    &:hover
+        .cs-tooltiptext
+            visibility visible
 
 
 @import 'election'

@@ -3,6 +3,7 @@ angular
   .controller('changeCardController', require('./changeCardCtrl'))
   .controller('createElectionController', require('./createElectionCtrl'))
   .controller('createUserController', require('./createUserCtrl'))
+  .controller('generateUserController', require('./generateUserCtrl'))
   .controller('createQRController', require('./createQRCtrl'))
   .controller('deactivateUsersController', require('./deactivateUsersCtrl'))
   .controller('editElectionController', require('./editElectionCtrl'))
@@ -11,4 +12,5 @@ angular
   .controller('logoutController', require('./logoutCtrl'))
   .controller('retrieveVoteController', require('./retrieveVoteCtrl'))
   .controller('showQRController', require('./showQRCtrl'))
-  .controller('toggleUserController', require('./toggleUserCtrl'));
+  .controller('toggleUserController', require('./toggleUserCtrl'))
+  .controller('manageRegisterController', require('./manageRegisterCtrl'));

@@ -26,6 +26,7 @@ mongoose.connect(app.get('mongourl'), {
   useCreateIndex: true,
   useUnifiedTopology: true,
   useNewUrlParser: true,
+  useFindAndModify: true,
 });
 
 raven.config(env.RAVEN_DSN).install();
@@ -66,10 +67,10 @@ app.use(
     resave: false,
   })
 );
-const { LOGO_SRC, NODE_ENV } = env;
+const { ICON_SRC, NODE_ENV } = env;
 app.locals = Object.assign({}, app.locals, {
   NODE_ENV,
-  LOGO_SRC,
+  ICON_SRC,
 });
 
 /* istanbul ignore if */

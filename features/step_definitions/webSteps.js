@@ -59,6 +59,11 @@ module.exports = function () {
     button.click();
   });
 
+  this.When(/^I click anchor "([^"]*)"$/, (classname) => {
+    const anchor = element(by.className(classname));
+    anchor.click();
+  });
+
   this.Then(/^I should find "([^"]*)"$/, (selector) =>
     expect(element(by.css(selector)).isPresent()).to.eventually.equal(true)
   );
@@ -80,7 +85,7 @@ module.exports = function () {
   });
 
   this.Then(/^I see "([^"]*)" in "([^"]*)"$/, (value, className) => {
-    const field = element(by.className(className));
+    const field = element(by.css(className));
     expect(field.getText()).to.eventually.equal(value);
   });
 
@@ -88,4 +93,12 @@ module.exports = function () {
     const found = element.all(by.css(css));
     expect(found.count()).to.eventually.equal(Number(count));
   });
+
+  this.Then(
+    /^Button "([^"]*)" should( not)? be disabled$/,
+    (buttonText, not) => {
+      const button = element(by.buttonText(buttonText));
+      expect(button.isEnabled()).to.eventually.equal(!!not);
+    }
+  );
 };

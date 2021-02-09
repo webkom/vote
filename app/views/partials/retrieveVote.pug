@@ -20,7 +20,13 @@
     ) Hent avstemning
 
   .text-center.vote-result-feedback(ng-if='vote')
-    h3 Avstemning
-    p.vote-result-election {{ vote.alternative.election.title }}
-    h3 Valgt alternativ
-    p.vote-result-alternative {{ vote.alternative.description }}
+    h3 Din prioritering på: {{ vote.election.title }}
+    .confirmVotes(ng-switch='vote.priorities.length === 0')
+      .ballot
+        div(ng-switch-when='true')
+          h3 Blank stemme
+          i Din stemme vil fortsatt påvirke hvor mange stemmer som kreves for å vinne
+        div(ng-switch-when='false')
+          ol
+            li.confirm-pri(ng-repeat='alternative in vote.priorities')
+              p {{ alternative.description }}

@@ -1,4 +1,4 @@
-FROM node:13
+FROM node:14-slim
 MAINTAINER Abakus Webkom <webkom@abakus.no>
 
 # Create app directory

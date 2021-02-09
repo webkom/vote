@@ -35,11 +35,12 @@ describe('Vote API', () => {
     description: 'inactive election alt',
   };
 
-  function votePayload(alternativeId) {
+  const votePayload = (inputElection, inputPriorities) => {
     return {
-      alternativeId: alternativeId,
+      election: inputElection,
+      priorities: inputPriorities,
     };
-  }
+  };
 
   before(() => {
     passportStub.install(app);
@@ -56,13 +57,15 @@ describe('Vote API', () => {
 
     activeData.election = this.activeElection;
     inactiveData.election = this.inactiveElection;
+
     this.activeAlternative = new Alternative(activeData);
     this.otherActiveAlternative = new Alternative(otherActiveData);
-    this.inactiveAlternative = new Alternative(inactiveData);
-
     await this.activeElection.addAlternative(this.activeAlternative);
-    await this.inactiveElection.addAlternative(this.inactiveAlternative);
     await this.activeElection.addAlternative(this.otherActiveAlternative);
+
+    this.inactiveAlternative = new Alternative(inactiveData);
+    await this.inactiveElection.addAlternative(this.inactiveAlternative);
+
     const [user, adminUser, moderatorUser] = await createUsers();
     this.user = user;
     this.adminUser = adminUser;
@@ -75,72 +78,181 @@ describe('Vote API', () => {
     passportStub.uninstall();
   });
 
-  it('should not be possible to vote with an invalid ObjectId as alternativeId', async () => {
+  it('should not be possible to vote without election', async () => {
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload('bad alternative'))
-      .expect(404)
-      .expect('Content-Type', /json/);
-    error.status.should.equal(404);
-    error.message.should.equal("Couldn't find alternative.");
-  });
-
-  it('should not be possible to vote with a nonexistent alternativeId', async () => {
-    const { body: error } = await request(app)
-      .post('/api/vote')
-      .send(votePayload(new ObjectId()))
-      .expect(404)
-      .expect('Content-Type', /json/);
-    error.status.should.equal(404);
-    error.message.should.equal("Couldn't find alternative.");
-  });
-
-  it('should not be possible to vote without an alternativeId in the payload', async () => {
-    const { body: error } = await request(app)
-      .post('/api/vote')
+      .send({ priorities: [] })
       .expect(400)
       .expect('Content-Type', /json/);
-
     error.status.should.equal(400);
-    error.message.should.equal('Missing property alternativeId from payload.');
+    error.message.should.equal('Missing property election from payload.');
   });
 
-  it('should be able to vote on alternative', async function () {
+  it('should not be possible to vote with election that is an array', async () => {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload([], []))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property election from payload.');
+  });
+
+  it('should not be possible to vote with election that is an string', async () => {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload('string', []))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property election from payload.');
+  });
+
+  it('should not be possible to vote without priorities', async () => {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send({ election: {} })
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property priorities from payload.');
+  });
+
+  it('should not be possible to vote with priorities that is not a list', async () => {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload({}, ''))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal('Missing property priorities from payload.');
+  });
+
+  it('should not be possible to vote on a nonexistent election', async () => {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload({ _id: new ObjectId() }, []))
+      .expect(404)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(404);
+    error.message.should.equal(`Couldn't find election.`);
+  });
+
+  it('should not be possible to vote with to many priorities', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(
+        votePayload(this.activeElection, [
+          this.activeAlternative,
+          this.otherActiveAlternative,
+          this.inactiveAlternative,
+        ])
+      )
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'Priorities is of length 3, election has 2 alternatives.'
+    );
+  });
+
+  it('should not be possible to vote with priorities not listed in election', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(
+        votePayload(this.activeElection, [
+          this.activeAlternative,
+          this.inactiveAlternative,
+        ])
+      )
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'One or more alternatives does not exist on election.'
+    );
+  });
+
+  it('should not be possible to vote with priorities that are not alternatives', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeElection, ['String', {}]))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'One or more alternatives does not exist on election.'
+    );
+  });
+
+  it('should be able to vote on active election with an empty priority list', async function () {
     const { body: vote } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeAlternative.id))
+      .send(votePayload(this.activeElection, []))
+      .expect(201)
       .expect('Content-Type', /json/);
 
     should.exist(vote.hash);
-    vote.alternative.description.should.equal(
-      this.activeAlternative.description
-    );
+    vote.priorities.length.should.equal(0);
 
-    const votes = await Vote.find({ alternative: this.activeAlternative.id });
+    const votes = await Vote.find({ hash: vote.hash });
+    votes.length.should.equal(1);
+  });
+
+  it('should be able to vote on active election with a priority list shorter then the election', async function () {
+    const { body: vote } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeElection, [this.activeAlternative]))
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    should.exist(vote.hash);
+    vote.priorities.length.should.equal(1);
+    vote.priorities[0].should.equal(this.activeAlternative.id);
+
+    const votes = await Vote.find({ hash: vote.hash });
+    votes.length.should.equal(1);
+  });
+
+  it('should be able to vote on active election with a full priority list', async function () {
+    const { body: vote } = await request(app)
+      .post('/api/vote')
+      .send(
+        votePayload(this.activeElection, [
+          this.activeAlternative,
+          this.otherActiveAlternative,
+        ])
+      )
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    should.exist(vote.hash);
+    vote.priorities.length.should.equal(2);
+    vote.priorities[0].should.equal(this.activeAlternative.id);
+    vote.priorities[1].should.equal(this.otherActiveAlternative.id);
+
+    const votes = await Vote.find({ hash: vote.hash });
     votes.length.should.equal(1);
   });
 
   it('should be able to vote only once', async function () {
-    await this.activeAlternative.addVote(this.user);
+    await this.activeElection.addVote(this.user, [this.activeAlternative]);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.otherActiveAlternative.id))
+      .send(votePayload(this.activeElection, [this.otherActiveAlternative]))
       .expect(400)
       .expect('Content-Type', /json/);
 
     error.name.should.equal('AlreadyVotedError');
     error.message.should.equal('You can only vote once per election.');
     error.status.should.equal(400);
-
-    const votes = await Vote.find({ alternative: this.activeAlternative.id });
-    votes.length.should.equal(1);
   });
 
   it('should not be vulnerable to race conditions', async function () {
     const create = () =>
       request(app)
         .post('/api/vote')
-        .send(votePayload(this.activeAlternative.id));
+        .send(votePayload(this.activeElection, [this.activeAlternative]));
     await Promise.all([
       create(),
       create(),
@@ -153,7 +265,7 @@ describe('Vote API', () => {
       create(),
       create(),
     ]);
-    const votes = await Vote.find({ alternative: this.activeAlternative.id });
+    const votes = await Vote.find({ election: this.activeElection._id });
     votes.length.should.equal(1);
   });
 
@@ -161,7 +273,7 @@ describe('Vote API', () => {
     passportStub.logout();
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeAlternative.id))
+      .send(votePayload(this.activeElection, [this.activeAlternative]))
       .expect(401)
       .expect('Content-Type', /json/);
     error.status.should.equal(401);
@@ -175,7 +287,7 @@ describe('Vote API', () => {
     await this.user.save();
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeAlternative.id))
+      .send(votePayload(this.activeElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
     error.message.should.equal(
@@ -190,7 +302,7 @@ describe('Vote API', () => {
   it('should not be able to vote on a deactivated election', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.inactiveAlternative.id))
+      .send(votePayload(this.inactiveElection, []))
       .expect(400)
       .expect('Content-Type', /json/);
     error.name.should.equal('InactiveElectionError');
@@ -201,20 +313,33 @@ describe('Vote API', () => {
     votes.length.should.equal(0, 'no vote should be added');
   });
 
-  it('should be possible to retrieve a vote', async function () {
-    const vote = await this.activeAlternative.addVote(this.user);
+  it('should be possible to retrieve a vote with hash', async function () {
+    const vote = await this.activeElection.addVote(this.user, []);
     const { body: receivedVote } = await request(app)
       .get('/api/vote')
       .set('Vote-Hash', vote.hash)
       .expect(200)
       .expect('Content-Type', /json/);
-
     receivedVote.hash.should.equal(vote.hash);
-    receivedVote.alternative._id.should.equal(String(vote.alternative));
-    receivedVote.alternative.election.should.deep.equal({
-      _id: String(this.activeElection.id),
-      title: this.activeElection.title,
-    });
+  });
+
+  it('should be possible to retrieve a vote with correct election', async function () {
+    const vote = await this.activeElection.addVote(this.user, [
+      this.activeAlternative,
+      this.otherActiveAlternative,
+    ]);
+    const { body: receivedVote } = await request(app)
+      .get('/api/vote')
+      .set('Vote-Hash', vote.hash)
+      .expect(200)
+      .expect('Content-Type', /json/);
+    receivedVote.election._id.should.equal(String(this.activeElection.id));
+    receivedVote.election.title.should.equal(String(this.activeElection.title));
+    receivedVote.priorities.length.should.equal(2);
+    receivedVote.priorities[0].description.should.equal(activeData.description);
+    receivedVote.priorities[1].description.should.equal(
+      otherActiveData.description
+    );
   });
 
   it('should return 400 when retrieving votes without header', async () => {
@@ -230,14 +355,18 @@ describe('Vote API', () => {
   it('should be possible to sum votes', async function () {
     passportStub.login(this.adminUser.username);
 
-    await this.otherActiveAlternative.addVote(this.user);
+    await this.activeElection.addVote(this.user, [
+      this.activeAlternative,
+      this.otherActiveAlternative,
+    ]);
+    this.activeElection.active = false;
+    await this.activeElection.save();
     const { body } = await request(app)
-      .get(`/api/election/${this.inactiveElection.id}/votes`)
+      .get(`/api/election/${this.activeElection.id}/votes`)
       .expect(200)
       .expect('Content-Type', /json/);
 
-    body.length.should.equal(1);
-    body[0].votes.should.equal(0);
+    body.result.status.should.equal('RESOLVED');
   });
 
   it('should not be possible to get votes on an active election', async function () {
@@ -281,7 +410,7 @@ describe('Vote API', () => {
     passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeAlternative.id))
+      .send(votePayload(this.activeElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
 
@@ -294,7 +423,7 @@ describe('Vote API', () => {
     passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeAlternative.id))
+      .send(votePayload(this.activeElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
 

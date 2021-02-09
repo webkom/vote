@@ -64,6 +64,39 @@ class InvalidPayloadError extends Error {
 
 exports.InvalidPayloadError = InvalidPayloadError;
 
+class AccessCodeError extends Error {
+  constructor() {
+    super();
+    this.name = 'AccessCodeError';
+    this.message = 'Incorrect accesscode supplied';
+    this.status = 403;
+  }
+}
+
+exports.AccessCodeError = AccessCodeError;
+
+class InvalidPriorityError extends Error {
+  constructor() {
+    super();
+    this.name = 'InvalidPriorityError';
+    this.message = `One or more alternatives does not exist on election.`;
+    this.status = 400;
+  }
+}
+
+exports.InvalidPriorityError = InvalidPriorityError;
+
+class InvalidPrioritiesLengthError extends Error {
+  constructor(priorities, election) {
+    super();
+    this.name = 'InvalidPrioritiesLengthError';
+    this.message = `Priorities is of length ${priorities.length}, election has ${election.alternatives.length} alternatives.`;
+    this.status = 400;
+  }
+}
+
+exports.InvalidPrioritiesLengthError = InvalidPrioritiesLengthError;
+
 class MissingHeaderError extends Error {
   constructor(header) {
     super();
@@ -169,6 +202,50 @@ class DuplicateUsernameError extends Error {
 }
 
 exports.DuplicateUsernameError = DuplicateUsernameError;
+
+class DuplicateIdentifierError extends Error {
+  constructor() {
+    super();
+    this.name = 'DuplicateIdentifierError';
+    this.message = 'This identifier has allready gotten a user.';
+    this.status = 409;
+  }
+}
+
+exports.DuplicateIdentifierError = DuplicateIdentifierError;
+
+class AlreadyActiveElectionError extends Error {
+  constructor() {
+    super();
+    this.name = 'AlreadyActiveElection';
+    this.message = 'There is already an active election';
+    this.status = 409;
+  }
+}
+
+exports.AlreadyActiveElectionError = AlreadyActiveElectionError;
+
+class MailError extends Error {
+  constructor(err) {
+    super();
+    this.name = 'MailError';
+    this.message = `Something went wrong with the email. Err: ${err}`;
+    this.status = 500;
+  }
+}
+
+exports.MailError = MailError;
+
+class NoAssociatedUserError extends Error {
+  constructor() {
+    super();
+    this.name = 'NoAssociatedUserError';
+    this.message = "Can't delete a register with no associated user";
+    this.status = 400;
+  }
+}
+
+exports.NoAssociatedUserError = NoAssociatedUserError;
 
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
