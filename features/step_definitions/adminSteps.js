@@ -129,7 +129,7 @@ module.exports = function () {
   });
 
   this.Then(/^I should see ([\d]+) in "([^"]*)"$/, (count, binding) => {
-    const countElement = element(by.binding(binding));
+    const countElement = element.all(by.binding(binding)).first();
     return expect(countElement.getText()).to.eventually.equal(String(count));
   });
 };
