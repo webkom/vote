@@ -72,13 +72,16 @@
         tbody
           tr
             th.th-left Stemmer
-            th.th-right = {{ election.voteCount }}
+            th.th-right =
+              span(ng-bind='election.voteCount') {{ election.voteCount }}
           tr
             th.th-left ∟ Hvorav blanke stemmer
-            th.th-right = {{ election.blankVoteCount }}
+            th.th-right =
+              span(ng-bind='election.blankVoteCount') {{ election.blankVoteCount }}
           tr
             th.th-left Plasser
-            th.th-right = {{ election.seats }}
+            th.th-right =
+              span(ng-bind='election.seats') {{ election.seats }}
           tr
             th.th-left Terskel
             th.th-right ⌊
