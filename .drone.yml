@@ -92,7 +92,7 @@ steps:
     image: plugins/docker
     when:
       branch:
-        - prod
+        - build
       event: push
       status: success
     depends_on:
@@ -107,10 +107,10 @@ steps:
       password:
         from_secret: docker_password
       tags:
-        - ${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+        - version-${DRONE_COMMIT_SHA:0:7}
         - latest
       build_args:
-        - RELEASE=${DRONE_BRANCH}-${DRONE_COMMIT_SHA:0:7}
+        - RELEASE=version-${DRONE_COMMIT_SHA:0:7}
 
 services:
   - name: mongodb

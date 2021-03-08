@@ -3,6 +3,8 @@ module.exports = {
   ICON_SRC: process.env.ICON_SRC || '/static/images/Abakule.jpg',
   // Node environment. 'development' or 'production'
   NODE_ENV: process.env.NODE_ENV || 'development',
+  // Vote release version
+  RELEASE: process.env.RELEASE || 'latest',
   // This cannot be empty when running in production
   COOKIE_SECRET: process.env.COOKIE_SECRET,
   PORT: process.env.PORT || 3000,
