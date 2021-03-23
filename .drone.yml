@@ -118,3 +118,7 @@ services:
 
   - name: redis
     image: redis:6.0
+
+---
+kind: signature
+hmac: 7b739c5ad6e81bd59b8b64fa5484095cc4dec4b030acd7a62263abd6f8b63b25
