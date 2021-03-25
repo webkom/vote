@@ -13,6 +13,9 @@ COPY . /app
 # Build image
 RUN yarn --production
 
+ARG RELEASE
+ENV RELEASE ${RELEASE}
 ENV NODE_ENV production
 ENV HOST 0.0.0.0
+
 ENTRYPOINT ["yarn", "start"]

@@ -53,6 +53,13 @@ html(ng-app='voteApp')
           |
           | | Se#{' '}
           a(href='/usage', tabindex='-1', target='_blank') bruk
+          |
+          | | vote:#{' '}
+          a(
+            href=`https://hub.docker.com/r/abakus/vote/tags?page=1&ordering=last_updated&name=${RELEASE}`,
+            tabindex='-1',
+            target='_blank'
+          ) #{RELEASE}
 
     script(
       src='https://cdnjs.cloudflare.com/ajax/libs/fastclick/1.0.6/fastclick.min.js'

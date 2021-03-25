@@ -67,10 +67,11 @@ app.use(
     resave: false,
   })
 );
-const { ICON_SRC, NODE_ENV } = env;
+const { ICON_SRC, NODE_ENV, RELEASE } = env;
 app.locals = Object.assign({}, app.locals, {
   NODE_ENV,
   ICON_SRC,
+  RELEASE,
 });
 
 /* istanbul ignore if */

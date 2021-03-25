@@ -12,7 +12,7 @@
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:yaml",
     "lint:eslint": "eslint . --ignore-path .gitignore",
     "lint:prettier": "prettier '**/*.{js,ts,pug}' --list-different",
-    "lint:yaml": "yarn yamllint .drone.yml docker-compose.yml usage.yml deployment/docker-compose.yml",
+    "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.{js,ts,pug}' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha test/**/*.test.js --exit --timeout 30000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
