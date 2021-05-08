@@ -51,7 +51,7 @@
     "express-promise-router": "3.0.3",
     "express-session": "1.15.6",
     "file-loader": "3.0.1",
-    "handlebars": "4.7.6",
+    "handlebars": "4.7.7",
     "lodash": "4.17.21",
     "method-override": "3.0.0",
     "mongoose": "5.8.1",
