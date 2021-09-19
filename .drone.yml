@@ -67,7 +67,7 @@ steps:
       - yarn build
 
   - name: protractor
-    image: circleci/node:14-browsers
+    image: circleci/node:16-browsers
     # We run as root, because the docker daemon
     # no-new-priviliges flag
     # prohibits us from running sudo
@@ -92,7 +92,7 @@ steps:
     image: plugins/docker
     when:
       branch:
-        - build
+        - prod
       event: push
       status: success
     depends_on:
@@ -112,6 +112,29 @@ steps:
       build_args:
         - RELEASE=version-${DRONE_COMMIT_SHA:0:7}
 
+  - name: Deploy
+    image: abakus/ansible-deploy
+    when:
+      branch:
+        - prod
+      event: push
+      status: success
+    depends_on:
+      - docker
+    settings:
+      playbook: /infrastructure/esas/playbooks/deploy.yml
+      repository:
+        from_secret: infra_repository
+      tags:
+        - vote
+      limit: esas
+      extra_vars: vote_version=version-${DRONE_COMMIT_SHA:0:7}
+      inventory: /infrastructure/inventory
+      vault_password:
+        from_secret: ansible_vault_password
+      private_key:
+        from_secret: infra_deploy_key
+
 services:
   - name: mongodb
     image: mongo:4.4
@@ -121,4 +144,4 @@ services:
 
 ---
 kind: signature
-hmac: 7b739c5ad6e81bd59b8b64fa5484095cc4dec4b030acd7a62263abd6f8b63b25
+hmac: e37cdc3175b2fe0850122a85acaf7a949b044d9f346621bc5ca23143cfc0c6b1
