@@ -58,6 +58,10 @@
   who: NTNUI
   what: Generalforsamling
   users: 123
+- when: sep 2019
+  who: NTNUI
+  what: Generalforsamling
+  users: ~100
 - when: 25.sep 2019
   who: Webkom
   what: Nestledervalg
@@ -66,6 +70,10 @@
   who: Webkom
   what: Ledervalg
   users: 12
+- when: feb 2020
+  who: NTNUI
+  what: Generalforsamling
+  users: ~100
 - when: 21.feb 2020
   who: Abakus
   what: Generalforsamling
@@ -78,6 +86,10 @@
   who: Webkom
   what: Ledervalg
   users: 13
+- when: feb 2021
+  who: NTNUI
+  what: Generalforsamling
+  users: ~100
 - when: 12.feb 2021
   who: Abakus
   what: Digital generalforsamling
@@ -86,3 +98,7 @@
   who: TIHLDE
   what: Digital generalforsamling
   users: 84
+- when: 28.sep 2021
+  who: NTNUI
+  what: Generalforsamling
+  users: 105
