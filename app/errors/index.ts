@@ -221,18 +221,7 @@ class InvalidElectionTypeError extends Error {
   }
 }
 
-export const handleError = (res, err, status) => {
-  const statusCode = status || err.status || 500;
-  return res.status(statusCode).json(
-    err.payload || {
-      name: err.name,
-      status: statusCode,
-      message: err.message,
-    }
-  );
-};
-
-export {
+export default {
   InactiveUserError,
   AlreadyVotedError,
   InactiveElectionError,
@@ -257,4 +246,15 @@ export {
   AlreadyActiveElectionError,
   MailError,
   NoAssociatedUserError,
+};
+
+export const handleError = (res, err, status) => {
+  const statusCode = status || err.status || 500;
+  return res.status(statusCode).json(
+    err.payload || {
+      name: err.name,
+      status: statusCode,
+      message: err.message,
+    }
+  );
 };
