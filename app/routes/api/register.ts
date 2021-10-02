@@ -7,4 +7,4 @@ router.route('/').get(ensureModerator, register.list);
 
 router.route('/:registerId').delete(ensureModerator, register.delete);
 
-module.exports = router;
+export default router;

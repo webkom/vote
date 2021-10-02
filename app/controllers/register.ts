@@ -2,10 +2,10 @@ import Register from '../models/register';
 const ObjectId = require('mongoose').Types.ObjectId;
 import errors from '../errors';
 
-exports.list = (req, res) =>
+export const list = (req, res) =>
   Register.find().then((register) => res.json(register));
 
-exports.delete = async (req, res) => {
+export const delete = async (req, res) => {
   if (!ObjectId.isValid(req.params.registerId)) {
     throw new errors.ValidationError('Invalid ObjectID');
   }

@@ -2,13 +2,13 @@ import mongoose from 'mongoose';
 import Alternative from '../models/alternative';
 import errors from '../errors';
 
-exports.list = (req, res) =>
+export const list = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
     .then((election) => res.json(election.alternatives));
 
-exports.create = (req, res) =>
+export const create = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()

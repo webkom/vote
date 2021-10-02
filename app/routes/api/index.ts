@@ -23,4 +23,4 @@ router.use((err, req, res, next) => {
   errors.handleError(res, err);
 });
 
-module.exports = router;
+export default router;

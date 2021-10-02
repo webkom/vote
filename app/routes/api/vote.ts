@@ -9,4 +9,4 @@ router
   .get(ensureAuthenticated, vote.retrieve)
   .post(ensureAuthenticated, vote.create);
 
-module.exports = router;
+export default router;

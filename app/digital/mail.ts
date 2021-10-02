@@ -43,7 +43,7 @@ if (env.SMTP_URL) {
   });
 }
 
-exports.mailHandler = async (action, data) => {
+export const mailHandler = async (action, data) => {
   const html = fs.readFileSync(
     path.resolve(__dirname, './template.html'),
     'utf8'

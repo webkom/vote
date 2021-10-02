@@ -7,21 +7,21 @@ const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (req, res, next) => {
   res.redirect('/auth/login');
 });
 
-exports.checkAdmin = (req, res, next) => {
+export const checkAdmin = (req, res, next) => {
   checkAuthOrRedirect(req, res, () => {
     if (req.user.admin) return next();
     res.redirect('/404');
   });
 };
 
-exports.checkAdminPartial = (req, res, next) => {
+export const checkAdminPartial = (req, res, next) => {
   checkAuthOrRedirect(req, res, () => {
     if (req.user.admin) return next();
     res.status(404).send();
   });
 };
 
-exports.ensureAdmin = (req, res, next) => {
+export const ensureAdmin = (req, res, next) => {
   ensureAuthenticated(req, res, () => {
     if (!req.user.admin) {
       const error = new errors.PermissionError();
@@ -31,21 +31,21 @@ exports.ensureAdmin = (req, res, next) => {
   });
 };
 
-exports.checkModerator = (req, res, next) => {
+export const checkModerator = (req, res, next) => {
   checkAuthOrRedirect(req, res, () => {
     if (req.user.moderator) return next();
     res.redirect('/404');
   });
 };
 
-exports.checkModeratorPartial = (req, res, next) => {
+export const checkModeratorPartial = (req, res, next) => {
   checkAuthOrRedirect(req, res, () => {
     if (req.user.moderator) return next();
     res.status(404).send();
   });
 };
 
-exports.ensureModerator = (req, res, next) => {
+export const ensureModerator = (req, res, next) => {
   ensureAuthenticated(req, res, () => {
     if (!req.user.moderator) {
       const error = new errors.PermissionError();
