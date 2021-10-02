@@ -11,6 +11,8 @@ module.exports = [
       $scope.election = JSON.parse(existingElection);
     } else {
       $scope.election = {
+        seats: 1,
+        type: 'normal',
         alternatives: [{}],
       };
     }
@@ -35,6 +37,10 @@ module.exports = [
     $scope.deleteAlternative = function (alternative) {
       var index = $scope.election.alternatives.indexOf(alternative);
       $scope.election.alternatives.splice(index, 1);
+    };
+
+    $scope.setNormalType = function () {
+      $scope.election.seats = 1;
     };
   },
 ];

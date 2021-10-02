@@ -24,24 +24,60 @@
           ng-model='election.description'
         )
 
-      .form-group(required)
-        label Plasser
-        input.form-control(
-          type='number',
-          name='seats',
-          placeholder='Antall plasser (vinnere)',
-          required='required',
-          ng-model='election.seats',
-          ng-min='1',
-          ng-max='election.alternatives.length',
-          ng-disabled='election.useStrict'
-        )
-        p.text-danger(ng-show='createElectionForm.seats.$invalid')
-          | Antall plasser er ikke gyldig
-          br
-          | Må være minst 1 og maks {{ election.alternatives.length }}
-        p(ng-show='election.useStrict')
-          | Deaktiver absolutt flertall for å endre antall plasser
+      .form-group
+        h3 Type
+        .btn-group
+          label.btn(
+            name='type',
+            value='normal',
+            uib-btn-radio='\'normal\'',
+            ng-model='election.type',
+            ng-click='setNormalType()'
+          )
+            | Normal
+          label.btn(
+            name='type',
+            value='stv',
+            uib-btn-radio='\'stv\'',
+            ng-model='election.type'
+          )
+            | Preferansevalg
+
+      .election-type(ng-if='election.type == "stv"')
+        .form-group(required)
+          label Plasser
+          input.form-control(
+            type='number',
+            name='seats',
+            placeholder='Antall plasser (vinnere)',
+            required='required',
+            ng-model='election.seats',
+            ng-min='1',
+            ng-max='election.alternatives.length',
+            ng-disabled='election.useStrict'
+          )
+          div(ng-show='createElectionForm.seats.$invalid')
+            p.text-danger
+              | Antall plasser er ikke gyldig
+              br
+              | Må være minst 1 og maks {{ election.alternatives.length }}
+            p Legg til flere alternativer for å øke antall plasser
+          p(ng-show='election.useStrict')
+            | Deaktiver absolutt flertall for å endre antall plasser
+
+      .form-group
+        label Bruk absolutt flertall
+          input(
+            type='checkbox',
+            name='useStrict',
+            value='false',
+            ng-model='election.useStrict',
+            ng-disabled='election.seats != 1'
+          )
+        br
+        p
+          | Krev 2/3 av stemmene for å vinne.
+          span(ng-if='election.type == "stv"') Ellers brukes vanlig STV regler. Gir ikke mening for plasser > 1
 
       .alternatives.admin
         label Alternativer
@@ -69,20 +105,6 @@
             p.text-danger(
               ng-show='alternativeForm.alternative{{$index}}.$invalid'
             ) Alternativ er påkrevd
-
-      .form-group
-        label Bruk absolutt flertall
-          input(
-            type='checkbox',
-            name='useStrict',
-            value='false',
-            ng-model='election.useStrict',
-            ng-disabled='election.seats != 1'
-          )
-        br
-        p
-          | Krev 2/3 av stemmene for å vinne.
-          | Ellers brukes vanlig STV regler. Gir ikke mening for plasser > 1
 
       button#submit.btn.btn-default.btn-lg(
         type='submit',
