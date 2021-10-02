@@ -4,7 +4,7 @@
   "description": "Vote optimizes the election.",
   "main": "app.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "tsc && node public/index.js",
     "build": "webpack --config webpack.config.js --mode=production",
     "test": "yarn lint && yarn mocha && yarn protractor",
     "db:reset": "node --no-deprecation test/scripts/db_reset.js",
@@ -57,6 +57,7 @@
     "connect-flash": "0.1.1",
     "connect-mongo": "3.2.0",
     "cookie-parser": "1.4.3",
+    "crypto-browserify": "3.12.0",
     "crypto-random-string": "1.0.0",
     "css-loader": "6.3.0",
     "csurf": "1.9.0",
@@ -86,6 +87,7 @@
     "short-uuid": "4.1.0",
     "socket.io": "2.4.0",
     "sortablejs": "1.12.0",
+    "stream-browserify": "3.0.0",
     "style-loader": "0.23.1",
     "stylus": "0.54.5",
     "stylus-loader": "3.0.2",
@@ -115,7 +117,8 @@
     "supertest": "3.3.0",
     "ts-loader": "9.2.6",
     "typescript": "4.4.3",
-    "webpack-dev-middleware": "3.5.0",
+    "webpack-dev-middleware": "5.2.1",
+    "webpack-dev-server": "4.3.0",
     "yaml-lint": "1.7.0"
   }
 }

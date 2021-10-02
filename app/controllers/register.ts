@@ -5,7 +5,7 @@ import errors from '../errors';
 export const list = (req, res) =>
   Register.find().then((register) => res.json(register));
 
-export const delete = async (req, res) => {
+export const deleteEntry = async (req, res) => {
   if (!ObjectId.isValid(req.params.registerId)) {
     throw new errors.ValidationError('Invalid ObjectID');
   }

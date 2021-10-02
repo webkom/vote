@@ -10,6 +10,10 @@ module.exports = {
   },
   resolve: {
     extensions: ['.js', '.styl', '.ts'],
+    fallback: {
+      crypto: require.resolve('crypto-browserify'),
+      stream: require.resolve('stream-browserify'),
+    },
   },
   entry: {
     bundle: './client/app.js',

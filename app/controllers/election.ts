@@ -125,7 +125,7 @@ export const deactivate = (req, res) =>
 export const elect = (req, res) =>
   req.election.elect().then((result) => res.json(result));
 
-export const delete = (req, res) => {
+export const deleteElection = (req, res) => {
   if (req.election.active) {
     throw new errors.ActiveElectionError('Cannot delete an active election.');
   }
