@@ -1,6 +1,6 @@
-const socketIO = require('socket.io');
-const app = require('./app');
-const env = require('./env');
+import socketIO from 'socket.io';
+import app from './app';
+import env from './env';
 
 app.set('port', env.PORT);
 

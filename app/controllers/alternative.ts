@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-const Alternative = require('../models/alternative');
-const errors = require('../errors');
+import mongoose from 'mongoose';
+import Alternative from '../models/alternative';
+import errors from '../errors';
 
 exports.list = (req, res) =>
   req.election

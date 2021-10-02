@@ -1,8 +1,8 @@
-const nodemailer = require('nodemailer');
-const env = require('../../env');
-const fs = require('fs');
-const path = require('path');
-const handlebars = require('handlebars');
+import nodemailer from 'nodemailer';
+import env from '../../env';
+import fs from 'fs';
+import path from 'path';
+import handlebars from 'handlebars';
 
 let creds = {};
 let transporter = null;

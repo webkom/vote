@@ -1,6 +1,6 @@
-const Register = require('../models/register');
+import Register from '../models/register';
 const ObjectId = require('mongoose').Types.ObjectId;
-const errors = require('../errors');
+import errors from '../errors';
 
 exports.list = (req, res) =>
   Register.find().then((register) => res.json(register));

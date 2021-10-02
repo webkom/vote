@@ -1,6 +1,7 @@
-const router = require('express-promise-router')();
-const user = require('../../controllers/user');
-const ensureModerator = require('../helpers').ensureModerator;
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import user from '../../controllers/user';
+import { ensureModerator } from '../helpers';
 
 router
   .route('/')

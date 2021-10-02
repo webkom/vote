@@ -1,4 +1,4 @@
-const errors = require('../errors');
+import errors from '../errors';
 
 const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (req, res, next) => {
   if (req.isAuthenticated()) return next();
