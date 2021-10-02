@@ -1,12 +1,11 @@
-const mongoose = require('mongoose');
-const User = require('../models/user');
-const Register = require('../models/register');
-const errors = require('../errors');
-const errorChecks = require('../errors/error-checks');
-
-const crypto = require('crypto');
-const { mailHandler } = require('../digital/mail');
-const short = require('short-uuid');
+import mongoose from 'mongoose';
+import User from '../models/user';
+import Register from '../models/register';
+import errors from '../errors';
+import errorChecks from '../errors/error-checks';
+import crypto from 'crypto';
+import { mailHandler } from '../digital/mail';
+import short from 'short-uuid';
 
 exports.count = async (req, res) => {
   const query = { admin: false, moderator: false };

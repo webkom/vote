@@ -1,10 +1,11 @@
-const router = require('express-promise-router')();
-const electionRoutes = require('./election');
-const userRoutes = require('./user');
-const voteRoutes = require('./vote');
-const qrRoutes = require('./qr');
-const registerRoutes = require('./register');
-const errors = require('../../errors');
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import electionRoutes from './election';
+import userRoutes from './user';
+import voteRoutes from './vote';
+import qrRoutes from './qr';
+import registerRoutes from './register';
+import errors from '../../errors';
 
 router.use('/election', electionRoutes);
 router.use('/user', userRoutes);

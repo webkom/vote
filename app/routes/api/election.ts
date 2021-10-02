@@ -1,7 +1,8 @@
-const router = require('express-promise-router')();
-const election = require('../../controllers/election');
-const alternative = require('../../controllers/alternative');
-const helpers = require('../helpers');
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import election from '../../controllers/election';
+import alternative from '../../controllers/alternative';
+import helpers from '../helpers';
 const ensureAdmin = helpers.ensureAdmin;
 const ensureAuthenticated = helpers.ensureAuthenticated;
 

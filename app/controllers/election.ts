@@ -1,10 +1,10 @@
-const Bluebird = require('bluebird');
-const mongoose = require('mongoose');
-const Election = require('../models/election');
-const User = require('../models/user');
-const Alternative = require('../models/alternative');
-const errors = require('../errors');
-const app = require('../../app');
+import Bluebird from 'bluebird';
+import mongoose from 'mongoose';
+import Election from '../models/election';
+import User from '../models/user';
+import Alternative from '../models/alternative';
+import errors from '../errors';
+import app from '../../app';
 
 exports.load = (req, res, next, electionId) =>
   Election.findById(electionId)

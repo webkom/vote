@@ -1,10 +1,9 @@
-const Election = require('../models/election');
-const Vote = require('../models/vote');
-const errors = require('../errors');
-
-const env = require('../../env');
+import Election from '../models/election';
+import Vote from '../models/vote';
+import errors from '../errors';
+import env from '../../env';
 const redisClient = require('redis').createClient(6379, env.REDIS_URL);
-const Redlock = require('redlock');
+import Redlock from 'redlock';
 const redlock = new Redlock([redisClient], {});
 const ElectionTypes = require('../models/utils.js');
 

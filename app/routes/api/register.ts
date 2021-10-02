@@ -1,6 +1,7 @@
-const router = require('express-promise-router')();
-const register = require('../../controllers/register');
-const ensureModerator = require('../helpers').ensureModerator;
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import register from '../../controllers/register';
+import { ensureModerator } from '../helpers';
 
 router.route('/').get(ensureModerator, register.list);
 

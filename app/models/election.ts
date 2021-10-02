@@ -1,13 +1,13 @@
-const _ = require('lodash');
-const Bluebird = require('bluebird');
-const errors = require('../errors');
-const mongoose = require('mongoose');
-const Vote = require('./vote');
+import _ from 'lodash';
+import Bluebird from 'bluebird';
+import errors from '../errors';
+import mongoose from 'mongoose';
+import Vote from './vote';
 const Schema = mongoose.Schema;
-const calculateWinnerUsingNormal = require('../algorithms/normal.js').default;
-const calculateWinnerUsingSTV = require('../algorithms/stv.js').default;
-const crypto = require('crypto');
-const ElectionTypes = require('./utils.js');
+import calculateWinnerUsingNormal from '../algorithms/normal.js';
+import calculateWinnerUsingSTV from '../algorithms/stv.js';
+import ElectionTypes from './utils.js';
+import crypto from 'crypto';
 
 const electionSchema = new Schema({
   title: {

@@ -1,8 +1,8 @@
-const _ = require('lodash');
-const Bluebird = require('bluebird');
-const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
-const errors = require('../errors');
+import _ from 'lodash';
+import Bluebird from 'bluebird';
+import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
+import errors from '../errors';
 
 const Schema = mongoose.Schema;
 

@@ -1,11 +1,11 @@
-const router = require('express-promise-router')();
-const apiRoutes = require('./api');
-const authRoutes = require('./auth');
-const helpers = require('./helpers');
-
-const fs = require('fs');
-const path = require('path');
-const YAML = require('yaml');
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import apiRoutes from './api';
+import authRoutes from './auth';
+import helpers from './helpers';
+import fs from 'fs';
+import path from 'path';
+import YAML from 'yaml';
 
 const checkAuthOrRedirect = helpers.checkAuthOrRedirect;
 const checkAdmin = helpers.checkAdmin;

@@ -1,5 +1,6 @@
-const router = require('express-promise-router')();
-const app = require('../../../app');
+import routerFactory from 'express-promise-router';
+const router = routerFactory();
+import app from '../../../app';
 
 // Notify moderator that user successfully has scanned qr
 router.get('/open/', (req, res) => {

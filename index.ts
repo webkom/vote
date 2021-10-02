@@ -1,4 +1,4 @@
-const server = require('./server');
+import server from './server';
 
 server((err, port) => {
   if (err) throw err;
