@@ -89,6 +89,20 @@ module.exports = [
       $scope.priorities = $scope.priorities.filter((a) => a._id !== id);
     };
 
+    /**
+     * Toggle the chosen alternative. Will clear the priority list if the alternative is present.
+     * Otherwise will clear the list and add only the alternative to the list.
+     * The priority list will always contain only 1 element.
+     * @param {Object} alternative
+     */
+    $scope.toggleAlternative = function (alternative) {
+      if ($scope.priorities.find((a) => a._id === alternative._id))
+        $scope.priorities = [];
+      else {
+        $scope.priorities = [alternative];
+      }
+    };
+
     $scope.confirm = function () {
       $scope.confirmVote = true;
     };
@@ -147,6 +161,10 @@ module.exports = [
      */
     $scope.isChosen = function (alternative) {
       return $scope.priorities.includes(alternative);
+    };
+
+    $scope.reset = function () {
+      location.reload();
     };
   },
 ];
