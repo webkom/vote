@@ -4,13 +4,12 @@
     "noImplicitAny": true,
     "target": "es5",
     "outDir": "./public",
-    "module": "es6",
-    "removeComments": true
+    "module": "commonjs",
+    "removeComments": true,
+    "esModuleInterop": true
   },
-  "include": [
-    "app/**/*"
-  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "public"
   ]
 }

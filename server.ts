@@ -4,7 +4,7 @@ import env from './env';
 
 app.set('port', env.PORT);
 
-module.exports = (callback) => {
+export default (callback) => {
   const hostname = env.HOST;
   const server = app.listen(app.get('port'), hostname, (err) => {
     callback(err, app.get('port'));
