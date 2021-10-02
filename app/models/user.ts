@@ -83,4 +83,4 @@ userSchema.methods.authenticate = function (password) {
   return Bluebird.resolve(bcrypt.compare(password, this.hash));
 };
 
-module.exports = mongoose.model('User', userSchema);
+export default mongoose.model('User', userSchema);

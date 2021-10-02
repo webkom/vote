@@ -7,8 +7,6 @@ class InactiveUserError extends Error {
   }
 }
 
-exports.InactiveUserError = InactiveUserError;
-
 class AlreadyVotedError extends Error {
   constructor() {
     super();
@@ -17,8 +15,6 @@ class AlreadyVotedError extends Error {
     this.status = 400;
   }
 }
-
-exports.AlreadyVotedError = AlreadyVotedError;
 
 class InactiveElectionError extends Error {
   constructor() {
@@ -29,8 +25,6 @@ class InactiveElectionError extends Error {
   }
 }
 
-exports.InactiveElectionError = InactiveElectionError;
-
 class LoginError extends Error {
   constructor() {
     super();
@@ -39,8 +33,6 @@ class LoginError extends Error {
     this.status = 401;
   }
 }
-
-exports.LoginError = LoginError;
 
 class PermissionError extends Error {
   constructor() {
@@ -51,8 +43,6 @@ class PermissionError extends Error {
   }
 }
 
-exports.PermissionError = PermissionError;
-
 class InvalidPayloadError extends Error {
   constructor(property) {
     super();
@@ -61,8 +51,6 @@ class InvalidPayloadError extends Error {
     this.status = 400;
   }
 }
-
-exports.InvalidPayloadError = InvalidPayloadError;
 
 class AccessCodeError extends Error {
   constructor() {
@@ -73,8 +61,6 @@ class AccessCodeError extends Error {
   }
 }
 
-exports.AccessCodeError = AccessCodeError;
-
 class InvalidPriorityError extends Error {
   constructor() {
     super();
@@ -83,8 +69,6 @@ class InvalidPriorityError extends Error {
     this.status = 400;
   }
 }
-
-exports.InvalidPriorityError = InvalidPriorityError;
 
 class InvalidSTVPrioritiesLengthError extends Error {
   constructor(priorities, election) {
@@ -95,8 +79,6 @@ class InvalidSTVPrioritiesLengthError extends Error {
   }
 }
 
-exports.InvalidSTVPrioritiesLengthError = InvalidSTVPrioritiesLengthError;
-
 class InvalidNormalPrioritiesLengthError extends Error {
   constructor(priorities) {
     super();
@@ -105,8 +87,6 @@ class InvalidNormalPrioritiesLengthError extends Error {
     this.status = 400;
   }
 }
-
-exports.InvalidNormalPrioritiesLengthError = InvalidNormalPrioritiesLengthError;
 
 class MissingHeaderError extends Error {
   constructor(header) {
@@ -117,8 +97,6 @@ class MissingHeaderError extends Error {
   }
 }
 
-exports.MissingHeaderError = MissingHeaderError;
-
 class NotFoundError extends Error {
   constructor(type) {
     super();
@@ -128,8 +106,6 @@ class NotFoundError extends Error {
   }
 }
 
-exports.NotFoundError = NotFoundError;
-
 class ActiveElectionError extends Error {
   constructor(message) {
     super();
@@ -138,8 +114,6 @@ class ActiveElectionError extends Error {
     this.status = 400;
   }
 }
-
-exports.ActiveElectionError = ActiveElectionError;
 
 class ValidationError extends Error {
   constructor(errors) {
@@ -157,8 +131,6 @@ class ValidationError extends Error {
   }
 }
 
-exports.ValidationError = ValidationError;
-
 class InvalidRegistrationError extends Error {
   constructor(message) {
     super();
@@ -167,8 +139,6 @@ class InvalidRegistrationError extends Error {
     this.status = 400;
   }
 }
-
-exports.InvalidRegistrationError = InvalidRegistrationError;
 
 class AdminVotingError extends Error {
   constructor() {
@@ -179,8 +149,6 @@ class AdminVotingError extends Error {
   }
 }
 
-exports.AdminVotingError = AdminVotingError;
-
 class ModeratorVotingError extends Error {
   constructor() {
     super();
@@ -189,8 +157,6 @@ class ModeratorVotingError extends Error {
     this.status = 403;
   }
 }
-
-exports.ModeratorVotingError = ModeratorVotingError;
 
 class DuplicateCardError extends Error {
   constructor() {
@@ -201,8 +167,6 @@ class DuplicateCardError extends Error {
   }
 }
 
-exports.DuplicateCardError = DuplicateCardError;
-
 class DuplicateUsernameError extends Error {
   constructor() {
     super();
@@ -211,8 +175,6 @@ class DuplicateUsernameError extends Error {
     this.status = 400;
   }
 }
-
-exports.DuplicateUsernameError = DuplicateUsernameError;
 
 class DuplicateIdentifierError extends Error {
   constructor() {
@@ -223,8 +185,6 @@ class DuplicateIdentifierError extends Error {
   }
 }
 
-exports.DuplicateIdentifierError = DuplicateIdentifierError;
-
 class AlreadyActiveElectionError extends Error {
   constructor() {
     super();
@@ -233,8 +193,6 @@ class AlreadyActiveElectionError extends Error {
     this.status = 409;
   }
 }
-
-exports.AlreadyActiveElectionError = AlreadyActiveElectionError;
 
 class MailError extends Error {
   constructor(err) {
@@ -245,8 +203,6 @@ class MailError extends Error {
   }
 }
 
-exports.MailError = MailError;
-
 class NoAssociatedUserError extends Error {
   constructor() {
     super();
@@ -255,8 +211,6 @@ class NoAssociatedUserError extends Error {
     this.status = 400;
   }
 }
-
-exports.NoAssociatedUserError = NoAssociatedUserError;
 
 class InvalidElectionTypeError extends Error {
   constructor() {
@@ -267,9 +221,7 @@ class InvalidElectionTypeError extends Error {
   }
 }
 
-exports.InvalidElectionTypeError = InvalidElectionTypeError;
-
-exports.handleError = (res, err, status) => {
+export const handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
     err.payload || {
@@ -278,4 +230,31 @@ exports.handleError = (res, err, status) => {
       message: err.message,
     }
   );
+};
+
+export {
+  InactiveUserError,
+  AlreadyVotedError,
+  InactiveElectionError,
+  LoginError,
+  PermissionError,
+  InvalidPayloadError,
+  AccessCodeError,
+  InvalidPriorityError,
+  InvalidSTVPrioritiesLengthError,
+  InvalidNormalPrioritiesLengthError,
+  InvalidElectionTypeError,
+  MissingHeaderError,
+  NotFoundError,
+  ActiveElectionError,
+  ValidationError,
+  InvalidRegistrationError,
+  AdminVotingError,
+  ModeratorVotingError,
+  DuplicateCardError,
+  DuplicateUsernameError,
+  DuplicateIdentifierError,
+  AlreadyActiveElectionError,
+  MailError,
+  NoAssociatedUserError,
 };

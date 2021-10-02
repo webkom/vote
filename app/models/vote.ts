@@ -20,4 +20,4 @@ const voteSchema = new Schema({
   ],
 });
 
-module.exports = mongoose.model('Vote', voteSchema);
+export default mongoose.model('Vote', voteSchema);

@@ -6,7 +6,7 @@ import Alternative from '../models/alternative';
 import errors from '../errors';
 import app from '../../app';
 
-exports.load = (req, res, next, electionId) =>
+export const load = (req, res, next, electionId) =>
   Election.findById(electionId)
     .then((election) => {
       if (!election) throw new errors.NotFoundError('election');
@@ -17,7 +17,7 @@ exports.load = (req, res, next, electionId) =>
       throw new errors.NotFoundError('election');
     });
 
-exports.retrieveActive = (req, res) =>
+export const retrieveActive = (req, res) =>
   Election.findOne({
     active: true,
     hasVotedUsers: { $ne: req.user._id },
@@ -57,7 +57,7 @@ exports.retrieveActive = (req, res) =>
       return res.status(200).json(election);
     });
 
-exports.create = (req, res) =>
+export const create = (req, res) =>
   Election.create({
     title: req.body.title,
     description: req.body.description,
@@ -86,13 +86,13 @@ exports.create = (req, res) =>
       throw new errors.ValidationError(err.errors);
     });
 
-exports.list = (req, res) =>
+export const list = (req, res) =>
   Election.find()
     .populate('alternatives')
     .exec()
     .then((elections) => res.status(200).json(elections));
 
-exports.retrieve = (req, res) =>
+export const retrieve = (req, res) =>
   req.election
     .populate('alternatives')
     .execPopulate()
@@ -103,7 +103,7 @@ function setElectionStatus(req, res, active) {
   return req.election.save();
 }
 
-exports.activate = async (req, res) => {
+export const activate = async (req, res) => {
   const otherActiveElection = await Election.findOne({ active: true });
   if (otherActiveElection) {
     throw new errors.AlreadyActiveElectionError();
@@ -115,17 +115,17 @@ exports.activate = async (req, res) => {
   });
 };
 
-exports.deactivate = (req, res) =>
+export const deactivate = (req, res) =>
   setElectionStatus(req, res, false).then((election) => {
     const io = app.get('io');
     io.emit('election');
     res.status(200).json(election);
   });
 
-exports.elect = (req, res) =>
+export const elect = (req, res) =>
   req.election.elect().then((result) => res.json(result));
 
-exports.delete = (req, res) => {
+export const delete = (req, res) => {
   if (req.election.active) {
     throw new errors.ActiveElectionError('Cannot delete an active election.');
   }
@@ -138,7 +138,7 @@ exports.delete = (req, res) => {
   );
 };
 
-exports.count = (req, res) => {
+export const count = (req, res) => {
   res.json({
     users: req.election.hasVotedUsers.length,
   });

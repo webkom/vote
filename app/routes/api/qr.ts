@@ -9,4 +9,4 @@ router.get('/open/', (req, res) => {
   res.status(200).send();
 });
 
-module.exports = router;
+export default router;

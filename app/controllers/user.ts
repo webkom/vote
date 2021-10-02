@@ -7,7 +7,7 @@ import crypto from 'crypto';
 import { mailHandler } from '../digital/mail';
 import short from 'short-uuid';
 
-exports.count = async (req, res) => {
+export const count = async (req, res) => {
   const query = { admin: false, moderator: false };
   if (req.query.active === 'true') {
     query.active = true;
@@ -19,12 +19,12 @@ exports.count = async (req, res) => {
   res.json({ users: count });
 };
 
-exports.list = async (req, res) => {
+export const list = async (req, res) => {
   const users = await User.find({}, 'username admin active moderator');
   res.json(users);
 };
 
-exports.create = (req, res) => {
+export const create = (req, res) => {
   const user = new User(req.body);
   return User.register(user, req.body.password)
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
@@ -43,7 +43,7 @@ exports.create = (req, res) => {
     });
 };
 
-exports.generate = async (req, res) => {
+export const generate = async (req, res) => {
   const { identifier, email, ignoreExistingUser } = req.body;
 
   if (!identifier) throw new errors.InvalidPayloadError('identifier');
@@ -131,7 +131,7 @@ exports.generate = async (req, res) => {
     });
 };
 
-exports.toggleActive = async (req, res) => {
+export const toggleActive = async (req, res) => {
   const user = await User.findOne({ cardKey: req.params.cardKey });
   if (!user) {
     throw new errors.NotFoundError('user');
@@ -142,7 +142,7 @@ exports.toggleActive = async (req, res) => {
   res.json(saved);
 };
 
-exports.changeCard = (req, res) =>
+export const changeCard = (req, res) =>
   User.authenticate(req.params.username, req.body.password)
     .then((user) => {
       user.cardKey = req.body.cardKey;
@@ -155,7 +155,7 @@ exports.changeCard = (req, res) =>
       throw new errors.DuplicateCardError();
     });
 
-exports.deactivateAllNonAdmin = async (req, res) => {
+export const deactivateAllNonAdmin = async (req, res) => {
   await User.updateMany(
     { admin: false, moderator: false },
     { active: false },

@@ -67,4 +67,4 @@ router.get('*', checkAuthOrRedirect, (req, res) => {
   res.render('index');
 });
 
-module.exports = router;
+export default router;

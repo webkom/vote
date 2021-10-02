@@ -31,4 +31,4 @@ router
 
 router.get('/:electionId/votes', election.elect);
 
-module.exports = router;
+export default router;

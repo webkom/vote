@@ -28,4 +28,4 @@ registerSchema.pre('remove', function (next) {
     .nodeify(next);
 });
 
-module.exports = mongoose.model('Register', registerSchema);
+export default mongoose.model('Register', registerSchema);

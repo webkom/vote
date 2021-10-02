@@ -13,4 +13,4 @@ const alternativeSchema = new Schema({
   },
 });
 
-module.exports = mongoose.model('Alternative', alternativeSchema);
+export default mongoose.model('Alternative', alternativeSchema);

@@ -178,4 +178,4 @@ electionSchema.methods.addVote = async function (user, priorities) {
   return savedVote;
 };
 
-module.exports = mongoose.model('Election', electionSchema);
+export default mongoose.model('Election', electionSchema);

@@ -7,7 +7,7 @@ import Redlock from 'redlock';
 const redlock = new Redlock([redisClient], {});
 const ElectionTypes = require('../models/utils.js');
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   const { election, priorities } = req.body;
   const { user } = req;
 
@@ -52,7 +52,7 @@ exports.create = async (req, res) => {
     .then((vote) => res.status(201).json(vote));
 };
 
-exports.retrieve = async (req, res) => {
+export const retrieve = async (req, res) => {
   const hash = req.get('Vote-Hash');
 
   if (!hash) {

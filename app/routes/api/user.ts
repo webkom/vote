@@ -18,4 +18,4 @@ router.post('/:cardKey/toggle_active', ensureModerator, user.toggleActive);
 
 router.post('/deactivate', ensureModerator, user.deactivateAllNonAdmin);
 
-module.exports = router;
+export default router;
