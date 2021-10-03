@@ -17,19 +17,23 @@ function logIn(username, password) {
 module.exports = function () {
   this.Given(/^I am logged in as an admin$/, () => {
     logIn('admin', 'password');
+    this.userType = 'admin';
   });
 
   this.Given(/^I am logged in as a moderator$/, () => {
     logIn('moderator', 'password');
+    this.userType = 'moderator';
   });
 
   this.When(/^I log in$/, () => {
     logIn('testUser', 'password');
+    this.userType = 'user';
   });
 
   this.When(/^I log out/, () => {
     const logoutButton = element(by.linkText('Logg ut'));
     logoutButton.click();
+    this.userType = undefined;
   });
 
   this.Given(/^I am logged in$/, () => {
@@ -37,7 +41,9 @@ module.exports = function () {
   });
 
   this.Given(/^I am on page "([^"]*)"$/, (path) => {
-    browser.get(path);
+    const actualPath =
+      this.userType === 'moderator' ? path + '?dummyReader' : path;
+    browser.get(actualPath);
   });
 
   this.When(/^I go to page "([^"]*)"$/, (path) => {
