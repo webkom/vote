@@ -9,7 +9,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
     commands:
       - yarn
     depends_on:
@@ -20,7 +19,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
     depends_on:
       - setup
     commands:
@@ -31,7 +29,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
     depends_on:
       - setup
     commands:
@@ -41,7 +38,7 @@ steps:
     image: node:14
     when:
       event:
-        - pull_request
+        - push
     depends_on:
       - test
     commands:
@@ -58,7 +55,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
       branch:
         exclude: [prod]
     depends_on:
@@ -75,7 +71,6 @@ steps:
     when:
       event:
         - push
-        - pull_request
     depends_on:
       - setup
     commands:
@@ -144,4 +139,4 @@ services:
 
 ---
 kind: signature
-hmac: e37cdc3175b2fe0850122a85acaf7a949b044d9f346621bc5ca23143cfc0c6b1
+hmac: 29a1a3d0c44d50ddb78ad36fcb911dbd4a90cce0077ee335402c61d90ad7c011
