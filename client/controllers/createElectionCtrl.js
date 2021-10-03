@@ -42,5 +42,9 @@ module.exports = [
     $scope.setNormalType = function () {
       $scope.election.seats = 1;
     };
+
+    $scope.setSTVType = function () {
+      $scope.election.seats = null;
+    };
   },
 ];
