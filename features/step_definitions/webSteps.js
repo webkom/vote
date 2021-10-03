@@ -4,6 +4,15 @@ const expect = chai.expect;
 
 chai.use(chaiAsPromised);
 
+by.addLocator('labelText', (labelText, opt_parentElement, opt_rootSelector) => {
+  const using = opt_parentElement || document;
+  const labels = using.querySelectorAll('label');
+  return Array.prototype.filter.call(
+    labels,
+    (l) => l.textContent === labelText
+  );
+});
+
 function logIn(username, password) {
   const driver = browser.driver;
 
@@ -84,6 +93,10 @@ module.exports = function () {
       expect(isPresent).to.equal(true);
       return expect(alert.getText()).to.eventually.contain(text);
     });
+  });
+
+  this.When(/^I select option "([^"]*)/, (text) => {
+    element(by.labelText(text)).click();
   });
 
   this.When(/^I fill in "([^"]*)" with "([^"]*)"$/, (name, value) => {
