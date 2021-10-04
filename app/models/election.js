@@ -4,8 +4,10 @@ const errors = require('../errors');
 const mongoose = require('mongoose');
 const Vote = require('./vote');
 const Schema = mongoose.Schema;
-const stv = require('../stv/stv.js');
+const calculateWinnerUsingNormal = require('../algorithms/normal.js').default;
+const calculateWinnerUsingSTV = require('../algorithms/stv.js').default;
 const crypto = require('crypto');
+const ElectionTypes = require('./utils.js');
 
 const electionSchema = new Schema({
   title: {
@@ -43,6 +45,17 @@ const electionSchema = new Schema({
       ref: 'Vote',
     },
   ],
+  type: {
+    type: String,
+    enum: [ElectionTypes.NORMAL, ElectionTypes.STV],
+    default: ElectionTypes.NORMAL,
+    validate: {
+      validator: function (v) {
+        return v === ElectionTypes.NORMAL && this.seats !== 1 ? false : true;
+      },
+      message: 'Normal elections must have exactly one seat',
+    },
+  },
   useStrict: {
     type: Boolean,
     default: false,
@@ -97,12 +110,23 @@ electionSchema.methods.elect = async function () {
     .execPopulate();
 
   const cleanElection = this.toJSON();
-  return stv.calculateWinnerUsingSTV(
-    cleanElection.votes,
-    cleanElection.alternatives,
-    cleanElection.seats,
-    cleanElection.useStrict
-  );
+
+  // Type of election decides algorithm
+  if (cleanElection.type == 'normal') {
+    return calculateWinnerUsingNormal(
+      cleanElection.votes,
+      cleanElection.useStrict
+    );
+  } else if (cleanElection.type == 'stv') {
+    return calculateWinnerUsingSTV(
+      cleanElection.votes,
+      cleanElection.alternatives,
+      cleanElection.seats,
+      cleanElection.useStrict
+    );
+  } else {
+    throw new errors.InvalidElectionTypeError();
+  }
 };
 
 electionSchema.methods.addAlternative = async function (alternative) {

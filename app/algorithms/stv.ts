@@ -1,4 +1,5 @@
 import cloneDeep = require('lodash/cloneDeep');
+import { Status, Vote, Alternative, Result } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied
 // If you make changes to this file it must be recomplied using `tsc` in
@@ -7,31 +8,14 @@ import cloneDeep = require('lodash/cloneDeep');
 // app/models/election .elect() is the only file that uses this function
 // and importes it from stv.js, which is the compiled result of this file.
 
-type STV = {
+interface STV extends Result {
   result: STVResult;
   log: STVEvent[];
-  thr: number;
   seats: number;
-  voteCount: number;
-  blankVoteCount: number;
-  useStrict: boolean;
-};
-
-type Alternative = {
-  _id: string;
-  description: string;
-  election: string;
-};
+}
 
 type STVCounts = {
   [key: string]: number;
-};
-
-type Vote = {
-  _id: string;
-  priorities: Alternative[];
-  hash: string;
-  weight: number;
 };
 
 enum Action {
@@ -66,24 +50,22 @@ interface STVEventWin extends STVEvent {
   alternative: Alternative;
   voteCount: number;
 }
+
 interface STVEventEliminate extends STVEvent {
   action: Action.eliminate;
   alternative: Alternative;
   minScore: number;
 }
+
 interface STVEventTie extends STVEvent {
   action: Action.tie;
   description: string;
 }
+
 interface STVEventMulti extends STVEvent {
   action: Action.multi_tie_eliminations;
   alternatives: Alternative[];
   minScore: number;
-}
-
-enum Status {
-  resolved = 'RESOLVED',
-  unresolved = 'UNRESOLVED',
 }
 
 type STVResult =
@@ -127,7 +109,7 @@ const EPSILON = 0.000001;
  *
  * @return The full election, including result, log and threshold value
  */
-exports.calculateWinnerUsingSTV = (
+const calculateWinnerUsingSTV = (
   inputVotes: any,
   inputAlternatives: any,
   seats = 1,
@@ -431,3 +413,5 @@ const handleFloatsInOutput = (obj: Object) => {
   Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
   return newObj;
 };
+
+export default calculateWinnerUsingSTV;
