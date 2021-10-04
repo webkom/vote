@@ -60,6 +60,7 @@ const prepareElection = async function (dataset) {
     description: 'Description',
     active: true,
     seats: dataset.seats,
+    type: dataset.type,
     useStrict: dataset.useStrict,
   });
   // Step 2) Mutate alternatives and create a new Alternative for each
