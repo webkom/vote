@@ -48,6 +48,10 @@ form
     width 30%
     margin-top 20px
 
+.election-type
+    border-left 4px solid $abakus-dark
+    padding 4px  10px
+
 .input-group-addon
     font-size 18px
     color $abakus-light
@@ -161,3 +165,19 @@ form.add-alternative
       margin 5px
       text-decoration underline
       font-weight 1000
+
+label.btn
+    color #fff
+    margin 0
+    background-color $abakus-dark
+    &:active
+        background-color darken($abakus-dark, 20%)
+    &:hover
+        color #fff
+        background-color darken($abakus-dark, 20%)
+    &:focus
+        background-color darken($abakus-dark, 20%)
+    &:selected
+        background-color darken($abakus-dark, 20%)
+    &.active
+        background-color darken($abakus-dark, 20%)

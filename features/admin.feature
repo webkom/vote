@@ -18,6 +18,7 @@ Feature: Admin
     Given There is an inactive election
     And I am on page "/admin/create_election"
     When I fill in "title" with "test election"
+    And I select option "Preferansevalg"
     And I fill in "seats" with "2"
     And I fill in "alternative0" with "A"
     Then Button "Submit" should be disabled
@@ -26,6 +27,7 @@ Feature: Admin
     Given There is an inactive election
     And I am on page "/admin/create_election"
     When I fill in "title" with "test election"
+    And I select option "Preferansevalg"
     And I fill in "seats" with "2"
     And I fill in "alternative0" with "A"
     And I click anchor "new-alternative"
