@@ -86,16 +86,27 @@ class InvalidPriorityError extends Error {
 
 exports.InvalidPriorityError = InvalidPriorityError;
 
-class InvalidPrioritiesLengthError extends Error {
+class InvalidSTVPrioritiesLengthError extends Error {
   constructor(priorities, election) {
     super();
-    this.name = 'InvalidPrioritiesLengthError';
+    this.name = 'InvalidSTVPrioritiesLengthError';
     this.message = `Priorities is of length ${priorities.length}, election has ${election.alternatives.length} alternatives.`;
     this.status = 400;
   }
 }
 
-exports.InvalidPrioritiesLengthError = InvalidPrioritiesLengthError;
+exports.InvalidSTVPrioritiesLengthError = InvalidSTVPrioritiesLengthError;
+
+class InvalidNormalPrioritiesLengthError extends Error {
+  constructor(priorities) {
+    super();
+    this.name = 'InvalidNormalPrioritiesLengthError';
+    this.message = `Priorities is of length ${priorities.length} on a normal election.`;
+    this.status = 400;
+  }
+}
+
+exports.InvalidNormalPrioritiesLengthError = InvalidNormalPrioritiesLengthError;
 
 class MissingHeaderError extends Error {
   constructor(header) {
@@ -246,6 +257,17 @@ class NoAssociatedUserError extends Error {
 }
 
 exports.NoAssociatedUserError = NoAssociatedUserError;
+
+class InvalidElectionTypeError extends Error {
+  constructor() {
+    super();
+    this.name = 'InvalidElectionTypeError';
+    this.message = "Can't use or create an elction of this type";
+    this.status = 400;
+  }
+}
+
+exports.InvalidElectionTypeError = InvalidElectionTypeError;
 
 exports.handleError = (res, err, status) => {
   const statusCode = status || err.status || 500;

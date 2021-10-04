@@ -57,6 +57,7 @@ exports.create = (req, res) =>
     title: req.body.title,
     description: req.body.description,
     seats: req.body.seats,
+    type: req.body.type,
     useStrict: req.body.useStrict,
   })
     .then((election) => {
