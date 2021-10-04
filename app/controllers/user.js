@@ -128,7 +128,6 @@ exports.generate = async (req, res) => {
       throw new errors.DuplicateUsernameError();
     })
     .catch(errorChecks.BadRequestError, (err) => {
-      // Comment to make git diff not be dumb
       throw new errors.InvalidRegistrationError(err.message);
     });
 };
