@@ -5,6 +5,7 @@ const chai = require('chai');
 const app = require('../../app');
 const Alternative = require('../../app/models/alternative');
 const Election = require('../../app/models/election');
+const ElectionTypes = require('../../app/models/utils.js');
 const Vote = require('../../app/models/vote');
 const { test404, testAdminResource } = require('./helpers');
 const { createUsers } = require('../helpers');
@@ -12,26 +13,48 @@ const { createUsers } = require('../helpers');
 const should = chai.should();
 
 describe('Vote API', () => {
-  const activeElectionData = {
+  // Define a normal election
+  const activeNormalElectionData = {
     title: 'activeElection',
     description: 'test election',
+    type: ElectionTypes.NORMAL,
     active: true,
   };
-
-  const inactiveElectionData = {
+  const inactiveNormalElectionData = {
     title: 'inactiveElection',
+    type: ElectionTypes.NORMAL,
     description: 'inactive election',
   };
+  const activeNormalAlternative = {
+    description: 'active election alt',
+  };
+  const otherActiveNormalAlternative = {
+    description: 'other active election alt',
+  };
+  const inactiveNormalAlternative = {
+    description: 'inactive election alt',
+  };
 
-  const activeData = {
+  // Define a stv election
+  const activeSTVElectionData = {
+    ...activeNormalElectionData,
+    type: ElectionTypes.STV,
+  };
+
+  const inactiveSTVElectionData = {
+    ...inactiveNormalElectionData,
+    type: ElectionTypes.STV,
+  };
+
+  const activeSTVAlternative = {
     description: 'active election alt',
   };
 
-  const otherActiveData = {
+  const otherActiveSTVAlternative = {
     description: 'other active election alt',
   };
 
-  const inactiveData = {
+  const inactiveSTVAlternative = {
     description: 'inactive election alt',
   };
 
@@ -47,25 +70,47 @@ describe('Vote API', () => {
   });
 
   beforeEach(async function () {
-    const [activeCreated, inactiveCreated] = await Election.create([
-      activeElectionData,
-      inactiveElectionData,
+    // Create Normal Election
+    const [activeNormalCreated, inactiveNormalCreated] = await Election.create([
+      activeNormalElectionData,
+      inactiveNormalElectionData,
     ]);
+    this.activeNormalElection = activeNormalCreated;
+    this.inactiveNormalElection = inactiveNormalCreated;
+    activeNormalAlternative.election = this.activeNormalElection;
+    inactiveNormalAlternative.election = this.inactiveNormalElection;
+    this.activeNormalAlternative = new Alternative(activeNormalAlternative);
+    this.otherActiveNormalAlternative = new Alternative(
+      otherActiveNormalAlternative
+    );
+    await this.activeNormalElection.addAlternative(
+      this.activeNormalAlternative
+    );
+    await this.activeNormalElection.addAlternative(
+      this.otherActiveNormalAlternative
+    );
+    this.inactiveNormalAlternative = new Alternative(inactiveNormalAlternative);
+    await this.inactiveNormalElection.addAlternative(
+      this.inactiveNormalAlternative
+    );
 
-    this.activeElection = activeCreated;
-    this.inactiveElection = inactiveCreated;
+    // Create STV Election
+    const [activeSTVCreated, inactiveSTVCreated] = await Election.create([
+      activeSTVElectionData,
+      inactiveSTVElectionData,
+    ]);
+    this.activeSTVElection = activeSTVCreated;
+    this.inactiveSTVElection = inactiveSTVCreated;
+    activeSTVAlternative.election = this.activeSTVElection;
+    inactiveSTVAlternative.election = this.inactiveSTVElection;
+    this.activeSTVAlternative = new Alternative(activeSTVAlternative);
+    this.otherActiveSTVAlternative = new Alternative(otherActiveSTVAlternative);
+    await this.activeSTVElection.addAlternative(this.activeSTVAlternative);
+    await this.activeSTVElection.addAlternative(this.otherActiveSTVAlternative);
+    this.inactiveSTVAlternative = new Alternative(inactiveSTVAlternative);
+    await this.inactiveSTVElection.addAlternative(this.inactiveSTVAlternative);
 
-    activeData.election = this.activeElection;
-    inactiveData.election = this.inactiveElection;
-
-    this.activeAlternative = new Alternative(activeData);
-    this.otherActiveAlternative = new Alternative(otherActiveData);
-    await this.activeElection.addAlternative(this.activeAlternative);
-    await this.activeElection.addAlternative(this.otherActiveAlternative);
-
-    this.inactiveAlternative = new Alternative(inactiveData);
-    await this.inactiveElection.addAlternative(this.inactiveAlternative);
-
+    // Define users
     const [user, adminUser, moderatorUser] = await createUsers();
     this.user = user;
     this.adminUser = adminUser;
@@ -138,14 +183,14 @@ describe('Vote API', () => {
     error.message.should.equal(`Couldn't find election.`);
   });
 
-  it('should not be possible to vote with to many priorities', async function () {
+  it('should not be possible to vote on STV election with to many priorities', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
       .send(
-        votePayload(this.activeElection, [
-          this.activeAlternative,
-          this.otherActiveAlternative,
-          this.inactiveAlternative,
+        votePayload(this.activeSTVElection, [
+          this.activeSTVAlternative,
+          this.otherActiveSTVAlternative,
+          this.inactiveSTVAlternative,
         ])
       )
       .expect(400)
@@ -156,13 +201,30 @@ describe('Vote API', () => {
     );
   });
 
-  it('should not be possible to vote with priorities not listed in election', async function () {
+  it('should not be possible to vote on Normal election with to many priorities', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
       .send(
-        votePayload(this.activeElection, [
-          this.activeAlternative,
-          this.inactiveAlternative,
+        votePayload(this.activeNormalElection, [
+          this.activeNormalAlternative,
+          this.otherActiveNormalAlternative,
+        ])
+      )
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'Priorities is of length 2 on a normal election.'
+    );
+  });
+
+  it('should not be possible to vote on STV election with priorities not listed in election', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(
+        votePayload(this.activeSTVElection, [
+          this.activeSTVAlternative,
+          this.inactiveSTVAlternative,
         ])
       )
       .expect(400)
@@ -173,10 +235,12 @@ describe('Vote API', () => {
     );
   });
 
-  it('should not be possible to vote with priorities that are not alternatives', async function () {
+  it('should not be possible to vote on Normal election with priorities not listed in election', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, ['String', {}]))
+      .send(
+        votePayload(this.activeNormalElection, [this.inactiveNormalAlternative])
+      )
       .expect(400)
       .expect('Content-Type', /json/);
     error.status.should.equal(400);
@@ -185,10 +249,34 @@ describe('Vote API', () => {
     );
   });
 
-  it('should be able to vote on active election with an empty priority list', async function () {
+  it('should not be possible to vote on STV election with priorities that are not alternatives', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeSTVElection, ['String', {}]))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'One or more alternatives does not exist on election.'
+    );
+  });
+
+  it('should not be possible to vote on Normal election with priorities that are not alternatives', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeNormalElection, [{}]))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.status.should.equal(400);
+    error.message.should.equal(
+      'One or more alternatives does not exist on election.'
+    );
+  });
+
+  it('should be able to vote on active STV election with an empty priority list', async function () {
     const { body: vote } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, []))
+      .send(votePayload(this.activeSTVElection, []))
       .expect(201)
       .expect('Content-Type', /json/);
 
@@ -199,28 +287,42 @@ describe('Vote API', () => {
     votes.length.should.equal(1);
   });
 
-  it('should be able to vote on active election with a priority list shorter then the election', async function () {
+  it('should be able to vote on active Normal election with an empty priority list', async function () {
     const { body: vote } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, [this.activeAlternative]))
+      .send(votePayload(this.activeNormalElection, []))
       .expect(201)
       .expect('Content-Type', /json/);
 
     should.exist(vote.hash);
-    vote.priorities.length.should.equal(1);
-    vote.priorities[0].should.equal(this.activeAlternative.id);
+    vote.priorities.length.should.equal(0);
 
     const votes = await Vote.find({ hash: vote.hash });
     votes.length.should.equal(1);
   });
 
-  it('should be able to vote on active election with a full priority list', async function () {
+  it('should be able to vote on active STV election with a priority list shorter then the election', async function () {
+    const { body: vote } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.activeSTVElection, [this.activeSTVAlternative]))
+      .expect(201)
+      .expect('Content-Type', /json/);
+
+    should.exist(vote.hash);
+    vote.priorities.length.should.equal(1);
+    vote.priorities[0].should.equal(this.activeSTVAlternative.id);
+
+    const votes = await Vote.find({ hash: vote.hash });
+    votes.length.should.equal(1);
+  });
+
+  it('should be able to vote on active STV election with a full priority list', async function () {
     const { body: vote } = await request(app)
       .post('/api/vote')
       .send(
-        votePayload(this.activeElection, [
-          this.activeAlternative,
-          this.otherActiveAlternative,
+        votePayload(this.activeSTVElection, [
+          this.activeSTVAlternative,
+          this.otherActiveSTVAlternative,
         ])
       )
       .expect(201)
@@ -228,18 +330,41 @@ describe('Vote API', () => {
 
     should.exist(vote.hash);
     vote.priorities.length.should.equal(2);
-    vote.priorities[0].should.equal(this.activeAlternative.id);
-    vote.priorities[1].should.equal(this.otherActiveAlternative.id);
+    vote.priorities[0].should.equal(this.activeSTVAlternative.id);
+    vote.priorities[1].should.equal(this.otherActiveSTVAlternative.id);
 
     const votes = await Vote.find({ hash: vote.hash });
     votes.length.should.equal(1);
   });
 
-  it('should be able to vote only once', async function () {
-    await this.activeElection.addVote(this.user, [this.activeAlternative]);
+  it('should be able to vote only once on STV election', async function () {
+    await this.activeSTVElection.addVote(this.user, [
+      this.activeSTVAlternative,
+    ]);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, [this.otherActiveAlternative]))
+      .send(
+        votePayload(this.activeSTVElection, [this.otherActiveSTVAlternative])
+      )
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('AlreadyVotedError');
+    error.message.should.equal('You can only vote once per election.');
+    error.status.should.equal(400);
+  });
+
+  it('should be able to vote only once on Normal election', async function () {
+    await this.activeNormalElection.addVote(this.user, [
+      this.activeNormalAlternative,
+    ]);
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(
+        votePayload(this.activeNormalElection, [
+          this.otherActiveNormalAlternative,
+        ])
+      )
       .expect(400)
       .expect('Content-Type', /json/);
 
@@ -252,7 +377,7 @@ describe('Vote API', () => {
     const create = () =>
       request(app)
         .post('/api/vote')
-        .send(votePayload(this.activeElection, [this.activeAlternative]));
+        .send(votePayload(this.activeSTVElection, [this.activeSTVAlternative]));
     await Promise.all([
       create(),
       create(),
@@ -265,7 +390,7 @@ describe('Vote API', () => {
       create(),
       create(),
     ]);
-    const votes = await Vote.find({ election: this.activeElection._id });
+    const votes = await Vote.find({ election: this.activeSTVElection._id });
     votes.length.should.equal(1);
   });
 
@@ -287,7 +412,7 @@ describe('Vote API', () => {
     await this.user.save();
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, []))
+      .send(votePayload(this.activeNormalElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
     error.message.should.equal(
@@ -295,26 +420,42 @@ describe('Vote API', () => {
     );
     error.status.should.equal(403);
 
-    const votes = await Vote.find({ alternative: this.activeAlternative.id });
+    const votes = await Vote.find({
+      alternative: this.activeNormalAlternative.id,
+    });
     votes.length.should.equal(0, 'no vote should be added');
   });
 
-  it('should not be able to vote on a deactivated election', async function () {
+  it('should not be able to vote on a deactivated STV election', async function () {
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.inactiveElection, []))
+      .send(votePayload(this.inactiveSTVElection, []))
       .expect(400)
       .expect('Content-Type', /json/);
     error.name.should.equal('InactiveElectionError');
     error.message.should.equal("Can't vote on an inactive election.");
     error.status.should.equal(400);
 
-    const votes = await Vote.find({ election: this.inactiveElection.id });
+    const votes = await Vote.find({ election: this.inactiveSTVElection.id });
+    votes.length.should.equal(0, 'no vote should be added');
+  });
+
+  it('should not be able to vote on a deactivated Normal election', async function () {
+    const { body: error } = await request(app)
+      .post('/api/vote')
+      .send(votePayload(this.inactiveNormalElection, []))
+      .expect(400)
+      .expect('Content-Type', /json/);
+    error.name.should.equal('InactiveElectionError');
+    error.message.should.equal("Can't vote on an inactive election.");
+    error.status.should.equal(400);
+
+    const votes = await Vote.find({ election: this.inactiveNormalElection.id });
     votes.length.should.equal(0, 'no vote should be added');
   });
 
   it('should be possible to retrieve a vote with hash', async function () {
-    const vote = await this.activeElection.addVote(this.user, []);
+    const vote = await this.activeNormalElection.addVote(this.user, []);
     const { body: receivedVote } = await request(app)
       .get('/api/vote')
       .set('Vote-Hash', vote.hash)
@@ -324,21 +465,25 @@ describe('Vote API', () => {
   });
 
   it('should be possible to retrieve a vote with correct election', async function () {
-    const vote = await this.activeElection.addVote(this.user, [
-      this.activeAlternative,
-      this.otherActiveAlternative,
+    const vote = await this.activeSTVElection.addVote(this.user, [
+      this.activeSTVAlternative,
+      this.otherActiveSTVAlternative,
     ]);
     const { body: receivedVote } = await request(app)
       .get('/api/vote')
       .set('Vote-Hash', vote.hash)
       .expect(200)
       .expect('Content-Type', /json/);
-    receivedVote.election._id.should.equal(String(this.activeElection.id));
-    receivedVote.election.title.should.equal(String(this.activeElection.title));
+    receivedVote.election._id.should.equal(String(this.activeSTVElection.id));
+    receivedVote.election.title.should.equal(
+      String(this.activeSTVElection.title)
+    );
     receivedVote.priorities.length.should.equal(2);
-    receivedVote.priorities[0].description.should.equal(activeData.description);
+    receivedVote.priorities[0].description.should.equal(
+      activeSTVAlternative.description
+    );
     receivedVote.priorities[1].description.should.equal(
-      otherActiveData.description
+      otherActiveSTVAlternative.description
     );
   });
 
@@ -355,14 +500,14 @@ describe('Vote API', () => {
   it('should be possible to sum votes', async function () {
     passportStub.login(this.adminUser.username);
 
-    await this.activeElection.addVote(this.user, [
-      this.activeAlternative,
-      this.otherActiveAlternative,
+    await this.activeSTVElection.addVote(this.user, [
+      this.activeSTVAlternative,
+      this.otherActiveSTVAlternative,
     ]);
-    this.activeElection.active = false;
-    await this.activeElection.save();
+    this.activeSTVElection.active = false;
+    await this.activeSTVElection.save();
     const { body } = await request(app)
-      .get(`/api/election/${this.activeElection.id}/votes`)
+      .get(`/api/election/${this.activeSTVElection.id}/votes`)
       .expect(200)
       .expect('Content-Type', /json/);
 
@@ -373,7 +518,7 @@ describe('Vote API', () => {
     passportStub.login(this.adminUser.username);
 
     const { body } = await request(app)
-      .get(`/api/election/${this.activeElection.id}/votes`)
+      .get(`/api/election/${this.activeSTVElection.id}/votes`)
       .expect(400)
       .expect('Content-Type', /json/);
     body.message.should.equal('Cannot retrieve results on an active election.');
@@ -383,7 +528,7 @@ describe('Vote API', () => {
     passportStub.login(this.user.username);
     await testAdminResource(
       'get',
-      `/api/election/${this.activeElection.id}/votes`
+      `/api/election/${this.activeSTVElection.id}/votes`
     );
   });
 
@@ -391,7 +536,7 @@ describe('Vote API', () => {
     passportStub.login(this.moderatorUser.username);
     await testAdminResource(
       'get',
-      `/api/election/${this.activeElection.id}/votes`
+      `/api/election/${this.activeSTVElection.id}/votes`
     );
   });
 
@@ -410,7 +555,7 @@ describe('Vote API', () => {
     passportStub.login(this.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, []))
+      .send(votePayload(this.activeSTVElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
 
@@ -423,7 +568,7 @@ describe('Vote API', () => {
     passportStub.login(this.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/vote')
-      .send(votePayload(this.activeElection, []))
+      .send(votePayload(this.activeSTVElection, []))
       .expect(403)
       .expect('Content-Type', /json/);
 
