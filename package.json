@@ -10,7 +10,7 @@
     "db:reset": "node --no-deprecation test/scripts/db_reset.js",
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:yaml",
-    "lint:eslint": "eslint . --ignore-path .gitignore",
+    "lint:eslint": "eslint . --ignore-path .gitignore --ignore-pattern 'app/algorithms/*.js'",
     "lint:prettier": "prettier '**/*.{js,ts,pug}' --list-different",
     "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
     "prettier": "prettier '**/*.{js,ts,pug}' --write",

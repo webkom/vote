@@ -1,5 +1,5 @@
 import cloneDeep = require('lodash/cloneDeep');
-import { Status, Vote, Alternative, Result } from './types';
+import { Status, Vote, Alternative, ElectionResult } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied
 // If you make changes to this file it must be recomplied using `tsc` in
@@ -7,12 +7,6 @@ import { Status, Vote, Alternative, Result } from './types';
 //
 // app/models/election .elect() is the only file that uses this function
 // and importes it from stv.js, which is the compiled result of this file.
-
-interface STV extends Result {
-  result: STVResult;
-  log: STVEvent[];
-  seats: number;
-}
 
 type STVCounts = {
   [key: string]: number;
@@ -26,7 +20,7 @@ enum Action {
   tie = 'TIE',
 }
 
-type STVEvent = {
+export type STVEvent = {
   action: Action;
   iteration?: number;
   winners?: Alternative[];
@@ -68,16 +62,6 @@ interface STVEventMulti extends STVEvent {
   minScore: number;
 }
 
-type STVResult =
-  | {
-      status: Status;
-      winners: Alternative[];
-    }
-  | {
-      status: Status;
-      winners: Alternative[];
-    };
-
 /**
  * The Droop qouta https://en.wikipedia.org/wiki/Droop_quota
  * @param votes - All votes for the election
@@ -114,7 +98,7 @@ const calculateWinnerUsingSTV = (
   inputAlternatives: any,
   seats = 1,
   useStrict = false
-): STV => {
+): ElectionResult => {
   // Hold the log for the entire election
   const log: STVEvent[] = [];
 
