@@ -6,6 +6,7 @@ const env = require('../../env');
 const redisClient = require('redis').createClient(6379, env.REDIS_URL);
 const Redlock = require('redlock');
 const redlock = new Redlock([redisClient], {});
+const ElectionTypes = require('../models/utils.js');
 
 exports.create = async (req, res) => {
   const { election, priorities } = req.body;
@@ -28,7 +29,12 @@ exports.create = async (req, res) => {
 
       // Priorities cant be longer then alternatives
       if (priorities.length > election.alternatives.length) {
-        throw new errors.InvalidPrioritiesLengthError(priorities, election);
+        throw new errors.InvalidSTVPrioritiesLengthError(priorities, election);
+      }
+
+      // If this is a normal election, then the ballot can only contain 0 or 1 priorities
+      if (election.type === ElectionTypes.NORMAL && priorities.length > 1) {
+        throw new errors.InvalidNormalPrioritiesLengthError(priorities);
       }
 
       // Payload has priorites that are not in the election alternatives
