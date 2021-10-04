@@ -2,8 +2,9 @@
   "compilerOptions": {
     "sourceMap": true,
     "target": "es2015",
-    "outDir": "app/stv",
+    "outDir": "app/algorithms",
     "module": "commonjs",
+    "lib": ["es2017"],
     "removeComments": true
   },
   "include": [
