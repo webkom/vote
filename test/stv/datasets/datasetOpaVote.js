@@ -1,5 +1,7 @@
+const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
   seats: 2,
+  type: ElectionTypes.STV,
   alternatives: ['Steve', 'Bill', 'Elon', 'Warren', 'Richard'],
   priorities: [
     { priority: [''], amount: 1614 },

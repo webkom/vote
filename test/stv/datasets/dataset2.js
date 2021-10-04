@@ -1,6 +1,8 @@
 // Dataset from https://en.wikipedia.org/wiki/Single_transferable_vote
+const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
   seats: 3,
+  type: ElectionTypes.STV,
   alternatives: ['Orange', 'Pear', 'Chocolate', 'Strawberry', 'Hamburger'],
   priorities: [
     {
