@@ -112,12 +112,14 @@ electionSchema.methods.elect = async function () {
   const cleanElection = this.toJSON();
 
   // Type of election decides algorithm
-  if (cleanElection.type == 'normal') {
+  if (cleanElection.type == ElectionTypes.NORMAL) {
     return calculateWinnerUsingNormal(
       cleanElection.votes,
+      cleanElection.alternatives,
+      cleanElection.seats,
       cleanElection.useStrict
     );
-  } else if (cleanElection.type == 'stv') {
+  } else if (cleanElection.type == ElectionTypes.STV) {
     return calculateWinnerUsingSTV(
       cleanElection.votes,
       cleanElection.alternatives,

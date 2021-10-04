@@ -1,5 +1,5 @@
 import isEmpty = require('lodash/isEmpty');
-import { Status, Vote, Result } from './types';
+import { Status, Vote, Alternative, ElectionResult } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied
 // If you make changes to this file it must be recomplied using `tsc` in
@@ -9,17 +9,8 @@ import { Status, Vote, Result } from './types';
 // and importes it from normal.js, which is the compiled result of this file.
 //
 //
-interface Normal extends Result {
-  result: NormalResult;
-  log: Count;
-}
 
-type NormalResult = {
-  status: Status;
-  winner: { alternative: string; count: number } | undefined;
-};
-
-type Count = { [key: string]: number };
+export type Count = { [key: string]: number };
 
 /**
  * @param votes - All votes for the election
@@ -43,8 +34,10 @@ const winningThreshold = (votes: Vote[], useStrict: boolean): number => {
  */
 const calculateWinnerUsingNormal = (
   inputVotes: any,
+  inputAlternatives: any,
+  seats = 1,
   useStrict = false
-): Normal => {
+): ElectionResult => {
   // Stringify and clean the votes
   const votes: Vote[] = inputVotes.map((vote: any) => ({
     _id: String(vote._id),
@@ -55,6 +48,15 @@ const calculateWinnerUsingNormal = (
     })),
     hash: vote.hash,
   }));
+
+  // Stringify and clean the alternatives
+  let alternatives: Alternative[] = inputAlternatives.map(
+    (alternative: any) => ({
+      _id: String(alternative._id),
+      description: alternative.description,
+      election: String(alternative._id),
+    })
+  );
 
   // Reduce votes to the distinct counts for each alternative
   const count: Count = votes.reduce(
@@ -82,18 +84,22 @@ const calculateWinnerUsingNormal = (
   // Check if we can call the vote Resolved based on
   const status = count[maxKey] >= thr ? Status.resolved : Status.unresolved;
 
-  // Create winner object
+  // Create winner alternative from maxKey
   const winner =
     count[maxKey] >= thr
-      ? { alternative: maxKey, count: count[maxKey] }
+      ? {
+          ...alternatives.find((a) => a.description === maxKey),
+          count: count[maxKey],
+        }
       : undefined;
 
   return {
     result: {
       status,
-      winner,
+      winners: winner ? [winner] : undefined,
     },
     thr,
+    seats,
     voteCount: inputVotes.length,
     blankVoteCount: count['blank'],
     useStrict,

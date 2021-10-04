@@ -7,12 +7,13 @@ describe('Strict Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 122,
+      seats: 1,
       voteCount: 182,
       blankVoteCount: 17,
       useStrict: true,
       result: {
         status: 'UNRESOLVED',
-        winner: undefined,
+        winners: undefined,
       },
       log: {
         Ja: 117,
@@ -27,12 +28,13 @@ describe('Strict Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 116,
+      seats: 1,
       voteCount: 173,
       blankVoteCount: 10,
       useStrict: true,
       result: {
         status: 'RESOLVED',
-        winner: { alternative: 'Ny Struktur', count: 123 },
+        winners: [{ description: 'Ny Struktur', count: 123 }],
       },
       log: {
         'Ny Struktur': 123,
@@ -47,12 +49,13 @@ describe('Strict Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 101,
+      seats: 1,
       voteCount: 150,
       blankVoteCount: 10,
       useStrict: true,
       result: {
         status: 'UNRESOLVED',
-        winner: undefined,
+        winners: undefined,
       },
       log: {
         Utvalg: 100,

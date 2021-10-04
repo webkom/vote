@@ -7,12 +7,13 @@ describe('Normal Blank Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 58,
+      seats: 1,
       voteCount: 115,
       blankVoteCount: 15,
       useStrict: false,
       result: {
         status: 'UNRESOLVED',
-        winner: undefined,
+        winners: undefined,
       },
       log: {
         Andrea: 45,
@@ -28,12 +29,13 @@ describe('Normal Blank Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 78,
+      seats: 1,
       voteCount: 155,
       blankVoteCount: 30,
       useStrict: false,
       result: {
         status: 'RESOLVED',
-        winner: { alternative: 'Lisa', count: 80 },
+        winners: [{ description: 'Lisa', count: 80 }],
       },
       log: {
         Lisa: 80,
@@ -48,12 +50,13 @@ describe('Normal Blank Logic', () => {
     const electionResult = await election.elect();
     electionResult.should.containSubset({
       thr: 18,
+      seats: 1,
       voteCount: 35,
       blankVoteCount: 0,
       useStrict: false,
       result: {
         status: 'RESOLVED',
-        winner: { alternative: 'Nei', count: 25 },
+        winners: [{ description: 'Nei', count: 25 }],
       },
       log: {
         Ja: 10,
