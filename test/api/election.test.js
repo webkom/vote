@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const sinonChai = require('sinon-chai');
 const app = require('../../app');
 const Election = require('../../app/models/election');
+const ElectionTypes = require('../../app/models/utils.js');
 const Alternative = require('../../app/models/alternative');
 const Vote = require('../../app/models/vote');
 const { test404, testAdminResource } = require('./helpers');
@@ -148,6 +149,7 @@ describe('Election API', () => {
       .send({
         title: 'Election',
         description: 'ElectionDesc',
+        type: ElectionTypes.STV,
         seats: 1,
       })
       .expect(201)
@@ -165,6 +167,7 @@ describe('Election API', () => {
       .send({
         title: 'Election',
         description: 'ElectionDesc',
+        type: ElectionTypes.STV,
         seats: 2,
       })
       .expect(201)
@@ -182,6 +185,7 @@ describe('Election API', () => {
       .send({
         title: 'Election',
         description: 'ElectionDesc',
+        type: ElectionTypes.STV,
         seats: 0,
       })
       .expect(400)
@@ -201,6 +205,7 @@ describe('Election API', () => {
       .send({
         title: 'Election',
         description: 'ElectionDesc',
+        type: ElectionTypes.STV,
         seats: -1,
       })
       .expect(400)
@@ -220,6 +225,7 @@ describe('Election API', () => {
       .send({
         title: 'StrictElection',
         description: 'StrictElectionDesc',
+        type: ElectionTypes.STV,
         seats: 1,
         useStrict: true,
       })
@@ -238,6 +244,7 @@ describe('Election API', () => {
       .send({
         title: 'StrictElection',
         description: 'StrictElectionDesc',
+        type: ElectionTypes.STV,
         seats: 2,
         useStrict: true,
       })
@@ -247,6 +254,27 @@ describe('Election API', () => {
     error.name.should.equal('ValidationError');
     error.errors.useStrict.message.should.equal(
       'Strict elections must have exactly one seat'
+    );
+    error.status.should.equal(400);
+  });
+
+  it('should return 400 when creating normal elections with more then one seat', async function () {
+    passportStub.login(this.adminUser.username);
+    const { body: error } = await request(app)
+      .post('/api/election')
+      .send({
+        title: 'NormalElection',
+        description: 'NormalElectionDesc',
+        seats: 2,
+        type: ElectionTypes.NORMAL,
+        useStrict: false,
+      })
+      .expect(400)
+      .expect('Content-Type', /json/);
+
+    error.name.should.equal('ValidationError');
+    error.errors.type.message.should.equal(
+      'Normal elections must have exactly one seat'
     );
     error.status.should.equal(400);
   });
