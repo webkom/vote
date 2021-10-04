@@ -1,4 +1,6 @@
+const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
+  type: ElectionTypes.STV,
   alternatives: ['Bytte', 'Fjerne'],
   useStrict: true,
   priorities: [

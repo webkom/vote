@@ -1,6 +1,8 @@
 // Dataset from "Created ourselves"
+const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
   seats: 1,
+  type: ElectionTypes.STV,
   alternatives: ['Bent Høye', 'Siv Jensen', 'Erna Solberg'],
   priorities: [
     {
