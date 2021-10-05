@@ -6,40 +6,66 @@
           h2 {{ activeElection.title }}
           p {{ activeElection.description }}
 
-        .alternatives
-          ul.list-unstyled
-            li(
-              ng-repeat='alternative in getPossibleAlternatives()',
-              ng-click='selectAlternative(alternative)'
-            )
-              .content
-                p {{ alternative.description }}
-              .icon.add(ng-click='deselectAlternative(alternative._id)')
-                i.fa.fa-plus
+        div(ng-switch='activeElection.type')
+          // STV election
+          // ---------------------------------------------------------------
+          div(ng-switch-when='stv')
+            .alternatives
+              ul.list-unstyled
+                li(
+                  ng-repeat='alternative in getPossibleAlternatives()',
+                  ng-click='selectAlternative(alternative)'
+                )
+                  .content
+                    p {{ alternative.description }}
+                  .icon.add(ng-click='deselectAlternative(alternative._id)')
+                    i.fa.fa-plus
 
-        .alternatives
-          h3 Din prioritering
-          p.helptext(ng-if='priorities.length == 0')
-            em Velg et alternativ fra listen
+            .alternatives
+              h3 Din prioritering
+              p.helptext(ng-if='priorities.length == 0')
+                em Velg et alternativ fra listen
 
-          ul.list-unstyled.numbered(
-            sortable,
-            sortable-on-update='updatePriority',
-            sortable-list='priorities',
-            sortable-animation='100',
-            sortable-delay='0',
-            sortable-handle='.content'
-          )
-            li(ng-repeat='alternative in priorities track by alternative._id')
-              .content
-                .drag
-                  i.fa.fa-bars
-                div
-                  p {{ alternative.description }}
-              .icon.remove(ng-click='deselectAlternative(alternative._id)')
-                i.fa.fa-close
+              ul.list-unstyled.numbered(
+                sortable,
+                sortable-on-update='updatePriority',
+                sortable-list='priorities',
+                sortable-animation='100',
+                sortable-delay='0',
+                sortable-handle='.content'
+              )
+                li(
+                  ng-repeat='alternative in priorities track by alternative._id'
+                )
+                  .content
+                    .drag
+                      i.fa.fa-bars
+                    div
+                      p {{ alternative.description }}
+                  .icon.remove(ng-click='deselectAlternative(alternative._id)')
+                    i.fa.fa-close
+          // -------------------------------------------------------------------
+
+          // NORMAL type election view
+          // -------------------------------------------------------------------
+          div(ng-switch-when='normal')
+            .alternatives
+              h3 Alternativer
+              ul.list-unstyled
+                li(
+                  ng-repeat='alternative in activeElection.alternatives',
+                  ng-click='toggleAlternative(alternative)'
+                )
+                  .content(ng-class='{"selected": isChosen(alternative)}')
+                    p {{ alternative.description }}
+
+          // -------------------------------------------------------------------
 
         button.btn.btn-lg.btn-default(type='button', ng-click='confirm()') {{ priorities.length === 0 ? "Stem Blank" : "Avgi stemme" }}
+
+        div
+
+        button.btn.btn-sm.btn-danger(type='button', ng-click='reset()') Reset
 
       div(ng-switch-when='true')
         h3 Bekreft din stemme
