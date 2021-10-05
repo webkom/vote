@@ -1,5 +1,5 @@
 import cloneDeep = require('lodash/cloneDeep');
-import { Status, Vote, Alternative, ElectionResult } from './types';
+import { Status, Vote, Alternative, ElectionResult, Count } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied
 // If you make changes to this file it must be recomplied using `tsc` in
@@ -7,10 +7,6 @@ import { Status, Vote, Alternative, ElectionResult } from './types';
 //
 // app/models/election .elect() is the only file that uses this function
 // and importes it from stv.js, which is the compiled result of this file.
-
-type STVCounts = {
-  [key: string]: number;
-};
 
 enum Action {
   iteration = 'ITERATION',
@@ -143,8 +139,8 @@ const calculateWinnerUsingSTV = (
     votes = votes.filter((vote: Vote) => vote.priorities.length > 0);
 
     // Dict with the counts for each candidate
-    const counts: STVCounts = alternatives.reduce(
-      (counts: STVCounts, alternative: Alternative) => ({
+    const counts: Count = alternatives.reduce(
+      (counts: Count, alternative: Alternative) => ({
         ...counts,
         [alternative.description]: 0,
       }),

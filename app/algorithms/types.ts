@@ -1,5 +1,6 @@
-import { Count } from './normal';
 import { STVEvent } from './stv';
+
+export type Count = { [key: string]: number };
 
 export type Alternative = {
   _id: string;

@@ -1,5 +1,5 @@
 import isEmpty = require('lodash/isEmpty');
-import { Status, Vote, Alternative, ElectionResult } from './types';
+import { Status, Vote, Alternative, ElectionResult, Count } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied
 // If you make changes to this file it must be recomplied using `tsc` in
@@ -9,8 +9,6 @@ import { Status, Vote, Alternative, ElectionResult } from './types';
 // and importes it from normal.js, which is the compiled result of this file.
 //
 //
-
-export type Count = { [key: string]: number };
 
 /**
  * @param votes - All votes for the election
@@ -60,7 +58,7 @@ const calculateWinnerUsingNormal = (
 
   // Reduce votes to the distinct counts for each alternative
   const count: Count = votes.reduce(
-    (reduced: any, vote: Vote) => {
+    (reduced: Count, vote: Vote) => {
       if (isEmpty(vote.priorities)) {
         reduced['blank'] += 1;
       } else {
