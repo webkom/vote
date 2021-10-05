@@ -54,7 +54,7 @@
     "handlebars": "4.7.7",
     "lodash": "4.17.21",
     "method-override": "3.0.0",
-    "mongoose": "5.8.1",
+    "mongoose": "5.13.8",
     "nib": "1.1.2",
     "nodemailer": "6.4.17",
     "nyc": "15.1.0",
