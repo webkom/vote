@@ -2,13 +2,8 @@
   .center.text-center
     .election-info.admin
       h2 {{ election.title }}
+      i Type: {{ election.type }}
       p {{ election.description }}
-      h3 Tilgangskode:
-        span.access-code.mono {{ election.accessCode }}
-        i.fa.fa-copy.copy-icon.cs-tooltip(
-          ng-click='copyToClipboard(election.accessCode)'
-        )
-          .cs-tooltiptext {{ copySuccess ? "Kopiert!" : "Kopier" }}
 
     .election-info.admin
       h3.user-status
@@ -22,6 +17,13 @@
       )
         | {{ election.active ? "Deaktiver" : "Aktiver" }}
 
+      h3 Tilgangskode:
+        span.access-code.mono {{ election.accessCode }}
+        i.fa.fa-copy.copy-icon.cs-tooltip(
+          ng-click='copyToClipboard(election.accessCode)'
+        )
+          .cs-tooltiptext {{ copySuccess ? "Kopiert!" : "Kopier" }}
+
     .alternatives.admin
       h3 Alternativer
 
@@ -31,40 +33,37 @@
             div
               p {{ alternative.description }}
 
-      form.add-alternative.form-group(
-        name='alternativeForm',
-        ng-submit='addAlternative(newAlternative)'
-      )
-        input#new-alternative.form-control(
-          type='text',
-          name='alternative',
-          placeholder='Skriv inn alternativ',
-          ng-if='!election.active',
-          ng-model='newAlternative.description',
-          required
+      div(ng-if='!election.active')
+        form.add-alternative.form-group(
+          name='alternativeForm',
+          ng-submit='addAlternative(newAlternative)'
         )
+          input#new-alternative.form-control(
+            type='text',
+            name='alternative',
+            placeholder='Skriv inn alternativ',
+            ng-model='newAlternative.description',
+            required
+          )
 
-        button.add-alternative.btn.btn-default(
-          type='submit',
-          value='Submit',
-          ng-if='!election.active',
-          ng-disabled='alternativeForm.$invalid'
-        ) Legg til alternativ
+          button.add-alternative.btn.btn-default(
+            type='submit',
+            value='Submit',
+            ng-disabled='alternativeForm.$invalid'
+          ) Legg til alternativ
 
-        button.toggle-show.btn.btn-default(
-          type='button',
-          ng-click='copyElection()',
-          ng-if='!election.active'
-        )
-          | Kopier avstemning
+          button.toggle-show.btn.btn-default(
+            type='button',
+            ng-click='copyElection()'
+          )
+            | Kopier avstemning
 
-        button.toggle-show.btn.btn-default(
-          type='button',
-          ng-click='toggleResult()',
-          ng-if='!election.active',
-          ng-class='{"alone": election.active}'
-        )
-          | {{ showResult ? "Fjern resultat" : "Kalkuler resultat" }}
+          button.toggle-show.btn.btn-default(
+            type='button',
+            ng-click='toggleResult()',
+            ng-class='{"alone": election.active}'
+          )
+            | {{ showResult ? "Fjern resultat" : "Kalkuler resultat" }}
 
     div(ng-if='showResult')
       h2 Oppsummering
@@ -92,23 +91,31 @@
                 span.cs-tooltiptext Antall plasser + 1
               span ⌋ + 1 = {{ election.thr }}
       h2 Logg
-      ul.list-unstyled.log.mono
-        li(ng-repeat='elem in election.log', ng-switch='elem.action')
-          div(ng-switch-when='ITERATION')
-            h5 {{ elem.action }} {{ elem.iteration }}
-            p(ng-repeat='(key, value) in elem.counts') {{ key }} with {{ value }} votes
-          div(ng-switch-when='WIN')
-            h5 {{ elem.action }}
-            p Elected: {{ elem.alternative.description }} with {{ elem.voteCount }} votes
-          div(ng-switch-when='ELIMINATE')
-            h5 {{ elem.action }}
-            p Eliminated: {{ elem.alternative.description }} with {{ elem.minScore }} votes
-          div(ng-switch-when='MULTI_TIE_ELIMINATIONS')
-            h5 {{ elem.action }}
-            p(ng-repeat='alt in elem.alternatives') Eliminated: {{ alt.description }} with {{ elem.minScore }} votes
-          div(ng-switch-when='TIE')
-            h5 {{ elem.action }}
-            p {{ elem.description }}
+      div(ng-if='election.type == "stv"')
+        ul.list-unstyled.log.mono
+          li(ng-repeat='elem in election.log', ng-switch='elem.action')
+            div(ng-switch-when='ITERATION')
+              h5 {{ elem.action }} {{ elem.iteration }}
+              p(ng-repeat='(key, value) in elem.counts') {{ key }} with {{ value }} votes
+            div(ng-switch-when='WIN')
+              h5 {{ elem.action }}
+              p Elected: {{ elem.alternative.description }} with {{ elem.voteCount }} votes
+            div(ng-switch-when='ELIMINATE')
+              h5 {{ elem.action }}
+              p Eliminated: {{ elem.alternative.description }} with {{ elem.minScore }} votes
+            div(ng-switch-when='MULTI_TIE_ELIMINATIONS')
+              h5 {{ elem.action }}
+              p(ng-repeat='alt in elem.alternatives') Eliminated: {{ alt.description }} with {{ elem.minScore }} votes
+            div(ng-switch-when='TIE')
+              h5 {{ elem.action }}
+              p {{ elem.description }}
+
+      div(ng-if='election.type == "normal"')
+        table.table.mono
+          tbody
+            tr(ng-repeat='(key, value) in election.log')
+              th.th-left {{ key }}
+              th.th-right {{ value }}
       hr
       h2 Resultat
       div(ng-class='\'alert-\' + election.status') {{ election.result.status }}
