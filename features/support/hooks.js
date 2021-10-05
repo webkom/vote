@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Election = require('../../app/models/election');
+const ElectionTypes = require('../../app/models/utils');
 const Alternative = require('../../app/models/alternative');
 const helpers = require('../../test/helpers');
 const server = require('../../server');
@@ -10,6 +11,7 @@ const dropDatabase = helpers.dropDatabase;
 module.exports = function () {
   const activeElectionData = {
     title: 'activeElection1',
+    type: ElectionTypes.STV,
     description: 'active election 1',
     active: true,
   };
