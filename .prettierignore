@@ -3,4 +3,4 @@ node_modules
 *.map
 dist
 public
-app/stv/stv.js
+app/algorithms/*.js

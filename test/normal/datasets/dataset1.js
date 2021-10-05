@@ -1,12 +1,10 @@
-// Dataset from https://en.wikipedia.org/wiki/Droop_quota
 const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
-  seats: 2,
-  type: ElectionTypes.STV,
+  type: ElectionTypes.NORMAL,
   alternatives: ['Andrea', 'Carter', 'Brad'],
   priorities: [
     {
-      priority: ['Andrea', 'Carter'],
+      priority: ['Andrea'],
       amount: 45,
     },
     {
@@ -16,6 +14,10 @@ module.exports = {
     {
       priority: ['Brad'],
       amount: 30,
+    },
+    {
+      priority: [],
+      amount: 15,
     },
   ],
 };

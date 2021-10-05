@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const cloneDeep = require("lodash/cloneDeep");
+const types_1 = require("./types");
 var Action;
 (function (Action) {
     Action["iteration"] = "ITERATION";
@@ -9,11 +10,6 @@ var Action;
     Action["multi_tie_eliminations"] = "MULTI_TIE_ELIMINATIONS";
     Action["tie"] = "TIE";
 })(Action || (Action = {}));
-var Status;
-(function (Status) {
-    Status["resolved"] = "RESOLVED";
-    Status["unresolved"] = "UNRESOLVED";
-})(Status || (Status = {}));
 const winningThreshold = (votes, seats, useStrict) => {
     if (useStrict) {
         return Math.floor((2 * votes.length) / 3) + 1;
@@ -21,7 +17,7 @@ const winningThreshold = (votes, seats, useStrict) => {
     return Math.floor(votes.length / (seats + 1) + 1);
 };
 const EPSILON = 0.000001;
-exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, useStrict = false) => {
+const calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, useStrict = false) => {
     const log = [];
     let votes = inputVotes.map((vote) => ({
         _id: String(vote._id),
@@ -87,7 +83,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
         if (Object.keys(roundWinners).length > 0) {
             if (winners.length === seats) {
                 return {
-                    result: { status: Status.resolved, winners },
+                    result: { status: types_1.Status.resolved, winners },
                     log,
                     thr,
                     seats,
@@ -175,7 +171,7 @@ exports.calculateWinnerUsingSTV = (inputVotes, inputAlternatives, seats = 1, use
         alternatives = alternatives.filter((alternative) => !doneAlternatives[alternative._id]);
     }
     return {
-        result: { status: Status.unresolved, winners },
+        result: { status: types_1.Status.unresolved, winners },
         log,
         thr,
         seats,
@@ -189,4 +185,5 @@ const handleFloatsInOutput = (obj) => {
     Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
     return newObj;
 };
+exports.default = calculateWinnerUsingSTV;
 //# sourceMappingURL=stv.js.map

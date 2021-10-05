@@ -1,17 +1,15 @@
 const ElectionTypes = require('../../../app/models/utils.js');
 module.exports = {
-  seats: 1,
-  type: ElectionTypes.STV,
-  useStrict: true,
-  alternatives: ['A', 'B'],
+  type: ElectionTypes.NORMAL,
+  alternatives: ['Ja', 'Nei'],
   priorities: [
     {
-      priority: ['A'],
+      priority: ['Ja'],
       amount: 10,
     },
     {
-      priority: ['B'],
-      amount: 10,
+      priority: ['Nei'],
+      amount: 25,
     },
   ],
 };
