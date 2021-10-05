@@ -64,9 +64,14 @@ module.exports = [
   'alertService',
   function ($window, $location, $rootScope, alertService) {
     $rootScope.$on('$routeChangeStart', function () {
+      alertService.closeAll();
       angular.element($window).unbind('message');
       clearTimeout($rootScope.serialTimeout);
     });
+
+    // Very simple lock to indicate whether the serial device is ready or is currently busy
+    // with a read() operation
+    $rootScope.readerBusy = false;
 
     return {
       listen: async function (cb) {
@@ -143,7 +148,11 @@ Usage: scanCard(123) // where 123 is the cardId `);
             // Keep reading bytes until the "end" byte is sent
             // The "end" byte is 0xbb
             while (!finished) {
+              // Stop the read if the device is busy somewhere else
+              if ($rootScope.readerBusy) break;
+              $rootScope.readerBusy = true;
               const { value } = await $rootScope.serialDevice.reader.read();
+              $rootScope.readerBusy = false;
               for (let i = 0; i < value.length; i++) {
                 // First byte in a message should be 170, otherwise ignore and keep on going
                 if (message.length === 0 && value[i] !== 170) {
@@ -178,6 +187,7 @@ Usage: scanCard(123) // where 123 is the cardId `);
             } catch (e) {
               /* eslint no-console: 0 */
               console.error('Error doing card stuff', e);
+              $rootScope.readerBusy = false;
             } finally {
               $rootScope.serialTimeout = setTimeout(runPoll, 150);
             }
