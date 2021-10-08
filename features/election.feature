@@ -22,7 +22,7 @@ Feature: Election
     Then I see alert "Takk for din stemme!"
 
   Scenario: Prioritizing alternatives
-    Given There is an active election
+    Given There is an active "stv" election
     When I select "another test alternative"
     When I select "test alternative"
     Then I see "another test alternative" as priority 1
@@ -44,12 +44,12 @@ Feature: Election
     Then I see "Blank stemme" in ".ballot h3"
 
   Scenario: Retrieve vote from localStorage
-    Given There is an active election
+    Given There is an active "stv" election
     And I have voted on the election
     And I am on page "/retrieve"
     Then I see my hash in "voteHash"
     When I submit the form
-    Then I see "Din prioritering på: activeElection1" in ".vote-result-feedback h3"
+    Then I see "Din prioritering på: activeElectionSTV" in ".vote-result-feedback h3"
     And I see "test alternative" as priority 1 on the receipt
 
   Scenario: Retrieve vote with invalid hash

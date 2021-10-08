@@ -2,6 +2,7 @@ const chai = require('chai');
 const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const Vote = require('../../app/models/vote');
+const ElectionTypes = require('../../app/models/utils');
 const expect = chai.expect;
 
 chai.use(chaiAsPromised);
@@ -15,8 +16,30 @@ by.addLocator(
 );
 
 module.exports = function () {
-  this.Given(/^There is an (in)?active election$/, function (arg) {
+  this.Given(/^There is an (in)?active "([^"]*)" election$/, async function (
+    arg,
+    electionType
+  ) {
+    this.normalElection.active = false;
+    this.stvElection.active = false;
+    await this.normalElection.save();
+    await this.stvElection.save();
+
     const active = arg !== 'in';
+    if (electionType === ElectionTypes.STV) {
+      this.election = this.stvElection;
+    } else if (electionType === ElectionTypes.NORMAL) {
+      this.election = this.normalElection;
+    }
+    this.election.active = active;
+    return this.election.save();
+  });
+
+  this.Given(/^There is an (in)?active election$/, async function (arg) {
+    const active = arg !== 'in';
+    this.stvElection.active = false;
+    await this.stvElection.save();
+    this.election = this.normalElection;
     this.election.active = active;
     return this.election.save();
   });
@@ -82,19 +105,25 @@ module.exports = function () {
     element(by.css('button')).click();
   });
 
-  function vote() {
-    const alternatives = element.all(
-      by.repeater('alternative in getPossibleAlternatives()')
-    );
+  function vote(election) {
+    let alternatives;
+    if (election.type === ElectionTypes.STV)
+      alternatives = element.all(
+        by.repeater('alternative in getPossibleAlternatives()')
+      );
+    else if (election.type === ElectionTypes.NORMAL)
+      alternatives = element.all(
+        by.repeater('alternative in activeElection.alternatives')
+      );
     const alternative = alternatives.first();
-    const button = element(by.css('button'));
+    const button = element(by.buttonText('Avgi stemme'));
 
     alternative.click();
     button.click();
   }
 
   this.Given(/^I have voted on the election$/, function () {
-    vote();
+    vote(this.election);
     confirmVote(true);
   });
 
