@@ -9,11 +9,18 @@ const clearCollections = helpers.clearCollections;
 const dropDatabase = helpers.dropDatabase;
 
 module.exports = function () {
-  const activeElectionData = {
-    title: 'activeElection1',
+  const activeSTVElectionData = {
+    title: 'activeElectionSTV',
     type: ElectionTypes.STV,
-    description: 'active election 1',
+    description: 'active election STV',
     active: true,
+  };
+
+  const activeNormalElectionData = {
+    title: 'activeElection NORMAL',
+    type: ElectionTypes.NORMAL,
+    description: 'active election NORMAL',
+    active: false,
   };
 
   const testAlternative = {
@@ -30,14 +37,24 @@ module.exports = function () {
 
   this.Before(async function () {
     await clearCollections();
-    const election = await new Election(activeElectionData);
-    this.election = election;
+    const stvElection = await new Election(activeSTVElectionData);
+    this.stvElection = stvElection;
+    this.election = stvElection;
+
+    const normalElection = await new Election(activeNormalElectionData);
+    this.normalElection = normalElection;
+
     this.alternatives = await Promise.all(
       alternatives.map((alternative) => new Alternative(alternative))
     );
 
+    this.stvAlternatives = await Promise.all(
+      alternatives.map((alternative) => new Alternative(alternative))
+    );
+
     for (let i = 0; i < alternatives.length; i++) {
-      await election.addAlternative(this.alternatives[i]);
+      await stvElection.addAlternative(this.stvAlternatives[i]);
+      await normalElection.addAlternative(this.alternatives[i]);
     }
 
     await createUsers().spread((user, adminUser) => {

@@ -2,8 +2,11 @@ const chai = require('chai');
 const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const Election = require('../../app/models/election');
+const User = require('../../app/models/user');
 
 const expect = chai.expect;
+
+const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
 
 chai.use(chaiAsPromised);
 
@@ -27,9 +30,9 @@ module.exports = function () {
 
     Bluebird.all([
       expect(election.element(by.css('span')).getText()).to.eventually.equal(
-        this.election.title
+        this.stvElection.title
       ),
-      expect(alternatives.count()).to.eventually.equal(1),
+      expect(alternatives.count()).to.eventually.equal(2),
     ]);
   });
 
@@ -67,15 +70,52 @@ module.exports = function () {
       })
   );
 
-  this.Given(/^The election has votes$/, async function () {
-    await this.election.addVote(this.user, [this.alternatives[0]]);
+  this.Given(/^There are (\d+) users$/, async function (userCount) {
+    this.users = await Promise.all(
+      [...Array(Number(userCount)).keys()].map((i) =>
+        User.create({
+          username: `testuser${i}`,
+          cardKey: `${i}${i}TESTCARDKEY`,
+          hash,
+        })
+      )
+    );
+  });
+
+  this.Then(
+    /The election(?: "([^"]*)")? should have ([^"]*) "([^"]*)"/,
+    (electionTitle, field, value) => {
+      Election.find({ title: electionTitle || newElection.title })
+        .exec()
+        .spread((election) => {
+          expect(election[field].toString()).to.equal(value);
+        });
+    }
+  );
+
+  this.Given(
+    /^The election has "([^"]*)" (\d+)|(?:"([^"]*)")$"/,
+    async function (field, num, str) {
+      this.election[field] = num || str;
+      await this.election.save();
+    }
+  );
+
+  this.Given(/^The election has(?: (\d+))? votes$/, async function (count) {
+    if (count) {
+      for (let i = 0; i < count; i++) {
+        await this.election.addVote(this.users[i], [this.alternatives[i]]);
+      }
+    } else {
+      await this.election.addVote(this.user, [this.alternatives[0]]);
+    }
   });
 
   this.Given(/^I am on the edit election page$/, function () {
     browser.get(`/admin/election/${this.election.id}/edit`);
   });
 
-  this.Then(/^I should see votes$/, function () {
+  this.Then(/^I should see the stv log$/, function () {
     const alternatives = element.all(
       by.repeater('(key, value) in elem.counts')
     );
@@ -86,7 +126,7 @@ module.exports = function () {
         `${this.alternatives[0].description} with 1 votes`
       ),
       expect(alternatives.get(1).getText()).to.eventually.equal(
-        `${this.alternatives[1].description} with 0 votes`
+        `${this.alternatives[1].description} with 1 votes`
       ),
       expect(alternatives.get(2).getText()).to.eventually.equal(
         `${this.alternatives[2].description} with 0 votes`

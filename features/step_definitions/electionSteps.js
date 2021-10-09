@@ -2,6 +2,7 @@ const chai = require('chai');
 const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const Vote = require('../../app/models/vote');
+const ElectionTypes = require('../../app/models/utils');
 const expect = chai.expect;
 
 chai.use(chaiAsPromised);
@@ -15,10 +16,31 @@ by.addLocator(
 );
 
 module.exports = function () {
-  this.Given(/^There is an (in)?active election$/, function (arg) {
-    const active = arg !== 'in';
-    this.election.active = active;
-    return this.election.save();
+  this.Given(/^There is an active "([^"]*)" election$/, async function (
+    electionType
+  ) {
+    this.normalElection.active = false;
+    await this.normalElection.save();
+    this.stvElection.active = false;
+    await this.stvElection.save();
+
+    if (electionType === ElectionTypes.STV) {
+      this.election = this.stvElection;
+    } else if (electionType === ElectionTypes.NORMAL) {
+      this.election = this.normalElection;
+    }
+    this.election.active = true;
+    await this.election.save();
+    const driver = browser.driver;
+    driver.get('http://localhost:3000/');
+  });
+
+  this.Given(/^There is an inactive election$/, async function () {
+    this.normalElection.active = false;
+    await this.normalElection.save();
+
+    this.stvElection.active = false;
+    await this.stvElection.save();
   });
 
   this.Given(/^The election is (de)?activated/, function (arg) {
@@ -54,9 +76,15 @@ module.exports = function () {
     ]);
   });
 
-  this.When(/^I select "([^"]*)"$/, function (alternative) {
+  this.When(/^I (de)?select "([^"]*)"$/, function (de, alternative) {
     const alternatives = element.all(
-      by.repeater('alternative in getPossibleAlternatives()')
+      by.repeater(
+        this.election.type == ElectionTypes.STV
+          ? de == 'de'
+            ? 'alternative in priorities track by alternative._id'
+            : 'alternative in getPossibleAlternatives()'
+          : 'alternative in activeElection.alternatives'
+      )
     );
     const wantedAlternative = alternatives
       .filter((a) =>
@@ -79,35 +107,48 @@ module.exports = function () {
   });
 
   this.When(/^I submit the vote$/, () => {
-    element(by.css('button')).click();
+    element(by.buttonText('Avgi stemme')).click();
   });
 
-  function vote() {
-    const alternatives = element.all(
-      by.repeater('alternative in getPossibleAlternatives()')
-    );
+  function vote(type) {
+    let alternatives;
+    if (type == ElectionTypes.STV)
+      alternatives = element.all(
+        by.repeater('alternative in getPossibleAlternatives()')
+      );
+    else if (type == ElectionTypes.NORMAL) {
+      alternatives = element.all(
+        by.repeater('alternative in activeElection.alternatives')
+      );
+    }
     const alternative = alternatives.first();
-    const button = element(by.css('button'));
+    const button = element(by.buttonText('Avgi stemme'));
 
     alternative.click();
     button.click();
   }
 
-  this.Given(/^I have voted on the election$/, function () {
-    vote();
-    confirmVote(true);
+  this.Given(/^I have voted on the election$/, async function () {
+    if (this.election.type === ElectionTypes.NORMAL)
+      await this.election.addVote(this.user, [this.alternatives[0]]);
+    else if (this.election.type === ElectionTypes.STV)
+      await this.election.addVote(this.user, [this.stvAlternatives[0]]);
   });
 
   this.When(/^I vote on an election$/, function () {
-    vote();
+    vote(this.election.type);
     confirmVote(true);
   });
 
   this.Then(/^I see my hash in "([^"]*)"$/, function (name) {
     const input = element(by.name(name));
+    const alternative =
+      this.election.type === ElectionTypes.NORMAL
+        ? this.alternatives[0]
+        : this.stvAlternatives[0];
     return Vote.findOne({
       priorities: {
-        $all: [this.alternatives[0]],
+        $all: [alternative],
       },
     }).then((foundVote) =>
       expect(input.getAttribute('value')).to.eventually.equal(foundVote.hash)
@@ -123,6 +164,14 @@ module.exports = function () {
     return expect(
       priorities.get(Number(position) - 1).getText()
     ).to.eventually.contain(alternative.toUpperCase());
+  });
+
+  this.Then(/^I have (\d+) alternative on the confirmation ballot$/, function (
+    count
+  ) {
+    const priorities = element.all(by.repeater('alternative in priorities'));
+
+    return expect(priorities.count()).to.eventually.equal(Number(count));
   });
 
   this.Then(
