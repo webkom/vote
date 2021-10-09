@@ -13,7 +13,7 @@ module.exports = function () {
     title: 'activeElectionSTV',
     type: ElectionTypes.STV,
     description: 'active election STV',
-    active: false,
+    active: true,
   };
 
   const activeNormalElectionData = {
@@ -39,17 +39,21 @@ module.exports = function () {
     await clearCollections();
     const stvElection = await new Election(activeSTVElectionData);
     this.stvElection = stvElection;
+    this.election = stvElection;
 
     const normalElection = await new Election(activeNormalElectionData);
     this.normalElection = normalElection;
-    this.election = normalElection;
 
     this.alternatives = await Promise.all(
       alternatives.map((alternative) => new Alternative(alternative))
     );
 
+    this.stvAlternatives = await Promise.all(
+      alternatives.map((alternative) => new Alternative(alternative))
+    );
+
     for (let i = 0; i < alternatives.length; i++) {
-      await stvElection.addAlternative(this.alternatives[i]);
+      await stvElection.addAlternative(this.stvAlternatives[i]);
       await normalElection.addAlternative(this.alternatives[i]);
     }
 
