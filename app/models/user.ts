@@ -1,10 +1,30 @@
 import _ from 'lodash';
 import Bluebird from 'bluebird';
 import bcrypt from 'bcryptjs';
-import mongoose from 'mongoose';
+import mongoose, { Model, Schema, Document } from 'mongoose';
 import errors from '../errors';
 
-const Schema = mongoose.Schema;
+
+export interface IUser extends Document {
+  username: string;
+  hash: string;
+  active: boolean;
+  admin: boolean;
+  moderator: boolean;
+  cardKey: string;
+
+
+  // methods
+  getCleanUser() : IUser;
+  authenticate(password : string) : Promise<boolean>;
+}
+
+export interface UserModel extends Model<IUser> {
+  // statics
+  authenticate(username : string, password : string) : Promise<IUser>;
+  findByUsername(username : string) : Promise<IUser>;
+  register(body : IUser, password : string) : Promise<IUser>;
+}
 
 const userSchema = new Schema({
   username: {
@@ -37,7 +57,7 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre('save', function (next) {
+userSchema.pre<IUser>('save', function (this, next) {
   // Usernames are case-insensitive, so store them in lowercase:
   this.username = this.username.toLowerCase();
   next();
@@ -48,11 +68,11 @@ userSchema.methods.getCleanUser = function () {
   return user;
 };
 
-userSchema.statics.findByUsername = function (username) {
+userSchema.statics.findByUsername = function (username : string) {
   return this.findOne({ username: username.toLowerCase() });
 };
 
-userSchema.statics.register = function (body, password) {
+userSchema.statics.register = function (body : IUser, password : string) {
   if (!password) throw new errors.InvalidRegistrationError('Missing password');
   // The controller expects a Bluebird promise, so we wrap it in resolve:
   return Bluebird.resolve(bcrypt.genSalt())
@@ -60,14 +80,14 @@ userSchema.statics.register = function (body, password) {
     .then((hash) => this.create(Object.assign(body, { hash })));
 };
 
-userSchema.statics.authenticate = function (username, password) {
-  let _user;
+userSchema.statics.authenticate = function (username : string, password : string) {
+  let _user : IUser;
   return this.findOne({ username })
-    .then((user) => {
+    .then((user : IUser) => {
       _user = user;
       return user.authenticate(password);
     })
-    .then((result) => {
+    .then((result : boolean) => {
       if (!result) {
         throw new errors.InvalidRegistrationError(
           'Incorrect username and/or password.'
@@ -78,9 +98,9 @@ userSchema.statics.authenticate = function (username, password) {
     });
 };
 
-userSchema.methods.authenticate = function (password) {
+userSchema.methods.authenticate = function (this : IUser, password : string) {
   // The controller expects a Bluebird promise, so we wrap it in resolve:
   return Bluebird.resolve(bcrypt.compare(password, this.hash));
 };
 
-export default mongoose.model('User', userSchema);
+export default mongoose.model<IUser, UserModel>('User', userSchema);
