@@ -1,14 +1,15 @@
 import mongoose from 'mongoose';
-import User from '../models/user';
+import User, { IUser } from '../models/user';
 import Register from '../models/register';
 import errors from '../errors';
-import errorChecks from '../errors/error-checks';
+import { badRequestError, duplicateError } from '../errors/error-checks';
 import crypto from 'crypto';
 import { mailHandler } from '../digital/mail';
 import short from 'short-uuid';
+import { RequestHandler } from 'express';
 
-export const count = async (req, res) => {
-  const query = { admin: false, moderator: false };
+export const count: RequestHandler = async (req, res) => {
+  const query: mongoose.FilterQuery<IUser> = { admin: false, moderator: false };
   if (req.query.active === 'true') {
     query.active = true;
   } else if (req.query.active === 'false') {
@@ -19,12 +20,12 @@ export const count = async (req, res) => {
   res.json({ users: count });
 };
 
-export const list = async (req, res) => {
+export const list: RequestHandler = async (req, res) => {
   const users = await User.find({}, 'username admin active moderator');
   res.json(users);
 };
 
-export const create = (req, res) => {
+export const create: RequestHandler = (req, res) => {
   const user = new User(req.body);
   return User.register(user, req.body.password)
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
@@ -33,20 +34,20 @@ export const create = (req, res) => {
         throw new errors.ValidationError(err.errors);
       }
 
-      if (errorChecks.duplicateError(err)) {
+      if (duplicateError(err)) {
         if (err.message.includes('cardKey')) {
           throw new errors.DuplicateCardError();
         }
         throw new errors.DuplicateUsernameError();
       }
 
-      if (errorChecks.badRequestError(err)) {
+      if (badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
     });
 };
 
-export const generate = async (req, res) => {
+export const generate: RequestHandler = async (req, res) => {
   const { identifier, email, ignoreExistingUser } = req.body;
 
   if (!identifier) throw new errors.InvalidPayloadError('identifier');
@@ -124,20 +125,20 @@ export const generate = async (req, res) => {
         throw new errors.ValidationError(err.errors);
       }
 
-      if (errorChecks.duplicateError(err)) {
+      if (duplicateError(err)) {
         if (err.message.includes('cardKey')) {
           throw new errors.DuplicateCardError();
         }
         throw new errors.DuplicateUsernameError();
       }
 
-      if (errorChecks.badRequestError(err)) {
+      if (badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
     });
 };
 
-export const toggleActive = async (req, res) => {
+export const toggleActive: RequestHandler = async (req, res) => {
   const user = await User.findOne({ cardKey: req.params.cardKey });
   if (!user) {
     throw new errors.NotFoundError('user');
@@ -148,7 +149,7 @@ export const toggleActive = async (req, res) => {
   res.json(saved);
 };
 
-export const changeCard = (req, res) =>
+export const changeCard: RequestHandler = (req, res) =>
   User.authenticate(req.params.username, req.body.password)
     .then((user) => {
       user.cardKey = req.body.cardKey;
@@ -158,12 +159,12 @@ export const changeCard = (req, res) =>
       res.json(user);
     })
     .catch((err) => {
-      if (errorChecks.duplicateError(err)) {
+      if (duplicateError(err)) {
         throw new errors.DuplicateCardError();
       }
     });
 
-export const deactivateAllNonAdmin = async (req, res) => {
+export const deactivateAllNonAdmin: RequestHandler = async (req, res) => {
   await User.updateMany(
     { admin: false, moderator: false },
     { active: false },
