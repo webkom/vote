@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import mongoose from 'mongoose';
 import Election from '../models/election';
 import User from '../models/user';
@@ -13,8 +12,10 @@ export const load = (req, res, next, electionId) =>
       req.election = election;
       next();
     })
-    .catch(mongoose.Error.CastError, (err) => {
-      throw new errors.NotFoundError('election');
+    .catch(err => {
+      if (err instanceof mongoose.Error.CastError) {
+        throw new errors.NotFoundError('election');
+      }
     });
 
 export const retrieveActive = (req, res) =>
@@ -69,10 +70,16 @@ export const create = (req, res) =>
     .then((election) => {
       const alternatives = req.body.alternatives;
       if (alternatives && alternatives.length) {
-        return Bluebird.map(alternatives, (alternative) => {
-          alternative.election = election;
-          return Alternative.create(alternative);
-        }).then((createdAlternatives) => {
+        const promises = [] as Array<unknown>;
+        
+        for (const alternative of alternatives) {
+          promises.push(async () => {
+            alternative.election = election;
+          return Alternative.create(alternative);  
+          });
+        }
+
+        Promise.all(promises).then((createdAlternatives) => {
           election.alternatives = createdAlternatives;
           return election.save();
         });
@@ -82,8 +89,10 @@ export const create = (req, res) =>
     })
     .then((election) => election.populate('alternatives').execPopulate())
     .then((election) => res.status(201).json(election))
-    .catch(mongoose.Error.ValidationError, (err) => {
-      throw new errors.ValidationError(err.errors);
+    .catch(err => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        throw new errors.ValidationError(err.errors);
+      }
     });
 
 export const list = (req, res) =>

@@ -27,6 +27,8 @@ export const create = (req, res) =>
       return election.addAlternative(alternative);
     })
     .then((alternative) => res.status(201).send(alternative))
-    .catch(mongoose.Error.ValidationError, (err) => {
-      throw new errors.ValidationError(err.errors);
+    .catch(err => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        throw new errors.ValidationError(err.errors);
+      }
     });

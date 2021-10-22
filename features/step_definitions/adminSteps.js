@@ -1,5 +1,4 @@
 const chai = require('chai');
-const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const Election = require('../../app/models/election');
 const User = require('../../app/models/user');
@@ -28,7 +27,7 @@ module.exports = function () {
     const alternatives = element.all(by.repeater('election in elections'));
     const election = alternatives.first();
 
-    Bluebird.all([
+    Promise.all([
       expect(election.element(by.css('span')).getText()).to.eventually.equal(
         this.stvElection.title
       ),
@@ -121,7 +120,7 @@ module.exports = function () {
     );
     const alternative = alternatives.first();
 
-    return Bluebird.all([
+    return Promise.all([
       expect(alternative.getText()).to.eventually.equal(
         `${this.alternatives[0].description} with 1 votes`
       ),

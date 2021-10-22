@@ -1,4 +1,3 @@
-const Bluebird = require('bluebird');
 const mongoose = require('mongoose');
 const Alternative = require('../app/models/alternative');
 const Election = require('../app/models/election');
@@ -10,10 +9,15 @@ const crypto = require('crypto');
 exports.dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
-exports.clearCollections = () =>
-  Bluebird.map([Alternative, Register, Election, Vote, User], (collection) =>
-    collection.deleteMany()
-  );
+exports.clearCollections = () => {
+  const promises = [];
+  for (const collection in [Alternative, Register, Election, Vote, User]) {
+    promises.push(async () => {
+      await collection.deleteMany();
+    });
+  }
+  Promise.all(promises);
+};
 
 const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
 const testUser = (exports.testUser = {
