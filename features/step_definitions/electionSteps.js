@@ -1,5 +1,4 @@
 const chai = require('chai');
-const Bluebird = require('bluebird');
 const chaiAsPromised = require('chai-as-promised');
 const Vote = require('../../app/models/vote');
 const ElectionTypes = require('../../app/models/utils');
@@ -60,7 +59,7 @@ module.exports = function () {
       by.repeater('alternative in getPossibleAlternatives()')
     );
 
-    return Bluebird.all([
+    return Promise.all([
       expect(title.getText()).to.eventually.equal(
         this.election.title.toUpperCase()
       ),

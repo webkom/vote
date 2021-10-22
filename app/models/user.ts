@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Bluebird from 'bluebird';
 import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 import errors from '../errors';
@@ -54,8 +53,7 @@ userSchema.statics.findByUsername = function (username) {
 
 userSchema.statics.register = function (body, password) {
   if (!password) throw new errors.InvalidRegistrationError('Missing password');
-  // The controller expects a Bluebird promise, so we wrap it in resolve:
-  return Bluebird.resolve(bcrypt.genSalt())
+  return bcrypt.genSalt()
     .then((salt) => bcrypt.hash(password, salt))
     .then((hash) => this.create(Object.assign(body, { hash })));
 };
@@ -79,8 +77,7 @@ userSchema.statics.authenticate = function (username, password) {
 };
 
 userSchema.methods.authenticate = function (password) {
-  // The controller expects a Bluebird promise, so we wrap it in resolve:
-  return Bluebird.resolve(bcrypt.compare(password, this.hash));
+  return bcrypt.compare(password, this.hash);
 };
 
 export default mongoose.model('User', userSchema);

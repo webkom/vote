@@ -1,4 +1,3 @@
-const Bluebird = require('bluebird');
 const request = require('supertest');
 const mongoose = require('mongoose');
 const chai = require('chai');
@@ -31,7 +30,7 @@ describe('Auth API', () => {
   beforeEach(() => {
     passportStub.logout();
     passportStub.uninstall();
-    return Bluebird.all([
+    return Promise.all([
       User.register(testUser, testUser.password),
       User.register(adminUser, adminUser.password),
     ]);

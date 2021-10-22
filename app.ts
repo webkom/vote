@@ -1,4 +1,3 @@
-import Bluebird from 'bluebird';
 import express from 'express';
 const app = (module.exports = express());
 import mongoose from 'mongoose';
@@ -22,7 +21,6 @@ app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
-mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), {
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -89,24 +87,25 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new LocalStrategy((username, password, done) => {
+  new LocalStrategy(async (username, password, done) => {
     let _user;
-    User.findByUsername(username)
+    const success = await User.findByUsername(username)
       .then((user) => {
         if (!user) return false;
         _user = user;
         return user.authenticate(password);
       })
-      .then((result) => result && _user)
-      .nodeify(done);
+      .then((result) => result && _user);
+    done(success);
   })
 );
 
 passport.serializeUser((user, cb) => {
   cb(null, user.username);
 });
-passport.deserializeUser((username, cb) => {
-  User.findByUsername(username).exec().nodeify(cb);
+passport.deserializeUser(async (username, cb) => {
+  const user = await User.findByUsername(username).exec()
+  cb(null, user);
 });
 
 app.use('/', router);

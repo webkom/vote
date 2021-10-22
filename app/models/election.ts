@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import Bluebird from 'bluebird';
 import errors from '../errors';
 import mongoose from 'mongoose';
 import Vote from './vote';
@@ -73,22 +72,26 @@ const electionSchema = new Schema({
   },
 });
 
-electionSchema.pre('remove', function (next) {
+electionSchema.pre('remove', async function (next) {
   // Use mongoose.model getter to avoid circular dependencies
-  mongoose
+  await mongoose
     .model('Alternative')
     .find({ election: this.id })
-    .then((alternatives) => {
-      Bluebird.map(alternatives, (alternative) => alternative.remove());
-    })
-    .nodeify(next);
-  mongoose
+    .then(async (alternatives) => {
+      await Promise.all(alternatives.map(async alternative => {
+        await alternative.remove();
+      }));
+    });
+    next();
+  await mongoose
     .model('Vote')
     .find({ election: this.id })
-    .then((votes) => {
-      Bluebird.map(votes, (vote) => vote.remove());
-    })
-    .nodeify(next);
+    .then(async (votes) => {
+      await Promise.all(votes.map(async vote => {
+        await vote.remove();
+      }));
+    });
+    next();
 });
 
 electionSchema.methods.elect = async function () {
