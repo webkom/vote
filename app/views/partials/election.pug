@@ -1,6 +1,6 @@
 .center.text-center(ng-switch='electionExists')
-  div(ng-switch-when='true', ng-switch='correctCode')
-    div(ng-switch-when='true', ng-switch='confirmVote')
+  div(ng-switch-when='true', ng-switch='errorCode')
+    div(ng-switch-when='', ng-switch='confirmVote')
       div(ng-switch-when='false')
         .election-info
           h2 {{ activeElection.title }}
@@ -82,7 +82,7 @@
         button.btn.btn-lg.btn-danger(type='button', ng-click='denyVote()') Avbryt
 
         button.btn.btn-lg.btn-success(type='button', ng-click='vote()') Bekreft
-    .access-code(ng-switch-when='false')
+    .access-code(ng-switch-when='AccessCodeError')
       form.form-group.enter-code-form(
         ng-submit='getActiveElection(accessCode)',
         name='enterCodeForm'
@@ -100,6 +100,9 @@
           type='submit',
           ng-disabled='accessCode.toString().length != 4'
         ) Verifiser
+    div(ng-switch-when='InactiveUserError')
+      h1 Din bruker er ikke aktivert.
+      p Gå til kortleseren ved utgangen for å aktivere brukeren din.
 
   div(ng-switch-default)
     h2.

@@ -71,6 +71,10 @@ const electionSchema = new Schema({
     // https://mongoosejs.com/docs/defaults.html#default-functions
     default: () => Math.floor(Math.random() * 9000 + 1000),
   },
+  physical: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 electionSchema.pre('remove', function (next) {

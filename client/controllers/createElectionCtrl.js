@@ -7,6 +7,7 @@ module.exports = [
   'alertService',
   function ($scope, $location, adminElectionService, alertService) {
     var existingElection = $location.search().election;
+    var physical = sessionStorage.getItem('physical-election') !== 'false';
     if (existingElection) {
       $scope.election = JSON.parse(existingElection);
     } else {
@@ -14,6 +15,7 @@ module.exports = [
         seats: 1,
         type: 'normal',
         alternatives: [{}],
+        physical,
       };
     }
 
@@ -37,6 +39,10 @@ module.exports = [
     $scope.deleteAlternative = function (alternative) {
       var index = $scope.election.alternatives.indexOf(alternative);
       $scope.election.alternatives.splice(index, 1);
+    };
+
+    $scope.setPhysical = function (physical) {
+      sessionStorage.setItem('physical-election', physical);
     };
 
     $scope.setNormalType = function () {

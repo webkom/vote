@@ -3,9 +3,6 @@
     .election-info.admin
       h2 {{ election.title }}
       p {{ election.description }}
-      i Type: {{ election.type === "normal" ? "Vanlig valg" : "Preferansevalg" }}
-      p
-        i Flertall: {{ election.useStrict ? "Kvalifisert (66.67%)" : "Alminnelig (50%)" }}
 
     .election-info.admin
       h3.user-status
@@ -19,12 +16,20 @@
       )
         | {{ election.active ? "Deaktiver" : "Aktiver" }}
 
-      h3 Tilgangskode:
+      h3.access-code-wrapper(ng-if='!election.physical') Tilgangskode:
         span.access-code.mono {{ election.accessCode }}
         i.fa.fa-copy.copy-icon.cs-tooltip(
           ng-click='copyToClipboard(election.accessCode)'
         )
           .cs-tooltiptext {{ copySuccess ? "Kopiert!" : "Kopier" }}
+
+      p
+        .tag.cs-tooltip {{ election.physical ? "FYSISK" : "DIGITALT" }}
+          span.cs-tooltiptext {{ election.physical ? "Krever aktivt kort for å stemme" : "Krever tilgangskode for å stemme" }}
+        .tag.cs-tooltip {{ election.type === "normal" ? "VANLIG VALG" : "PREFERANSEVALG" }}
+          span.cs-tooltiptext Vanlig valg / Preferansevalg
+        .tag.cs-tooltip {{ election.useStrict ? "KVALIFISERT FLERTALL" : "ALMINNELIG FLERTALL" }}
+          span.cs-tooltiptext Kvalifisert flertall (66.67%) / Alminnelig flertall (50%)
 
     .alternatives.admin
       h3 Alternativer

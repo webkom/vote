@@ -37,6 +37,11 @@ exports.retrieveActive = (req, res) =>
         return res.status(200).json(election);
       }
 
+      // Require the user to be active if the election is physical.
+      if (election.physical) {
+        throw new errors.InactiveUserError(user.username);
+      }
+
       // Active election but wrong or not access code submitted,
       // so we return 403 which prompts a access code input field.
       if (
@@ -59,6 +64,7 @@ exports.create = (req, res) =>
     seats: req.body.seats,
     type: req.body.type,
     useStrict: req.body.useStrict,
+    physical: req.body.physical,
   })
     .then((election) => {
       const alternatives = req.body.alternatives;
