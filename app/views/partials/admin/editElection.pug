@@ -3,6 +3,8 @@
     .election-info.admin
       h2 {{ election.title }}
       i Type: {{ election.type }}
+      p
+        i Bruker absolutt flertall: {{ election.useStrict ? "ja" : "nei" }}
       p {{ election.description }}
 
     .election-info.admin
