@@ -49,12 +49,13 @@
         display flex
         justify-content space-between
         margin-left auto
+        transition all 0.3s ease-in-out
 
         &:hover
         &.sortable-chosen
             cursor pointer
-            background-color alpha($alternative-background, 0.05)
-            box-shadow 1px 2px 5px #ccc, 0px -2px 5px #ccc
+            background-color alpha($alternative-background, 0.4)
+            box-shadow 0 0 11px rgba(33, 33 ,33 , 0.2) 
 
         .content
             line-height 60px
@@ -86,6 +87,7 @@
             border-radius 2px
             height 100%
             width 15%
+            transition box-shadow 0.2s ease-in-out
 
             &:hover
                 box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
@@ -161,7 +163,7 @@
         button.btn
             min-width 60%
 
-        ul
+        ul.numbered
             .sortable-drag
                 display none
 
