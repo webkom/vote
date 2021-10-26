@@ -2,9 +2,7 @@ import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import election from '../../controllers/election';
 import alternative from '../../controllers/alternative';
-import helpers from '../helpers';
-const ensureAdmin = helpers.ensureAdmin;
-const ensureAuthenticated = helpers.ensureAuthenticated;
+import { ensureAdmin, ensureAuthenticated } from '../helpers';
 
 router
   .route('/')
@@ -17,7 +15,10 @@ router.get('/active', ensureAuthenticated, election.retrieveActive);
 router.param('electionId', ensureAdmin);
 router.param('electionId', election.load);
 
-router.route('/:electionId').get(election.retrieve).delete(election.delete);
+router
+  .route('/:electionId')
+  .get(election.retrieve)
+  .delete(election.deleteElection);
 
 router.get('/:electionId/count', election.count);
 
@@ -27,7 +28,7 @@ router.post('/:electionId/deactivate', election.deactivate);
 router
   .route('/:electionId/alternatives')
   .get(alternative.list)
-  .post(alternative.create);
+  .post(alternative?.create);
 
 router.get('/:electionId/votes', election.elect);
 

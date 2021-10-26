@@ -1,10 +1,10 @@
-const request = require('supertest');
-const chai = require('chai');
-const app = require('../../app');
+import request from 'supertest';
+import chai from 'chai';
+import app from '../../app';
 
 chai.should();
 
-exports.test404 = async (method, path, type) => {
+export const test404 = async (method, path, type) => {
   const { body: error } = await request(app)
     [method](path)
     .expect(404)
@@ -14,7 +14,7 @@ exports.test404 = async (method, path, type) => {
   error.message.should.equal(`Couldn't find ${type}.`);
 };
 
-exports.testAdminResource = async (method, path) => {
+export const testAdminResource = async (method, path) => {
   const { body: error } = await request(app)
     [method](path)
     .expect(403)

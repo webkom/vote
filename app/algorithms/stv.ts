@@ -1,4 +1,4 @@
-import cloneDeep = require('lodash/cloneDeep');
+import cloneDeep from 'lodash/cloneDeep';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
 
 // This is a TypeScript file in a JavaScript project so it must be complied

@@ -28,8 +28,7 @@ export const create = (req, res) => {
   const user = new User(req.body);
   return User.register(user, req.body.password)
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
-    .catch(err => {
-      
+    .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         throw new errors.ValidationError(err.errors);
       }
@@ -40,7 +39,7 @@ export const create = (req, res) => {
         }
         throw new errors.DuplicateUsernameError();
       }
-      
+
       if (errorChecks.badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
@@ -120,8 +119,7 @@ export const generate = async (req, res) => {
           throw new errors.MailError(err);
         })
     )
-    .catch(err => {
-      
+    .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         throw new errors.ValidationError(err.errors);
       }
@@ -132,7 +130,7 @@ export const generate = async (req, res) => {
         }
         throw new errors.DuplicateUsernameError();
       }
-      
+
       if (errorChecks.badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
@@ -159,7 +157,7 @@ export const changeCard = (req, res) =>
     .then((user) => {
       res.json(user);
     })
-    .catch(err => {
+    .catch((err) => {
       if (errorChecks.duplicateError(err)) {
         throw new errors.DuplicateCardError();
       }
@@ -175,4 +173,14 @@ export const deactivateAllNonAdmin = async (req, res) => {
     message: 'Users deactivated.',
     status: 200,
   });
+};
+
+export default {
+  count,
+  list,
+  create,
+  generate,
+  toggleActive,
+  changeCard,
+  deactivateAllNonAdmin,
 };

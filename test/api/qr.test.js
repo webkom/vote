@@ -1,8 +1,8 @@
-const request = require('supertest');
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const app = require('../../app');
+import request from 'supertest';
+import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import app from '../../app';
 chai.use(sinonChai);
 
 describe('Qr API', () => {

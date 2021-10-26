@@ -1,4 +1,4 @@
-const ElectionTypes = require('../../../app/models/utils.js');
+const ElectionTypes = require('../../../app/models/utils');
 module.exports = {
   type: ElectionTypes.NORMAL,
   alternatives: ['Andrea', 'Carter', 'Brad'],

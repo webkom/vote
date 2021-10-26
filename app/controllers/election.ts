@@ -4,6 +4,7 @@ import User from '../models/user';
 import Alternative from '../models/alternative';
 import errors from '../errors';
 import app from '../../app';
+import alternative from '../models/alternative';
 
 export const load = (req, res, next, electionId) =>
   Election.findById(electionId)
@@ -12,7 +13,7 @@ export const load = (req, res, next, electionId) =>
       req.election = election;
       next();
     })
-    .catch(err => {
+    .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         throw new errors.NotFoundError('election');
       }
@@ -64,26 +65,21 @@ export const create = (req, res) =>
     .then((election) => {
       const alternatives = req.body.alternatives;
       if (alternatives && alternatives.length) {
-        const promises = [] as Array<unknown>;
-        
-        for (const alternative of alternatives) {
-          promises.push(async () => {
-            alternative.election = election;
-          return Alternative.create(alternative);  
-          });
-        }
-
-        Promise.all(promises).then((createdAlternatives) => {
+        Promise.all(
+          alternatives.map((a) => {
+            a.election = election;
+            return Alternative.create(a);
+          })
+        ).then((createdAlternatives) => {
           election.alternatives = createdAlternatives;
           return election.save();
         });
       }
-
       return election;
     })
     .then((election) => election.populate('alternatives').execPopulate())
     .then((election) => res.status(201).json(election))
-    .catch(err => {
+    .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         throw new errors.ValidationError(err.errors);
       }
@@ -145,4 +141,17 @@ export const count = (req, res) => {
   res.json({
     users: req.election.hasVotedUsers.length,
   });
+};
+
+export default {
+  load,
+  retrieveActive,
+  create,
+  list,
+  retrieve,
+  activate,
+  deactivate,
+  elect,
+  deleteElection,
+  count,
 };

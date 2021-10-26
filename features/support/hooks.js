@@ -1,8 +1,8 @@
-const mongoose = require('mongoose');
-const Election = require('../../app/models/election');
-const ElectionTypes = require('../../app/models/utils');
-const Alternative = require('../../app/models/alternative');
-const helpers = require('../../test/helpers');
+import mongoose from 'mongoose';
+import Election from '../../app/models/election';
+import ElectionTypes from '../../app/models/utils';
+import Alternative from '../../app/models/alternative';
+import helpers from '../../test/helpers';
 const server = require('../../server');
 const createUsers = helpers.createUsers;
 const clearCollections = helpers.clearCollections;
@@ -57,7 +57,7 @@ module.exports = function () {
       await normalElection.addAlternative(this.alternatives[i]);
     }
 
-    await createUsers().spread((user, adminUser) => {
+    await createUsers().then(([user, adminUser]) => {
       this.user = user;
       this.adminUser = adminUser;
     });
@@ -80,7 +80,8 @@ module.exports = function () {
     })
   );
 
-  this.registerHandler('AfterFeatures', (event, callback) => {
-    dropDatabase(callback).nodeify(callback);
+  this.registerHandler('AfterFeatures', async (event, callback) => {
+    await dropDatabase(callback);
+    callback();
   });
 };

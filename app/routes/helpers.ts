@@ -1,6 +1,10 @@
 import errors from '../errors';
 
-const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (req, res, next) => {
+export const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (
+  req,
+  res,
+  next
+) => {
   if (req.isAuthenticated()) return next();
   // Store the original path so we can redirect there after login
   req.session.originalPath = req.path;
@@ -55,7 +59,11 @@ export const ensureModerator = (req, res, next) => {
   });
 };
 
-const ensureAuthenticated = (exports.ensureAuthenticated = (req, res, next) => {
+export const ensureAuthenticated = (exports.ensureAuthenticated = (
+  req,
+  res,
+  next
+) => {
   if (req.isAuthenticated()) return next();
   const error = new errors.LoginError();
   return errors.handleError(res, error);

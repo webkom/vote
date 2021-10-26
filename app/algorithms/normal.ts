@@ -1,14 +1,5 @@
-import isEmpty = require('lodash/isEmpty');
+import isEmpty from 'lodash/isEmpty';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-
-// This is a TypeScript file in a JavaScript project so it must be complied
-// If you make changes to this file it must be recomplied using `tsc` in
-// order for the changes to be reflected in the rest of the program.
-//
-// app/models/election .elect() is the only file that uses this function
-// and importes it from normal.js, which is the compiled result of this file.
-//
-//
 
 /**
  * @param votes - All votes for the election

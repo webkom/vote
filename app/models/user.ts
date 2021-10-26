@@ -53,7 +53,8 @@ userSchema.statics.findByUsername = function (username) {
 
 userSchema.statics.register = function (body, password) {
   if (!password) throw new errors.InvalidRegistrationError('Missing password');
-  return bcrypt.genSalt()
+  return bcrypt
+    .genSalt()
     .then((salt) => bcrypt.hash(password, salt))
     .then((hash) => this.create(Object.assign(body, { hash })));
 };

@@ -3,10 +3,10 @@ import errors from '../errors';
 import mongoose from 'mongoose';
 import Vote from './vote';
 const Schema = mongoose.Schema;
-import calculateWinnerUsingNormal from '../algorithms/normal.js';
-import calculateWinnerUsingSTV from '../algorithms/stv.js';
-import ElectionTypes from './utils.js';
+import calculateWinnerUsingNormal from '../algorithms/normal';
+import calculateWinnerUsingSTV from '../algorithms/stv';
 import crypto from 'crypto';
+import ElectionTypes from './utils';
 
 const electionSchema = new Schema({
   title: {
@@ -77,21 +77,17 @@ electionSchema.pre('remove', async function (next) {
   await mongoose
     .model('Alternative')
     .find({ election: this.id })
-    .then(async (alternatives) => {
-      await Promise.all(alternatives.map(async alternative => {
-        await alternative.remove();
-      }));
+    .then((alternatives) => {
+      Promise.all(alternatives.map((alternative) => alternative.remove()));
     });
-    next();
+  next();
   await mongoose
     .model('Vote')
     .find({ election: this.id })
-    .then(async (votes) => {
-      await Promise.all(votes.map(async vote => {
-        await vote.remove();
-      }));
+    .then((votes) => {
+      Promise.all(votes.map((vote) => vote.remove()));
     });
-    next();
+  next();
 });
 
 electionSchema.methods.elect = async function () {

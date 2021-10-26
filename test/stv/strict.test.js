@@ -1,7 +1,7 @@
-const chai = require('chai');
-const chaiSubset = require('chai-subset');
-const dataset = require('./datasets');
-const { prepareElection } = require('../helpers');
+import chai from 'chai';
+import chaiSubset from 'chai-subset';
+import dataset from './datasets';
+import { prepareElection } from '../helpers';
 
 chai.use(chaiSubset);
 

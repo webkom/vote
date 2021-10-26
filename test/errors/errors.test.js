@@ -1,7 +1,7 @@
-const chai = require('chai');
-const sinon = require('sinon');
-const sinonChai = require('sinon-chai');
-const errors = require('../../app/errors');
+import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import errors from '../../app/errors';
 
 chai.use(sinonChai);
 chai.should();
