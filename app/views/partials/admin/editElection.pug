@@ -2,8 +2,10 @@
   .center.text-center
     .election-info.admin
       h2 {{ election.title }}
-      i Type: {{ election.type }}
       p {{ election.description }}
+      i Type: {{ election.type === "normal" ? "Vanlig valg" : "Preferansevalg" }}
+      p
+        i Flertall: {{ election.useStrict ? "Kvalifisert (66.67%)" : "Alminnelig (50%)" }}
 
     .election-info.admin
       h3.user-status
@@ -83,7 +85,11 @@
               span(ng-bind='election.seats') {{ election.seats }}
           tr
             th.th-left Terskel
-            th.th-right ⌊
+            th.th-right(ng-if='election.useStrict') ⌊
+              span.cs-tooltip {{ election.voteCount }}*2/3
+                span.cs-tooltiptext 2/3 av antall stemmer
+              span ⌋ + 1 = {{ election.thr }}
+            th.th-right(ng-if='!election.useStrict') ⌊
               span.cs-tooltip {{ election.voteCount }}
                 span.cs-tooltiptext Antall stemmer
               span /

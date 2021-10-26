@@ -67,7 +67,7 @@
             | Deaktiver absolutt flertall for å endre antall plasser
 
       .form-group
-        label Bruk absolutt flertall
+        label Bruk §0.3 kvalifisert flertall
           input(
             type='checkbox',
             name='useStrict',
@@ -77,7 +77,7 @@
           )
         br
         p
-          | Krev 2/3 av stemmene for å vinne.
+          | Krever 2/3 av stemmene for å vinne.
           span(ng-if='election.type == "stv"') Ellers brukes vanlig STV regler. Gir ikke mening for plasser > 1
 
       .alternatives.admin
