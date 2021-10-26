@@ -1,10 +1,10 @@
 import routerFactory from 'express-promise-router';
-const router = routerFactory();
-import register from '../../controllers/register';
+import { list, deleteEntry } from '../../controllers/register';
 import { ensureModerator } from '../helpers';
+const router = routerFactory();
 
-router.route('/').get(ensureModerator, register.list);
+router.route('/').get(ensureModerator, list);
 
-router.route('/:registerId').delete(ensureModerator, register.delete);
+router.route('/:registerId').delete(ensureModerator, deleteEntry);
 
 export default router;

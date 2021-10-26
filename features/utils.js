@@ -1,8 +1,8 @@
-const fs = require('fs');
-const path = require('path');
-const mkdirp = require('mkdirp');
+import fs from 'fs';
+import path from 'path';
+import mkdirp from 'mkdirp';
 
-exports.writeScreenshot = (data, filename) => {
+export const writeScreenshot = (data, filename) => {
   const folder = path.resolve('screenshots');
   mkdirp(folder, (err) => {
     if (err) throw err;

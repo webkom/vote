@@ -3,7 +3,7 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es5",
-    "outDir": "./public",
+    "outDir": "./dist",
     "module": "commonjs",
     "removeComments": true,
     "esModuleInterop": true

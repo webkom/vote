@@ -1,7 +1,7 @@
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-const Election = require('../../app/models/election');
-const User = require('../../app/models/user');
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import Election from '../../app/models/election';
+import User from '../../app/models/user';
 
 const expect = chai.expect;
 

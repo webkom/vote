@@ -1,4 +1,4 @@
-module.exports = {
+const env = {
   // URL/source to the logo on all pages
   ICON_SRC: process.env.ICON_SRC || '/static/images/Abakule.jpg',
   // Node environment. 'development' or 'production'
@@ -21,3 +21,5 @@ module.exports = {
   GOOGLE_AUTH: process.env.GOOGLE_AUTH,
   SMTP_URL: process.env.SMTP_URL,
 };
+
+export default env;

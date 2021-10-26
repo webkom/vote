@@ -1,8 +1,8 @@
-const request = require('supertest');
-const passportStub = require('passport-stub');
-const app = require('../../app');
-const Register = require('../../app/models/register');
-const { createUsers } = require('../helpers');
+import request from 'supertest';
+import passportStub from 'passport-stub';
+import app from '../../app';
+import Register from '../../app/models/register';
+import { createUsers } from '../helpers';
 
 describe('Register API', () => {
   before(() => {

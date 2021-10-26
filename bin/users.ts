@@ -2,19 +2,23 @@
 
 /* eslint no-console: 0 */
 
-const program = require('commander');
-const mongoose = require('mongoose');
-const chalk = require('chalk');
-const promptly = require('promptly');
-const User = require('../app/models/user');
+import { Command } from 'commander';
+import mongoose from 'mongoose';
+import chalk from 'chalk';
+import promptly from 'promptly';
+import User from '../app/models/user';
+const program = new Command();
 
-function done(err, user) {
+function done(err: Error, user: typeof User) {
   if (err) throw err;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   console.log(chalk.green(`Created user ${user.username}`));
   process.exit(0);
 }
 
-function validator(value) {
+function validator(value: string) {
   if (typeof parseInt(value) !== 'number') {
     throw new Error('-------------\nNot a number!\n-------------');
   }
@@ -61,28 +65,6 @@ program
         });
       }
     );
-  });
-
-program
-  .version('1.0.0')
-  .command('create-fixtures')
-  .description('creates test users')
-  .action(() => {
-    if (process.env.NODE_ENV === 'production') {
-      throw 'Cannot create fixtures in production';
-    }
-    const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
-
-    // prettier-ignore
-    const fixtures = [ { username: "admin", admin: true, moderator: true, cardKey: "12340", password: "password" }, { username: "moderator1", admin: false, moderator: true, cardKey: "12341", password: "password" }, { username: "moderator2", admin: false, moderator: true, cardKey: "12342", password: "password" }, { username: "user1", admin: false, moderator: false, cardKey: "12343", password: "password" }, { username: "user2", admin: false, moderator: false, cardKey: "12344", password: "password" }, { username: "user3", admin: false, moderator: false, cardKey: "12345", password: "password" }, { username: "user4", admin: false, moderator: false, cardKey: "12346", password: "password" }, { username: "user5", admin: false, moderator: false, cardKey: "12347", password: "password" }, ]
-    
-    mongoose.connect(mongoURL, options, connectErr => {
-      if (connectErr) return done(connectErr);
-      fixtures.forEach(f => {
-        const user = new User({...f});
-        User.register(user, f.password).nodeify(done);
-        })
-      });
   });
 
 program.parse(process.argv);

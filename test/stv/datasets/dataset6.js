@@ -1,5 +1,5 @@
 // Dataset created to show floating point errors
-const ElectionTypes = require('../../../app/models/utils.js');
+const ElectionTypes = require('../../../app/models/utils');
 module.exports = {
   seats: 2,
   type: ElectionTypes.STV,

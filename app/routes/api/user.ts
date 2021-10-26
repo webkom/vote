@@ -1,7 +1,7 @@
 import routerFactory from 'express-promise-router';
-const router = routerFactory();
 import user from '../../controllers/user';
 import { ensureModerator } from '../helpers';
+const router = routerFactory();
 
 router
   .route('/')
