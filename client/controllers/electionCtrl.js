@@ -32,8 +32,10 @@ module.exports = [
           $scope.electionExists = true;
           $scope.activeElection = response.data;
           $scope.correctCode = true;
+          $scope.errorCode = '';
         },
         function (response) {
+          $scope.errorCode = response.data.name;
           if (response.status == '404') {
             $scope.electionExists = false;
             $scope.activeElection = null;

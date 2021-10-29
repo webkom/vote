@@ -4,6 +4,25 @@
       ng-submit='createElection(election)',
       name='createElectionForm'
     )
+      .form-group
+        .btn-group
+          label.btn(
+            name='physical',
+            value='true',
+            uib-btn-radio='true',
+            ng-model='election.physical',
+            ng-click='setPhysical(true)'
+          )
+            | Fysisk valg
+          label.btn(
+            name='physical',
+            value='false',
+            uib-btn-radio='false',
+            ng-model='election.physical',
+            ng-click='setPhysical(false)'
+          )
+            | Digitalt valg
+
       .form-group(required)
         label Tittel
         input.form-control(

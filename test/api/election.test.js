@@ -21,6 +21,7 @@ describe('Election API', () => {
     description: 'active election 1',
     active: true,
     accessCode: 1234,
+    physical: false,
   };
 
   const inactiveElectionData = {
