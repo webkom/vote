@@ -1,8 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IElection } from './election';
 
-const Schema = mongoose.Schema;
+export interface IAlternative extends Document {
+  description: string,
+  election: IElection,
+}
 
-const alternativeSchema = new Schema({
+const alternativeSchema = new Schema<IAlternative>({
   description: {
     type: String,
     required: true,
