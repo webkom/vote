@@ -1,8 +1,12 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { IElection } from './election';
 
-const Schema = mongoose.Schema;
+export interface IVote extends Document {
+  hash: string,
+  election: IElection,
+}
 
-const voteSchema = new Schema({
+const voteSchema = new Schema<IVote>({
   hash: {
     type: String,
     required: true,
