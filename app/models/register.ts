@@ -1,8 +1,13 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-const Schema = mongoose.Schema;
+export interface IRegister extends Document {
+  identifier: string,
+  email: string,
+  user: IUser,
+}
 
-const registerSchema = new Schema({
+
+const registerSchema = new Schema<IRegister>({
   identifier: {
     type: String,
     required: true,
