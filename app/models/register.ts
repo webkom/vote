@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { RegisterType } from '../types/types';
 
-const Schema = mongoose.Schema;
-
-const registerSchema = new Schema({
+const registerSchema = new Schema<RegisterType>({
   identifier: {
     type: String,
     required: true,

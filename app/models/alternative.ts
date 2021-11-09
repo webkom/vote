@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { AlternativeType } from '../types/types';
 
-const Schema = mongoose.Schema;
-
-const alternativeSchema = new Schema({
+const alternativeSchema = new Schema<AlternativeType>({
   description: {
     type: String,
     required: true,
