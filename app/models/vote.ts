@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
+import { VoteType } from '../types/types';
 
-const Schema = mongoose.Schema;
-
-const voteSchema = new Schema({
+const voteSchema = new Schema<VoteType>({
   hash: {
     type: String,
     required: true,

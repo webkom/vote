@@ -1,29 +1,10 @@
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
-import mongoose, { Model, Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import errors from '../errors';
+import { UserType, UserModel } from '../types/types';
 
-export interface IUser extends Document {
-  username: string;
-  hash: string;
-  active: boolean;
-  admin: boolean;
-  moderator: boolean;
-  cardKey: string;
-
-  // methods
-  getCleanUser(): IUser;
-  authenticate(password: string): Promise<boolean>;
-}
-
-export interface UserModel extends Model<IUser> {
-  // statics
-  authenticate(username: string, password: string): Promise<IUser>;
-  findByUsername(username: string): Promise<IUser>;
-  register(body: IUser, password: string): Promise<IUser>;
-}
-
-const userSchema = new Schema({
+const userSchema = new Schema<UserType>({
   username: {
     type: String,
     index: true,
@@ -54,7 +35,7 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre<IUser>('save', function (this, next) {
+userSchema.pre<UserType>('save', function (this, next) {
   // Usernames are case-insensitive, so store them in lowercase:
   this.username = this.username.toLowerCase();
   next();
@@ -69,7 +50,7 @@ userSchema.statics.findByUsername = function (username: string) {
   return this.findOne({ username: username.toLowerCase() });
 };
 
-userSchema.statics.register = function (body: IUser, password: string) {
+userSchema.statics.register = function (body: UserType, password: string) {
   if (!password) throw new errors.InvalidRegistrationError('Missing password');
   return bcrypt
     .genSalt()
@@ -81,9 +62,9 @@ userSchema.statics.authenticate = function (
   username: string,
   password: string
 ) {
-  let _user: IUser;
+  let _user: UserType;
   return this.findOne({ username })
-    .then((user: IUser) => {
+    .then((user: UserType) => {
       _user = user;
       return user.authenticate(password);
     })
@@ -98,8 +79,8 @@ userSchema.statics.authenticate = function (
     });
 };
 
-userSchema.methods.authenticate = function (this: IUser, password: string) {
+userSchema.methods.authenticate = function (this: UserType, password: string) {
   return bcrypt.compare(password, this.hash);
 };
 
-export default mongoose.model<IUser, UserModel>('User', userSchema);
+export default mongoose.model<UserType, UserModel>('User', userSchema);

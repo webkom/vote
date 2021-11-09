@@ -1,14 +1,18 @@
 import _ from 'lodash';
 import errors from '../errors';
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import Vote from './vote';
-const Schema = mongoose.Schema;
 import calculateWinnerUsingNormal from '../algorithms/normal';
 import calculateWinnerUsingSTV from '../algorithms/stv';
 import crypto from 'crypto';
-import ElectionTypes from './utils';
+import {
+  ElectionSystems,
+  AlternativeType,
+  ElectionType,
+  UserType,
+} from '../types/types';
 
-const electionSchema = new Schema({
+const electionSchema = new Schema<ElectionType>({
   title: {
     type: String,
     required: true,
@@ -46,11 +50,11 @@ const electionSchema = new Schema({
   ],
   type: {
     type: String,
-    enum: [ElectionTypes.NORMAL, ElectionTypes.STV],
-    default: ElectionTypes.NORMAL,
+    enum: [ElectionSystems.NORMAL, ElectionSystems.STV],
+    default: ElectionSystems.NORMAL,
     validate: {
-      validator: function (v) {
-        return v === ElectionTypes.NORMAL && this.seats !== 1 ? false : true;
+      validator: function (v: string) {
+        return v === ElectionSystems.NORMAL && this.seats !== 1 ? false : true;
       },
       message: 'Normal elections must have exactly one seat',
     },
@@ -59,7 +63,7 @@ const electionSchema = new Schema({
     type: Boolean,
     default: false,
     validate: {
-      validator: function (v) {
+      validator: function (v: boolean) {
         return v && this.seats !== 1 ? false : true;
       },
       message: 'Strict elections must have exactly one seat',
@@ -115,14 +119,14 @@ electionSchema.methods.elect = async function () {
   const cleanElection = this.toJSON();
 
   // Type of election decides algorithm
-  if (cleanElection.type == ElectionTypes.NORMAL) {
+  if (cleanElection.type == ElectionSystems.NORMAL) {
     return calculateWinnerUsingNormal(
       cleanElection.votes,
       cleanElection.alternatives,
       cleanElection.seats,
       cleanElection.useStrict
     );
-  } else if (cleanElection.type == ElectionTypes.STV) {
+  } else if (cleanElection.type == ElectionSystems.STV) {
     return calculateWinnerUsingSTV(
       cleanElection.votes,
       cleanElection.alternatives,
@@ -134,7 +138,9 @@ electionSchema.methods.elect = async function () {
   }
 };
 
-electionSchema.methods.addAlternative = async function (alternative) {
+electionSchema.methods.addAlternative = async function (
+  alternative: AlternativeType
+) {
   alternative.election = this._id;
   const savedAlternative = await alternative.save();
   this.alternatives = [...this.alternatives, savedAlternative];
@@ -142,7 +148,10 @@ electionSchema.methods.addAlternative = async function (alternative) {
   return savedAlternative;
 };
 
-electionSchema.methods.addVote = async function (user, priorities) {
+electionSchema.methods.addVote = async function (
+  user: UserType,
+  priorities: AlternativeType[]
+) {
   if (!user) throw new Error("Can't vote without a user");
   if (!user.active) throw new errors.InactiveUserError(user.username);
   if (user.admin) throw new errors.AdminVotingError();
@@ -151,7 +160,7 @@ electionSchema.methods.addVote = async function (user, priorities) {
   if (!this.active) {
     throw new errors.InactiveElectionError();
   }
-  const votedUsers = this.hasVotedUsers.toObject();
+  const votedUsers = this.hasVotedUsers;
   const hasVoted = _.find(votedUsers, { _id: user._id });
 
   if (hasVoted) {
