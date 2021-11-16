@@ -3,4 +3,4 @@ const ElectionTypes = {
   STV: 'stv',
 };
 
-module.exports = ElectionTypes;
+export default ElectionTypes;

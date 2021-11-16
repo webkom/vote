@@ -1,10 +1,9 @@
-const Bluebird = require('bluebird');
-const request = require('supertest');
-const mongoose = require('mongoose');
-const chai = require('chai');
-const passportStub = require('passport-stub');
-const app = require('../../app');
-const User = require('../../app/models/user');
+import request from 'supertest';
+import mongoose from 'mongoose';
+import chai from 'chai';
+import passportStub from 'passport-stub';
+import app from '../../app';
+import User from '../../app/models/user';
 
 chai.should();
 
@@ -31,7 +30,7 @@ describe('Auth API', () => {
   beforeEach(() => {
     passportStub.logout();
     passportStub.uninstall();
-    return Bluebird.all([
+    return Promise.all([
       User.register(testUser, testUser.password),
       User.register(adminUser, adminUser.password),
     ]);

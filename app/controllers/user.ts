@@ -28,18 +28,21 @@ export const create = (req, res) => {
   const user = new User(req.body);
   return User.register(user, req.body.password)
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
-    .catch(mongoose.Error.ValidationError, (err) => {
-      throw new errors.ValidationError(err.errors);
-    })
-    .catch(errorChecks.DuplicateError, (err) => {
-      if (err.message.includes('cardKey')) {
-        throw new errors.DuplicateCardError();
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        throw new errors.ValidationError(err.errors);
       }
 
-      throw new errors.DuplicateUsernameError();
-    })
-    .catch(errorChecks.BadRequestError, (err) => {
-      throw new errors.InvalidRegistrationError(err.message);
+      if (errorChecks.duplicateError(err)) {
+        if (err.message.includes('cardKey')) {
+          throw new errors.DuplicateCardError();
+        }
+        throw new errors.DuplicateUsernameError();
+      }
+
+      if (errorChecks.badRequestError(err)) {
+        throw new errors.InvalidRegistrationError(err.message);
+      }
     });
 };
 
@@ -116,18 +119,21 @@ export const generate = async (req, res) => {
           throw new errors.MailError(err);
         })
     )
-    .catch(mongoose.Error.ValidationError, (err) => {
-      throw new errors.ValidationError(err.errors);
-    })
-    .catch(errorChecks.DuplicateError, (err) => {
-      if (err.message.includes('cardKey')) {
-        throw new errors.DuplicateCardError();
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        throw new errors.ValidationError(err.errors);
       }
 
-      throw new errors.DuplicateUsernameError();
-    })
-    .catch(errorChecks.BadRequestError, (err) => {
-      throw new errors.InvalidRegistrationError(err.message);
+      if (errorChecks.duplicateError(err)) {
+        if (err.message.includes('cardKey')) {
+          throw new errors.DuplicateCardError();
+        }
+        throw new errors.DuplicateUsernameError();
+      }
+
+      if (errorChecks.badRequestError(err)) {
+        throw new errors.InvalidRegistrationError(err.message);
+      }
     });
 };
 
@@ -151,8 +157,10 @@ export const changeCard = (req, res) =>
     .then((user) => {
       res.json(user);
     })
-    .catch(errorChecks.DuplicateError, () => {
-      throw new errors.DuplicateCardError();
+    .catch((err) => {
+      if (errorChecks.duplicateError(err)) {
+        throw new errors.DuplicateCardError();
+      }
     });
 
 export const deactivateAllNonAdmin = async (req, res) => {
@@ -165,4 +173,14 @@ export const deactivateAllNonAdmin = async (req, res) => {
     message: 'Users deactivated.',
     status: 200,
   });
+};
+
+export default {
+  count,
+  list,
+  create,
+  generate,
+  toggleActive,
+  changeCard,
+  deactivateAllNonAdmin,
 };

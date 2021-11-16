@@ -1,12 +1,9 @@
-import Bluebird from 'bluebird';
 import express from 'express';
-const app = (module.exports = express());
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import MongoStoreFactory from 'connect-mongo';
-const MongoStore = MongoStoreFactory(session);
+import mongoStoreFactory from 'connect-mongo';
 import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import csrf from 'csurf';
@@ -16,13 +13,14 @@ import raven from 'raven';
 import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
+const app = express();
+const MongoStore = mongoStoreFactory(session);
 
 app.disable('x-powered-by');
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
-mongoose.Promise = Bluebird;
 mongoose.connect(app.get('mongourl'), {
   useCreateIndex: true,
   useUnifiedTopology: true,
@@ -35,9 +33,9 @@ raven.config(env.RAVEN_DSN).install();
 app.use(raven.requestHandler());
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
-  const webpack = require('webpack');
-  const webpackMiddleware = require('webpack-dev-middleware');
-  const config = require('./webpack.config');
+  const webpack = import('webpack');
+  const webpackMiddleware = import('webpack-dev-middleware');
+  const config = import('./webpack.config.js');
   app.use(
     webpackMiddleware(webpack(config), {
       contentBase: 'public/',
@@ -89,24 +87,22 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 passport.use(
-  new LocalStrategy((username, password, done) => {
-    let _user;
-    User.findByUsername(username)
-      .then((user) => {
-        if (!user) return false;
-        _user = user;
-        return user.authenticate(password);
-      })
-      .then((result) => result && _user)
-      .nodeify(done);
+  new LocalStrategy(async (username, password, done) => {
+    const user = await User.findByUsername(username);
+    if (!user) return false;
+
+    const result = await user.authenticate(password);
+
+    done(result && user);
   })
 );
 
 passport.serializeUser((user, cb) => {
   cb(null, user.username);
 });
-passport.deserializeUser((username, cb) => {
-  User.findByUsername(username).exec().nodeify(cb);
+passport.deserializeUser(async (username, cb) => {
+  const user = await User.findByUsername(username).exec();
+  cb(null, user);
 });
 
 app.use('/', router);
@@ -121,4 +117,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-module.exports = app;
+export default app;

@@ -1,4 +1,4 @@
-const activate = new Audio(require('../../public/activate.mp3'));
+const activate = new Audio(import('../../public/activate.mp3'));
 
 module.exports = [
   '$scope',

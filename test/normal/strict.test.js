@@ -1,5 +1,5 @@
-const dataset = require('./datasets');
-const { prepareElection } = require('../helpers');
+import dataset from './datasets';
+import { prepareElection } from '../helpers';
 
 describe('Strict Logic', () => {
   it('should not resolve for the strict election in dataset 7', async function () {

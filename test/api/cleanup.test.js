@@ -1,13 +1,15 @@
-const mongoose = require('mongoose');
-const helpers = require('../helpers');
+import mongoose from 'mongoose';
+import { clearCollections, dropDatabase } from '../helpers.js';
 
 before((done) => {
   mongoose.connection.on('connected', done);
 });
 
-beforeEach(() => helpers.clearCollections());
+beforeEach(() => {
+  clearCollections();
+});
 
 /**
  * Drop the database after running all tests
  */
-after(() => helpers.dropDatabase());
+after(() => dropDatabase());

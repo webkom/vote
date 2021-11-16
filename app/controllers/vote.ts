@@ -5,7 +5,7 @@ import env from '../../env';
 const redisClient = require('redis').createClient(6379, env.REDIS_URL);
 import Redlock from 'redlock';
 const redlock = new Redlock([redisClient], {});
-const ElectionTypes = require('../models/utils.js');
+import ElectionTypes from '../models/utils';
 
 export const create = async (req, res) => {
   const { election, priorities } = req.body;

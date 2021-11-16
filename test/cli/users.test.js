@@ -1,12 +1,15 @@
-const chai = require('chai');
-const spawn = require('child_process').spawn;
-const User = require('../../app/models/user');
+import { fail } from 'assert';
+import chai from 'chai';
+import { spawn } from 'child_process';
+import User from '../../app/models/user';
 const should = chai.should();
 
 describe('User CLI', () => {
   beforeEach(() => User.deleteMany({}));
 
   it('should create normal user', (done) => {
+    // TODO: Configure project such that /bin/users behaves as expected (affects this this and two tests further down)
+    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'normaluser',
@@ -27,19 +30,19 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user normaluser');
-      User.findOne({ username: 'normaluser' })
-        .then((user) => {
-          user.admin.should.equal(false);
-          user.moderator.should.equal(false);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'normaluser' }).then((user) => {
+        user.admin.should.equal(false);
+        user.moderator.should.equal(false);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 
   it('should create moderator user', (done) => {
+    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'moderator',
@@ -60,19 +63,19 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user moderator');
-      User.findOne({ username: 'moderator' })
-        .then((user) => {
-          user.admin.should.equal(false);
-          user.moderator.should.equal(true);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'moderator' }).then((user) => {
+        user.admin.should.equal(false);
+        user.moderator.should.equal(true);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 
   it('should create admin user', (done) => {
+    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'admin',
@@ -93,15 +96,14 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user admin');
-      User.findOne({ username: 'admin' })
-        .then((user) => {
-          user.admin.should.equal(true);
-          user.moderator.should.equal(true);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'admin' }).then((user) => {
+        user.admin.should.equal(true);
+        user.moderator.should.equal(true);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 });

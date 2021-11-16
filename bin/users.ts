@@ -2,19 +2,23 @@
 
 /* eslint no-console: 0 */
 
-const program = require('commander');
-const mongoose = require('mongoose');
-const chalk = require('chalk');
-const promptly = require('promptly');
-const User = require('../app/models/user');
+import { Command } from 'commander';
+import mongoose from 'mongoose';
+import chalk from 'chalk';
+import promptly from 'promptly';
+import User from '../app/models/user';
+const program = new Command();
 
-function done(err, user) {
+function done(err: Error, user: typeof User) {
   if (err) throw err;
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   console.log(chalk.green(`Created user ${user.username}`));
   process.exit(0);
 }
 
-function validator(value) {
+function validator(value: string) {
   if (typeof parseInt(value) !== 'number') {
     throw new Error('-------------\nNot a number!\n-------------');
   }

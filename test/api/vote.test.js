@@ -1,14 +1,15 @@
-const ObjectId = require('mongoose').Types.ObjectId;
-const request = require('supertest');
-const passportStub = require('passport-stub');
-const chai = require('chai');
-const app = require('../../app');
-const Alternative = require('../../app/models/alternative');
-const Election = require('../../app/models/election');
-const ElectionTypes = require('../../app/models/utils.js');
-const Vote = require('../../app/models/vote');
-const { test404, testAdminResource } = require('./helpers');
-const { createUsers } = require('../helpers');
+import request from 'supertest';
+import { Types } from 'mongoose';
+import passportStub from 'passport-stub';
+import chai from 'chai';
+import app from '../../app';
+import Alternative from '../../app/models/alternative';
+import Election from '../../app/models/election';
+import ElectionTypes from '../../app/models/utils';
+import Vote from '../../app/models/vote';
+import { test404, testAdminResource } from './helpers';
+import { createUsers } from '../helpers';
+const ObjectId = Types.ObjectId;
 
 const should = chai.should();
 

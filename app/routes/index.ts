@@ -2,16 +2,16 @@ import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import apiRoutes from './api';
 import authRoutes from './auth';
-import helpers from './helpers';
+import {
+  checkAdmin,
+  checkAdminPartial,
+  checkAuthOrRedirect,
+  checkModerator,
+  checkModeratorPartial,
+} from './helpers';
 import fs from 'fs';
 import path from 'path';
 import YAML from 'yaml';
-
-const checkAuthOrRedirect = helpers.checkAuthOrRedirect;
-const checkAdmin = helpers.checkAdmin;
-const checkModerator = helpers.checkModerator;
-const checkAdminPartial = helpers.checkAdminPartial;
-const checkModeratorPartial = helpers.checkModeratorPartial;
 
 const usage = YAML.parse(
   fs.readFileSync(path.resolve(__dirname, '../../usage.yml'), 'utf8')

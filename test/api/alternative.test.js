@@ -1,12 +1,13 @@
-const passportStub = require('passport-stub');
-const request = require('supertest');
-const ObjectId = require('mongoose').Types.ObjectId;
-const chai = require('chai');
-const app = require('../../app');
-const Alternative = require('../../app/models/alternative');
-const Election = require('../../app/models/election');
-const { test404, testAdminResource } = require('./helpers');
-const { createUsers } = require('../helpers');
+import passportStub from 'passport-stub';
+import request from 'supertest';
+import { Types } from 'mongoose';
+import chai from 'chai';
+import app from '../../app';
+import Alternative from '../../app/models/alternative';
+import Election from '../../app/models/election';
+import { test404, testAdminResource } from './helpers';
+import { createUsers } from '../helpers';
+const ObjectId = Types.ObjectId;
 
 chai.should();
 
@@ -30,25 +31,24 @@ describe('Alternatives API', () => {
   });
 
   beforeEach(function () {
+    const that = this;
     passportStub.logout();
     const election = new Election(testElectionData);
-
     return election
       .save()
-      .bind(this)
-      .then(function (createdElection) {
-        this.election = createdElection;
+      .then((createdElection) => {
+        that.currentTest.election = createdElection;
         const alternative = new Alternative(createdAlternativeData);
         return election.addAlternative(alternative);
       })
       .then((alternative) => {
-        this.alternative = alternative;
+        that.currentTest.alternative = alternative;
         return createUsers();
       })
-      .spread(function (user, adminUser, moderatorUser) {
-        this.user = user;
-        this.adminUser = adminUser;
-        this.moderatorUser = moderatorUser;
+      .then(([user, adminUser, moderatorUser]) => {
+        that.currenTest.user = user; // TODO: research mocha ctx
+        that.currenTest.adminUser = adminUser;
+        that.currenTest.moderatorUser = moderatorUser;
       });
   });
 
@@ -58,7 +58,7 @@ describe('Alternatives API', () => {
   });
 
   it('should be able to get alternatives as admin', async function () {
-    passportStub.login(this.adminUser.username);
+    passportStub.login(this.currentTest.adminUser.username);
     const res = await request(app)
       .get(`/api/election/${this.election.id}/alternatives`)
       .expect(200)

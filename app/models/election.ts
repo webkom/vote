@@ -1,13 +1,12 @@
 import _ from 'lodash';
-import Bluebird from 'bluebird';
 import errors from '../errors';
 import mongoose from 'mongoose';
 import Vote from './vote';
 const Schema = mongoose.Schema;
-import calculateWinnerUsingNormal from '../algorithms/normal.js';
-import calculateWinnerUsingSTV from '../algorithms/stv.js';
-import ElectionTypes from './utils.js';
+import calculateWinnerUsingNormal from '../algorithms/normal';
+import calculateWinnerUsingSTV from '../algorithms/stv';
 import crypto from 'crypto';
+import ElectionTypes from './utils';
 
 const electionSchema = new Schema({
   title: {
@@ -73,22 +72,22 @@ const electionSchema = new Schema({
   },
 });
 
-electionSchema.pre('remove', function (next) {
+electionSchema.pre('remove', async function (next) {
   // Use mongoose.model getter to avoid circular dependencies
-  mongoose
+  await mongoose
     .model('Alternative')
     .find({ election: this.id })
     .then((alternatives) => {
-      Bluebird.map(alternatives, (alternative) => alternative.remove());
-    })
-    .nodeify(next);
-  mongoose
+      Promise.all(alternatives.map((alternative) => alternative.remove()));
+    });
+  next();
+  await mongoose
     .model('Vote')
     .find({ election: this.id })
     .then((votes) => {
-      Bluebird.map(votes, (vote) => vote.remove());
-    })
-    .nodeify(next);
+      Promise.all(votes.map((vote) => vote.remove()));
+    });
+  next();
 });
 
 electionSchema.methods.elect = async function () {

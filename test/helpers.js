@@ -1,46 +1,51 @@
-const Bluebird = require('bluebird');
-const mongoose = require('mongoose');
-const Alternative = require('../app/models/alternative');
-const Election = require('../app/models/election');
-const Vote = require('../app/models/vote');
-const User = require('../app/models/user');
-const Register = require('../app/models/register');
-const crypto = require('crypto');
+import mongoose from 'mongoose';
+import Alternative from '../app/models/alternative';
+import Election from '../app/models/election';
+import Vote from '../app/models/vote';
+import User from '../app/models/user';
+import Register from '../app/models/register';
+import crypto from 'crypto';
 
-exports.dropDatabase = () =>
+export const dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
-exports.clearCollections = () =>
-  Bluebird.map([Alternative, Register, Election, Vote, User], (collection) =>
-    collection.deleteMany()
-  );
+export const clearCollections = () => {
+  const promises = [];
+  for (const collection in [Alternative, Register, Election, Vote, User]) {
+    promises.push(async () => {
+      await collection.deleteMany();
+    });
+  }
+  Promise.all(promises);
+};
 
 const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
-const testUser = (exports.testUser = {
+export const testUser = {
   username: 'testuser',
   cardKey: '99TESTCARDKEY',
   hash,
-});
+};
 
-const adminUser = (exports.adminUser = {
+export const adminUser = {
   username: 'admin',
   admin: true,
   moderator: true,
   cardKey: '55TESTCARDKEY',
   hash,
-});
+};
 
-const moderatorUser = (exports.moderatorUser = {
+export const moderatorUser = {
   username: 'moderator',
   admin: false,
   moderator: true,
   cardKey: '67TESTCARDKEY',
   hash,
-});
+};
 
-exports.createUsers = () => User.create([testUser, adminUser, moderatorUser]);
+export const createUsers = () =>
+  User.create([testUser, adminUser, moderatorUser]);
 
-const prepareElection = async function (dataset) {
+export const prepareElection = async function (dataset) {
   // Takes the priorities from the dataset, as well as the amount of times
   // that priority combination should be repeated. This basically transforms
   // the dataset from a reduced format into the format used by the .elect()
@@ -98,5 +103,3 @@ const prepareElection = async function (dataset) {
 
   return election;
 };
-
-exports.prepareElection = prepareElection;

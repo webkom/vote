@@ -1,5 +1,5 @@
-const dataset = require('./datasets');
-const { prepareElection } = require('../helpers');
+import dataset from './datasets';
+import { prepareElection } from '../helpers';
 
 describe('Normal Blank Logic', () => {
   it('should not resolve for the election in dataset 1', async function () {
