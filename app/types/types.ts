@@ -69,7 +69,7 @@ interface IRegister {
 }
 export type RegisterType = IRegister & Document;
 
-interface IUser extends Document {
+interface IUser {
     _id: string;
     username: string;
     hash: string;
@@ -91,7 +91,7 @@ export interface UserModel extends Model<UserType> {
     register(body : IUser, password : string) : Promise<IUser>;
 }
 
-interface IVote extends Document {
+interface IVote {
     _id: string;
     hash: string;
     election: ElectionType;
