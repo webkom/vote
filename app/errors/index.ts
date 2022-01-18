@@ -1,13 +1,28 @@
-class InactiveUserError extends Error {
-  constructor(username) {
+import { Response } from "express";
+import { IAlternative, IElection } from "../types/types";
+import mongoose from "mongoose";
+
+class HTTPError extends Error {
+  status: number;
+  name: string;
+  message: string;
+  payload?: any;
+
+  constructor() {
     super();
-    this.name = 'InactiveUserError';
-    this.message = `Can't vote with an inactive user: ${username}`;
-    this.status = 403;
   }
 }
 
-class AlreadyVotedError extends Error {
+class InactiveUserError extends HTTPError {
+  constructor(username: string) {
+    super();
+    this.message = `Can't vote with an inactive user: ${username}`;
+    this.status = 403;
+    this.name = 'InactiveUserError';
+  }
+}
+
+class AlreadyVotedError extends HTTPError {
   constructor() {
     super();
     this.name = 'AlreadyVotedError';
@@ -16,7 +31,7 @@ class AlreadyVotedError extends Error {
   }
 }
 
-class InactiveElectionError extends Error {
+class InactiveElectionError extends HTTPError {
   constructor() {
     super();
     this.name = 'InactiveElectionError';
@@ -25,7 +40,7 @@ class InactiveElectionError extends Error {
   }
 }
 
-class LoginError extends Error {
+class LoginError extends HTTPError {
   constructor() {
     super();
     this.name = 'LoginError';
@@ -34,7 +49,7 @@ class LoginError extends Error {
   }
 }
 
-class PermissionError extends Error {
+class PermissionError extends HTTPError {
   constructor() {
     super();
     this.name = 'PermissionError';
@@ -43,8 +58,8 @@ class PermissionError extends Error {
   }
 }
 
-class InvalidPayloadError extends Error {
-  constructor(property) {
+class InvalidPayloadError extends HTTPError {
+  constructor(property: string) {
     super();
     this.name = 'InvalidPayloadError';
     this.message = `Missing property ${property} from payload.`;
@@ -52,7 +67,7 @@ class InvalidPayloadError extends Error {
   }
 }
 
-class AccessCodeError extends Error {
+class AccessCodeError extends HTTPError {
   constructor() {
     super();
     this.name = 'AccessCodeError';
@@ -61,7 +76,7 @@ class AccessCodeError extends Error {
   }
 }
 
-class InvalidPriorityError extends Error {
+class InvalidPriorityError extends HTTPError {
   constructor() {
     super();
     this.name = 'InvalidPriorityError';
@@ -70,8 +85,8 @@ class InvalidPriorityError extends Error {
   }
 }
 
-class InvalidSTVPrioritiesLengthError extends Error {
-  constructor(priorities, election) {
+class InvalidSTVPrioritiesLengthError extends HTTPError {
+  constructor(priorities: IAlternative[], election: IElection) {
     super();
     this.name = 'InvalidSTVPrioritiesLengthError';
     this.message = `Priorities is of length ${priorities.length}, election has ${election.alternatives.length} alternatives.`;
@@ -79,8 +94,8 @@ class InvalidSTVPrioritiesLengthError extends Error {
   }
 }
 
-class InvalidNormalPrioritiesLengthError extends Error {
-  constructor(priorities) {
+class InvalidNormalPrioritiesLengthError extends HTTPError {
+  constructor(priorities: IAlternative[]) {
     super();
     this.name = 'InvalidNormalPrioritiesLengthError';
     this.message = `Priorities is of length ${priorities.length} on a normal election.`;
@@ -88,8 +103,8 @@ class InvalidNormalPrioritiesLengthError extends Error {
   }
 }
 
-class MissingHeaderError extends Error {
-  constructor(header) {
+class MissingHeaderError extends HTTPError {
+  constructor(header: string) {
     super();
     this.name = 'MissingHeaderError';
     this.message = `Missing header ${header}.`;
@@ -97,8 +112,8 @@ class MissingHeaderError extends Error {
   }
 }
 
-class NotFoundError extends Error {
-  constructor(type) {
+class NotFoundError extends HTTPError {
+  constructor(type: string) {
     super();
     this.name = 'NotFoundError';
     this.message = `Couldn't find ${type}.`;
@@ -106,8 +121,8 @@ class NotFoundError extends Error {
   }
 }
 
-class ActiveElectionError extends Error {
-  constructor(message) {
+class ActiveElectionError extends HTTPError {
+  constructor(message: string) {
     super();
     this.name = 'ActiveElectionError';
     this.message = message || 'You need to deactivate the election first.';
@@ -115,8 +130,9 @@ class ActiveElectionError extends Error {
   }
 }
 
-class ValidationError extends Error {
-  constructor(errors) {
+class ValidationError extends HTTPError {
+  errors: { [path: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError | mongoose.Error.ValidationError };
+  constructor(errors: { [path: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError | mongoose.Error.ValidationError }) {
     super();
     this.name = 'ValidationError';
     this.message = 'Validation failed.';
@@ -131,8 +147,8 @@ class ValidationError extends Error {
   }
 }
 
-class InvalidRegistrationError extends Error {
-  constructor(message) {
+class InvalidRegistrationError extends HTTPError {
+  constructor(message: string) {
     super();
     this.name = 'InvalidRegistrationError';
     this.message = message;
@@ -140,7 +156,7 @@ class InvalidRegistrationError extends Error {
   }
 }
 
-class AdminVotingError extends Error {
+class AdminVotingError extends HTTPError {
   constructor() {
     super();
     this.name = 'AdminVotingError';
@@ -149,7 +165,7 @@ class AdminVotingError extends Error {
   }
 }
 
-class ModeratorVotingError extends Error {
+class ModeratorVotingError extends HTTPError {
   constructor() {
     super();
     this.name = 'ModeratorVotingError';
@@ -158,7 +174,7 @@ class ModeratorVotingError extends Error {
   }
 }
 
-class DuplicateCardError extends Error {
+class DuplicateCardError extends HTTPError {
   constructor() {
     super();
     this.name = 'DuplicateCardError';
@@ -167,7 +183,7 @@ class DuplicateCardError extends Error {
   }
 }
 
-class DuplicateUsernameError extends Error {
+class DuplicateUsernameError extends HTTPError {
   constructor() {
     super();
     this.name = 'DuplicateUsernameError';
@@ -176,7 +192,7 @@ class DuplicateUsernameError extends Error {
   }
 }
 
-class DuplicateIdentifierError extends Error {
+class DuplicateIdentifierError extends HTTPError {
   constructor() {
     super();
     this.name = 'DuplicateIdentifierError';
@@ -185,7 +201,7 @@ class DuplicateIdentifierError extends Error {
   }
 }
 
-class AlreadyActiveElectionError extends Error {
+class AlreadyActiveElectionError extends HTTPError {
   constructor() {
     super();
     this.name = 'AlreadyActiveElection';
@@ -194,8 +210,8 @@ class AlreadyActiveElectionError extends Error {
   }
 }
 
-class MailError extends Error {
-  constructor(err) {
+class MailError extends HTTPError {
+  constructor(err: any) {
     super();
     this.name = 'MailError';
     this.message = `Something went wrong with the email. Err: ${err}`;
@@ -203,7 +219,7 @@ class MailError extends Error {
   }
 }
 
-class NoAssociatedUserError extends Error {
+class NoAssociatedUserError extends HTTPError {
   constructor() {
     super();
     this.name = 'NoAssociatedUserError';
@@ -212,7 +228,7 @@ class NoAssociatedUserError extends Error {
   }
 }
 
-class InvalidElectionTypeError extends Error {
+class InvalidElectionTypeError extends HTTPError {
   constructor() {
     super();
     this.name = 'InvalidElectionTypeError';
@@ -248,7 +264,7 @@ export default {
   NoAssociatedUserError,
 };
 
-export const handleError = (res, err, status) => {
+export const handleError = (res: Response, err: HTTPError, status?: number): Response => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
     err.payload || {

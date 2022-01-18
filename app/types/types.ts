@@ -34,14 +34,14 @@ export interface NormalResult extends STVResult {
     count: number;
 }
 
-interface IAlternative {
+export interface IAlternative {
     _id: string;
     description: string;
     election: ElectionType;
 }
 export type AlternativeType = IAlternative & Document;
 
-interface IElection {
+export interface IElection {
     _id: string;
     title: string;
     description: string;
@@ -55,9 +55,9 @@ interface IElection {
     accessCode: number;
 
     // methods
-    elect() : ElectionResult;
-    addAlternative(alternative: AlternativeType) : AlternativeType;
-    addVote(user: UserType, priorities: AlternativeType[]) : AlternativeType;
+    elect(): ElectionResult;
+    addAlternative(alternative: AlternativeType): AlternativeType;
+    addVote(user: UserType, priorities: AlternativeType[]): AlternativeType;
 }
 export type ElectionType = IElection & Document;
 
@@ -79,16 +79,16 @@ interface IUser {
     cardKey: string;
 
     // methods
-    getCleanUser() : UserType;
-    authenticate(password : string) : Promise<boolean>;
+    getCleanUser(): UserType;
+    authenticate(password: string): Promise<boolean>;
 }
 export type UserType = IUser & Document;
 
 export interface UserModel extends Model<UserType> {
     // statics
-    authenticate(username : string, password : string) : Promise<IUser>;
-    findByUsername(username : string) : Promise<IUser>;
-    register(body : IUser, password : string) : Promise<IUser>;
+    authenticate(username: string, password: string): Promise<IUser>;
+    findByUsername(username: string): Promise<IUser>;
+    register(body: IUser, password: string): Promise<IUser>;
 }
 
 interface IVote {
