@@ -90,6 +90,9 @@ When using the card readers on a linux based system there can be permission prob
 
 1. Run google-chrome as `root`
 
+> NOTE: This has stopped working on modern versions of ubuntu-based distros, most likely due to the
+use of flatpak.
+
 ```sh
 $ sudo google-chrome
 ```
