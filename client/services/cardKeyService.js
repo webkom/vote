@@ -119,6 +119,7 @@ Usage: scanCard(123) // where 123 is the cardId `);
           } catch (e) {
             $rootScope.$apply(() => {
               $location.path('/moderator/serial_error');
+              console.error(e);
             });
           }
         }
