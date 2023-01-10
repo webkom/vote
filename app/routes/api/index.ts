@@ -5,7 +5,7 @@ import userRoutes from './user';
 import voteRoutes from './vote';
 import qrRoutes from './qr';
 import registerRoutes from './register';
-import errors from '../../errors';
+import errors, { handleError } from '../../errors';
 
 router.use('/election', electionRoutes);
 router.use('/user', userRoutes);
@@ -20,7 +20,7 @@ router.use((req, res, next) => {
 });
 
 router.use((err, req, res, next) => {
-  errors.handleError(res, err);
+  handleError(res, err);
 });
 
 export default router;

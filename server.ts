@@ -4,10 +4,10 @@ import env from './env';
 
 app.set('port', env.PORT);
 
-export default (callback) => {
+export default (callback: (err: Error, port: number) => void): void => {
   const hostname = env.HOST;
-  const server = app.listen(app.get('port'), hostname, (err) => {
-    callback(err, app.get('port'));
+  const server = app.listen(app.get('port'), hostname, () => {
+    callback(undefined, app.get('port'));
   });
   app.set('io', socketIO(server));
 };

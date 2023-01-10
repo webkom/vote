@@ -8,6 +8,7 @@ module.exports = {
     filename: '[name].js',
     publicPath: '/static/',
   },
+  target: 'node',
   resolve: {
     extensions: ['.js', '.styl', '.ts'],
     fallback: {

@@ -1,12 +1,40 @@
-import mongoose from 'mongoose';
+import type {
+  RequestParamHandler,
+  Request,
+  Response,
+  RequestHandler,
+} from 'express';
+import mongoose, { Types, HydratedDocument } from 'mongoose';
 import Election from '../models/election';
 import User from '../models/user';
 import Alternative from '../models/alternative';
 import errors from '../errors';
 import app from '../../app';
-import alternative from '../models/alternative';
+import type {
+  ElectionType,
+  IElectionMethods,
+  AlternativeType,
+} from '../types/types';
 
-export const load = (req, res, next, electionId) =>
+export interface ReqWithElection extends Request {
+  election: HydratedDocument<ElectionType, IElectionMethods>;
+}
+
+export interface TypedRequestBody<T> extends Request {
+  body: T;
+}
+
+type CreateElection = Pick<
+  ElectionType,
+  'title' | 'description' | 'seats' | 'type' | 'useStrict' | 'physical'
+> & { alternatives: AlternativeType[] };
+
+export const load: RequestParamHandler = (
+  req: ReqWithElection,
+  res,
+  next,
+  electionId: string
+) =>
   Election.findById(electionId)
     .then((election) => {
       if (!election) throw new errors.NotFoundError('election');
@@ -19,10 +47,13 @@ export const load = (req, res, next, electionId) =>
       }
     });
 
-export const retrieveActive = (req, res) =>
+export const retrieveActive = (
+  req: ReqWithElection,
+  res: Response
+): Promise<Response> =>
   Election.findOne({
     active: true,
-    hasVotedUsers: { $ne: req.user._id },
+    hasVotedUsers: { $ne: new Types.ObjectId(req.user._id) },
   })
     .select('-hasVotedUsers')
     .populate('alternatives')
@@ -59,56 +90,69 @@ export const retrieveActive = (req, res) =>
       return res.status(200).json(election);
     });
 
-export const create = (req, res) =>
-  Election.create({
-    title: req.body.title,
-    description: req.body.description,
-    seats: req.body.seats,
-    type: req.body.type,
-    useStrict: req.body.useStrict,
-    physical: req.body.physical,
-  })
-    .then((election) => {
-      const alternatives = req.body.alternatives;
-      if (alternatives && alternatives.length) {
-        Promise.all(
-          alternatives.map((a) => {
-            a.election = election;
-            return Alternative.create(a);
-          })
-        ).then((createdAlternatives) => {
-          election.alternatives = createdAlternatives;
-          return election.save();
-        });
-      }
-      return election;
-    })
-    .then((election) => election.populate('alternatives').execPopulate())
-    .then((election) => res.status(201).json(election))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        throw new errors.ValidationError(err.errors);
-      }
+export const create = async (
+  req: TypedRequestBody<CreateElection>,
+  res: Response
+): Promise<Response<ElectionType>> => {
+  try {
+    const election = await Election.create({
+      title: req.body.title,
+      description: req.body.description,
+      seats: req.body.seats,
+      type: req.body.type,
+      useStrict: req.body.useStrict,
+      physical: req.body.physical,
     });
 
-export const list = (req, res) =>
+    const alternatives = req.body.alternatives;
+    if (alternatives && alternatives.length) {
+      Promise.all(
+        alternatives.map((a) => {
+          a.election = election.id;
+          return Alternative.create(a);
+        })
+      ).then((createdAlternatives) => {
+        election.alternatives = createdAlternatives.map((a) => a.id);
+        return election.save();
+      });
+    }
+
+    await election.populate('alternatives');
+    return res.status(201).json(election);
+  } catch (err) {
+    if (err instanceof mongoose.Error.ValidationError) {
+      throw new errors.ValidationError(null, err.errors);
+    }
+  }
+};
+
+export const list = (
+  req: Request,
+  res: Response
+): Promise<Response<ElectionType[]>> =>
   Election.find()
     .populate('alternatives')
     .exec()
     .then((elections) => res.status(200).json(elections));
 
-export const retrieve = (req, res) =>
-  req.election
-    .populate('alternatives')
-    .execPopulate()
-    .then((election) => res.status(200).json(election));
+export const retrieve = async (
+  req: ReqWithElection,
+  res: Response
+): Promise<Response<ElectionType>> => {
+  await req.election.populate('alternatives');
+
+  return res.status(200).json(req.election);
+};
 
 function setElectionStatus(req, res, active) {
   req.election.active = active;
   return req.election.save();
 }
 
-export const activate = async (req, res) => {
+export const activate = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const otherActiveElection = await Election.findOne({ active: true });
   if (otherActiveElection) {
     throw new errors.AlreadyActiveElectionError();
@@ -120,17 +164,17 @@ export const activate = async (req, res) => {
   });
 };
 
-export const deactivate = (req, res) =>
+export const deactivate: RequestHandler = (req, res) =>
   setElectionStatus(req, res, false).then((election) => {
     const io = app.get('io');
     io.emit('election');
     res.status(200).json(election);
   });
 
-export const elect = (req, res) =>
+export const elect: RequestHandler = (req: ReqWithElection, res) =>
   req.election.elect().then((result) => res.json(result));
 
-export const deleteElection = (req, res) => {
+export const deleteElection: RequestHandler = (req: ReqWithElection, res) => {
   if (req.election.active) {
     throw new errors.ActiveElectionError('Cannot delete an active election.');
   }
@@ -143,7 +187,7 @@ export const deleteElection = (req, res) => {
   );
 };
 
-export const count = (req, res) => {
+export const count: RequestHandler = (req: ReqWithElection, res) => {
   res.json({
     users: req.election.hasVotedUsers.length,
   });

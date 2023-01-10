@@ -5,7 +5,7 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import mongoStoreFactory from 'connect-mongo';
 import passport from 'passport';
-import LocalStrategy from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 import csrf from 'csurf';
 import flash from 'connect-flash';
 import favicon from 'serve-favicon';
@@ -21,12 +21,7 @@ app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
-mongoose.connect(app.get('mongourl'), {
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  useFindAndModify: true,
-});
+mongoose.connect(app.get('mongourl'));
 
 raven.config(env.RAVEN_DSN).install();
 
@@ -36,11 +31,15 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
   const webpack = import('webpack');
   const webpackMiddleware = import('webpack-dev-middleware');
   const config = import('./webpack.config.js');
-  app.use(
-    webpackMiddleware(webpack(config), {
-      contentBase: 'public/',
-      publicPath: config.output.publicPath,
-    })
+
+  Promise.all([webpack, webpackMiddleware, config]).then(
+    ([webpack, webpackMiddleware, config]) => {
+      app.use(
+        webpackMiddleware.default(webpack.default(config), {
+          publicPath: config.output.publicPath,
+        })
+      );
+    }
   );
 }
 
@@ -97,11 +96,11 @@ passport.use(
   })
 );
 
-passport.serializeUser((user, cb) => {
+passport.serializeUser<string>((user, cb) => {
   cb(null, user.username);
 });
-passport.deserializeUser(async (username, cb) => {
-  const user = await User.findByUsername(username).exec();
+passport.deserializeUser<string>(async (username, cb) => {
+  const user = await User.findByUsername(username);
   cb(null, user);
 });
 

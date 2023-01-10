@@ -1,13 +1,16 @@
+import type { RequestHandler } from 'express';
 import Election from '../models/election';
 import Vote from '../models/vote';
 import errors from '../errors';
 import env from '../../env';
-const redisClient = require('redis').createClient(6379, env.REDIS_URL);
+import redisClient from 'redis';
+redisClient.createClient(6379, env.REDIS_URL);
+
 import Redlock from 'redlock';
 const redlock = new Redlock([redisClient], {});
 import ElectionTypes from '../models/utils';
 
-export const create = async (req, res) => {
+export const create: RequestHandler = async (req, res) => {
   const { election, priorities } = req.body;
   const { user } = req;
 
@@ -41,7 +44,7 @@ export const create = async (req, res) => {
         (x) => !election.alternatives.includes(x._id)
       );
       if (diff.length > 0) {
-        throw new errors.InvalidPriorityError(diff[0], election);
+        throw new errors.InvalidPriorityError(diff[0], election.title);
       }
       const vote = await election.addVote(user, priorities);
       // Unlock when voted
@@ -52,7 +55,7 @@ export const create = async (req, res) => {
     .then((vote) => res.status(201).json(vote));
 };
 
-export const retrieve = async (req, res) => {
+export const retrieve: RequestHandler = async (req, res) => {
   const hash = req.get('Vote-Hash');
 
   if (!hash) {

@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "noImplicitAny": true,
-    "target": "es5",
+    //"noImplicitAny": true,
+    "target": "es6",
     "outDir": "./dist",
     "module": "commonjs",
     "removeComments": true,
