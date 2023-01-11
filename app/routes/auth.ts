@@ -1,7 +1,7 @@
 import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import passport from 'passport';
-import errors from '../errors';
+import { handleError } from '../errors';
 import Register from '../models/register';
 
 router.get('/login', (req, res) => {
@@ -36,7 +36,7 @@ router.post(
 
 router.post('/logout', (req, res) => {
   req.session.destroy((err) => {
-    if (err) return errors.handleError(res, err);
+    if (err) return handleError(res, err);
     res.redirect('/auth/login');
   });
 });

@@ -1,5 +1,5 @@
 import { Model, Types, HydratedDocument } from 'mongoose';
-import { STVEvent } from '../algorithms/stv';
+import { ElectionResult } from '../algorithms/types';
 
 export enum ElectionSystems {
   NORMAL = 'normal',
@@ -12,27 +12,6 @@ export enum Status {
 }
 
 export type Count = { [key: string]: number };
-
-export type ElectionResult = {
-  result: STVResult | NormalResult;
-  thr: number;
-  seats: number;
-  voteCount: number;
-  blankVoteCount: number;
-  useStrict: boolean;
-  log: STVEvent[] | Count;
-};
-
-export interface STVResult {
-  status: Status;
-  winners: Types.ObjectId[];
-}
-
-export interface NormalResult extends STVResult {
-  status: Status;
-  winners: Types.ObjectId[];
-  count: number;
-}
 
 export interface IAlternative {
   _id: string;
@@ -61,8 +40,11 @@ export interface IElectionMethods {
   elect(): Promise<ElectionResult | undefined>;
   addAlternative(
     alternative: HydratedDocument<AlternativeType>
-  ): AlternativeType;
-  addVote(user: UserType, priorities: AlternativeType[]): AlternativeType;
+  ): Promise<HydratedDocument<AlternativeType>>;
+  addVote(
+    user: UserType,
+    priorities: AlternativeType[]
+  ): Promise<HydratedDocument<VoteType>>;
 }
 
 export type ElectionType = IElection;
@@ -117,5 +99,6 @@ interface IVote {
   _id: string;
   hash: string;
   election: Types.ObjectId;
+  priorities: Types.ObjectId[];
 }
 export type VoteType = IVote;

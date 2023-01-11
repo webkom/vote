@@ -9,13 +9,7 @@ import {
   checkModerator,
   checkModeratorPartial,
 } from './helpers';
-import fs from 'fs';
-import path from 'path';
-import YAML from 'yaml';
-
-const usage = YAML.parse(
-  fs.readFileSync(path.resolve(__dirname, '../../usage.yml'), 'utf8')
-);
+import usage from '../../usage.yml';
 
 // Admin users shouldn't be able to vote, so they don't need to see the election page
 router.get('/', checkAuthOrRedirect, (req, res) => {
