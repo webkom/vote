@@ -1,4 +1,3 @@
-import { fail } from 'assert';
 import chai from 'chai';
 import { spawn } from 'child_process';
 import User from '../../app/models/user';
@@ -8,8 +7,6 @@ describe('User CLI', () => {
   beforeEach(() => User.deleteMany({}));
 
   it('should create normal user', (done) => {
-    // TODO: Configure project such that /bin/users behaves as expected (affects this this and two tests further down)
-    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'normaluser',
@@ -19,7 +16,9 @@ describe('User CLI', () => {
     stream.stdin.setEncoding('utf8');
     stream.stdout.setEncoding('utf8');
 
-    stream.stdin.write('1\n');
+    stream.stdout.on('data', (data) => {
+      stream.stdin.write('1\n');
+    });
 
     stream.stdout.on('data', (data) => {
       stream.stdin.write('testpassword\n');
@@ -42,7 +41,6 @@ describe('User CLI', () => {
   });
 
   it('should create moderator user', (done) => {
-    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'moderator',
@@ -75,7 +73,6 @@ describe('User CLI', () => {
   });
 
   it('should create admin user', (done) => {
-    fail('/bin/users has not been configured to run this test with ts');
     const stream = spawn(`${process.cwd()}/bin/users`, [
       'create-user',
       'admin',

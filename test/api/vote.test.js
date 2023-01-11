@@ -5,7 +5,7 @@ import chai from 'chai';
 import app from '../../app';
 import Alternative from '../../app/models/alternative';
 import Election from '../../app/models/election';
-import ElectionTypes from '../../app/models/utils';
+import { ElectionSystems as ElectionTypes } from '../../app/types/types';
 import Vote from '../../app/models/vote';
 import { test404, testAdminResource } from './helpers';
 import { createUsers } from '../helpers';

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import Election from '../../app/models/election';
-import ElectionTypes from '../../app/models/utils';
+import { ElectionSystems as ElectionTypes } from '../../app/types/types';
 import Alternative from '../../app/models/alternative';
 import {
   createUsers,

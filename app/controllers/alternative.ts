@@ -30,8 +30,9 @@ export const create: RequestHandler = async (req: ReqWithElection, res) => {
     return res.status(201).send(alternative);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      throw new errors.ValidationError(null, err.errors);
+      throw new errors.ValidationError(err.errors);
     }
+    throw err;
   }
 };
 

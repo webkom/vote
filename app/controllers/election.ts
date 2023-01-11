@@ -27,7 +27,12 @@ export interface TypedRequestBody<T> extends Request {
 type CreateElection = Pick<
   ElectionType,
   'title' | 'description' | 'seats' | 'type' | 'useStrict' | 'physical'
-> & { alternatives: AlternativeType[] };
+> & {
+  alternatives: {
+    description: AlternativeType['description'];
+    election?: Types.ObjectId;
+  }[];
+};
 
 export const load: RequestParamHandler = (
   req: ReqWithElection,
@@ -45,6 +50,7 @@ export const load: RequestParamHandler = (
       if (err instanceof mongoose.Error.CastError) {
         throw new errors.NotFoundError('election');
       }
+      throw err;
     });
 
 export const retrieveActive = (
@@ -106,14 +112,13 @@ export const create = async (
 
     const alternatives = req.body.alternatives;
     if (alternatives && alternatives.length) {
-      Promise.all(
+      await Promise.all(
         alternatives.map((a) => {
-          a.election = election.id;
-          return Alternative.create(a);
+          return Alternative.create({ ...a, election: election });
         })
-      ).then((createdAlternatives) => {
+      ).then(async (createdAlternatives) => {
         election.alternatives = createdAlternatives.map((a) => a.id);
-        return election.save();
+        await election.save();
       });
     }
 
@@ -121,7 +126,7 @@ export const create = async (
     return res.status(201).json(election);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      throw new errors.ValidationError(null, err.errors);
+      throw new errors.ValidationError(err.errors);
     }
   }
 };

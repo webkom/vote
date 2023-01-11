@@ -30,25 +30,24 @@ describe('Alternatives API', () => {
     passportStub.install(app);
   });
 
-  beforeEach(function () {
-    const that = this;
+  beforeEach(async function () {
     passportStub.logout();
     const election = new Election(testElectionData);
+
+    const createdElection = await election.save();
+
+    this.election = createdElection;
+    const alternative = new Alternative(createdAlternativeData);
     return election
-      .save()
-      .then((createdElection) => {
-        that.currentTest.election = createdElection;
-        const alternative = new Alternative(createdAlternativeData);
-        return election.addAlternative(alternative);
-      })
+      .addAlternative(alternative)
       .then((alternative) => {
-        that.currentTest.alternative = alternative;
+        this.alternative = alternative;
         return createUsers();
       })
       .then(([user, adminUser, moderatorUser]) => {
-        that.currenTest.user = user; // TODO: research mocha ctx
-        that.currenTest.adminUser = adminUser;
-        that.currenTest.moderatorUser = moderatorUser;
+        this.user = user; // TODO: research mocha ctx
+        this.adminUser = adminUser;
+        this.moderatorUser = moderatorUser;
       });
   });
 
@@ -58,7 +57,7 @@ describe('Alternatives API', () => {
   });
 
   it('should be able to get alternatives as admin', async function () {
-    passportStub.login(this.currentTest.adminUser.username);
+    passportStub.login(this.adminUser.username);
     const res = await request(app)
       .get(`/api/election/${this.election.id}/alternatives`)
       .expect(200)

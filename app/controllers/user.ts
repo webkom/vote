@@ -35,7 +35,7 @@ export const create: RequestHandler = (req, res) => {
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new errors.ValidationError(null, err.errors);
+        throw new errors.ValidationError(err.errors);
       }
 
       if (duplicateError(err)) {
@@ -48,6 +48,7 @@ export const create: RequestHandler = (req, res) => {
       if (badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
+      throw err;
     });
 };
 
@@ -126,7 +127,7 @@ export const generate: RequestHandler = async (req, res) => {
     )
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new errors.ValidationError(null, err.errors);
+        throw new errors.ValidationError(err.errors);
       }
 
       if (duplicateError(err)) {
@@ -139,6 +140,7 @@ export const generate: RequestHandler = async (req, res) => {
       if (badRequestError(err)) {
         throw new errors.InvalidRegistrationError(err.message);
       }
+      throw err;
     });
 };
 

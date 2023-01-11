@@ -6,7 +6,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import app from '../../app';
 import Election from '../../app/models/election';
-import ElectionTypes from '../../app/models/utils';
+import { ElectionSystems as ElectionTypes } from '../../app/types/types';
 import Alternative from '../../app/models/alternative';
 import Vote from '../../app/models/vote';
 import { test404, testAdminResource } from './helpers';
