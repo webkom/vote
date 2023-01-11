@@ -4,13 +4,12 @@ const path = require('path');
 module.exports = {
   mode: 'none',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, '../', 'public'),
     filename: '[name].js',
     publicPath: '/static/',
   },
-  target: 'node',
   resolve: {
-    extensions: ['.js', '.styl', '.ts'],
+    extensions: ['.js', '.styl'],
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
@@ -19,7 +18,6 @@ module.exports = {
   entry: {
     bundle: './client/app.js',
     login: './client/login.js',
-    server: './index.ts',
   },
   module: {
     rules: [

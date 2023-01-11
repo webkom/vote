@@ -6,7 +6,8 @@
     "outDir": "./dist",
     "module": "commonjs",
     "removeComments": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
   "exclude": [
     "node_modules",
