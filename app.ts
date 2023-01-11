@@ -36,7 +36,6 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
       app.use(
         webpackMiddleware.default(webpack.default(config.default), {
           publicPath: config.output.publicPath,
-          writeToDisk: true,
         })
       );
     }

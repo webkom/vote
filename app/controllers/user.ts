@@ -166,6 +166,7 @@ export const changeCard: RequestHandler = (req, res) =>
       if (duplicateError(err)) {
         throw new errors.DuplicateCardError();
       }
+      throw err;
     });
 
 export const deactivateAllNonAdmin: RequestHandler = async (req, res) => {
