@@ -72,7 +72,7 @@ steps:
       event:
         - push
     depends_on:
-      - setup
+      - build
     commands:
       # This image runs with a custom user (circleci)by default,
       # and chrome headless doesn't work for the root user.
@@ -139,4 +139,4 @@ services:
 
 ---
 kind: signature
-hmac: 29a1a3d0c44d50ddb78ad36fcb911dbd4a90cce0077ee335402c61d90ad7c011
+hmac: 09dd3b4e0b25dff523fdcc2f4ef678c855ebc836a2299554f28eeca55abb8534

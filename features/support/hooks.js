@@ -2,11 +2,12 @@ import mongoose from 'mongoose';
 import Election from '../../app/models/election';
 import ElectionTypes from '../../app/models/utils';
 import Alternative from '../../app/models/alternative';
-import helpers from '../../test/helpers';
-const server = require('../../server');
-const createUsers = helpers.createUsers;
-const clearCollections = helpers.clearCollections;
-const dropDatabase = helpers.dropDatabase;
+import {
+  createUsers,
+  clearCollections,
+  dropDatabase,
+} from '../../test/helpers';
+import server from '../../server';
 
 module.exports = function () {
   const activeSTVElectionData = {
