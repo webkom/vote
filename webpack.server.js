@@ -38,7 +38,10 @@ module.exports = {
   externals: [nodeExternals()],
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: 'app/views', to: 'app/views' }],
+      patterns: [
+        { from: 'app/views', to: 'app/views' },
+        { from: 'public', to: 'public' },
+      ],
     }),
   ],
 };

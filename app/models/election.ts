@@ -113,14 +113,17 @@ electionSchema.methods.elect = async function () {
     );
   }
 
-  await this.populate('alternatives').populate({
-    path: 'votes',
-    model: 'Vote',
-    populate: {
-      path: 'priorities',
-      model: 'Alternative',
+  await this.populate([
+    'alternatives',
+    {
+      path: 'votes',
+      model: 'Vote',
+      populate: {
+        path: 'priorities',
+        model: 'Alternative',
+      },
     },
-  });
+  ]);
 
   const cleanElection = this.toJSON();
 

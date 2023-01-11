@@ -43,7 +43,7 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
   );
 }
 
-const publicPath = `${__dirname}/../public`;
+const publicPath = `${__dirname}/public`;
 app.use(favicon(`${publicPath}/favicon.ico`));
 app.use('/static', express.static(publicPath));
 app.use(bodyParser.json());

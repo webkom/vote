@@ -9,7 +9,10 @@ import {
   checkModerator,
   checkModeratorPartial,
 } from './helpers';
-import usage from '../../usage.yml';
+let usage = { test: '2023-01-02' };
+if (process.env.NODE_ENV != 'test') {
+  import('../../usage.yml').then((usage_yml) => (usage = usage_yml.default));
+}
 
 // Admin users shouldn't be able to vote, so they don't need to see the election page
 router.get('/', checkAuthOrRedirect, (req, res) => {

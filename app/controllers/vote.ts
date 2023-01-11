@@ -62,9 +62,10 @@ export const retrieve: RequestHandler = async (req, res) => {
     throw new errors.MissingHeaderError('Vote-Hash');
   }
 
-  const vote = await Vote.findOne({ hash: hash })
-    .populate('priorities')
-    .populate('election', 'title _id');
+  const vote = await Vote.findOne({ hash: hash }).populate([
+    { path: 'priorities' },
+    { path: 'election', select: 'title _id' },
+  ]);
 
   if (!vote) throw new errors.NotFoundError('vote');
   res.status(200).json(vote);
