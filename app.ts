@@ -3,9 +3,9 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import mongoStoreFactory from 'connect-mongo';
+import MongoStore from 'connect-mongo';
 import passport from 'passport';
-import LocalStrategy from 'passport-local';
+import { Strategy as LocalStrategy } from 'passport-local';
 import csrf from 'csurf';
 import flash from 'connect-flash';
 import favicon from 'serve-favicon';
@@ -14,19 +14,13 @@ import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
 const app = express();
-const MongoStore = mongoStoreFactory(session);
 
 app.disable('x-powered-by');
 app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
-mongoose.connect(app.get('mongourl'), {
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-  useFindAndModify: true,
-});
+mongoose.connect(app.get('mongourl'));
 
 raven.config(env.RAVEN_DSN).install();
 
@@ -36,11 +30,16 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
   const webpack = import('webpack');
   const webpackMiddleware = import('webpack-dev-middleware');
   const config = import('./webpack.config.js');
-  app.use(
-    webpackMiddleware(webpack(config), {
-      contentBase: 'public/',
-      publicPath: config.output.publicPath,
-    })
+
+  Promise.all([webpack, webpackMiddleware, config]).then(
+    ([webpack, webpackMiddleware, config]) => {
+      app.use(
+        webpackMiddleware.default(webpack.default(config.default), {
+          publicPath: config.output.publicPath,
+          writeToDisk: true,
+        })
+      );
+    }
   );
 }
 
@@ -61,7 +60,7 @@ app.use(
   session({
     cookie: { maxAge: 1000 * 3600 * 24 * 30 * 3 }, // Three months
     secret: env.COOKIE_SECRET || 'localsecret',
-    store: new MongoStore({ mongooseConnection: mongoose.connection }), //re-use existing connection
+    store: MongoStore.create({ mongoUrl: app.get('mongourl') }),
     saveUninitialized: true,
     resave: false,
   })
@@ -88,20 +87,24 @@ app.use(passport.session());
 
 passport.use(
   new LocalStrategy(async (username, password, done) => {
-    const user = await User.findByUsername(username);
-    if (!user) return false;
+    try {
+      const user = await User.findByUsername(username);
+      if (!user) return done(null, false);
 
-    const result = await user.authenticate(password);
+      const result = await user.authenticate(password);
 
-    done(result && user);
+      return done(null, result && user);
+    } catch (err) {
+      return done(err);
+    }
   })
 );
 
-passport.serializeUser((user, cb) => {
+passport.serializeUser<string>((user, cb) => {
   cb(null, user.username);
 });
-passport.deserializeUser(async (username, cb) => {
-  const user = await User.findByUsername(username).exec();
+passport.deserializeUser<string>(async (username, cb) => {
+  const user = await User.findByUsername(username);
   cb(null, user);
 });
 

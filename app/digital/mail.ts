@@ -4,7 +4,16 @@ import path from 'path';
 import handlebars from 'handlebars';
 import env from '../../env';
 
-let creds = {};
+type TemplateVars = {
+  from: string;
+  username: string;
+  password: string;
+  link: string;
+  new: boolean;
+  title: string;
+};
+
+let creds: Record<string, string> = {};
 let transporter = null;
 
 // Mail transporter object Google service account
@@ -49,11 +58,12 @@ export const mailHandler = async (action, data) => {
     'utf8'
   );
   const template = handlebars.compile(html);
-  let { email, username, password } = data;
+  let { username, password } = data;
+  const { email } = data;
   username = username && username.replace(/\W/g, '');
   password = password && password.replace(/\W/g, '');
 
-  let replacements = {
+  let replacements: Partial<TemplateVars> = {
     from: env.FROM,
     username,
     password,

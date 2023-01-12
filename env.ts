@@ -20,6 +20,9 @@ const env = {
   // Use one of the below
   GOOGLE_AUTH: process.env.GOOGLE_AUTH,
   SMTP_URL: process.env.SMTP_URL,
+
+  // TODO FIXME
+  RAVEN_DSN: '',
 };
 
 export default env;

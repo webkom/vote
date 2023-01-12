@@ -1,7 +1,7 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const Vote = require('../../app/models/vote');
-const ElectionTypes = require('../../app/models/utils');
+import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
 const expect = chai.expect;
 
 chai.use(chaiAsPromised);

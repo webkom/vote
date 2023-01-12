@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, HydratedDocument } from 'mongoose';
 import errors from '../errors';
-import { UserType, UserModel } from '../types/types';
+import { UserType, UserModel, IUserMethods } from '../types/types';
 
-const userSchema = new Schema<UserType>({
+export const userSchema = new Schema<UserType>({
   username: {
     type: String,
     index: true,
@@ -62,9 +62,9 @@ userSchema.statics.authenticate = function (
   username: string,
   password: string
 ) {
-  let _user: UserType;
+  let _user: HydratedDocument<UserType, IUserMethods>;
   return this.findOne({ username })
-    .then((user: UserType) => {
+    .then((user) => {
       _user = user;
       return user.authenticate(password);
     })

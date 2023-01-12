@@ -1,7 +1,7 @@
 import mongoose, { Schema } from 'mongoose';
-import { AlternativeType } from '../types/types';
+import { AlternativeType, AlternativeModel } from '../types/types';
 
-const alternativeSchema = new Schema<AlternativeType>({
+const alternativeSchema = new Schema<AlternativeType, AlternativeModel>({
   description: {
     type: String,
     required: true,
@@ -12,4 +12,7 @@ const alternativeSchema = new Schema<AlternativeType>({
   },
 });
 
-export default mongoose.model('Alternative', alternativeSchema);
+export default mongoose.model<AlternativeType, AlternativeModel>(
+  'Alternative',
+  alternativeSchema
+);

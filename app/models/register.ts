@@ -19,7 +19,7 @@ const registerSchema = new Schema<RegisterType>({
 });
 
 // Delete the associated user when deleting a register entry
-registerSchema.pre('remove', async (next) => {
+registerSchema.pre<RegisterType>('remove', async function (next) {
   const user = await mongoose.model('User').findOne({ _id: this.user });
   await user.remove();
   next();

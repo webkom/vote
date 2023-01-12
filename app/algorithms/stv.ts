@@ -171,11 +171,11 @@ const calculateWinnerUsingSTV = (
     log.push(iterationLog);
 
     // Dict of winners
-    const roundWinners: { [key: string]: {} } = {};
+    const roundWinners: { [key: string]: Record<string, never> } = {};
     // Dict of excess fractions per key
     const excessFractions: { [key: string]: number } = {};
     // Dict of done votes
-    const doneVotes: { [key: number]: {} } = {};
+    const doneVotes: { [key: number]: Record<string, never> } = {};
 
     // Loop over the different alternatives
     for (const i in alternatives) {
@@ -216,7 +216,7 @@ const calculateWinnerUsingSTV = (
     }
 
     // Have won or been eliminated
-    let doneAlternatives: { [key: string]: {} } = {};
+    let doneAlternatives: { [key: string]: Record<string, never> } = {};
 
     // The votes that will go on to the next round
     let nextRoundVotes: Vote[] = [];
@@ -388,7 +388,7 @@ const calculateWinnerUsingSTV = (
 };
 
 // Round floats to fixed in output
-const handleFloatsInOutput = (obj: Object) => {
+const handleFloatsInOutput = (obj: unknown) => {
   const newObj = {};
   Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
   return newObj;

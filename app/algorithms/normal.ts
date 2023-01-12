@@ -39,7 +39,7 @@ const calculateWinnerUsingNormal = (
   }));
 
   // Stringify and clean the alternatives
-  let alternatives: Alternative[] = inputAlternatives.map(
+  const alternatives: Alternative[] = inputAlternatives.map(
     (alternative: any) => ({
       _id: String(alternative._id),
       description: alternative.description,

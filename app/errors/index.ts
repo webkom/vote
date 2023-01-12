@@ -1,6 +1,6 @@
-import { Response } from "express";
-import { IAlternative, IElection } from "../types/types";
-import mongoose from "mongoose";
+import { Response } from 'express';
+import { IAlternative, IElection } from '../types/types';
+import mongoose from 'mongoose';
 
 class HTTPError extends Error {
   status: number;
@@ -77,10 +77,10 @@ class AccessCodeError extends HTTPError {
 }
 
 class InvalidPriorityError extends HTTPError {
-  constructor() {
+  constructor(alternative: string, election: string) {
     super();
     this.name = 'InvalidPriorityError';
-    this.message = `One or more alternatives does not exist on election.`;
+    this.message = `One or more alternatives does not exist on election. ${alternative} differed in election ${election}`;
     this.status = 400;
   }
 }
@@ -131,8 +131,21 @@ class ActiveElectionError extends HTTPError {
 }
 
 class ValidationError extends HTTPError {
-  errors: { [path: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError | mongoose.Error.ValidationError };
-  constructor(errors: { [path: string]: mongoose.Error.ValidatorError | mongoose.Error.CastError | mongoose.Error.ValidationError }) {
+  errors: {
+    [path: string]:
+      | mongoose.Error.ValidatorError
+      | mongoose.Error.CastError
+      | mongoose.Error.ValidationError;
+  };
+  constructor(
+    message: string,
+    errors?: {
+      [path: string]:
+        | mongoose.Error.ValidatorError
+        | mongoose.Error.CastError
+        | mongoose.Error.ValidationError;
+    }
+  ) {
     super();
     this.name = 'ValidationError';
     this.message = 'Validation failed.';
@@ -140,7 +153,7 @@ class ValidationError extends HTTPError {
     this.errors = errors;
     this.payload = {
       name: this.name,
-      message: this.message,
+      message: message || this.message,
       status: this.status,
       errors: this.errors,
     };
@@ -264,7 +277,11 @@ export default {
   NoAssociatedUserError,
 };
 
-export const handleError = (res: Response, err: HTTPError, status?: number): Response => {
+export const handleError = (
+  res: Response,
+  err: HTTPError,
+  status?: number
+): Response => {
   const statusCode = status || err.status || 500;
   return res.status(statusCode).json(
     err.payload || {

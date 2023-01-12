@@ -1,12 +1,14 @@
+import type { RequestHandler } from 'express';
 import Register from '../models/register';
-const ObjectId = require('mongoose').Types.ObjectId;
+
+import { Types } from 'mongoose';
 import errors from '../errors';
 
-export const list = (req, res) =>
+export const list: RequestHandler = (req, res) =>
   Register.find().then((register) => res.json(register));
 
-export const deleteEntry = async (req, res) => {
-  if (!ObjectId.isValid(req.params.registerId)) {
+export const deleteEntry: RequestHandler = async (req, res) => {
+  if (!Types.ObjectId.isValid(req.params.registerId)) {
     throw new errors.ValidationError('Invalid ObjectID');
   }
 

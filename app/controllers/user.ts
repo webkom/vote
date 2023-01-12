@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import User, { IUser } from '../models/user';
+import User from '../models/user';
 import Register from '../models/register';
 import errors from '../errors';
 import { badRequestError, duplicateError } from '../errors/error-checks';
@@ -7,9 +7,13 @@ import crypto from 'crypto';
 import { mailHandler } from '../digital/mail';
 import short from 'short-uuid';
 import { RequestHandler } from 'express';
+import { UserType } from '../types/types';
 
 export const count: RequestHandler = async (req, res) => {
-  const query: mongoose.FilterQuery<IUser> = { admin: false, moderator: false };
+  const query: mongoose.FilterQuery<UserType> = {
+    admin: false,
+    moderator: false,
+  };
   if (req.query.active === 'true') {
     query.active = true;
   } else if (req.query.active === 'false') {
@@ -31,7 +35,7 @@ export const create: RequestHandler = (req, res) => {
     .then((createdUser) => res.status(201).json(createdUser.getCleanUser()))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new errors.ValidationError(err.errors);
+        throw new errors.ValidationError(null, err.errors);
       }
 
       if (duplicateError(err)) {
@@ -122,7 +126,7 @@ export const generate: RequestHandler = async (req, res) => {
     )
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        throw new errors.ValidationError(err.errors);
+        throw new errors.ValidationError(null, err.errors);
       }
 
       if (duplicateError(err)) {

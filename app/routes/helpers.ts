@@ -1,4 +1,4 @@
-import errors from '../errors';
+import errors, { handleError } from '../errors';
 
 export const checkAuthOrRedirect = (exports.checkAuthOrRedirect = (
   req,
@@ -66,5 +66,5 @@ export const ensureAuthenticated = (exports.ensureAuthenticated = (
 ) => {
   if (req.isAuthenticated()) return next();
   const error = new errors.LoginError();
-  return errors.handleError(res, error);
+  return handleError(res, error);
 });

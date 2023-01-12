@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import errors from '../errors';
-import mongoose, { Schema } from 'mongoose';
+import mongoose, { Schema, Types, HydratedDocument } from 'mongoose';
 import Vote from './vote';
 import calculateWinnerUsingNormal from '../algorithms/normal';
 import calculateWinnerUsingSTV from '../algorithms/stv';
@@ -8,11 +8,18 @@ import crypto from 'crypto';
 import {
   ElectionSystems,
   AlternativeType,
+  IElectionMethods,
+  ElectionModel,
   ElectionType,
   UserType,
+  AlternativeModel,
 } from '../types/types';
 
-const electionSchema = new Schema<ElectionType>({
+const electionSchema = new Schema<
+  ElectionType,
+  ElectionModel,
+  IElectionMethods
+>({
   title: {
     type: String,
     required: true,
@@ -80,18 +87,19 @@ const electionSchema = new Schema<ElectionType>({
   },
 });
 
-electionSchema.pre('remove', async function (next) {
+electionSchema.pre<ElectionType>('remove', async function (next) {
   // Use mongoose.model getter to avoid circular dependencies
+  const id = this._id;
   await mongoose
-    .model('Alternative')
-    .find({ election: this.id })
+    .model<AlternativeModel>('Alternative')
+    .find({ election: id })
     .then((alternatives) => {
       Promise.all(alternatives.map((alternative) => alternative.remove()));
     });
   next();
   await mongoose
     .model('Vote')
-    .find({ election: this.id })
+    .find({ election: id })
     .then((votes) => {
       Promise.all(votes.map((vote) => vote.remove()));
     });
@@ -105,16 +113,17 @@ electionSchema.methods.elect = async function () {
     );
   }
 
-  await this.populate('alternatives')
-    .populate({
+  await this.populate([
+    'alternatives',
+    {
       path: 'votes',
       model: 'Vote',
       populate: {
         path: 'priorities',
         model: 'Alternative',
       },
-    })
-    .execPopulate();
+    },
+  ]);
 
   const cleanElection = this.toJSON();
 
@@ -139,7 +148,7 @@ electionSchema.methods.elect = async function () {
 };
 
 electionSchema.methods.addAlternative = async function (
-  alternative: AlternativeType
+  alternative: HydratedDocument<AlternativeType>
 ) {
   alternative.election = this._id;
   const savedAlternative = await alternative.save();
@@ -175,7 +184,7 @@ electionSchema.methods.addVote = async function (
     priorities: priorities,
   });
 
-  this.hasVotedUsers.push(user._id);
+  this.hasVotedUsers.push(new Types.ObjectId(user._id));
   await this.save();
 
   const savedVote = await vote.save();
@@ -186,4 +195,7 @@ electionSchema.methods.addVote = async function (
   return savedVote;
 };
 
-export default mongoose.model('Election', electionSchema);
+export default mongoose.model<ElectionType, ElectionModel>(
+  'Election',
+  electionSchema
+);

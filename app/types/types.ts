@@ -1,99 +1,104 @@
-import { Model, Document } from "mongoose";
-import { STVEvent } from '../algorithms/stv';
+import { Model, Types, HydratedDocument } from 'mongoose';
+import { ElectionResult } from '../algorithms/types';
 
 export enum ElectionSystems {
-    NORMAL = 'normal',
-    STV = 'stv',
+  NORMAL = 'normal',
+  STV = 'stv',
 }
 
 export enum Status {
-    resolved = 'RESOLVED',
-    unresolved = 'UNRESOLVED',
+  resolved = 'RESOLVED',
+  unresolved = 'UNRESOLVED',
 }
 
 export type Count = { [key: string]: number };
 
-export type ElectionResult = {
-    result: STVResult | NormalResult;
-    thr: number;
-    seats: number;
-    voteCount: number;
-    blankVoteCount: number;
-    useStrict: boolean;
-    log: STVEvent[] | Count;
-};
-
-export interface STVResult {
-    status: Status;
-    winners: AlternativeType[];
-}
-
-export interface NormalResult extends STVResult {
-    status: Status;
-    winners: AlternativeType[];
-    count: number;
-}
-
 export interface IAlternative {
-    _id: string;
-    description: string;
-    election: ElectionType;
+  _id: string;
+  description: string;
+  election: Types.ObjectId;
 }
-export type AlternativeType = IAlternative & Document;
+export type AlternativeType = IAlternative;
+export type AlternativeModel = Model<IAlternative>;
 
 export interface IElection {
-    _id: string;
-    title: string;
-    description: string;
-    active: boolean;
-    hasVotedUsers: UserType[];
-    alternatives: AlternativeType[];
-    seats: number;
-    votes: VoteType[];
-    type: string;
-    useStrict: boolean;
-    accessCode: number;
-
-    // methods
-    elect(): ElectionResult;
-    addAlternative(alternative: AlternativeType): AlternativeType;
-    addVote(user: UserType, priorities: AlternativeType[]): AlternativeType;
+  _id: string;
+  title: string;
+  description: string;
+  active: boolean;
+  hasVotedUsers: Types.ObjectId[];
+  alternatives: Types.ObjectId[];
+  seats: number;
+  votes: Types.ObjectId[];
+  type: ElectionSystems;
+  useStrict: boolean;
+  accessCode: number;
+  physical: boolean;
 }
-export type ElectionType = IElection & Document;
+
+export interface IElectionMethods {
+  elect(): Promise<ElectionResult | undefined>;
+  addAlternative(
+    alternative: HydratedDocument<AlternativeType>
+  ): Promise<HydratedDocument<AlternativeType>>;
+  addVote(
+    user: UserType,
+    priorities: AlternativeType[]
+  ): Promise<HydratedDocument<VoteType>>;
+}
+
+export type ElectionType = IElection;
+export type ElectionModel = Model<
+  IElection,
+  Record<string, never>,
+  IElectionMethods
+>;
 
 interface IRegister {
-    _id: string;
-    identifier: string;
-    email: string;
-    user: UserType;
+  _id: string;
+  identifier: string;
+  email: string;
+  user: Types.ObjectId;
 }
-export type RegisterType = IRegister & Document;
+export type RegisterType = IRegister;
 
-interface IUser {
-    _id: string;
-    username: string;
-    hash: string;
-    active: boolean;
-    admin: boolean;
-    moderator: boolean;
-    cardKey: string;
-
-    // methods
-    getCleanUser(): UserType;
-    authenticate(password: string): Promise<boolean>;
+export interface IUser {
+  _id: string;
+  username: string;
+  hash: string;
+  active: boolean;
+  admin: boolean;
+  moderator: boolean;
+  cardKey: string;
 }
-export type UserType = IUser & Document;
 
-export interface UserModel extends Model<UserType> {
-    // statics
-    authenticate(username: string, password: string): Promise<IUser>;
-    findByUsername(username: string): Promise<IUser>;
-    register(body: IUser, password: string): Promise<IUser>;
+export interface IUserMethods {
+  // methods
+  getCleanUser(): UserType;
+  authenticate(password: string): Promise<boolean>;
+}
+export type UserType = IUser;
+
+export interface UserModel
+  extends Model<UserType, Record<string, never>, IUserMethods> {
+  // statics
+  authenticate(
+    username: string,
+    password: string
+  ): Promise<HydratedDocument<IUser, IUserMethods>>;
+  findByUsername(
+    username: string
+  ): Promise<HydratedDocument<IUser, IUserMethods>>;
+  register(
+    body: IUser,
+    password: string
+  ): Promise<HydratedDocument<IUser, IUserMethods>>;
 }
 
 interface IVote {
-    _id: string;
-    hash: string;
-    election: ElectionType;
+  _id: string;
+  hash: string;
+  election: Types.ObjectId;
+  priorities: Types.ObjectId[];
 }
-export type VoteType = IVote & Document;
+export type VoteType = IVote;

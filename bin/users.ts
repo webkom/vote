@@ -3,13 +3,13 @@
 /* eslint no-console: 0 */
 
 import { Command } from 'commander';
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocumentFromSchema } from 'mongoose';
 import chalk from 'chalk';
 import promptly from 'promptly';
-import User from '../app/models/user';
+import User, { userSchema } from '../app/models/user';
 const program = new Command();
 
-function done(err: Error, user: typeof User) {
+function done(err: Error, user: HydratedDocumentFromSchema<typeof userSchema>) {
   if (err) throw err;
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -28,12 +28,6 @@ function validator(value: string) {
   return value;
 }
 
-const options = {
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-  useNewUrlParser: true,
-};
-
 program
   .version('1.0.0')
   .command('create-user <username> <cardKey>')
@@ -46,7 +40,7 @@ program
       { validator, retry: true },
       (modeErr, mode) => {
         const modeId = parseInt(mode);
-        mongoose.connect(mongoURL, options, (connectErr) => {
+        mongoose.connect(mongoURL, {}, (connectErr) => {
           if (connectErr) return done(connectErr, null);
 
           promptly.password('Enter password: ', async (pwErr, password) => {
