@@ -17,7 +17,7 @@
     "prettier": "prettier '**/*.{js,ts,pug}' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha -r test/babel-register.js test/**/*.test.js --exit --timeout 30000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "protractor": "webdriver-manager update --standalone false --versions.chrome 94.0.4606.113 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
+    "protractor": "webdriver-manager update --standalone false --versions.chrome 96.0.4664.110 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "yarn build"
   },
   "prettier": {

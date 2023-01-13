@@ -27,18 +27,17 @@ raven.config(env.RAVEN_DSN).install();
 app.use(raven.requestHandler());
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
-  const webpack = import('webpack');
-  const webpackMiddleware = import('webpack-dev-middleware');
-  const config = import('./webpack.config.js');
+  // eslint-disable-next-line
+  const webpack = require('webpack');
+  // eslint-disable-next-line
+  const webpackMiddleware = require('webpack-dev-middleware');
+  // eslint-disable-next-line
+  const config = require('./webpack.config.js');
 
-  Promise.all([webpack, webpackMiddleware, config]).then(
-    ([webpack, webpackMiddleware, config]) => {
-      app.use(
-        webpackMiddleware.default(webpack.default(config.default), {
-          publicPath: config.output.publicPath,
-        })
-      );
-    }
+  app.use(
+    webpackMiddleware(webpack(config), {
+      publicPath: config.output.publicPath,
+    })
   );
 }
 
