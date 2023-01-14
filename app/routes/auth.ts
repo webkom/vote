@@ -1,3 +1,4 @@
+import type { RequestHandler } from 'express';
 import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import passport from 'passport';
@@ -12,10 +13,10 @@ router.get('/login', (req, res) => {
   });
 });
 
-function stripUsername(req, res, next) {
+const stripUsername: RequestHandler = (req, res, next) => {
   req.body.username = req.body.username.trim();
   next();
-}
+};
 
 router.post(
   '/login',
@@ -28,9 +29,8 @@ router.post(
     // Set the Email index.user to null for the spesific email
     await Register.findOneAndUpdate({ user: req.user._id }, { user: null });
     // If the user tried to access a specific page before, redirect there:
-    // TODO FIXME
-    //const path = req.session.originalPath || '/';
-    res.redirect('/');
+    const path = req.session.originalPath || '/';
+    res.redirect(path);
   }
 );
 

@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 
 export class HTTPError extends Error {
   status: number;
-  code?: number;
+  code?: number | string;
   name: string;
   message: string;
   payload?: Record<string, unknown>;

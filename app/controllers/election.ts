@@ -10,6 +10,7 @@ import User from '../models/user';
 import Alternative from '../models/alternative';
 import errors from '../errors';
 import app from '../../app';
+import type { Server } from 'socket.io';
 import type {
   ElectionType,
   IElectionMethods,
@@ -149,13 +150,17 @@ export const retrieve = async (
   return res.status(200).json(req.election);
 };
 
-function setElectionStatus(req, res, active) {
+const setElectionStatus = (
+  req: ReqWithElection,
+  res: Response,
+  active: boolean
+) => {
   req.election.active = active;
   return req.election.save();
-}
+};
 
 export const activate = async (
-  req: Request,
+  req: ReqWithElection,
   res: Response
 ): Promise<Response> => {
   const otherActiveElection = await Election.findOne({ active: true });
@@ -163,15 +168,15 @@ export const activate = async (
     throw new errors.AlreadyActiveElectionError();
   }
   return setElectionStatus(req, res, true).then((election) => {
-    const io = app.get('io');
+    const io: Server = app.get('io');
     io.emit('election');
     return res.status(200).json(election);
   });
 };
 
-export const deactivate: RequestHandler = (req, res) =>
+export const deactivate: RequestHandler = (req: ReqWithElection, res) =>
   setElectionStatus(req, res, false).then((election) => {
-    const io = app.get('io');
+    const io: Server = app.get('io');
     io.emit('election');
     res.status(200).json(election);
   });

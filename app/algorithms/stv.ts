@@ -380,8 +380,8 @@ const calculateWinnerUsingSTV = (
 };
 
 // Round floats to fixed in output
-const handleFloatsInOutput = (obj: unknown) => {
-  const newObj = {};
+const handleFloatsInOutput = (obj: Record<string, number>) => {
+  const newObj: Record<string, number> = {};
   Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
   return newObj;
 };

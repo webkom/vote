@@ -56,12 +56,8 @@ export const ensureModerator: RequestHandler = (req, res, next) => {
   });
 };
 
-export const ensureAuthenticated = (exports.ensureAuthenticated = (
-  req,
-  res,
-  next
-) => {
+export const ensureAuthenticated: RequestHandler = (req, res, next) => {
   if (req.isAuthenticated()) return next();
   const error = new errors.LoginError();
   return handleError(res, error);
-});
+};

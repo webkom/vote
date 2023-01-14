@@ -1,4 +1,4 @@
-import socketIO from 'socket.io';
+import { Server } from 'socket.io';
 import app from './app';
 import env from './env';
 
@@ -9,5 +9,5 @@ export default (callback: (err: Error, port: number) => void): void => {
   const server = app.listen(app.get('port'), hostname, () => {
     callback(undefined, app.get('port'));
   });
-  app.set('io', socketIO(server));
+  app.set('io', new Server(server));
 };
