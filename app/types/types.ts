@@ -74,7 +74,7 @@ export interface IUser {
 
 export interface IUserMethods {
   // methods
-  getCleanUser(): UserType;
+  getCleanUser(): Omit<UserType, 'password' | 'hash'>;
   authenticate(password: string): Promise<boolean>;
 }
 export type UserType = IUser;
@@ -102,3 +102,13 @@ interface IVote {
   priorities: Types.ObjectId[];
 }
 export type VoteType = IVote;
+
+export interface PopulatedVote extends Omit<IVote, 'priorities'> {
+  priorities: IAlternative[];
+}
+
+export interface PopulatedElection
+  extends Omit<IElection, 'votes' | 'alternatives'> {
+  votes: PopulatedVote[];
+  alternatives: IAlternative[];
+}

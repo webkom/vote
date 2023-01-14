@@ -13,6 +13,14 @@ import raven from 'raven';
 import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
+
+// Put whatever the type of our sessionData is here
+declare module 'express-session' {
+  interface SessionData {
+    originalPath?: string;
+  }
+}
+
 const app = express();
 
 app.disable('x-powered-by');

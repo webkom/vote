@@ -2,11 +2,12 @@ import { Response } from 'express';
 import { IAlternative, IElection } from '../types/types';
 import mongoose from 'mongoose';
 
-class HTTPError extends Error {
+export class HTTPError extends Error {
   status: number;
+  code?: number;
   name: string;
   message: string;
-  payload?: any;
+  payload?: Record<string, unknown>;
 
   constructor() {
     super();
@@ -227,7 +228,7 @@ class AlreadyActiveElectionError extends HTTPError {
 }
 
 class MailError extends HTTPError {
-  constructor(err: any) {
+  constructor(err: Error) {
     super();
     this.name = 'MailError';
     this.message = `Something went wrong with the email. Err: ${err}`;
