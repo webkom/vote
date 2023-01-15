@@ -1,4 +1,4 @@
-const ElectionTypes = require('../../../app/models/utils.js');
+import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
 module.exports = {
   type: ElectionTypes.NORMAL,
   useStrict: true,

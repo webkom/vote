@@ -1,9 +1,7 @@
-const chai = require('chai');
-const Bluebird = require('bluebird');
-const chaiAsPromised = require('chai-as-promised');
-const Vote = require('../../app/models/vote');
-const ElectionTypes = require('../../app/models/utils');
-const expect = chai.expect;
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import Vote from '../../app/models/vote';
+import { ElectionSystems as ElectionTypes } from '../../app/types/types';
 
 chai.use(chaiAsPromised);
 
@@ -60,7 +58,7 @@ module.exports = function () {
       by.repeater('alternative in getPossibleAlternatives()')
     );
 
-    return Bluebird.all([
+    return Promise.all([
       expect(title.getText()).to.eventually.equal(
         this.election.title.toUpperCase()
       ),
@@ -151,7 +149,7 @@ module.exports = function () {
         $all: [alternative],
       },
     }).then((foundVote) =>
-      expect(input.getAttribute('value')).to.eventually.equal(foundVote.hash)
+      expect(input.getAttribute('value')).to.eventually.equal(foundVote?.hash)
     );
   });
 

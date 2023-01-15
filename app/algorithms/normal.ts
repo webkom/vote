@@ -1,14 +1,6 @@
-import isEmpty = require('lodash/isEmpty');
+import isEmpty from 'lodash/isEmpty';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-
-// This is a TypeScript file in a JavaScript project so it must be complied
-// If you make changes to this file it must be recomplied using `tsc` in
-// order for the changes to be reflected in the rest of the program.
-//
-// app/models/election .elect() is the only file that uses this function
-// and importes it from normal.js, which is the compiled result of this file.
-//
-//
+import { PopulatedVote, AlternativeType } from '../../app/types/types';
 
 /**
  * @param votes - All votes for the election
@@ -31,15 +23,15 @@ const winningThreshold = (votes: Vote[], useStrict: boolean): number => {
  * @return The full election result
  */
 const calculateWinnerUsingNormal = (
-  inputVotes: any,
-  inputAlternatives: any,
+  inputVotes: PopulatedVote[],
+  inputAlternatives: AlternativeType[],
   seats = 1,
   useStrict = false
 ): ElectionResult => {
   // Stringify and clean the votes
-  const votes: Vote[] = inputVotes.map((vote: any) => ({
+  const votes = inputVotes.map((vote) => ({
     _id: String(vote._id),
-    priorities: vote.priorities.map((vote: any) => ({
+    priorities: vote.priorities.map((vote) => ({
       _id: String(vote._id),
       description: vote.description,
       election: String(vote._id),
@@ -48,13 +40,11 @@ const calculateWinnerUsingNormal = (
   }));
 
   // Stringify and clean the alternatives
-  let alternatives: Alternative[] = inputAlternatives.map(
-    (alternative: any) => ({
-      _id: String(alternative._id),
-      description: alternative.description,
-      election: String(alternative._id),
-    })
-  );
+  const alternatives: Alternative[] = inputAlternatives.map((alternative) => ({
+    _id: String(alternative._id),
+    description: alternative.description,
+    election: String(alternative._id),
+  }));
 
   // Reduce votes to the distinct counts for each alternative
   const count: Count = votes.reduce(

@@ -1,16 +1,16 @@
 {
   "compilerOptions": {
     "sourceMap": true,
-    "target": "es2015",
-    "outDir": "app/algorithms",
+    "noImplicitAny": true,
+    "target": "es6",
+    "outDir": "./dist",
     "module": "commonjs",
-    "lib": ["es2017"],
-    "removeComments": true
+    "removeComments": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
   },
-  "include": [
-    "app/**/*"
-  ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "public"
   ]
 }

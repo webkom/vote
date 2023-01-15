@@ -1,6 +1,6 @@
-const chai = require('chai');
-const spawn = require('child_process').spawn;
-const User = require('../../app/models/user');
+import chai from 'chai';
+import { spawn } from 'child_process';
+import User from '../../app/models/user';
 const should = chai.should();
 
 describe('User CLI', () => {
@@ -16,7 +16,9 @@ describe('User CLI', () => {
     stream.stdin.setEncoding('utf8');
     stream.stdout.setEncoding('utf8');
 
-    stream.stdin.write('1\n');
+    stream.stdout.on('data', (data) => {
+      stream.stdin.write('1\n');
+    });
 
     stream.stdout.on('data', (data) => {
       stream.stdin.write('testpassword\n');
@@ -27,15 +29,14 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user normaluser');
-      User.findOne({ username: 'normaluser' })
-        .then((user) => {
-          user.admin.should.equal(false);
-          user.moderator.should.equal(false);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'normaluser' }).then((user) => {
+        user.admin.should.equal(false);
+        user.moderator.should.equal(false);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 
@@ -60,15 +61,14 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user moderator');
-      User.findOne({ username: 'moderator' })
-        .then((user) => {
-          user.admin.should.equal(false);
-          user.moderator.should.equal(true);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'moderator' }).then((user) => {
+        user.admin.should.equal(false);
+        user.moderator.should.equal(true);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 
@@ -93,15 +93,14 @@ describe('User CLI', () => {
       output += data;
     });
 
-    stream.on('close', () => {
+    stream.on('close', async () => {
       output.should.include('Created user admin');
-      User.findOne({ username: 'admin' })
-        .then((user) => {
-          user.admin.should.equal(true);
-          user.moderator.should.equal(true);
-          should.not.exist(user.password);
-        })
-        .nodeify(done);
+      await User.findOne({ username: 'admin' }).then((user) => {
+        user.admin.should.equal(true);
+        user.moderator.should.equal(true);
+        should.not.exist(user.password);
+      });
+      done();
     });
   });
 });

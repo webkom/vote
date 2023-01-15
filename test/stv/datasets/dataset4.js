@@ -1,5 +1,5 @@
 // Dataset from "Created ourselves"
-const ElectionTypes = require('../../../app/models/utils.js');
+import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
 module.exports = {
   seats: 1,
   type: ElectionTypes.STV,

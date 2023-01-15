@@ -1,12 +1,12 @@
-const _ = require('lodash');
-const request = require('supertest');
-const passportStub = require('passport-stub');
-const chai = require('chai');
-const app = require('../../app');
-const User = require('../../app/models/user');
-const Register = require('../../app/models/register');
-const { test404, testAdminResource } = require('./helpers');
-const { testUser, createUsers } = require('../helpers');
+import _ from 'lodash';
+import request from 'supertest';
+import passportStub from 'passport-stub';
+import chai from 'chai';
+import app from '../../app';
+import User from '../../app/models/user';
+import Register from '../../app/models/register';
+import { test404, testAdminResource } from './helpers';
+import { testUser, createUsers } from '../helpers';
 
 const should = chai.should();
 

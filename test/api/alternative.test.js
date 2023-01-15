@@ -1,12 +1,13 @@
-const passportStub = require('passport-stub');
-const request = require('supertest');
-const ObjectId = require('mongoose').Types.ObjectId;
-const chai = require('chai');
-const app = require('../../app');
-const Alternative = require('../../app/models/alternative');
-const Election = require('../../app/models/election');
-const { test404, testAdminResource } = require('./helpers');
-const { createUsers } = require('../helpers');
+import passportStub from 'passport-stub';
+import request from 'supertest';
+import { Types } from 'mongoose';
+import chai from 'chai';
+import app from '../../app';
+import Alternative from '../../app/models/alternative';
+import Election from '../../app/models/election';
+import { test404, testAdminResource } from './helpers';
+import { createUsers } from '../helpers';
+const ObjectId = Types.ObjectId;
 
 chai.should();
 
@@ -29,24 +30,22 @@ describe('Alternatives API', () => {
     passportStub.install(app);
   });
 
-  beforeEach(function () {
+  beforeEach(async function () {
     passportStub.logout();
     const election = new Election(testElectionData);
 
+    const createdElection = await election.save();
+
+    this.election = createdElection;
+    const alternative = new Alternative(createdAlternativeData);
     return election
-      .save()
-      .bind(this)
-      .then(function (createdElection) {
-        this.election = createdElection;
-        const alternative = new Alternative(createdAlternativeData);
-        return election.addAlternative(alternative);
-      })
+      .addAlternative(alternative)
       .then((alternative) => {
         this.alternative = alternative;
         return createUsers();
       })
-      .spread(function (user, adminUser, moderatorUser) {
-        this.user = user;
+      .then(([user, adminUser, moderatorUser]) => {
+        this.user = user; // TODO: research mocha ctx
         this.adminUser = adminUser;
         this.moderatorUser = moderatorUser;
       });

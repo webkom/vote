@@ -18,4 +18,7 @@ exports.config = {
     require: ['step_definitions/*.js', 'support/*.js'],
     backtrace: true,
   },
+  onPrepare: () => {
+    require('@babel/register')({ extensions: ['.js', '.jsx', '.ts', '.tsx'] });
+  },
 };

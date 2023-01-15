@@ -10,9 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn
-    depends_on:
-      - clone
+      - yarn install --frozen-lockfile --ignore-scripts
 
   - name: lint
     image: node:14
@@ -72,7 +70,7 @@ steps:
       event:
         - push
     depends_on:
-      - setup
+      - build
     commands:
       # This image runs with a custom user (circleci)by default,
       # and chrome headless doesn't work for the root user.
@@ -139,4 +137,4 @@ services:
 
 ---
 kind: signature
-hmac: 29a1a3d0c44d50ddb78ad36fcb911dbd4a90cce0077ee335402c61d90ad7c011
+hmac: 21eea9888fa631a87ec5a02ee2d6f8f5c2b41767ecbe7f9fe0ee4d66e03325c6
