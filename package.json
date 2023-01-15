@@ -44,7 +44,7 @@
     "connect-mongo": "4.6.0",
     "cookie-parser": "1.4.3",
     "crypto-browserify": "3.12.0",
-    "crypto-random-string": "1.0.0",
+    "crypto-random-string": "5.0.0",
     "css-loader": "6.3.0",
     "csurf": "1.9.0",
     "express": "4.18.2",
