@@ -24,7 +24,7 @@ export const create: RequestHandler = async (req, res) => {
   }
 
   // Create a new lock for this user to ensure nobody double-votes
-  const lock = await redlock.lock('vote:' + user._id, 1000);
+  const lock = await redlock.acquire(['vote:' + user._id], 1000);
   return Election.findById(req.body.election._id)
     .then(async (election) => {
       // Election does not exist
@@ -49,7 +49,7 @@ export const create: RequestHandler = async (req, res) => {
       }
       const vote = await election.addVote(user, priorities);
       // Unlock when voted
-      await lock.unlock();
+      await lock.release();
 
       return vote;
     })

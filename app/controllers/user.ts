@@ -4,7 +4,7 @@ import Register from '../models/register';
 import errors from '../errors';
 import { badRequestError, duplicateError } from '../errors/error-checks';
 import crypto from 'crypto';
-import { mailHandler } from '../digital/mail';
+import { mailHandler, MailAction } from '../digital/mail';
 import short from 'short-uuid';
 import { RequestHandler } from 'express';
 import { UserType } from '../types/types';
@@ -52,7 +52,24 @@ export const create: RequestHandler = (req, res) => {
     });
 };
 
-export const generate: RequestHandler = async (req, res) => {
+interface MailRequestBody {
+  identifier: string;
+  email: string;
+  ignoreExistingUser: boolean;
+}
+
+type MailResponseBody =
+  | string
+  | {
+      status: string;
+      user: string;
+    };
+
+export const generate: RequestHandler<
+  Record<string, never>,
+  MailResponseBody,
+  MailRequestBody
+> = async (req, res) => {
   const { identifier, email, ignoreExistingUser } = req.body;
 
   if (!identifier) throw new errors.InvalidPayloadError('identifier');
@@ -67,7 +84,7 @@ export const generate: RequestHandler = async (req, res) => {
 
   // Entry has no user this user is allready activated
   if (entry && !entry.user) {
-    return mailHandler('reject', { email })
+    return mailHandler(MailAction.REJECT, { email })
       .then(() =>
         res.status(409).json({
           status: 'allready signed in',
@@ -86,7 +103,11 @@ export const generate: RequestHandler = async (req, res) => {
     const fetchedUser = await User.findByIdAndUpdate({ _id: entry.user });
     // Use the register function to "re-register" the user with a new password
     return User.register(fetchedUser, password).then((updatedUser) =>
-      mailHandler('resend', { email, username: updatedUser.username, password })
+      mailHandler(MailAction.RESEND, {
+        email,
+        username: updatedUser.username,
+        password,
+      })
         .then(() => {
           entry.email = email;
           return entry.save();
@@ -116,7 +137,11 @@ export const generate: RequestHandler = async (req, res) => {
   const user = new User(userObject);
   return User.register(user, password)
     .then((createdUser) =>
-      mailHandler('send', { email, username: createdUser.username, password })
+      mailHandler(MailAction.SEND, {
+        email,
+        username: createdUser.username,
+        password,
+      })
         .then(() => new Register({ identifier, email, user }).save())
         .then(() =>
           res.status(201).json({ status: 'generated', user: identifier })

@@ -1,12 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-
-// This is a TypeScript file in a JavaScript project so it must be complied
-// If you make changes to this file it must be recomplied using `tsc` in
-// order for the changes to be reflected in the rest of the program.
-//
-// app/models/election .elect() is the only file that uses this function
-// and importes it from stv.js, which is the compiled result of this file.
+import { PopulatedVote, AlternativeType } from '../../app/types/types';
 
 enum Action {
   iteration = 'ITERATION',
@@ -90,8 +84,8 @@ const EPSILON = 0.000001;
  * @return The full election, including result, log and threshold value
  */
 const calculateWinnerUsingSTV = (
-  inputVotes: any,
-  inputAlternatives: any,
+  inputVotes: PopulatedVote[],
+  inputAlternatives: AlternativeType[],
   seats = 1,
   useStrict = false
 ): ElectionResult => {
@@ -99,9 +93,9 @@ const calculateWinnerUsingSTV = (
   const log: STVEvent[] = [];
 
   // Stringify and clean the votes
-  let votes: Vote[] = inputVotes.map((vote: any) => ({
+  let votes: Vote[] = inputVotes.map((vote) => ({
     _id: String(vote._id),
-    priorities: vote.priorities.map((vote: any) => ({
+    priorities: vote.priorities.map((vote) => ({
       _id: String(vote._id),
       description: vote.description,
       election: String(vote._id),
@@ -111,20 +105,18 @@ const calculateWinnerUsingSTV = (
   }));
 
   // Stringify and clean the alternatives
-  let alternatives: Alternative[] = inputAlternatives.map(
-    (alternative: any) => ({
-      _id: String(alternative._id),
-      description: alternative.description,
-      election: String(alternative._id),
-    })
-  );
+  let alternatives: Alternative[] = inputAlternatives.map((alternative) => ({
+    _id: String(alternative._id),
+    description: alternative.description,
+    election: String(alternative._id),
+  }));
 
   // The threshold value needed to win
   const thr: number = winningThreshold(votes, seats, useStrict);
 
   // The number of blank votes
   const blankVoteCount = inputVotes.filter(
-    (vote: Vote) => vote.priorities.length === 0
+    (vote) => vote.priorities.length === 0
   ).length;
 
   // Winners for the election
@@ -388,8 +380,8 @@ const calculateWinnerUsingSTV = (
 };
 
 // Round floats to fixed in output
-const handleFloatsInOutput = (obj: unknown) => {
-  const newObj = {};
+const handleFloatsInOutput = (obj: Record<string, number>) => {
+  const newObj: Record<string, number> = {};
   Object.entries(obj).forEach(([k, v]) => (newObj[k] = Number(v.toFixed(4))));
   return newObj;
 };

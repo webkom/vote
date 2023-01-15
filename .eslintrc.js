@@ -7,6 +7,7 @@ module.exports = {
   },
   rules: {
     'no-unused-vars': [2, { args: 'none' }],
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'none' }],
     'new-cap': [
       2,
       {

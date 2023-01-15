@@ -1,3 +1,4 @@
+import { Request, Response, NextFunction } from 'express';
 import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import electionRoutes from './election';
@@ -5,7 +6,7 @@ import userRoutes from './user';
 import voteRoutes from './vote';
 import qrRoutes from './qr';
 import registerRoutes from './register';
-import errors, { handleError } from '../../errors';
+import errors, { handleError, HTTPError } from '../../errors';
 
 router.use('/election', electionRoutes);
 router.use('/user', userRoutes);
@@ -19,8 +20,10 @@ router.use((req, res, next) => {
   next(error);
 });
 
-router.use((err, req, res, next) => {
-  handleError(res, err);
-});
+router.use(
+  (err: HTTPError, req: Request, res: Response, next: NextFunction) => {
+    handleError(res, err);
+  }
+);
 
 export default router;

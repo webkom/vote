@@ -10,9 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn
-    depends_on:
-      - clone
+      - yarn install --frozen-lockfile --ignore-scripts
 
   - name: lint
     image: node:14
@@ -139,4 +137,4 @@ services:
 
 ---
 kind: signature
-hmac: 09dd3b4e0b25dff523fdcc2f4ef678c855ebc836a2299554f28eeca55abb8534
+hmac: 21eea9888fa631a87ec5a02ee2d6f8f5c2b41767ecbe7f9fe0ee4d66e03325c6
