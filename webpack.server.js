@@ -41,6 +41,7 @@ module.exports = {
       patterns: [
         { from: 'app/views', to: 'app/views' },
         { from: 'public', to: 'public' },
+        { from: 'app/digital/template.html', to: './template.html' },
       ],
     }),
   ],
