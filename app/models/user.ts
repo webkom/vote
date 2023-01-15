@@ -58,25 +58,19 @@ userSchema.statics.register = function (body: UserType, password: string) {
     .then((hash) => this.create(Object.assign(body, { hash })));
 };
 
-userSchema.statics.authenticate = function (
+userSchema.statics.authenticate = async function (
   username: string,
   password: string
 ) {
-  let _user: HydratedDocument<UserType, IUserMethods>;
-  return this.findOne({ username })
-    .then((user) => {
-      _user = user;
-      return user.authenticate(password);
-    })
-    .then((result: boolean) => {
-      if (!result) {
-        throw new errors.InvalidRegistrationError(
-          'Incorrect username and/or password.'
-        );
-      }
+  const user = await this.findOne({ username });
+  const result = await user.authenticate(password);
+  if (!result) {
+    throw new errors.InvalidRegistrationError(
+      'Incorrect username and/or password.'
+    );
+  }
 
-      return _user;
-    });
+  return user;
 };
 
 userSchema.methods.authenticate = function (this: UserType, password: string) {

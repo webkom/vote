@@ -1,14 +1,15 @@
 import type { RequestHandler } from 'express';
+import Client from 'ioredis';
+import Redlock from 'redlock';
+
 import Election from '../models/election';
 import Vote from '../models/vote';
 import errors from '../errors';
 import env from '../../env';
-import redisClient from 'redis';
-redisClient.createClient(6379, env.REDIS_URL);
-
-import Redlock from 'redlock';
-const redlock = new Redlock([redisClient], {});
 import ElectionTypes from '../models/utils';
+
+const redisClient = new Client(6379, env.REDIS_URL);
+const redlock = new Redlock([redisClient], {});
 
 export const create: RequestHandler = async (req, res) => {
   const { election, priorities } = req.body;

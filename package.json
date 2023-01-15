@@ -17,7 +17,7 @@
     "prettier": "prettier '**/*.{js,ts,pug}' --write",
     "mocha": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} nyc mocha -r test/babel-register.js test/**/*.test.js --exit --timeout 30000",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "protractor": "webdriver-manager update --standalone false --versions.chrome 94.0.4606.113 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
+    "protractor": "webdriver-manager update --standalone false --versions.chrome 96.0.4664.110 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.js",
     "postinstall": "yarn build"
   },
   "prettier": {
@@ -51,6 +51,7 @@
     "express-promise-router": "3.0.3",
     "express-session": "1.15.6",
     "handlebars": "4.7.7",
+    "ioredis": "5.2.4",
     "lodash": "4.17.21",
     "method-override": "3.0.0",
     "mongoose": "6.8.3",
@@ -65,7 +66,6 @@
     "qr-scanner": "1.1.1",
     "qrcode": "1.3.4",
     "raven": "2.6.4",
-    "redis": "3.1.1",
     "redlock": "3.1.2",
     "serve-favicon": "2.5.0",
     "short-uuid": "4.1.0",

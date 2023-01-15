@@ -10,7 +10,7 @@ import {
   checkModeratorPartial,
 } from './helpers';
 let usage = { test: '2023-01-02' };
-if (process.env.NODE_ENV != 'test') {
+if (['production', 'development'].includes(process.env.NODE_ENV)) {
   import('../../usage.yml').then((usage_yml) => (usage = usage_yml.default));
 }
 

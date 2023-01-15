@@ -55,19 +55,18 @@ module.exports = function () {
     title.submit();
   });
 
-  this.Then(/^The election should exist$/, () =>
-    Election.find({ title: newElection.title })
-      .populate('alternatives')
-      .exec()
-      .spread((election) => {
-        expect(election.description).to.equal(newElection.description);
-        election.alternatives.forEach((alternative, i) => {
-          expect(alternative.description).to.equal(
-            newElection.alternatives[i].description
-          );
-        });
-      })
-  );
+  this.Then(/^The election should exist$/, async () => {
+    const election = (
+      await Election.find({ title: newElection.title }).populate('alternatives')
+    )[0];
+
+    expect(election.description).to.equal(newElection.description);
+    election.alternatives.forEach((alternative, i) => {
+      expect(alternative.description).to.equal(
+        newElection.alternatives[i].description
+      );
+    });
+  });
 
   this.Given(/^There are (\d+) users$/, async function (userCount) {
     this.users = await Promise.all(
@@ -83,12 +82,13 @@ module.exports = function () {
 
   this.Then(
     /The election(?: "([^"]*)")? should have ([^"]*) "([^"]*)"/,
-    (electionTitle, field, value) => {
-      Election.find({ title: electionTitle || newElection.title })
-        .exec()
-        .spread((election) => {
-          expect(election[field].toString()).to.equal(value);
-        });
+    async (electionTitle, field, value) => {
+      const election = (
+        await Election.find({
+          title: electionTitle || newElection.title,
+        }).exec()
+      )[0];
+      expect(election[field].toString()).to.equal(value);
     }
   );
 

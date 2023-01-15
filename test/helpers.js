@@ -10,13 +10,11 @@ export const dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
 export const clearCollections = () => {
-  const promises = [];
-  for (const collection in [Alternative, Register, Election, Vote, User]) {
-    promises.push(async () => {
-      await collection.deleteMany();
-    });
-  }
-  Promise.all(promises);
+  return Promise.all(
+    [Alternative, Register, Election, Vote, User].map((collection) =>
+      collection.deleteMany({})
+    )
+  );
 };
 
 const hash = '$2a$10$qxTI.cWwa2kwcjx4SI9KAuV4KxuhtlGOk33L999UQf1rux.4PBz7y'; // 'password'
@@ -43,7 +41,13 @@ export const moderatorUser = {
 };
 
 export const createUsers = () =>
-  User.create([testUser, adminUser, moderatorUser]);
+  Promise.all(
+    [testUser, adminUser, moderatorUser].map(async (u) => {
+      const exists = await User.exists({ username: u.username });
+      if (exists) return User.findOne({ username: u.username });
+      return User.create(u);
+    })
+  );
 
 export const prepareElection = async function (dataset) {
   // Takes the priorities from the dataset, as well as the amount of times

@@ -1,8 +1,7 @@
-const chai = require('chai');
-const chaiAsPromised = require('chai-as-promised');
-const Vote = require('../../app/models/vote');
-import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-const expect = chai.expect;
+import chai, { expect } from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import Vote from '../../app/models/vote';
+import { ElectionSystems as ElectionTypes } from '../../app/types/types';
 
 chai.use(chaiAsPromised);
 
@@ -150,7 +149,7 @@ module.exports = function () {
         $all: [alternative],
       },
     }).then((foundVote) =>
-      expect(input.getAttribute('value')).to.eventually.equal(foundVote.hash)
+      expect(input.getAttribute('value')).to.eventually.equal(foundVote?.hash)
     );
   });
 
