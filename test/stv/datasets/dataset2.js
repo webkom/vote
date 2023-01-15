@@ -1,5 +1,5 @@
 // Dataset from https://en.wikipedia.org/wiki/Single_transferable_vote
-const ElectionTypes = require('../../../app/models/utils');
+import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
 module.exports = {
   seats: 3,
   type: ElectionTypes.STV,

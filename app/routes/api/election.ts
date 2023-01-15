@@ -28,7 +28,7 @@ router.post('/:electionId/deactivate', election.deactivate);
 router
   .route('/:electionId/alternatives')
   .get(alternative.list)
-  .post(alternative?.create);
+  .post(alternative.create);
 
 router.get('/:electionId/votes', election.elect);
 

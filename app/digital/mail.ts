@@ -1,8 +1,9 @@
-import nodemailer from 'nodemailer';
+import nodemailer, { Transporter } from 'nodemailer';
 import fs from 'fs';
 import path from 'path';
 import handlebars from 'handlebars';
 import env from '../../env';
+import type { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
 
 type TemplateVars = {
   from: string;
@@ -13,8 +14,20 @@ type TemplateVars = {
   title: string;
 };
 
+export enum MailAction {
+  REJECT = 'reject',
+  RESEND = 'resend',
+  SEND = 'send',
+}
+
+export interface MailData {
+  username?: string;
+  password?: string;
+  email: string;
+}
+
 let creds: Record<string, string> = {};
-let transporter = null;
+let transporter: Transporter<SentMessageInfo> | null = null;
 
 // Mail transporter object Google service account
 if (env.GOOGLE_AUTH) {
@@ -52,7 +65,10 @@ if (env.SMTP_URL) {
   });
 }
 
-export const mailHandler = async (action, data) => {
+export const mailHandler = async (
+  action: MailAction,
+  data: MailData
+): Promise<'Done' | SentMessageInfo> => {
   const html = fs.readFileSync(
     path.resolve(__dirname, './template.html'),
     'utf8'
@@ -98,7 +114,7 @@ export const mailHandler = async (action, data) => {
   // We do this after the the templating to make sure the template still
   // works even tho we dont use it.
   if (!transporter) {
-    return new Promise(function (resolve, _) {
+    return new Promise(function (resolve) {
       // Don't log all the console mail when running tests
       if (process.env.NODE_ENV != 'test') {
         console.log('MAIL:', action, data); // eslint-disable-line no-console

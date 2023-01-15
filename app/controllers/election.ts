@@ -10,6 +10,7 @@ import User from '../models/user';
 import Alternative from '../models/alternative';
 import errors from '../errors';
 import app from '../../app';
+import type { Server } from 'socket.io';
 import type {
   ElectionType,
   IElectionMethods,
@@ -27,7 +28,12 @@ export interface TypedRequestBody<T> extends Request {
 type CreateElection = Pick<
   ElectionType,
   'title' | 'description' | 'seats' | 'type' | 'useStrict' | 'physical'
-> & { alternatives: AlternativeType[] };
+> & {
+  alternatives: {
+    description: AlternativeType['description'];
+    election?: Types.ObjectId;
+  }[];
+};
 
 export const load: RequestParamHandler = (
   req: ReqWithElection,
@@ -45,6 +51,7 @@ export const load: RequestParamHandler = (
       if (err instanceof mongoose.Error.CastError) {
         throw new errors.NotFoundError('election');
       }
+      throw err;
     });
 
 export const retrieveActive = (
@@ -106,14 +113,13 @@ export const create = async (
 
     const alternatives = req.body.alternatives;
     if (alternatives && alternatives.length) {
-      Promise.all(
+      await Promise.all(
         alternatives.map((a) => {
-          a.election = election.id;
-          return Alternative.create(a);
+          return Alternative.create({ ...a, election: election });
         })
-      ).then((createdAlternatives) => {
+      ).then(async (createdAlternatives) => {
         election.alternatives = createdAlternatives.map((a) => a.id);
-        return election.save();
+        await election.save();
       });
     }
 
@@ -121,7 +127,7 @@ export const create = async (
     return res.status(201).json(election);
   } catch (err) {
     if (err instanceof mongoose.Error.ValidationError) {
-      throw new errors.ValidationError(null, err.errors);
+      throw new errors.ValidationError(err.errors);
     }
   }
 };
@@ -144,13 +150,17 @@ export const retrieve = async (
   return res.status(200).json(req.election);
 };
 
-function setElectionStatus(req, res, active) {
+const setElectionStatus = (
+  req: ReqWithElection,
+  res: Response,
+  active: boolean
+) => {
   req.election.active = active;
   return req.election.save();
-}
+};
 
 export const activate = async (
-  req: Request,
+  req: ReqWithElection,
   res: Response
 ): Promise<Response> => {
   const otherActiveElection = await Election.findOne({ active: true });
@@ -158,15 +168,15 @@ export const activate = async (
     throw new errors.AlreadyActiveElectionError();
   }
   return setElectionStatus(req, res, true).then((election) => {
-    const io = app.get('io');
+    const io: Server = app.get('io');
     io.emit('election');
     return res.status(200).json(election);
   });
 };
 
-export const deactivate: RequestHandler = (req, res) =>
+export const deactivate: RequestHandler = (req: ReqWithElection, res) =>
   setElectionStatus(req, res, false).then((election) => {
-    const io = app.get('io');
+    const io: Server = app.get('io');
     io.emit('election');
     res.status(200).json(election);
   });

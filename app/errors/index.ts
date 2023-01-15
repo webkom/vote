@@ -2,11 +2,12 @@ import { Response } from 'express';
 import { IAlternative, IElection } from '../types/types';
 import mongoose from 'mongoose';
 
-class HTTPError extends Error {
+export class HTTPError extends Error {
   status: number;
+  code?: number | string;
   name: string;
   message: string;
-  payload?: any;
+  payload?: Record<string, unknown>;
 
   constructor() {
     super();
@@ -80,7 +81,7 @@ class InvalidPriorityError extends HTTPError {
   constructor(alternative: string, election: string) {
     super();
     this.name = 'InvalidPriorityError';
-    this.message = `One or more alternatives does not exist on election. ${alternative} differed in election ${election}`;
+    this.message = `One or more alternatives does not exist on election.`;
     this.status = 400;
   }
 }
@@ -131,20 +132,23 @@ class ActiveElectionError extends HTTPError {
 }
 
 class ValidationError extends HTTPError {
-  errors: {
-    [path: string]:
-      | mongoose.Error.ValidatorError
-      | mongoose.Error.CastError
-      | mongoose.Error.ValidationError;
-  };
+  errors:
+    | {
+        [path: string]:
+          | mongoose.Error.ValidatorError
+          | mongoose.Error.CastError
+          | mongoose.Error.ValidationError;
+      }
+    | string;
   constructor(
-    message: string,
-    errors?: {
-      [path: string]:
-        | mongoose.Error.ValidatorError
-        | mongoose.Error.CastError
-        | mongoose.Error.ValidationError;
-    }
+    errors?:
+      | {
+          [path: string]:
+            | mongoose.Error.ValidatorError
+            | mongoose.Error.CastError
+            | mongoose.Error.ValidationError;
+        }
+      | string
   ) {
     super();
     this.name = 'ValidationError';
@@ -153,7 +157,7 @@ class ValidationError extends HTTPError {
     this.errors = errors;
     this.payload = {
       name: this.name,
-      message: message || this.message,
+      message: this.message,
       status: this.status,
       errors: this.errors,
     };
@@ -224,7 +228,7 @@ class AlreadyActiveElectionError extends HTTPError {
 }
 
 class MailError extends HTTPError {
-  constructor(err: any) {
+  constructor(err: Error) {
     super();
     this.name = 'MailError';
     this.message = `Something went wrong with the email. Err: ${err}`;

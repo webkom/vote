@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import bcrypt from 'bcryptjs';
-import mongoose, { Schema, HydratedDocument } from 'mongoose';
+import mongoose, { Schema, HydratedDocumentFromSchema } from 'mongoose';
 import errors from '../errors';
 import { UserType, UserModel, IUserMethods } from '../types/types';
 
-export const userSchema = new Schema<UserType>({
+export const userSchema = new Schema<UserType, UserModel, IUserMethods>({
   username: {
     type: String,
     index: true,
@@ -41,7 +41,9 @@ userSchema.pre<UserType>('save', function (this, next) {
   next();
 });
 
-userSchema.methods.getCleanUser = function () {
+userSchema.methods.getCleanUser = function (
+  this: HydratedDocumentFromSchema<typeof userSchema>
+) {
   const user = _.omit(this.toObject(), 'password', 'hash');
   return user;
 };

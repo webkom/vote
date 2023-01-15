@@ -1,6 +1,11 @@
 import _ from 'lodash';
 import errors from '../errors';
-import mongoose, { Schema, Types, HydratedDocument } from 'mongoose';
+import mongoose, {
+  Schema,
+  Types,
+  HydratedDocument,
+  HydratedDocumentFromSchema,
+} from 'mongoose';
 import Vote from './vote';
 import calculateWinnerUsingNormal from '../algorithms/normal';
 import calculateWinnerUsingSTV from '../algorithms/stv';
@@ -12,6 +17,7 @@ import {
   ElectionModel,
   ElectionType,
   UserType,
+  PopulatedVote,
   AlternativeModel,
 } from '../types/types';
 
@@ -106,14 +112,19 @@ electionSchema.pre<ElectionType>('remove', async function (next) {
   next();
 });
 
-electionSchema.methods.elect = async function () {
+electionSchema.methods.elect = async function (
+  this: HydratedDocumentFromSchema<typeof electionSchema>
+) {
   if (this.active) {
     throw new errors.ActiveElectionError(
       'Cannot retrieve results on an active election.'
     );
   }
 
-  await this.populate([
+  const populatedElection = await this.populate<{
+    alternatives: AlternativeType[];
+    votes: PopulatedVote[];
+  }>([
     'alternatives',
     {
       path: 'votes',
@@ -125,7 +136,7 @@ electionSchema.methods.elect = async function () {
     },
   ]);
 
-  const cleanElection = this.toJSON();
+  const cleanElection = this.toJSON<typeof populatedElection>();
 
   // Type of election decides algorithm
   if (cleanElection.type == ElectionSystems.NORMAL) {

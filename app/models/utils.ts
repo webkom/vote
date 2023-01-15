@@ -1,6 +1,3 @@
-const ElectionTypes = {
-  NORMAL: 'normal',
-  STV: 'stv',
-};
+import { ElectionSystems } from '../types/types';
 
-export default ElectionTypes;
+export default ElectionSystems;
