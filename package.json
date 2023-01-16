@@ -76,7 +76,7 @@
   "devDependencies": {
     "5to6-codemod": "1.8.0",
     "@babel/cli": "^7.7.4",
-    "@babel/core": "^7.7.4",
+    "@babel/core": "^7.20.12",
     "@babel/plugin-transform-runtime": "7.15.8",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-typescript": "7.15.0",
