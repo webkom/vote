@@ -107,7 +107,7 @@
     "chai-as-promised": "7.1.1",
     "chai-subset": "1.6.0",
     "copy-webpack-plugin": "11.0.0",
-    "core-js": "2.6.12",
+    "core-js": "3.27.1",
     "coveralls": "3.0.9",
     "cucumber": "0.10.3",
     "eslint": "7.32.0",
