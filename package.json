@@ -115,7 +115,7 @@
     "file-loader": "6.2.0",
     "mkdirp": "^0.5.1",
     "mocha": "6.2.3",
-    "prettier": "2.1.2",
+    "prettier": "2.8.3",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "0.6.0",
     "pug": "3.0.1",
