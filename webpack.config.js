@@ -4,7 +4,7 @@ const path = require('path');
 module.exports = {
   mode: 'none',
   output: {
-    path: path.resolve(__dirname, '../', 'public'),
+    path: path.resolve(__dirname, 'dist', 'public'),
     filename: '[name].js',
     publicPath: '/static/',
   },

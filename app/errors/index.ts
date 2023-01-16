@@ -287,6 +287,9 @@ export const handleError = (
   status?: number
 ): Response => {
   const statusCode = status || err.status || 500;
+  if (statusCode >= 500) {
+    console.error(err);
+  }
   return res.status(statusCode).json(
     err.payload || {
       name: err.name,

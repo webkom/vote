@@ -1,5 +1,5 @@
-FROM node:14-slim
-MAINTAINER Abakus Webkom <webkom@abakus.no>
+FROM node:16-alpine as builder
+LABEL org.opencontainers.image.authors="Abakus Webkom <webkom@abakus.no>"
 
 # Create app directory
 RUN mkdir -p /app
@@ -11,7 +11,19 @@ EXPOSE 3000
 COPY . /app
 
 # Build image
-RUN yarn --production
+RUN yarn --ignore-scripts
+ENV NODE_ENV production
+RUN yarn build
+
+FROM node:16-alpine
+
+WORKDIR /app
+
+COPY --from=builder /app/bin bin
+COPY --from=builder /app/public public
+COPY --from=builder /app/dist dist
+COPY --from=builder /app/package.json .
+COPY --from=builder /app/node_modules node_modules
 
 ARG RELEASE
 ENV RELEASE ${RELEASE}

@@ -3,3 +3,8 @@ declare module '*.yml' {
   const data: any;
   export default data;
 }
+
+declare module '*.html' {
+  const content: string;
+  export default content;
+}
