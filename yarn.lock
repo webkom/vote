@@ -2605,10 +2605,10 @@ angular-local-storage@0.7.1:
   resolved "https://registry.yarnpkg.com/angular-local-storage/-/angular-local-storage-0.7.1.tgz#fbd2730763c29fa9af5725e0186c780621e8cdd2"
   integrity sha512-AJgX9+f8eWpsnSuPrNZ/G3TdH/iBtlEdOUgLohbddTrwJ+E0+tfHtXKNgYpYh7iN6aM6subYmn0KfvZBBaLdfw==
 
-angular-route@1.7.5:
-  version "1.7.5"
-  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.7.5.tgz#34a3648c407a14a030d075cf485318e33ba23f0e"
-  integrity sha512-7KfyEVVOWTI+jTY/j5rUNCIHGRyeCOx7YqZI/Ci3IbDK7GIsy6xH+hS5ai0Xi0sLjzDZ0PUDO4gBn+K0dVtlOg==
+angular-route@1.8.3:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/angular-route/-/angular-route-1.8.3.tgz#f24a700ebd462454ca83a8b765df55c87a4edde1"
+  integrity sha512-kpIcRmDR2+o1FxDVVYy8Rvfab86/7LDbOgTRb9T+X9ewPQiBRuDEnZtM3oJYBiQLvAXDYTJXHV48n/bGE9Mv2g==
 
 angular1-ui-bootstrap4@2.4.22:
   version "2.4.22"

@@ -34,7 +34,7 @@
     "angular": "1.8.0",
     "angular-animate": "1.7.9",
     "angular-local-storage": "0.7.1",
-    "angular-route": "1.7.5",
+    "angular-route": "1.8.3",
     "angular1-ui-bootstrap4": "2.4.22",
     "bcryptjs": "2.4.3",
     "body-parser": "1.18.3",
