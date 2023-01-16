@@ -29,6 +29,7 @@ app.set('view engine', 'pug');
 app.set('views', `${__dirname}/app/views`);
 app.set('mongourl', env.MONGO_URL);
 
+mongoose.set('strictQuery', true);
 mongoose.connect(app.get('mongourl'));
 
 raven.config(env.RAVEN_DSN).install();

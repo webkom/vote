@@ -40,6 +40,7 @@ program
       { validator, retry: true },
       (modeErr, mode) => {
         const modeId = parseInt(mode);
+        mongoose.set('strictQuery', true);
         mongoose.connect(mongoURL, {}, (connectErr) => {
           if (connectErr) return done(connectErr, null);
 

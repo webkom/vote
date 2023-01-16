@@ -4,9 +4,11 @@
       "@babel/preset-typescript"
     ],
     ["@babel/preset-env", {
-      "useBuiltIns": "entry"
+      "useBuiltIns": "entry",
+      "corejs": "3.27"
     }]
   ],
   "plugins": [
-    "@babel/plugin-transform-runtime"]
+    "@babel/plugin-transform-runtime"
+  ]
 }
