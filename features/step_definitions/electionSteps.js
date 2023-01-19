@@ -14,24 +14,25 @@ by.addLocator(
 );
 
 module.exports = function () {
-  this.Given(/^There is an active "([^"]*)" election$/, async function (
-    electionType
-  ) {
-    this.normalElection.active = false;
-    await this.normalElection.save();
-    this.stvElection.active = false;
-    await this.stvElection.save();
+  this.Given(
+    /^There is an active "([^"]*)" election$/,
+    async function (electionType) {
+      this.normalElection.active = false;
+      await this.normalElection.save();
+      this.stvElection.active = false;
+      await this.stvElection.save();
 
-    if (electionType === ElectionTypes.STV) {
-      this.election = this.stvElection;
-    } else if (electionType === ElectionTypes.NORMAL) {
-      this.election = this.normalElection;
+      if (electionType === ElectionTypes.STV) {
+        this.election = this.stvElection;
+      } else if (electionType === ElectionTypes.NORMAL) {
+        this.election = this.normalElection;
+      }
+      this.election.active = true;
+      await this.election.save();
+      const driver = browser.driver;
+      driver.get('http://localhost:3000/');
     }
-    this.election.active = true;
-    await this.election.save();
-    const driver = browser.driver;
-    driver.get('http://localhost:3000/');
-  });
+  );
 
   this.Given(/^There is an inactive election$/, async function () {
     this.normalElection.active = false;
@@ -153,24 +154,25 @@ module.exports = function () {
     );
   });
 
-  this.Then(/^I see "([^"]*)" as priority (\d+)$/, function (
-    alternative,
-    position
-  ) {
-    const priorities = element.all(by.sortableListItems('priorities'));
+  this.Then(
+    /^I see "([^"]*)" as priority (\d+)$/,
+    function (alternative, position) {
+      const priorities = element.all(by.sortableListItems('priorities'));
 
-    return expect(
-      priorities.get(Number(position) - 1).getText()
-    ).to.eventually.contain(alternative.toUpperCase());
-  });
+      return expect(
+        priorities.get(Number(position) - 1).getText()
+      ).to.eventually.contain(alternative.toUpperCase());
+    }
+  );
 
-  this.Then(/^I have (\d+) alternative on the confirmation ballot$/, function (
-    count
-  ) {
-    const priorities = element.all(by.repeater('alternative in priorities'));
+  this.Then(
+    /^I have (\d+) alternative on the confirmation ballot$/,
+    function (count) {
+      const priorities = element.all(by.repeater('alternative in priorities'));
 
-    return expect(priorities.count()).to.eventually.equal(Number(count));
-  });
+      return expect(priorities.count()).to.eventually.equal(Number(count));
+    }
+  );
 
   this.Then(
     /^I see "([^"]*)" as priority (\d+) on the confirmation ballot$/,
@@ -183,16 +185,16 @@ module.exports = function () {
     }
   );
 
-  this.Then(/^I see "([^"]*)" as priority (\d+) on the receipt$/, function (
-    alternative,
-    position
-  ) {
-    const priorities = element.all(
-      by.repeater('alternative in vote.priorities')
-    );
+  this.Then(
+    /^I see "([^"]*)" as priority (\d+) on the receipt$/,
+    function (alternative, position) {
+      const priorities = element.all(
+        by.repeater('alternative in vote.priorities')
+      );
 
-    return expect(
-      priorities.get(Number(position) - 1).getText()
-    ).to.eventually.contain(alternative.toUpperCase());
-  });
+      return expect(
+        priorities.get(Number(position) - 1).getText()
+      ).to.eventually.contain(alternative.toUpperCase());
+    }
+  );
 };

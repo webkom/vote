@@ -20,12 +20,13 @@ module.exports = [
     const cardKey = urlParams.get('cardKey');
     const [, , code] = token.split(':');
     const link = `${window.location.origin}/auth/login/?token=${token}`;
-    QRCode.toDataURL(link, { type: 'image/png', width: 1000 }, function (
-      err,
-      url
-    ) {
-      $scope.qrdata = url;
-    });
+    QRCode.toDataURL(
+      link,
+      { type: 'image/png', width: 1000 },
+      function (err, url) {
+        $scope.qrdata = url;
+      }
+    );
     socketIOService.listen('qr-opened', function (socketCode) {
       if (socketCode === code) {
         $scope.$apply(() => {
