@@ -54,12 +54,13 @@ if ('addEventListener' in document) {
           };
 
           fetch('/api/qr/open/?code=' + code);
-          QRCode.toDataURL(url, { type: 'image/png', width: 300 }, function (
-            err,
-            url
-          ) {
-            document.querySelector('[id=qrImg]').setAttribute('src', url);
-          });
+          QRCode.toDataURL(
+            url,
+            { type: 'image/png', width: 300 },
+            function (err, url) {
+              document.querySelector('[id=qrImg]').setAttribute('src', url);
+            }
+          );
         }
       } catch (e) {
         alert('Det skjedde en feil. Prøv på nytt');
