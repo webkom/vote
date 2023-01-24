@@ -2,7 +2,7 @@ import _ from 'lodash';
 import bcrypt from 'bcryptjs';
 import mongoose, { Schema, HydratedDocumentFromSchema } from 'mongoose';
 import errors from '../errors';
-import { UserType, UserModel, IUserMethods } from '../types/types';
+import type { UserType, UserModel, IUserMethods } from '../types/types';
 
 export const userSchema = new Schema<UserType, UserModel, IUserMethods>({
   username: {

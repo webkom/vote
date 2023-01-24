@@ -1,16 +1,15 @@
 {
+  "extends": "@tsconfig/svelte/tsconfig.json",
   "compilerOptions": {
     "sourceMap": true,
     "noImplicitAny": true,
     "target": "es6",
     "outDir": "./dist",
-    "module": "commonjs",
+    "module": "ESNext",
     "removeComments": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": false
   },
-  "exclude": [
-    "node_modules",
-    "public"
-  ]
+  "exclude": ["node_modules", "public"]
 }

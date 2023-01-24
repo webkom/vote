@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { AlternativeType, AlternativeModel } from '../types/types';
+import type { AlternativeType, AlternativeModel } from '../types/types';
 
 const alternativeSchema = new Schema<AlternativeType, AlternativeModel>({
   description: {

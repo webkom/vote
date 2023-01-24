@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-import { PopulatedVote, AlternativeType } from '../../app/types/types';
+import type { PopulatedVote, AlternativeType } from '../../app/types/types';
 
 enum Action {
   iteration = 'ITERATION',

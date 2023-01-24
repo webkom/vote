@@ -1,6 +1,6 @@
 import isEmpty from 'lodash/isEmpty';
 import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-import { PopulatedVote, AlternativeType } from '../../app/types/types';
+import type { PopulatedVote, AlternativeType } from '../../app/types/types';
 
 /**
  * @param votes - All votes for the election

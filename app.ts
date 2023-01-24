@@ -13,7 +13,7 @@ import raven from 'raven';
 import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
-import { HTTPError } from './app/errors';
+import type { HTTPError } from './app/errors';
 
 // Put whatever the type of our sessionData is here
 declare module 'express-session' {

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { RegisterType } from '../types/types';
+import type { RegisterType } from '../types/types';
 
 const registerSchema = new Schema<RegisterType>({
   identifier: {
