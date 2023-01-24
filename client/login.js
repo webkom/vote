@@ -1,7 +1,6 @@
 import QrScanner from 'qr-scanner';
 import QRCode from 'qrcode';
-import QrScannerWorkerPath from '!!file-loader!qr-scanner/qr-scanner-worker.min.js';
-QrScanner.WORKER_PATH = QrScannerWorkerPath;
+
 if ('addEventListener' in document) {
   document.addEventListener('DOMContentLoaded', function () {
     // Get the token string form the url, on the format username:password:code

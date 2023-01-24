@@ -26,7 +26,7 @@ const app = express();
 
 app.disable('x-powered-by');
 app.set('view engine', 'pug');
-app.set('views', `${__dirname}/app/views`);
+app.set('views', `./app/views`);
 app.set('mongourl', env.MONGO_URL);
 
 mongoose.set('strictQuery', true);
@@ -117,6 +117,11 @@ passport.deserializeUser<string>(async (username, cb) => {
 });
 
 app.use('/', router);
+
+if (env.NODE_ENV === 'production') {
+  const { handler } = await import('./build/handler');
+  app.use(handler);
+}
 
 app.use(raven.errorHandler());
 app.use((err: HTTPError, req: Request, res: Response, next: NextFunction) => {

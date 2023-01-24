@@ -1,7 +1,7 @@
-const webpack = require('webpack');
-const path = require('path');
+import webpack from 'webpack';
+import path from 'path';
 
-module.exports = {
+export default {
   mode: 'none',
   output: {
     path: path.resolve(__dirname, 'dist', 'public'),
