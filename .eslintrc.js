@@ -3,8 +3,9 @@ module.exports = {
   parser: 'babel-eslint',
   plugins: ['svelte3', '@typescript-eslint']
   parserOptions: {
-    ecmaVersion: 2020,
+    ecmaVersion: 2021,
     sourceType: 'module',
+    module: 'esnext',
   },
   rules: {
     'no-unused-vars': [2, { args: 'none' }],

@@ -6,6 +6,9 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  build: {
+    target: 'esnext',
+  },
   plugins: [
     ...VitePluginNode({
       adapter: 'express',
@@ -14,4 +17,7 @@ export default defineConfig({
     }),
     yaml(),
   ],
+  optimizeDeps: {
+    exclude: ['nib'],
+  },
 });

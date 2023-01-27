@@ -38,7 +38,7 @@ app.use(raven.requestHandler());
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
   // eslint-disable-next-line
-  const webpack = require('webpack');
+  const webpack = await import('webpack');
   // eslint-disable-next-line
   const webpackMiddleware = require('webpack-dev-middleware');
   // eslint-disable-next-line

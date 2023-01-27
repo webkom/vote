@@ -7,7 +7,9 @@
     "module": "commonjs",
     "removeComments": true,
     "esModuleInterop": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "isolatedModules": true,
+    "module": "esnext"
   },
   "exclude": [
     "node_modules",
