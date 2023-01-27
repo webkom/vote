@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "vite",
     "start": "node dist/server.js",
-    "build": "yarn build:server && yarn build:client && yarn build:lient-old",
+    "build": "yarn build:client && yarn build:server && yarn build:client-old",
     "build:server": "vite build",
     "build:client": "vite build -c vite.client.ts",
     "build:client-old": "yarn webpack --config webpack.config.js --mode production",
@@ -109,6 +109,7 @@
     "@typescript-eslint/eslint-plugin": "4.32.0",
     "@typescript-eslint/parser": "4.32.0",
     "babel-eslint": "10.1.0",
+    "babel-loader": "9.1.2",
     "chai": "4.3.7",
     "chai-as-promised": "7.1.1",
     "chai-subset": "1.6.0",

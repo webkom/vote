@@ -3,13 +3,12 @@ import http from 'http';
 import app from './app';
 import env from './env';
 
-const server = http.createServer(app);
 app.set('port', env.PORT);
-app.set('io', new Server(server));
 
 const hostname = env.HOST;
 if (import.meta.env.PROD) {
-  app.listen(app.get('port'), hostname);
+  const server = app.listen(app.get('port'), hostname);
+  app.set('io', new Server(server));
 }
 
 export const viteNodeApp = app;

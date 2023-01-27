@@ -14,6 +14,11 @@ import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
 import { HTTPError } from './app/errors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Put whatever the type of our sessionData is here
 declare module 'express-session' {
@@ -37,16 +42,15 @@ raven.config(env.RAVEN_DSN).install();
 app.use(raven.requestHandler());
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
-  // eslint-disable-next-line
   const webpack = await import('webpack');
+  const webpackMiddleware = await import('webpack-dev-middleware');
   // eslint-disable-next-line
-  const webpackMiddleware = require('webpack-dev-middleware');
-  // eslint-disable-next-line
-  const config = require('./webpack.config.js');
+  // @ts-ignore
+  const config = await import('./webpack.config.js');
 
   app.use(
-    webpackMiddleware(webpack(config), {
-      publicPath: config.output.publicPath,
+    webpackMiddleware.default(webpack.default(config.default), {
+      publicPath: config.default.output.publicPath,
     })
   );
 }
@@ -119,6 +123,7 @@ passport.deserializeUser<string>(async (username, cb) => {
 app.use('/', router);
 
 if (env.NODE_ENV === 'production') {
+  // @ts-ignore
   const { handler } = await import('./build/handler');
   app.use(handler);
 }

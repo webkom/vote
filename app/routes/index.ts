@@ -60,8 +60,8 @@ router.get('/healthz', (req, res) => {
 
 // Can be both a valid frontend route accessed directly,
 // or a 404, but we let the frontend handle it
-router.get('*', checkAuthOrRedirect, (req, res) => {
-  res.render('index');
+router.get('*', checkAuthOrRedirect, (req, res, next) => {
+  next();
 });
 
 export default router;

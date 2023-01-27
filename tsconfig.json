@@ -2,9 +2,8 @@
   "compilerOptions": {
     "sourceMap": true,
     "noImplicitAny": true,
-    "target": "es6",
+    "target": "esnext",
     "outDir": "./dist",
-    "module": "commonjs",
     "removeComments": true,
     "esModuleInterop": true,
     "moduleResolution": "node",

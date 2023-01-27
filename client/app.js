@@ -3,7 +3,7 @@ require('angular-route');
 require('angular-animate');
 require('angular-local-storage');
 require('angular1-ui-bootstrap4');
-require('./styles/main');
+import('./styles/main.styl');
 
 angular
   .module('voteApp', [
