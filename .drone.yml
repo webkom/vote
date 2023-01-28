@@ -10,7 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn install --frozen-lockfile --ignore-scripts
+      - yarn install --frozen-lockfile
 
   - name: lint
     image: node:16-alpine
@@ -30,23 +30,26 @@ steps:
     depends_on:
       - setup
     commands:
-      - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
-
-  - name: coverage
-    image: node:16-alpine
-    when:
-      event:
-        - push
-    depends_on:
-      - test
-    commands:
       - yarn coverage
     environment:
-      COVERALLS_REPO_TOKEN:
-        from_secret: coveralls_token
-      COVERALLS_SERVICE_NAME: drone
-      COVERALLS_GIT_BRANCH: ${DRONE_BRANCH}
-      COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
+      MONGO_URL: mongodb://mongodb:27017/vote-test
+      REDIS_URL: redis
+
+  # - name: coverage
+  #   image: node:16-alpine
+  #   when:
+  #     event:
+  #       - push
+  #   depends_on:
+  #     - test
+  #   commands:
+  #     -
+  #   environment:
+  #     COVERALLS_REPO_TOKEN:
+  #       from_secret: coveralls_token
+  #     COVERALLS_SERVICE_NAME: drone
+  #     COVERALLS_GIT_BRANCH: ${DRONE_BRANCH}
+  #     COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
 
   - name: build
     image: node:16-alpine
@@ -59,6 +62,7 @@ steps:
       - setup
     commands:
       - yarn build
+      - yarn build:cli
 
   - name: protractor
     image: circleci/node:16-browsers
@@ -137,4 +141,4 @@ services:
 
 ---
 kind: signature
-hmac: 1ec26cb4fae5d5b6f779d65ff5bd4dd4063ec3770e5527ef8c3447e0c700c9f8
+hmac: 41115354b31bee4371da29a3f4af4204b5a405339af13d1e3b5acb8913ed0497
