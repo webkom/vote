@@ -16,6 +16,7 @@ export default {
     filename: '[name].js',
     publicPath: '/static/',
   },
+  devtool: 'eval',
   resolve: {
     extensions: ['.cjs', '.js', '.styl'],
     fallback: {
@@ -24,13 +25,13 @@ export default {
     },
   },
   entry: {
-    bundle: './client/app.js',
+    bundle: './client/app.cjs',
     login: './client/login.js',
   },
   module: {
     rules: [
       {
-        test: /\.[mc]?js/,
+        test: /\.[m]?js/,
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
@@ -38,7 +39,6 @@ export default {
         test: /\.styl$/,
         use: [
           { loader: 'file-loader', options: { name: '[name].css' } },
-          //{ loader: 'css-loader' },
           { loader: 'stylus-loader' },
         ],
       },
