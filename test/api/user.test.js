@@ -1,3 +1,4 @@
+import { describe, test, beforeEach, beforeAll, afterAll } from 'vitest';
 import _ from 'lodash';
 import request from 'supertest';
 import passportStub from 'passport-stub';
@@ -11,20 +12,20 @@ import { testUser, createUsers } from '../helpers';
 const should = chai.should();
 
 describe('User API', () => {
-  before(() => {
+  beforeAll(() => {
     passportStub.install(app);
   });
 
-  beforeEach(async function () {
+  beforeEach(async function (ctx) {
     passportStub.logout();
 
     const [user, adminUser, moderatorUser] = await createUsers();
-    this.user = user;
-    this.adminUser = adminUser;
-    this.moderatorUser = moderatorUser;
+    ctx.user = user;
+    ctx.adminUser = adminUser;
+    ctx.moderatorUser = moderatorUser;
   });
 
-  after(() => {
+  afterAll(() => {
     passportStub.logout();
     passportStub.uninstall();
   });
@@ -46,8 +47,8 @@ describe('User API', () => {
     email: 'test@user.com',
   };
 
-  it('should be possible to create users for admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be possible to create users for admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/user')
       .send(testUserData)
@@ -61,8 +62,8 @@ describe('User API', () => {
     body.username.should.equal(user.username);
   });
 
-  it('should be possible to create users for moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be possible to create users for moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body } = await request(app)
       .post('/api/user')
       .send(testUserData)
@@ -77,8 +78,8 @@ describe('User API', () => {
     body.username.should.equal(user.username);
   });
 
-  it('should not be possible to create users with invalid usernames', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should not be possible to create users with invalid usernames', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/user')
       .send(badUsernameData)
@@ -94,8 +95,8 @@ describe('User API', () => {
     );
   });
 
-  it('should return 400 when creating users with an already used card key', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating users with an already used card key', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
     const payload = _.clone(testUserData);
     payload.cardKey = testUser.cardKey;
@@ -113,10 +114,10 @@ describe('User API', () => {
     );
   });
 
-  it('should return 400 when creating users with existing usernames', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating users with existing usernames', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const payload = Object.assign({}, testUserData, {
-      username: this.user.username,
+      username: ctx.user.username,
     });
 
     const { body: error } = await request(app)
@@ -130,13 +131,13 @@ describe('User API', () => {
     error.message.should.equal("There's already a user with this username.");
   });
 
-  it('should not be possible to create users without being admin/moderator', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to create users without being admin/moderator', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('post', '/api/user');
   });
 
-  it('should return 400 when creating users without required fields', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating users without required fields', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/user')
       .expect(400)
@@ -146,8 +147,8 @@ describe('User API', () => {
     error.status.should.equal(400);
   });
 
-  it('should be able to get users for admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to get users for admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: users } = await request(app)
       .get('/api/user')
       .expect(200)
@@ -162,8 +163,8 @@ describe('User API', () => {
     should.not.exist(users[0].password);
   });
 
-  it('should be able to get users for moderators', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be able to get users for moderators', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body: users } = await request(app)
       .get('/api/user')
       .expect(200)
@@ -177,46 +178,46 @@ describe('User API', () => {
     should.not.exist(users[0].password);
   });
 
-  it('should be able to toggle active users for admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to toggle active users for admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
-      .post(`/api/user/${this.user.cardKey}/toggle_active`)
+      .post(`/api/user/${ctx.user.cardKey}/toggle_active`)
       .expect(200)
       .expect('Content-Type', /json/);
     body.active.should.equal(false, 'user should be inactive');
   });
 
-  it('should be able to toggle active users for moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be able to toggle active users for moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body } = await request(app)
-      .post(`/api/user/${this.user.cardKey}/toggle_active`)
+      .post(`/api/user/${ctx.user.cardKey}/toggle_active`)
       .expect(200)
       .expect('Content-Type', /json/);
     body.active.should.equal(false, 'user should be inactive');
   });
 
-  it('should not be possible to get users for normal users', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to get users for normal users', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('get', '/api/user');
   });
 
-  it('should not be possible to toggle a user for normal users', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to toggle a user for normal users', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource(
       'post',
-      `/api/user/${this.user.cardKey}/toggle_active`
+      `/api/user/${ctx.user.cardKey}/toggle_active`
     );
   });
 
-  it('should get 404 when toggeling active users with invalid cardKey', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when toggeling active users with invalid cardKey', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     test404('post', '/api/user/LELELENEET/toggle_active', 'user');
   });
 
-  it('should be possible to count all active users', async function () {
-    passportStub.login(this.adminUser.username);
-    this.user.active = true;
-    await this.user.save();
+  test('should be possible to count all active users', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
+    ctx.user.active = true;
+    await ctx.user.save();
     const { body } = await request(app)
       .get('/api/user/count?active=true')
       .expect(200)
@@ -224,8 +225,8 @@ describe('User API', () => {
     body.users.should.equal(1);
   });
 
-  it('should be possible to count inactive users for admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be possible to count inactive users for admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .get('/api/user/count?active=false')
       .expect(200)
@@ -233,8 +234,8 @@ describe('User API', () => {
     body.users.should.equal(0);
   });
 
-  it('should be possible to count inactive users for moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be possible to count inactive users for moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body } = await request(app)
       .get('/api/user/count?active=false')
       .expect(200)
@@ -242,10 +243,10 @@ describe('User API', () => {
     body.users.should.equal(0);
   });
 
-  it('should be possible to count all users', async function () {
-    passportStub.login(this.adminUser.username);
-    this.user.active = false;
-    await this.user.save();
+  test('should be possible to count all users', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
+    ctx.user.active = false;
+    await ctx.user.save();
     const { body } = await request(app)
       .get('/api/user/count')
       .expect(200)
@@ -253,45 +254,45 @@ describe('User API', () => {
     body.users.should.equal(1);
   });
 
-  it('should only be possible to count users as admin/moderator', async function () {
-    passportStub.login(this.user.username);
+  test('should only be possible to count users as admin/moderator', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('get', '/api/user/count');
   });
 
-  it("should be possible to change a user's card key for admin", async function () {
-    passportStub.login(this.adminUser.username);
+  test("should be possible to change a user's card key for admin", async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
     const changeCardPayload = {
       password: 'password',
-      cardKey: 'thisisanewcardkey',
+      cardKey: 'ctxisanewcardkey',
     };
 
     const { body } = await request(app)
-      .put(`/api/user/${this.user.username}/change_card`)
+      .put(`/api/user/${ctx.user.username}/change_card`)
       .send(changeCardPayload)
       .expect(200)
       .expect('Content-Type', /json/);
     body.cardKey.should.equal(changeCardPayload.cardKey);
   });
 
-  it("should be possible to change a user's card key for moderator", async function () {
-    passportStub.login(this.moderatorUser.username);
+  test("should be possible to change a user's card key for moderator", async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
 
     const changeCardPayload = {
       password: 'password',
-      cardKey: 'thisisanewcardkey',
+      cardKey: 'ctxisanewcardkey',
     };
 
     const { body } = await request(app)
-      .put(`/api/user/${this.user.username}/change_card`)
+      .put(`/api/user/${ctx.user.username}/change_card`)
       .send(changeCardPayload)
       .expect(200)
       .expect('Content-Type', /json/);
     body.cardKey.should.equal(changeCardPayload.cardKey);
   });
 
-  it("should not be possible to change a user's card key to an existing card", async function () {
-    passportStub.login(this.adminUser.username);
+  test("should not be possible to change a user's card key to an existing card", async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
     const changeCardPayload = {
       password: 'password',
@@ -299,7 +300,7 @@ describe('User API', () => {
     };
 
     const { body: error } = await request(app)
-      .put(`/api/user/${this.user.username}/change_card`)
+      .put(`/api/user/${ctx.user.username}/change_card`)
       .send(changeCardPayload)
       .expect(400)
       .expect('Content-Type', /json/);
@@ -311,8 +312,8 @@ describe('User API', () => {
     );
   });
 
-  it('should give feedback if wrong credentials are given when changing cards', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should give feedback if wrong credentials are given when changing cards', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
     const changeCardPayload = {
       password: 'notthepassword',
@@ -320,7 +321,7 @@ describe('User API', () => {
     };
 
     const { body: error } = await request(app)
-      .put(`/api/user/${this.user.username}/change_card`)
+      .put(`/api/user/${ctx.user.username}/change_card`)
       .send(changeCardPayload)
       .expect(400)
       .expect('Content-Type', /json/);
@@ -330,13 +331,13 @@ describe('User API', () => {
     error.message.should.equal('Incorrect username and/or password.');
   });
 
-  it('should only be possible to change cards as an admin/moderator', async function () {
-    passportStub.login(this.user.username);
+  test('should only be possible to change cards as an admin/moderator', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('put', '/api/user/user/change_card');
   });
 
-  it('should be possible to deactivate all non-admin/moderator users for admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be possible to deactivate all non-admin/moderator users for admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await request(app)
       .post('/api/user/deactivate')
       .expect(200)
@@ -349,8 +350,8 @@ describe('User API', () => {
     });
   });
 
-  it('should be possible to deactivate all non-admin/moderator users for moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be possible to deactivate all non-admin/moderator users for moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await request(app)
       .post('/api/user/deactivate')
       .expect(200)
@@ -363,13 +364,13 @@ describe('User API', () => {
     });
   });
 
-  it('should not be possible to deactivate all users without being admin/moderator', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to deactivate all users without being admin/moderator', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('post', '/api/user/deactivate');
   });
 
-  it('should be possible to generate a user while being a moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be possible to generate a user while being a moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body } = await request(app)
       .post('/api/user/generate')
       .send(genUserData)
@@ -379,8 +380,8 @@ describe('User API', () => {
     body.user.should.equal(genUserData.identifier);
   });
 
-  it('should be not be possible to generate a user for a user', async function () {
-    passportStub.login(this.user.username);
+  test('should be not be possible to generate a user for a user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     const { body: error } = await request(app)
       .post('/api/user/generate')
       .send(genUserData)
@@ -390,8 +391,8 @@ describe('User API', () => {
     error.status.should.equal(403);
   });
 
-  it('should get an error when generating user with no identifier', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should get an error when generating user with no identifier', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/user/generate')
       .send({ username: 'wrong', email: 'correct@email.com' })
@@ -402,8 +403,8 @@ describe('User API', () => {
     error.message.should.equal('Missing property identifier from payload.');
   });
 
-  it('should get an error when generating user with no email', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should get an error when generating user with no email', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body: error } = await request(app)
       .post('/api/user/generate')
       .send({ identifier: 'correct', password: 'wrong' })
@@ -414,8 +415,8 @@ describe('User API', () => {
     error.message.should.equal('Missing property email from payload.');
   });
 
-  it('should be possible to generate the same user twice if they are not active', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should be possible to generate the same user twice if they are not active', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body: bodyOne } = await request(app)
       .post('/api/user/generate')
       .send(genUserData)
@@ -434,7 +435,7 @@ describe('User API', () => {
     should.exist(user);
 
     // Check that the register index and the user was created
-    passportStub.login(this.moderatorUser.username);
+    passportStub.login(ctx.moderatorUser.username);
     const { body: bodyTwo } = await request(app)
       .post('/api/user/generate')
       .send(genUserData)
@@ -444,8 +445,8 @@ describe('User API', () => {
     bodyTwo.user.should.equal(genUserData.identifier);
   });
 
-  it('should not be possible to generate the same user twice if they are active', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to generate the same user twice if they are active', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     const { body: bodyOne } = await request(app)
       .post('/api/user/generate')
       .send(genUserData)
@@ -462,7 +463,7 @@ describe('User API', () => {
     await register.save();
 
     // Check that the register index and the user was created
-    passportStub.login(this.moderatorUser.username);
+    passportStub.login(ctx.moderatorUser.username);
     await request(app)
       .post('/api/user/generate')
       .send(genUserData)

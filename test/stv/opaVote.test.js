@@ -1,3 +1,4 @@
+import { describe, test } from 'vitest';
 import chai from 'chai';
 import chaiSubset from 'chai-subset';
 import dataset from './datasets';
@@ -6,7 +7,7 @@ import { prepareElection } from '../helpers';
 chai.use(chaiSubset);
 
 describe('STV OpaVote', () => {
-  it('should calculate the result correctly for the OpaVote dataset', async function () {
+  test('should calculate the result correctly for the OpaVote dataset', async function () {
     const election = await prepareElection(dataset.datasetOpaVote);
     const electionResult = await election.elect();
     electionResult.should.containSubset({

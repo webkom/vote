@@ -1,5 +1,5 @@
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 1,
   type: ElectionTypes.STV,
   useStrict: true,

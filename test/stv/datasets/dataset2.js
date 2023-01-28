@@ -1,6 +1,6 @@
 // Dataset from https://en.wikipedia.org/wiki/Single_transferable_vote
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 3,
   type: ElectionTypes.STV,
   alternatives: ['Orange', 'Pear', 'Chocolate', 'Strawberry', 'Hamburger'],

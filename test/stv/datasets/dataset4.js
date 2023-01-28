@@ -1,6 +1,6 @@
 // Dataset from "Created ourselves"
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 1,
   type: ElectionTypes.STV,
   alternatives: ['Bent Høye', 'Siv Jensen', 'Erna Solberg'],

@@ -1,3 +1,4 @@
+import { describe, test } from 'vitest';
 import chai from 'chai';
 import chaiSubset from 'chai-subset';
 import dataset from './datasets';
@@ -6,7 +7,7 @@ import { prepareElection } from '../helpers';
 chai.use(chaiSubset);
 
 describe('STV Normal Logic', () => {
-  it('should find 2 winners, and resolve for dataset 1', async function () {
+  test('should find 2 winners, and resolve for dataset 1', async function () {
     const election = await prepareElection(dataset.dataset1);
     const electionResult = await election.elect();
 
@@ -53,7 +54,7 @@ describe('STV Normal Logic', () => {
     });
   });
 
-  it('should find 2 winners, but not resolve for dataset 2', async function () {
+  test('should find 2 winners, but not resolve for dataset 2', async function () {
     const election = await prepareElection(dataset.dataset2);
     const electionResult = await election.elect();
 
@@ -150,7 +151,7 @@ describe('STV Normal Logic', () => {
     });
   });
 
-  it('should find 4 winners, but not resolve for dataset 3', async function () {
+  test('should find 4 winners, but not resolve for dataset 3', async function () {
     const election = await prepareElection(dataset.dataset3);
     const electionResult = await election.elect();
 

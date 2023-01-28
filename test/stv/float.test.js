@@ -1,12 +1,14 @@
+import { describe, test } from 'vitest';
 import chai from 'chai';
 import chaiSubset from 'chai-subset';
 import dataset from './datasets';
+import app from '../app';
 import { prepareElection } from '../helpers';
 
 chai.use(chaiSubset);
 
 describe('STV Floating Point Logic', () => {
-  it('should calculate floating points correctly for dataset5', async function () {
+  test('should calculate floating points correctly for dataset5', async function () {
     const election = await prepareElection(dataset.dataset5);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
@@ -81,7 +83,7 @@ describe('STV Floating Point Logic', () => {
     });
   });
 
-  it('should calculate floating points correctly for dataset6', async function () {
+  test('should calculate floating points correctly for dataset6', async function () {
     const election = await prepareElection(dataset.dataset6);
     const electionResult = await election.elect();
     electionResult.should.containSubset({

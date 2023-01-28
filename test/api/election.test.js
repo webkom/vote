@@ -1,3 +1,4 @@
+import { describe, test, beforeAll, beforeEach, afterAll } from 'vitest';
 import passportStub from 'passport-stub';
 import { Types } from 'mongoose';
 import request from 'supertest';
@@ -51,32 +52,32 @@ describe('Election API', () => {
     emit: sinon.stub(),
   };
 
-  before(() => {
+  beforeAll(() => {
     passportStub.install(app);
     app.set('io', ioStub);
   });
 
-  beforeEach(async function () {
+  beforeEach(async function (ctx) {
     passportStub.logout();
     ioStub.emit.reset();
 
-    this.activeElection = await new Election(activeElectionData).save();
-    testAlternative.election = this.activeElection;
-    this.alternative = new Alternative(testAlternative);
-    await this.activeElection.addAlternative(this.alternative);
+    ctx.activeElection = await new Election(activeElectionData).save();
+    testAlternative.election = ctx.activeElection;
+    ctx.alternative = new Alternative(testAlternative);
+    await ctx.activeElection.addAlternative(ctx.alternative);
     const [user, adminUser, moderatorUser] = await createUsers();
-    this.user = user;
-    this.adminUser = adminUser;
-    this.moderatorUser = moderatorUser;
+    ctx.user = user;
+    ctx.adminUser = adminUser;
+    ctx.moderatorUser = moderatorUser;
   });
 
-  after(() => {
+  afterAll(() => {
     passportStub.logout();
     passportStub.uninstall();
   });
 
-  it('should be able to create elections', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to create elections', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/election')
       .send(inactiveElectionData)
@@ -97,8 +98,8 @@ describe('Election API', () => {
     body.hasVotedUsers.should.be.an.instanceof(Array);
   });
 
-  it('should be able to create elections with alternatives', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to create elections with alternatives', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/election')
       .send(electionWithAlternative)
@@ -131,8 +132,8 @@ describe('Election API', () => {
     );
   });
 
-  it('should return 400 when creating elections without required fields', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating elections without required fields', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .expect(400)
@@ -144,8 +145,8 @@ describe('Election API', () => {
     error.errors.title.kind.should.equal('required');
   });
 
-  it('should be able to create elections with one seat', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to create elections with one seat', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/election')
       .send({
@@ -162,8 +163,8 @@ describe('Election API', () => {
     body.active.should.equal(false);
   });
 
-  it('should be able to create elections with two seats', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to create elections with two seats', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/election')
       .send({
@@ -180,8 +181,8 @@ describe('Election API', () => {
     body.active.should.equal(false);
   });
 
-  it('should return 400 when creating elections with zero seats', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating elections with zero seats', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .send({
@@ -200,8 +201,8 @@ describe('Election API', () => {
     error.status.should.equal(400);
   });
 
-  it('should return 400 when creating elections with negative seats', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating elections with negative seats', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .send({
@@ -220,8 +221,8 @@ describe('Election API', () => {
     error.status.should.equal(400);
   });
 
-  it('should be able to create strict elections with one seat', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to create strict elections with one seat', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .post('/api/election')
       .send({
@@ -239,8 +240,8 @@ describe('Election API', () => {
     body.active.should.equal(false);
   });
 
-  it('should return 400 when creating strict elections with more then one seat', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating strict elections with more then one seat', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .send({
@@ -260,8 +261,8 @@ describe('Election API', () => {
     error.status.should.equal(400);
   });
 
-  it('should return 400 when creating normal elections with more then one seat', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating normal elections with more then one seat', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .send({
@@ -281,8 +282,8 @@ describe('Election API', () => {
     error.status.should.equal(400);
   });
 
-  it('should return 400 when creating strict elections with less then one seat', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should return 400 when creating strict elections with less then one seat', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
       .post('/api/election')
       .send({
@@ -301,86 +302,86 @@ describe('Election API', () => {
     error.status.should.equal(400);
   });
 
-  it('should not be possible to create elections as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to create elections as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('post', '/api/election');
   });
 
-  it('should not be possible to create elections as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to create elections as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await testAdminResource('post', '/api/election');
   });
 
-  it('should be able to get all elections as admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to get all elections as admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
       .get('/api/election')
       .expect(200)
       .expect('Content-Type', /json/);
 
     body[0].title.should.equal(
-      this.activeElection.title,
+      ctx.activeElection.title,
       'db election title hash should be the same as api result'
     );
 
     body[0].description.should.equal(
-      this.activeElection.description,
+      ctx.activeElection.description,
       'db election description hash should be the same as api result'
     );
 
     body[0]._id.should.equal(
-      this.activeElection.id,
+      ctx.activeElection.id,
       'db election id hash should be the same as api result'
     );
   });
 
-  it('should not be possible to get elections as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to get elections as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('get', '/api/election');
   });
 
-  it('should not be possible to get elections as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to get elections as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await testAdminResource('get', '/api/election');
   });
 
-  it('should be able to get an election and its alternatives as admin', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to get an election and its alternatives as admin', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
-      .get(`/api/election/${this.activeElection.id}`)
+      .get(`/api/election/${ctx.activeElection.id}`)
       .expect(200)
       .expect('Content-Type', /json/);
 
-    body.title.should.equal(this.activeElection.title);
-    body.description.should.equal(this.activeElection.description);
+    body.title.should.equal(ctx.activeElection.title);
+    body.description.should.equal(ctx.activeElection.description);
     body.active.should.equal(true);
     body.alternatives.length.should.equal(1);
-    body.alternatives[0]._id.should.equal(this.alternative.id);
+    body.alternatives[0]._id.should.equal(ctx.alternative.id);
   });
 
-  it('should not be possible to retrieve alternatives as normal user', async function () {
-    passportStub.login(this.user.username);
-    await testAdminResource('get', `/api/election/${this.activeElection.id}`);
+  test('should not be possible to retrieve alternatives as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
+    await testAdminResource('get', `/api/election/${ctx.activeElection.id}`);
   });
 
-  it('should not be possible to retrieve alternatives as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
-    await testAdminResource('get', `/api/election/${this.activeElection.id}`);
+  test('should not be possible to retrieve alternatives as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
+    await testAdminResource('get', `/api/election/${ctx.activeElection.id}`);
   });
 
-  it('should get 404 for missing elections', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 for missing elections', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
     await test404('get', `/api/election/${badId}`, 'election');
   });
 
-  it('should get 404 when retrieving alternatives with an invalid ObjectId', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when retrieving alternatives with an invalid ObjectId', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await test404('get', '/api/election/badelection', 'election');
   });
 
-  it('should not be possible to have two activate elections', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should not be possible to have two activate elections', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     // There is by default an active election on the database
     const election = await Election.create(inactiveElectionData);
     await request(app)
@@ -390,12 +391,12 @@ describe('Election API', () => {
     ioStub.emit.should.not.have.been.calledWith('election');
   });
 
-  it('should be possible to activate an election', async function () {
+  test('should be possible to activate an election', async function (ctx) {
     // Deactivate the one default elections
-    this.activeElection.active = false;
-    this.activeElection.save();
+    ctx.activeElection.active = false;
+    ctx.activeElection.save();
 
-    passportStub.login(this.adminUser.username);
+    passportStub.login(ctx.adminUser.username);
 
     const election = await Election.create(inactiveElectionData);
     const { body } = await request(app)
@@ -408,87 +409,87 @@ describe('Election API', () => {
     body.active.should.equal(true, 'db election should be active');
   });
 
-  it('should get 404 when activating a missing election', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when activating a missing election', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
     await test404('post', `/api/election/${badId}/activate`, 'election');
   });
 
-  it('should get 404 when activating an election with an invalid ObjectId', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when activating an election with an invalid ObjectId', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await test404('post', '/api/election/badid/activate', 'election');
   });
 
-  it('should not be possible to activate elections as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to activate elections as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource(
       'post',
-      `/api/election/${this.activeElection.id}/activate`
+      `/api/election/${ctx.activeElection.id}/activate`
     );
   });
 
-  it('should not be possible to activate elections as moderator', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to activate elections as moderator', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource(
       'post',
-      `/api/election/${this.activeElection.id}/activate`
+      `/api/election/${ctx.activeElection.id}/activate`
     );
   });
 
-  it('should be able to deactivate an election', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be able to deactivate an election', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body } = await request(app)
-      .post(`/api/election/${this.activeElection.id}/deactivate`)
+      .post(`/api/election/${ctx.activeElection.id}/deactivate`)
       .expect(200)
       .expect('Content-Type', /json/);
     ioStub.emit.should.have.been.called;
     body.active.should.equal(false, 'db election should not be active');
   });
 
-  it('should get 404 when deactivating a missing election', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when deactivating a missing election', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
     await test404('post', `/api/election/${badId}/deactivate`, 'election');
   });
 
-  it('should get 404 when deactivating an election with an invalid ObjectId', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when deactivating an election with an invalid ObjectId', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await test404('post', '/api/election/badid/deactivate', 'election');
   });
 
-  it('should not be possible to deactivate elections as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to deactivate elections as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource(
       'post',
-      `/api/election/${this.activeElection.id}/deactivate`
+      `/api/election/${ctx.activeElection.id}/deactivate`
     );
   });
 
-  it('should not be possible to deactivate elections as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to deactivate elections as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await testAdminResource(
       'post',
-      `/api/election/${this.activeElection.id}/deactivate`
+      `/api/election/${ctx.activeElection.id}/deactivate`
     );
   });
 
-  it('should be possible to delete elections', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be possible to delete elections', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
     const vote = new Vote({
-      priorities: [this.alternative],
-      election: this.activeElection,
-      hash: 'thisisahash',
+      priorities: [ctx.alternative],
+      election: ctx.activeElection,
+      hash: 'ctxisahash',
     });
 
-    this.activeElection.active = false;
+    ctx.activeElection.active = false;
 
     await vote.save();
-    this.activeElection.votes = [vote];
-    await this.activeElection.save();
+    ctx.activeElection.votes = [vote];
+    await ctx.activeElection.save();
 
     const { body } = await request(app)
-      .delete(`/api/election/${this.activeElection.id}`)
+      .delete(`/api/election/${ctx.activeElection.id}`)
       .expect(200)
       .expect('Content-Type', /json/);
 
@@ -504,10 +505,10 @@ describe('Election API', () => {
     votes.length.should.equal(0);
   });
 
-  it('should not be possible to delete active elections', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should not be possible to delete active elections', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const { body: error } = await request(app)
-      .delete(`/api/election/${this.activeElection.id}`)
+      .delete(`/api/election/${ctx.activeElection.id}`)
       .expect(400)
       .expect('Content-Type', /json/);
 
@@ -515,112 +516,112 @@ describe('Election API', () => {
     error.message.should.equal('Cannot delete an active election.');
   });
 
-  it('should not be possible to delete elections as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to delete elections as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource('delete', '/api/election/badid');
   });
 
-  it('should not be possible to delete elections as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to delete elections as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await testAdminResource('delete', '/api/election/badid');
   });
 
-  it('should get 404 when deleting elections with invalid ObjectIds', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when deleting elections with invalid ObjectIds', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await test404('delete', '/api/election/badid', 'election');
   });
 
-  it('should get 404 when deleting elections with nonexistent ObjectIds', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when deleting elections with nonexistent ObjectIds', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
     await test404('delete', `/api/election/${badId}`, 'election');
   });
 
-  it('should be possible to retrieve active elections for active user', async function () {
-    passportStub.login(this.user.username);
+  test('should be possible to retrieve active elections for active user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     const { body } = await request(app)
       .get('/api/election/active')
       .expect(200)
       .expect('Content-Type', /json/);
 
-    body.title.should.equal(this.activeElection.title);
-    body.description.should.equal(this.activeElection.description);
-    body.alternatives[0].description.should.equal(this.alternative.description);
+    body.title.should.equal(ctx.activeElection.title);
+    body.description.should.equal(ctx.activeElection.description);
+    body.alternatives[0].description.should.equal(ctx.alternative.description);
     should.not.exist(body.hasVotedUsers);
   });
 
-  it('should not be possible to retrieve active elections for inactive user', async function () {
-    this.user.active = false;
-    await this.user.save();
-    passportStub.login(this.user.username);
+  test('should not be possible to retrieve active elections for inactive user', async function (ctx) {
+    ctx.user.active = false;
+    await ctx.user.save();
+    passportStub.login(ctx.user.username);
     await request(app).get('/api/election/active').expect(403);
   });
 
-  it('should be possible to retrieve active elections for inactive users with the correct accesscode', async function () {
-    this.user.active = false;
-    await this.user.save();
-    passportStub.login(this.user.username);
+  test('should be possible to retrieve active elections for inactive users with the correct accesscode', async function (ctx) {
+    ctx.user.active = false;
+    await ctx.user.save();
+    passportStub.login(ctx.user.username);
     const { body } = await request(app)
       .get('/api/election/active?accessCode=1234')
       .expect(200)
       .expect('Content-Type', /json/);
 
-    body.title.should.equal(this.activeElection.title);
-    body.description.should.equal(this.activeElection.description);
-    body.alternatives[0].description.should.equal(this.alternative.description);
+    body.title.should.equal(ctx.activeElection.title);
+    body.description.should.equal(ctx.activeElection.description);
+    body.alternatives[0].description.should.equal(ctx.alternative.description);
     should.not.exist(body.hasVotedUsers);
   });
 
-  it('should not be possible to retrieve active elections for inactive users with wrong accesscode', async function () {
-    this.user.active = false;
-    await this.user.save();
-    passportStub.login(this.user.username);
+  test('should not be possible to retrieve active elections for inactive users with wrong accesscode', async function (ctx) {
+    ctx.user.active = false;
+    await ctx.user.save();
+    passportStub.login(ctx.user.username);
     await request(app).get('/api/election/active?accessCode=1235').expect(403);
   });
 
-  it('should filter out elections the user has voted on', async function () {
-    passportStub.login(this.user.username);
-    this.activeElection.hasVotedUsers.push(this.user._id);
+  test('should filter out elections the user has voted on', async function (ctx) {
+    passportStub.login(ctx.user.username);
+    ctx.activeElection.hasVotedUsers.push(ctx.user._id);
 
-    await this.activeElection.save();
+    await ctx.activeElection.save();
     await request(app).get('/api/election/active').expect(404);
   });
 
-  it('should be possible to list the number of users that have voted', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should be possible to list the number of users that have voted', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
 
-    await this.activeElection.addVote(this.user, [this.alternative]);
+    await ctx.activeElection.addVote(ctx.user, [ctx.alternative]);
     const { body } = await request(app)
-      .get(`/api/election/${this.activeElection.id}/count`)
+      .get(`/api/election/${ctx.activeElection.id}/count`)
       .expect(200)
       .expect('Content-Type', /json/);
 
     body.users.should.equal(1);
   });
 
-  it('should not be possible to count voted users as normal user', async function () {
-    passportStub.login(this.user.username);
+  test('should not be possible to count voted users as normal user', async function (ctx) {
+    passportStub.login(ctx.user.username);
     await testAdminResource(
       'get',
-      `/api/election/${this.activeElection.id}/count`
+      `/api/election/${ctx.activeElection.id}/count`
     );
   });
 
-  it('should not be possible to count voted users as moderator', async function () {
-    passportStub.login(this.moderatorUser.username);
+  test('should not be possible to count voted users as moderator', async function (ctx) {
+    passportStub.login(ctx.moderatorUser.username);
     await testAdminResource(
       'get',
-      `/api/election/${this.activeElection.id}/count`
+      `/api/election/${ctx.activeElection.id}/count`
     );
   });
 
-  it('should get 404 when counting votes for elections with invalid ObjectIds', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when counting votes for elections with invalid ObjectIds', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     await test404('get', '/api/election/badid/count', 'election');
   });
 
-  it('should get 404 when counting votes for elections with nonexistent ObjectIds', async function () {
-    passportStub.login(this.adminUser.username);
+  test('should get 404 when counting votes for elections with nonexistent ObjectIds', async function (ctx) {
+    passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
     await test404('get', `/api/election/${badId}/count`, 'election');
   });

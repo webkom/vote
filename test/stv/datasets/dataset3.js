@@ -1,6 +1,6 @@
 // Dataset from https://www.iiconsortium.org/Single_Transferable_Vote.pdf
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 5,
   type: ElectionTypes.STV,
   alternatives: [

@@ -1,3 +1,4 @@
+import { describe, test, beforeEach } from 'vitest';
 import request from 'supertest';
 import mongoose from 'mongoose';
 import chai from 'chai';
@@ -36,7 +37,7 @@ describe('Auth API', () => {
     ]);
   });
 
-  it('should be able to authenticate users', async () => {
+  test('should be able to authenticate users', async () => {
     const { header } = await request(app)
       .post('/auth/login')
       .send(testUser)
@@ -45,7 +46,7 @@ describe('Auth API', () => {
     header.location.should.equal('/');
   });
 
-  it('should make sure usernames are case-insensitive', async () => {
+  test('should make sure usernames are case-insensitive', async () => {
     const newUser = Object.assign(testUser, {
       username: testUser.username.toUpperCase(),
     });
@@ -58,7 +59,7 @@ describe('Auth API', () => {
     header.location.should.equal('/');
   });
 
-  it('should strip spaces on login', async () => {
+  test('should strip spaces on login', async () => {
     const { header } = await request(app)
       .post('/auth/login')
       .send({
@@ -70,7 +71,7 @@ describe('Auth API', () => {
     header.location.should.equal('/');
   });
 
-  it('should redirect to login with flash on bad auth', async () => {
+  test('should redirect to login with flash on bad auth', async () => {
     const agent = request.agent(app);
     const { header } = await agent
       .post('/auth/login')
@@ -85,7 +86,7 @@ describe('Auth API', () => {
     text.should.include('Brukernavn og/eller passord er feil.');
   });
 
-  it('should be possible to logout', (done) => {
+  test('should be possible to logout', (done) => {
     const sessions = mongoose.connection.db.collection('sessions');
 
     function checkSessions(err, res) {
@@ -116,7 +117,7 @@ describe('Auth API', () => {
     sessions.deleteMany({}, {}, login);
   });
 
-  it('should redirect from / to /admin for admins', async () => {
+  test('should redirect from / to /admin for admins', async () => {
     passportStub.install(app);
     passportStub.login(adminUser.username);
 

@@ -1,8 +1,9 @@
+import { describe, test } from 'vitest';
 import dataset from './datasets';
 import { prepareElection } from '../helpers';
 
 describe('Normal Blank Logic', () => {
-  it('should not resolve for the election in dataset 1', async function () {
+  test('should not resolve for the election in dataset 1', async function () {
     const election = await prepareElection(dataset.dataset1);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
@@ -24,7 +25,7 @@ describe('Normal Blank Logic', () => {
     });
   });
 
-  it('should resolve for the election in dataset 2', async function () {
+  test('should resolve for the election in dataset 2', async function () {
     const election = await prepareElection(dataset.dataset2);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
@@ -45,7 +46,7 @@ describe('Normal Blank Logic', () => {
     });
   });
 
-  it('should return the number of blank votes on 0 blank votes', async function () {
+  test('should return the number of blank votes on 0 blank votes', async function () {
     const election = await prepareElection(dataset.dataset3);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
