@@ -61,8 +61,9 @@ module.exports = [
   '$window',
   '$location',
   '$rootScope',
+  '$timeout',
   'alertService',
-  function ($window, $location, $rootScope, alertService) {
+  function ($window, $location, $rootScope, $timeout, alertService) {
     $rootScope.$on('$routeChangeStart', function () {
       alertService.closeAll();
       angular.element($window).unbind('message');
@@ -117,7 +118,7 @@ Usage: scanCard(123) // where 123 is the cardId `);
               };
             }
           } catch (e) {
-            $rootScope.$apply(() => {
+            $timeout(() => {
               $location.path('/moderator/serial_error');
               console.error(e);
             });
