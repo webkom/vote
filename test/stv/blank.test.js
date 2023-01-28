@@ -1,7 +1,6 @@
 import { describe, test } from 'vitest';
 import dataset from './datasets';
 import { prepareElection } from '../helpers';
-import app from '../app';
 
 describe('STV Blank Logic', () => {
   test('should not resolve for the election in dataset 11 with blank votes', async function () {

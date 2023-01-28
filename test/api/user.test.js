@@ -211,7 +211,7 @@ describe('User API', () => {
 
   test('should get 404 when toggeling active users with invalid cardKey', async function (ctx) {
     passportStub.login(ctx.adminUser.username);
-    test404('post', '/api/user/LELELENEET/toggle_active', 'user');
+    await test404('post', '/api/user/LELELENEET/toggle_active', 'user');
   });
 
   test('should be possible to count all active users', async function (ctx) {

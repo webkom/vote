@@ -4,6 +4,8 @@ export default defineConfig({
   test: {
     setupFiles: ['./test/setup.js'],
     globalSetup: ['./test/cleanup.js'],
-    testTimeout: 20000,
+    // Our test setup is not thread safe atm
+    maxThreads: 1,
+    minThreads: 1
   },
 });

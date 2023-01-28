@@ -538,13 +538,13 @@ describe('Vote API', () => {
 
   test('should get 404 when summing votes for invalid electionIds', async function (ctx) {
     passportStub.login(ctx.adminUser.username);
-    test404('get', '/api/election/badid/votes', 'election');
+    await test404('get', '/api/election/badid/votes', 'election');
   });
 
   test('should get 404 when summing votes for nonexistent electionIds', async function (ctx) {
     passportStub.login(ctx.adminUser.username);
     const badId = new ObjectId();
-    test404('get', `/api/election/${badId}/votes`, 'election');
+    await test404('get', `/api/election/${badId}/votes`, 'election');
   });
 
   test('should return 403 when admins try to vote', async function (ctx) {
