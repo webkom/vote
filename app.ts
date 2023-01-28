@@ -37,9 +37,10 @@ app.set('mongourl', env.MONGO_URL);
 mongoose.set('strictQuery', true);
 mongoose.connect(app.get('mongourl'));
 
-raven.config(env.RAVEN_DSN).install();
-
-app.use(raven.requestHandler());
+if (env.NODE_ENV == 'production') {
+  raven.config(env.RAVEN_DSN).install();
+  app.use(raven.requestHandler());
+}
 
 if (['development', 'protractor'].includes(env.NODE_ENV)) {
   const webpack = await import('webpack');
@@ -123,6 +124,7 @@ passport.deserializeUser<string>(async (username, cb) => {
 app.use('/', router);
 
 if (env.NODE_ENV === 'production') {
+  // eslint-disable-next-line
   // @ts-ignore
   const { handler } = await import('./build/handler');
   app.use(handler);

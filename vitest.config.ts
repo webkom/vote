@@ -6,6 +6,6 @@ export default defineConfig({
     globalSetup: ['./test/cleanup.js'],
     // Our test setup is not thread safe atm
     maxThreads: 1,
-    minThreads: 1
+    minThreads: 1,
   },
 });

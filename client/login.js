@@ -1,8 +1,6 @@
 import QrScanner from 'qr-scanner';
 import QRCode from 'qrcode';
-QrScannerWorkerPath = import(
-  '!!file-loader!qr-scanner/qr-scanner-worker.min.js'
-);
+import QrScannerWorkerPath from '!!file-loader!qr-scanner/qr-scanner-worker.min.js';
 QrScanner.WORKER_PATH = QrScannerWorkerPath;
 
 if ('addEventListener' in document) {

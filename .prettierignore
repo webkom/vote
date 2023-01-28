@@ -4,3 +4,5 @@ node_modules
 dist
 public
 app/algorithms/*.js
+.svelte-kit
+build

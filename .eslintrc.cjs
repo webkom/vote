@@ -1,7 +1,7 @@
 module.exports = {
   extends: ['eslint:recommended', 'prettier'],
   parser: 'babel-eslint',
-  plugins: ['svelte3', '@typescript-eslint']
+  plugins: ['svelte3', '@typescript-eslint'],
   parserOptions: {
     ecmaVersion: 2021,
     sourceType: 'module',
@@ -27,7 +27,6 @@ module.exports = {
   },
   env: {
     es6: true,
-    mocha: true,
     node: true,
     protractor: true,
     browser: true,
@@ -46,7 +45,7 @@ module.exports = {
     },
     {
       files: ['*.svelte'],
-      processor: 'svelte3/svelte3'
-    }
+      processor: 'svelte3/svelte3',
+    },
   ],
 };

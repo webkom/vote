@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
-import { VitePluginNode } from 'vite-plugin-node';
+import { VitePluginNode as vitePluginNode } from 'vite-plugin-node';
 import yaml from '@rollup/plugin-yaml';
 
 export default defineConfig({
@@ -10,7 +10,7 @@ export default defineConfig({
     target: 'esnext',
   },
   plugins: [
-    ...VitePluginNode({
+    ...vitePluginNode({
       adapter: 'express',
       appPath: './server.ts',
       tsCompiler: 'esbuild',
