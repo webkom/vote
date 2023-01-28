@@ -1,4 +1,4 @@
-const deactivate = new Audio(import('../../public/deactivate.mp3'));
+const deactivate = new Audio(require('../../public/deactivate.mp3').default);
 
 module.exports = [
   '$scope',

@@ -1,5 +1,5 @@
-const ding = new Audio(require('../../public/ding.mp3'));
-const error = new Audio(require('../../public/error.mp3'));
+const ding = new Audio(require('../../public/ding.mp3').default);
+const error = new Audio(require('../../public/error.mp3').default);
 
 module.exports = [
   '$scope',
