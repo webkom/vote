@@ -97,14 +97,14 @@ export const mailHandler = async (
       replacements = {
         ...replacements,
         new: true,
-        title: 'Velkommen til GenVORS!',
+        title: 'Velkommen til Genfors!',
       };
       break;
     case 'send':
       replacements = {
         ...replacements,
         new: true,
-        title: 'Velkommen til GenVORS!',
+        title: 'Velkommen til Genfors!',
       };
       break;
   }
