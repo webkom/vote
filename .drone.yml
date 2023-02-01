@@ -64,26 +64,34 @@ steps:
       - yarn build
       - yarn build:cli
 
-  - name: protractor
-    image: circleci/node:16-browsers
-    # We run as root, because the docker daemon
-    # no-new-priviliges flag
-    # prohibits us from running sudo
-    user: root
+  - name: server
+    image: node:16-alpine
+    detach: true
     when:
       event:
         - push
     depends_on:
       - build
     commands:
-      # This image runs with a custom user (circleci)by default,
-      # and chrome headless doesn't work for the root user.
-      # --> Fix some file permissions before start
-      - mkdir -p /root/.config/yarn/
-      - chown -R circleci:circleci .
-      - chown -R circleci:circleci /root/
-      - su circleci
-      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
+      - yarn start
+    environment:
+      NODE_ENV: test
+      MONGO_URL: mongodb://mongodb:27017/vote-test
+      REDIS_URL: redis
+      HOST: 0.0.0.0
+
+  - name: playwright
+    image: mcr.microsoft.com/playwright:v1.30.0-focal
+    when:
+      event:
+        - push
+    depends_on:
+      - build
+    commands:
+      - ./wait-for-it.sh server:3000 -t 30
+      - yarn playwright test
+    environment:
+      BASE_URL: http://server:3000
 
   - name: docker
     image: plugins/docker
@@ -95,7 +103,7 @@ steps:
     depends_on:
       - lint
       - test
-      - protractor
+      - playwright
       - build
     settings:
       repo: abakus/vote
@@ -141,4 +149,4 @@ services:
 
 ---
 kind: signature
-hmac: 41115354b31bee4371da29a3f4af4204b5a405339af13d1e3b5acb8913ed0497
+hmac: de4f6c10d05a6d14bbd096067143a17bd6a545411b9f2582123e3192260861e1

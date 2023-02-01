@@ -13,7 +13,6 @@
     "build:client": "vite build -c vite.client.ts",
     "build:client-old": "yarn webpack --config webpack.config.js --mode production",
     "build:cli": "yarn webpack --config webpack.cli.js",
-    "test": "yarn lint && yarn test:unit && yarn protractor",
     "db:reset": "node --no-deprecation test/scripts/db_reset.js",
     "db:seed": "node --no-deprecation test/scripts/db_seed.js",
     "lint": "yarn lint:eslint && yarn lint:prettier && yarn lint:svelte && yarn lint:yaml",
@@ -22,9 +21,8 @@
     "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
     "lint:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig-svelte.json",
     "prettier": "prettier '**/*.{js,ts,pug,svelte}' --write",
-    "test:unit": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} vitest run",
-    "coverage": "yarn test:unit --coverage",
-    "protractor": "webdriver-manager update --standalone false --versions.chrome 109.0.5414.119 && NODE_ENV=protractor MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} protractor ./features/protractor-conf.cjs",
+    "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} vitest run",
+    "coverage": "yarn test --coverage",
     "postinstall": "yarn build:cli"
   },
   "prettier": {
@@ -89,6 +87,7 @@
     "@babel/register": "^7.7.4",
     "@babel/runtime": "7.15.4",
     "@cucumber/cucumber": "^8.2.0",
+    "@playwright/test": "1.30.0",
     "@prettier/plugin-pug": "1.10.1",
     "@rollup/plugin-yaml": "4.0.1",
     "@sveltejs/adapter-node": "1.1.4",

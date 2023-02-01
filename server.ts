@@ -6,7 +6,9 @@ app.set('port', env.PORT);
 
 const hostname = env.HOST;
 if (import.meta.env.PROD) {
-  const server = app.listen(app.get('port'), hostname);
+  const server = app.listen(app.get('port'), hostname, () => {
+    console.info(`Server listening on port ${app.get('port')}`);
+  });
   app.set('io', new Server(server));
 }
 
