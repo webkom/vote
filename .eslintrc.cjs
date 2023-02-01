@@ -25,6 +25,9 @@ module.exports = {
       },
     ],
   },
+  settings: {
+    'svelte3/typescript': () => require('typescript')
+  },
   env: {
     es6: true,
     node: true,
