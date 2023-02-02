@@ -1,5 +1,5 @@
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   type: ElectionTypes.STV,
   alternatives: ['Bytte', 'Fjerne'],
   useStrict: true,

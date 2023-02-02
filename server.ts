@@ -4,10 +4,12 @@ import env from './env';
 
 app.set('port', env.PORT);
 
-export default (callback: (err: Error, port: number) => void): void => {
-  const hostname = env.HOST;
+const hostname = env.HOST;
+if (import.meta.env.PROD) {
   const server = app.listen(app.get('port'), hostname, () => {
-    callback(undefined, app.get('port'));
+    console.info(`Server listening on port ${app.get('port')}`);
   });
   app.set('io', new Server(server));
-};
+}
+
+export const viteNodeApp = app;

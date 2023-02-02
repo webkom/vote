@@ -1,6 +1,6 @@
 // Dataset from https://en.wikipedia.org/wiki/Droop_quota
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 2,
   type: ElectionTypes.STV,
   alternatives: ['Andrea', 'Carter', 'Brad'],

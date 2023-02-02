@@ -41,3 +41,6 @@ public/main.css
 screenshots
 *.mp4
 client_secret.json
+
+build
+.svelte-kit

@@ -1,6 +1,6 @@
 // Dataset created to show floating point errors
 import { ElectionSystems as ElectionTypes } from '../../../app/types/types';
-module.exports = {
+export default {
   seats: 2,
   type: ElectionTypes.STV,
   alternatives: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],

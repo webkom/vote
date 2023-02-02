@@ -1,14 +1,14 @@
 #!/usr/bin/env sh
 set -eu
 
-SCRIPT="./dist/users.js"
+SCRIPT="./dist/users.cjs"
 
 if [ ! -f $SCRIPT ]; then
 	echo "$SCRIPT does not exist"
 	echo "The compiler needs to be run in order to generate the user script"
 	echo ""
 	echo "run:"
-	echo "    \`yarn build\`"
+	echo "    \`yarn build:cli\`"
 	echo ""
 	echo "in order to run this script"
 	exit 1

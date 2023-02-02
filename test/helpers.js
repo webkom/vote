@@ -9,8 +9,8 @@ import crypto from 'crypto';
 export const dropDatabase = () =>
   mongoose.connection.dropDatabase().then(() => mongoose.disconnect());
 
-export const clearCollections = () => {
-  return Promise.all(
+export const clearCollections = async () => {
+  await Promise.all(
     [Alternative, Register, Election, Vote, User].map((collection) =>
       collection.deleteMany({})
     )

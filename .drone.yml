@@ -10,7 +10,7 @@ steps:
       event:
         - push
     commands:
-      - yarn install --frozen-lockfile --ignore-scripts
+      - yarn install --frozen-lockfile
 
   - name: lint
     image: node:16-alpine
@@ -30,23 +30,26 @@ steps:
     depends_on:
       - setup
     commands:
-      - MONGO_URL=mongodb://mongodb:27017/vote-test REDIS_URL=redis yarn mocha
-
-  - name: coverage
-    image: node:16-alpine
-    when:
-      event:
-        - push
-    depends_on:
-      - test
-    commands:
       - yarn coverage
     environment:
-      COVERALLS_REPO_TOKEN:
-        from_secret: coveralls_token
-      COVERALLS_SERVICE_NAME: drone
-      COVERALLS_GIT_BRANCH: ${DRONE_BRANCH}
-      COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
+      MONGO_URL: mongodb://mongodb:27017/vote-test
+      REDIS_URL: redis
+
+  # - name: coverage
+  #   image: node:16-alpine
+  #   when:
+  #     event:
+  #       - push
+  #   depends_on:
+  #     - test
+  #   commands:
+  #     -
+  #   environment:
+  #     COVERALLS_REPO_TOKEN:
+  #       from_secret: coveralls_token
+  #     COVERALLS_SERVICE_NAME: drone
+  #     COVERALLS_GIT_BRANCH: ${DRONE_BRANCH}
+  #     COVERALLS_SERVICE_NUMBER: ${DRONE_BUILD_NUMBER}
 
   - name: build
     image: node:16-alpine
@@ -59,27 +62,36 @@ steps:
       - setup
     commands:
       - yarn build
+      - yarn build:cli
 
-  - name: protractor
-    image: circleci/node:16-browsers
-    # We run as root, because the docker daemon
-    # no-new-priviliges flag
-    # prohibits us from running sudo
-    user: root
+  - name: server
+    image: node:16-alpine
+    detach: true
     when:
       event:
         - push
     depends_on:
       - build
     commands:
-      # This image runs with a custom user (circleci)by default,
-      # and chrome headless doesn't work for the root user.
-      # --> Fix some file permissions before start
-      - mkdir -p /root/.config/yarn/
-      - chown -R circleci:circleci .
-      - chown -R circleci:circleci /root/
-      - su circleci
-      - MONGO_URL=mongodb://mongodb:27017/vote-integration-test REDIS_URL=redis HEADLESS=true yarn protractor
+      - yarn start
+    environment:
+      NODE_ENV: test
+      MONGO_URL: mongodb://mongodb:27017/vote-test
+      REDIS_URL: redis
+      HOST: 0.0.0.0
+
+  - name: playwright
+    image: mcr.microsoft.com/playwright:v1.30.0-focal
+    when:
+      event:
+        - push
+    depends_on:
+      - build
+    commands:
+      - ./wait-for-it.sh server:3000 -t 30
+      - yarn playwright test
+    environment:
+      BASE_URL: http://server:3000
 
   - name: docker
     image: plugins/docker
@@ -91,7 +103,7 @@ steps:
     depends_on:
       - lint
       - test
-      - protractor
+      - playwright
       - build
     settings:
       repo: abakus/vote
@@ -137,4 +149,4 @@ services:
 
 ---
 kind: signature
-hmac: 1ec26cb4fae5d5b6f779d65ff5bd4dd4063ec3770e5527ef8c3447e0c700c9f8
+hmac: de4f6c10d05a6d14bbd096067143a17bd6a545411b9f2582123e3192260861e1

@@ -1,8 +1,9 @@
+import { describe, test } from 'vitest';
 import dataset from './datasets';
 import { prepareElection } from '../helpers';
 
 describe('Strict Logic', () => {
-  it('should not resolve for the strict election in dataset 7', async function () {
+  test('should not resolve for the strict election in dataset 7', async function () {
     const election = await prepareElection(dataset.dataset7);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
@@ -23,7 +24,7 @@ describe('Strict Logic', () => {
     });
   });
 
-  it('should resolve for the strict election in dataset 8', async function () {
+  test('should resolve for the strict election in dataset 8', async function () {
     const election = await prepareElection(dataset.dataset8);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
@@ -44,7 +45,7 @@ describe('Strict Logic', () => {
     });
   });
 
-  it('should not resolve for the clone strict election in dataset 9', async function () {
+  test('should not resolve for the clone strict election in dataset 9', async function () {
     const election = await prepareElection(dataset.dataset9);
     const electionResult = await election.elect();
     electionResult.should.containSubset({
