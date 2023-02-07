@@ -19,7 +19,7 @@
     "lint:eslint": "eslint . --ignore-path .gitignore --ignore-pattern 'app/algorithms/*.js'",
     "lint:prettier": "prettier '**/*.{js,ts,pug,svelte}' --list-different",
     "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
-    "lint:svelte": "svelte-kit sync && svelte-check --tsconfig ./tsconfig-svelte.json",
+    "lint:svelte": "svelte-kit sync && svelte-check",
     "prettier": "prettier '**/*.{js,ts,pug,svelte}' --write",
     "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} vitest run",
     "coverage": "yarn test --coverage",

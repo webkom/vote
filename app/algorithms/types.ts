@@ -1,4 +1,4 @@
-import { STVEvent } from './stv';
+import type { STVEvent } from './stv';
 
 export type Count = { [key: string]: number };
 

@@ -5,6 +5,7 @@ import env from './env';
 app.set('port', env.PORT);
 
 const hostname = env.HOST;
+let server;
 if (import.meta.env.PROD) {
   const server = app.listen(app.get('port'), hostname, () => {
     console.info(`Server listening on port ${app.get('port')}`);
@@ -13,3 +14,5 @@ if (import.meta.env.PROD) {
 }
 
 export const viteNodeApp = app;
+
+export default server;

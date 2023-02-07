@@ -1,7 +1,7 @@
 import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import app from '../../../app';
-import { Server } from 'socket.io';
+import type { Server } from 'socket.io';
 
 // Notify moderator that user successfully has scanned qr
 router.get('/open/', (req, res) => {

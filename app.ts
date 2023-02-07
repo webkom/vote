@@ -1,4 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
@@ -13,7 +14,7 @@ import raven from 'raven';
 import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
-import { HTTPError } from './app/errors';
+import type { HTTPError } from './app/errors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
