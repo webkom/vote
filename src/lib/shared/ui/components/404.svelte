@@ -1,0 +1,3 @@
+<div class="jumbotron center text-center">
+  <p>Siden du har prøvd å nå finnes ikke!</p>
+</div>
