@@ -1,8 +1,6 @@
 # vote [![DroneCI](https://ci.webkom.dev/api/badges/webkom/vote/status.svg?branch=master)](https://ci.webkom.dev/webkom/vote) [![Coverage Status](https://coveralls.io/repos/github/webkom/vote/badge.svg?branch=master)](https://coveralls.io/github/webkom/vote?branch=master) [![Libraries.io dependency status for GitHub repo](https://img.shields.io/librariesio/github/webkom/vote)](https://libraries.io/github/webkom/vote#dependencies) ![GitHub](https://img.shields.io/github/license/webkom/vote)
 
-> Digital voting system for Abakus' generral assembly
-
-Irrelevant [blog post](http://webkom.abakus.no/vote/)
+> Digital voting system for Abakus' general assembly
 
 ![vote](https://i.imgur.com/DIMAJfj.png)
 
@@ -19,7 +17,9 @@ $ yarn && yarn start
 
 ## Usage
 
-#### Users
+The following docs outline the technical usage, if you've got someone else to set it up for you and are looking for how to interact with the GUI, check out [HOWTO.md](./HOWTO.md) (in norwegian).
+
+### Users
 
 Initially you will need to create a moderator and or admin user in order to login
 
@@ -28,7 +28,7 @@ Initially you will need to create a moderator and or admin user in order to logi
 $ ./bin/users create-user <username> <cardKey>
 ```
 
-#### Card-readers
+### Card-readers
 
 vote uses a RFID-reader to register and activate/deactivate users. This is done to make sure that only people that are at the location can vote. The RFID-reader needs to be connected to the computer that is logged in to the moderator panel. See section about using the card reader further down this readme.
 
