@@ -1,5 +1,6 @@
 <script lang="ts">
   import logo from '$lib/assets/Abakule.jpg';
+  import NavBar from '$lib/NavBar.svelte';
 
   let showLogout = true;
 </script>
@@ -13,10 +14,15 @@
         <img src={logo} alt="abakus logo " /><span>vote</span>
       </div>
     </div>
-    <div class="row" />
+
+    <slot name="test" />
+    <div class="row">
+      <NavBar />
+    </div>
   </div>
 </header>
 <slot />
+<!-- block content -->
 <footer>
   <div class="container text-center">
     {#if showLogout}
@@ -36,28 +42,38 @@
   </div>
 </footer>
 
-<style type="text/scss" lang="scss">
+<style type="text/css">
   @import url('https://fonts.googleapis.com/css?family=Raleway:300,200,100');
   @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
 
-  $font-gray: #666c77;
-  $alternative-background: darken($font-gray, 20%);
-  $dark-gray: #333;
-  $abakus-light: #cc0000;
-  $abakus-dark: #bd0005;
-  $red: #b11b11;
-  $white: #fdfdfd;
+  /*  @import url('https://fonts.googleapis.com/css?family=Oxygen:400,700');
+   @media screen {
+      /* Thanks Outlook 2013! * /
+     * {
+       font-family: 'Oxygen', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
+     }
+   } */
 
-  html {
+  :global(:root) {
+    --font-gray: #666c77;
+    --alternative-background: darken(var(--font-gray), 20%);
+    --dark-gray: #333;
+    --abakus-light: #cc0000;
+    --abakus-dark: #bd0005;
+    --red: #b11b11;
+    --white: #fdfdfd;
+  }
+
+  :global(html) {
     min-height: 100%;
     position: relative;
   }
-  body {
+  :global(body) {
     font-family: 'Raleway', 'Lucida Grande';
     font-weight: 300;
     word-break: break-word;
     margin-bottom: 30px;
-    color: $font-gray;
+    color: var(--font-gray);
   }
   header {
     width: 100%;
@@ -79,10 +95,10 @@
   }
   header nav ul li a {
     font-size: 20px;
-    color: $font-gray;
+    color: var(--font-gray);
   }
   header nav ul li a:hover {
-    color: $abakus-light;
+    color: var(--abakus-light);
   }
   header nav ul li a:focus {
     text-decoration: none;
@@ -105,17 +121,17 @@
     bottom: 0;
   }
   footer a {
-    color: $abakus-light;
+    color: var(--abakus-light);
   }
   footer a:hover {
-    color: $abakus-dark;
+    color: var(--abakus-dark);
   }
   a {
-    color: $abakus-light;
+    color: var(--abakus-light);
   }
   a:hover,
   a:focus {
-    color: $abakus-dark;
+    color: var(--abakus-dark);
     text-decoration: none;
   }
   h2,
