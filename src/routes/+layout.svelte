@@ -35,10 +35,10 @@
     | For <a href="https://abakus.no">Abakus</a>
     | Se <a href="/usage" tabindex="-1" target="_blank">bruk</a>
     | vote:
-    <a
+    <!-- <a
       href={'https://hub.docker.com/r/abakus/vote/tags?page=1&ordering=last_updated&name=' +
         process.env.RELEASE}>{process.env.RELEASE}</a
-    >
+    > -->
   </div>
 </footer>
 

@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row">
+  <div class="row justify-content-center">
     <div class="col-xs-12 col-sm-4 col-sm-offset-4 col-md-4 text-center">
       <video
         id="testing"
@@ -7,7 +7,7 @@
         playsinline="playsinline"
         style="width: 100%"
       /><br />
-      <form action="/auth/login" method="post" role="form">
+      <form action="/auth/login" method="post">
         <input type="hidden" name="_csrf" />
         <div class="form-group">
           <label for="username">Brukernavn:</label>
@@ -17,7 +17,7 @@
           <label for="password">Passord:</label>
           <input class="form-control" name="password" type="password" />
         </div>
-        <input class="hidden" name="usingToken" value="false" />
+        <input hidden name="usingToken" value="false" />
         <div class="hidden" id="alertInfo">
           <img id="qrImg" width="50%" />
           <div class="alert alert-danger">
