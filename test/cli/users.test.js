@@ -20,7 +20,9 @@ describe('User CLI', () => {
       stream.stdin.setEncoding('utf8');
       stream.stdout.setEncoding('utf8');
 
-      stream.stdin.write('1\n');
+      stream.stdout.on('data', (data) => {
+        stream.stdin.write('1\n');
+      });
 
       stream.stdout.on('data', (data) => {
         stream.stdin.write('testpassword\n');
