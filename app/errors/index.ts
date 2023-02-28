@@ -1,6 +1,6 @@
-import { Response } from 'express';
-import { IAlternative, IElection } from '../types/types';
-import mongoose from 'mongoose';
+import type { Response } from 'express';
+import type { IAlternative, IElection } from '../types/types';
+import type mongoose from 'mongoose';
 
 export class HTTPError extends Error {
   status: number;

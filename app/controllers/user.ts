@@ -6,8 +6,8 @@ import { badRequestError, duplicateError } from '../errors/error-checks';
 import crypto from 'crypto';
 import { mailHandler, MailAction } from '../digital/mail';
 import short from 'short-uuid';
-import { RequestHandler } from 'express';
-import { UserType } from '../types/types';
+import type { RequestHandler } from 'express';
+import type { UserType } from '../types/types';
 
 export const count: RequestHandler = async (req, res) => {
   const query: mongoose.FilterQuery<UserType> = {

@@ -3,7 +3,7 @@
 /* eslint no-console: 0 */
 
 import { Command } from 'commander';
-import mongoose, { HydratedDocumentFromSchema } from 'mongoose';
+import mongoose, { type HydratedDocumentFromSchema } from 'mongoose';
 import chalk from 'chalk';
 import promptly from 'promptly';
 import User, { userSchema } from '../app/models/user';

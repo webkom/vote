@@ -14,7 +14,7 @@ describe('Strict Logic', () => {
       useStrict: true,
       result: {
         status: 'UNRESOLVED',
-        winners: undefined,
+        winners: [],
       },
       log: {
         Ja: 117,
@@ -56,7 +56,7 @@ describe('Strict Logic', () => {
       useStrict: true,
       result: {
         status: 'UNRESOLVED',
-        winners: undefined,
+        winners: [],
       },
       log: {
         Utvalg: 100,

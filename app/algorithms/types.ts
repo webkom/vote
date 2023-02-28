@@ -1,4 +1,4 @@
-import { STVEvent } from './stv';
+import type { STVEvent } from './stv';
 
 export type Count = { [key: string]: number };
 
@@ -6,6 +6,7 @@ export type Alternative = {
   _id: string;
   description: string;
   election: string;
+  count?: number;
 };
 
 export type Vote = {

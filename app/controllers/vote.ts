@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import Client from 'ioredis';
-import Redlock, { ExecutionError } from 'redlock';
+import Redlock from 'redlock';
 
 import Election from '../models/election';
 import Vote from '../models/vote';

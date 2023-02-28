@@ -2,14 +2,13 @@ import type { RequestHandler } from 'express';
 import mongoose from 'mongoose';
 import Alternative from '../models/alternative';
 import errors from '../errors';
-import type { ReqWithElection } from './election';
 
-export const list: RequestHandler = async (req: ReqWithElection, res) => {
+export const list: RequestHandler = async (req, res) => {
   const election = await req.election.populate('alternatives');
   return res.json(election.alternatives);
 };
 
-export const create: RequestHandler = async (req: ReqWithElection, res) => {
+export const create: RequestHandler = async (req, res) => {
   try {
     const election = req.election;
     await election.populate('alternatives');
