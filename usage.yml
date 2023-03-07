@@ -103,6 +103,10 @@
   who: NTNUI
   what: Generalforsamling
   users: 105
+- when: 04.oct 2021
+  who: Revystyret
+  what: Valg av baksidakontakt
+  users: 13
 - when: 05.oct 2021
   who: Webkom
   what: Nestledervalg
@@ -111,3 +115,59 @@
   who: Abakus
   what: Ekstraordinær generalforsamling
   users: 106
+- when: 25.jan 2022
+  who: Webkom
+  what: Ledervalg
+  users: 16
+- when: 26.jan 2022
+  who: PR
+  what: Ledervalg
+  users: ~20
+- when: 27.jan 2022
+  who: Fagkom
+  what: Ledervalg
+  users: ~20
+- when: 02.feb 2022
+  who: Bankkom
+  what: Ledervalg
+  users: ~10
+- when: 26.jan 2022
+  who: PR
+  what: Ledervalg
+  users: ~20
+- when: 08.feb 2022
+  who: Abakus
+  what: Generalforsamling
+  users: 130
+- when: 30.mar 2022
+  who: XCOM data
+  what: Styrevalg
+  users: ~20
+- when: 05.okt 2022
+  who: Koskom
+  what: Rollevalg
+  users: ~20
+- when: 12.okt 2022
+  who: PR
+  what: Nestledervalg
+  users: ~20
+- when: 28.okt 2022
+  who: Abakus
+  what: Generalforsamling
+  users: 111
+- when: 01.feb 2023
+  who: Webkom
+  what: Ledervalg
+  users: 20
+- when: 03.feb 2023
+  who: Koskom
+  what: Ledervalg
+  users: ~20
+- when: 15.feb 2023
+  who: Fagkom
+  what: Nestledervalg
+  users: ~20
+- when: 17.feb 2023
+  who: Abakus
+  what: Generalforsamling
+  users: 162
