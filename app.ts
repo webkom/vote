@@ -35,7 +35,7 @@ app.set('views', `./app/views`);
 app.set('mongourl', env.MONGO_URL);
 
 mongoose.set('strictQuery', true);
-mongoose.connect(app.get('mongourl'));
+mongoose.connect(app.get('mongourl'), { dbName: env.MONGO_DB });
 
 if (env.NODE_ENV == 'production') {
   raven.config(env.RAVEN_DSN).install();

@@ -254,6 +254,15 @@ class InvalidElectionTypeError extends HTTPError {
   }
 }
 
+class DuplicateVoteError extends HTTPError {
+  constructor() {
+    super();
+    this.name = 'DuplicateVoteError';
+    this.message = "Can't vote twice on the same election";
+    this.status = 409;
+  }
+}
+
 export default {
   InactiveUserError,
   AlreadyVotedError,
@@ -279,6 +288,7 @@ export default {
   AlreadyActiveElectionError,
   MailError,
   NoAssociatedUserError,
+  DuplicateVoteError,
 };
 
 export const handleError = (
