@@ -374,7 +374,7 @@ describe('Vote API', () => {
       request(app)
         .post('/api/vote')
         .send(votePayload(ctx.activeSTVElection, [ctx.activeSTVAlternative]));
-    await Promise.all([
+    const reqs = await Promise.all([
       create(),
       create(),
       create(),
@@ -388,6 +388,8 @@ describe('Vote API', () => {
     ]);
     const votes = await Vote.find({ election: ctx.activeSTVElection._id });
     votes.length.should.equal(1);
+    reqs.filter((req) => req.status === 201).length.should.equal(1);
+    reqs.some((req) => req.status === 409).should.be.true;
   });
 
   test('should not be possible to vote without logging in', async function (ctx) {

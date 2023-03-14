@@ -8,6 +8,7 @@ chai.should();
 
 beforeEach(async () => {
   if (![1, 2].includes(mongoose.connection.readyState)) {
+    mongoose.set('strictQuery', true);
     await mongoose.connect(env.MONGO_URL, { dbName: env.MONGO_DB });
   }
 
