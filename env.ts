@@ -1,7 +1,7 @@
 const env = {
   // URL/source to the logo on all pages
   ICON_SRC: process.env.ICON_SRC || '/static/images/Abakule.jpg',
-  // Node environment. 'development' or 'production'
+  // Node environment. 'development', 'test' or 'production'
   NODE_ENV: process.env.NODE_ENV || 'development',
   // Vote release version
   RELEASE: process.env.RELEASE || 'latest',
@@ -16,7 +16,11 @@ const env = {
       ? `vote-test-${process.env.VITEST_WORKER_ID}`
       : null,
   REDIS_URL: process.env.REDIS_URL || 'localhost',
-  FRONTEND_URL: process.env.FRONTEND_URL || 'http://localhost:3000',
+  FRONTEND_URL:
+    process.env.FRONTEND_URL ||
+    (!process.env.NODE_ENV || process.env.NODE_ENV === 'development'
+      ? 'http://localhost:5173'
+      : 'http://localhost:3000'),
 
   // Mail settings
   FROM: process.env.FROM || 'Abakus',

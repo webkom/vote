@@ -36,7 +36,7 @@
         <a href="/moderator/deactivate_users">Deaktiver brukere</a>
       </li>
     </ul>
-  {:else}
+  {:else if !$page.url.pathname.includes('login')}
     <ul class="list-unstyled">
       <li>
         <a href="/">Stem</a>

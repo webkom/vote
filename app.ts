@@ -1,20 +1,16 @@
 import express from 'express';
-import type { Request, Response, NextFunction } from 'express';
 import mongoose from 'mongoose';
-import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import { Strategy as LocalStrategy } from 'passport-local';
-import csrf from 'csurf';
 import flash from 'connect-flash';
 import favicon from 'serve-favicon';
 import raven from 'raven';
 import router from './app/routes';
 import User from './app/models/user';
 import env from './env';
-import type { HTTPError } from './app/errors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -22,11 +18,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Put whatever the type of our sessionData is here
-declare module 'express-session' {
-  interface SessionData {
-    originalPath?: string;
-  }
-}
+// declare module 'express-session' {}
 
 const app = express();
 
@@ -60,9 +52,9 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
 const publicPath = `${__dirname}/public`;
 app.use(favicon(`${publicPath}/favicon.ico`));
 app.use('/static', express.static(publicPath));
-app.use(bodyParser.json());
-app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(express.json({ type: 'application/vnd.api+json' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(flash());
 
@@ -85,16 +77,6 @@ app.locals = Object.assign({}, app.locals, {
   ICON_SRC,
   RELEASE,
 });
-
-/* istanbul ignore if */
-if (env.NODE_ENV !== 'test') {
-  app.use(csrf());
-
-  app.use((req, res, next) => {
-    res.cookie('XSRF-TOKEN', req.csrfToken());
-    next();
-  });
-}
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -132,13 +114,5 @@ if (env.NODE_ENV === 'production') {
 }
 
 app.use(raven.errorHandler());
-app.use((err: HTTPError, req: Request, res: Response, next: NextFunction) => {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err);
-  res.status(403).json({
-    type: 'InvalidCSRFTokenError',
-    message: 'Invalid or missing CSRF token',
-    status: 403,
-  });
-});
 
 export default app;
