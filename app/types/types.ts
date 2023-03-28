@@ -1,5 +1,5 @@
-import { Model, Types, HydratedDocument } from 'mongoose';
-import { ElectionResult } from '../algorithms/types';
+import type { Model, Types, HydratedDocument } from 'mongoose';
+import type { ElectionResult } from '../algorithms/types';
 
 export enum ElectionSystems {
   NORMAL = 'normal',

@@ -1,10 +1,5 @@
-import type {
-  RequestParamHandler,
-  Request,
-  Response,
-  RequestHandler,
-} from 'express';
-import mongoose, { Types, HydratedDocument } from 'mongoose';
+import type { RequestParamHandler, RequestHandler } from 'express';
+import mongoose, { type HydratedDocument, Types } from 'mongoose';
 import Election from '../models/election';
 import User from '../models/user';
 import Alternative from '../models/alternative';
@@ -13,17 +8,9 @@ import app from '../../app';
 import type { Server } from 'socket.io';
 import type {
   ElectionType,
-  IElectionMethods,
   AlternativeType,
+  IElectionMethods,
 } from '../types/types';
-
-export interface ReqWithElection extends Request {
-  election: HydratedDocument<ElectionType, IElectionMethods>;
-}
-
-export interface TypedRequestBody<T> extends Request {
-  body: T;
-}
 
 type CreateElection = Pick<
   ElectionType,
@@ -35,12 +22,7 @@ type CreateElection = Pick<
   }[];
 };
 
-export const load: RequestParamHandler = (
-  req: ReqWithElection,
-  res,
-  next,
-  electionId: string
-) =>
+export const load: RequestParamHandler = (req, res, next, electionId) =>
   Election.findById(electionId)
     .then((election) => {
       if (!election) throw new errors.NotFoundError('election');
@@ -54,10 +36,7 @@ export const load: RequestParamHandler = (
       throw err;
     });
 
-export const retrieveActive = (
-  req: ReqWithElection,
-  res: Response
-): Promise<Response> =>
+export const retrieveActive: RequestHandler = (req, res) =>
   Election.findOne({
     active: true,
     hasVotedUsers: { $ne: new Types.ObjectId(req.user._id) },
@@ -97,10 +76,11 @@ export const retrieveActive = (
       return res.status(200).json(election);
     });
 
-export const create = async (
-  req: TypedRequestBody<CreateElection>,
-  res: Response
-): Promise<Response<ElectionType>> => {
+export const create: RequestHandler<
+  unknown,
+  ElectionType,
+  CreateElection
+> = async (req, res) => {
   try {
     const election = await Election.create({
       title: req.body.title,
@@ -132,59 +112,64 @@ export const create = async (
   }
 };
 
-export const list = (
-  req: Request,
-  res: Response
-): Promise<Response<ElectionType[]>> =>
+export const list: RequestHandler<unknown, ElectionType[]> = (req, res) =>
   Election.find()
     .populate('alternatives')
     .exec()
     .then((elections) => res.status(200).json(elections));
 
-export const retrieve = async (
-  req: ReqWithElection,
-  res: Response
-): Promise<Response<ElectionType>> => {
+export const retrieve: RequestHandler<unknown, ElectionType> = async (
+  req,
+  res
+) => {
+  if (!req.election) throw new errors.NotFoundError('election');
+
   await req.election.populate('alternatives');
 
   return res.status(200).json(req.election);
 };
 
 const setElectionStatus = (
-  req: ReqWithElection,
-  res: Response,
+  election: HydratedDocument<ElectionType, IElectionMethods>,
   active: boolean
 ) => {
-  req.election.active = active;
-  return req.election.save();
+  election.active = active;
+  return election.save();
 };
 
-export const activate = async (
-  req: ReqWithElection,
-  res: Response
-): Promise<Response> => {
+export const activate: RequestHandler = async (req, res) => {
+  if (!req.election) throw new errors.NotFoundError('election');
+
   const otherActiveElection = await Election.findOne({ active: true });
   if (otherActiveElection) {
     throw new errors.AlreadyActiveElectionError();
   }
-  return setElectionStatus(req, res, true).then((election) => {
+  return setElectionStatus(req.election, true).then((election) => {
     const io: Server = app.get('io');
     io.emit('election');
     return res.status(200).json(election);
   });
 };
 
-export const deactivate: RequestHandler = (req: ReqWithElection, res) =>
-  setElectionStatus(req, res, false).then((election) => {
+export const deactivate: RequestHandler = (req, res) => {
+  if (!req.election) throw new errors.NotFoundError('election');
+
+  return setElectionStatus(req.election, false).then((election) => {
     const io: Server = app.get('io');
     io.emit('election');
     res.status(200).json(election);
   });
+};
 
-export const elect: RequestHandler = (req: ReqWithElection, res) =>
-  req.election.elect().then((result) => res.json(result));
+export const elect: RequestHandler = (req, res) => {
+  if (!req.election) throw new errors.NotFoundError('election');
 
-export const deleteElection: RequestHandler = (req: ReqWithElection, res) => {
+  return req.election.elect().then((result) => res.json(result));
+};
+
+export const deleteElection: RequestHandler = (req, res) => {
+  if (!req.election) throw new errors.NotFoundError('election');
+
   if (req.election.active) {
     throw new errors.ActiveElectionError('Cannot delete an active election.');
   }
@@ -197,7 +182,9 @@ export const deleteElection: RequestHandler = (req: ReqWithElection, res) => {
   );
 };
 
-export const count: RequestHandler = (req: ReqWithElection, res) => {
+export const count: RequestHandler = (req, res) => {
+  if (!req.election) throw new errors.NotFoundError('election');
+
   res.json({
     users: req.election.hasVotedUsers.length,
   });

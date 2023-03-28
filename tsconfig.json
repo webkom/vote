@@ -10,8 +10,10 @@
     "isolatedModules": true,
     "module": "esnext"
   },
+  "include": ["**/*"],
   "exclude": [
     "node_modules",
     "public"
-  ]
+  ],
+  "extends" : "./.svelte-kit/tsconfig.json"
 }

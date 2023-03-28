@@ -1,6 +1,7 @@
 import isEmpty from 'lodash/isEmpty';
-import { Status, Vote, Alternative, ElectionResult, Count } from './types';
-import { PopulatedVote, AlternativeType } from '../../app/types/types';
+import type { AlternativeType, PopulatedVote } from '../types/types';
+import type { Vote, Alternative, ElectionResult, Count } from './types';
+import { Status } from './types';
 
 /**
  * @param votes - All votes for the election
@@ -65,26 +66,25 @@ const calculateWinnerUsingNormal = (
   const thr = winningThreshold(votes, useStrict);
 
   // Winner key
-  const maxKey: string = Object.keys(count).reduce((a, b) =>
+  const maxKey = Object.keys(count).reduce((a, b) =>
     count[a] > count[b] ? a : b
   );
 
   // Check if we can call the vote Resolved based on
-  const status = count[maxKey] >= thr ? Status.resolved : Status.unresolved;
-
-  // Create winner alternative from maxKey
-  const winner =
-    count[maxKey] >= thr
-      ? {
-          ...alternatives.find((a) => a.description === maxKey),
-          count: count[maxKey],
-        }
-      : undefined;
+  let status: Status = Status.unresolved;
+  let winner: Alternative = undefined;
+  if (count[maxKey] >= thr) {
+    winner = {
+      ...alternatives.find((a) => a.description === maxKey),
+      count: count[maxKey],
+    };
+    status = Status.resolved;
+  }
 
   return {
     result: {
       status,
-      winners: winner ? [winner] : undefined,
+      winners: winner ? [winner] : [],
     },
     thr,
     seats,

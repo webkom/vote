@@ -14,7 +14,7 @@ describe('Normal Blank Logic', () => {
       useStrict: false,
       result: {
         status: 'UNRESOLVED',
-        winners: undefined,
+        winners: [],
       },
       log: {
         Andrea: 45,

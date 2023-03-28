@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import routerFactory from 'express-promise-router';
 const router = routerFactory();
 import electionRoutes from './election';

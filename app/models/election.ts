@@ -3,15 +3,15 @@ import errors from '../errors';
 import mongoose, {
   Schema,
   Types,
-  HydratedDocument,
-  HydratedDocumentFromSchema,
+  type HydratedDocument,
+  type HydratedDocumentFromSchema,
 } from 'mongoose';
 import Vote from './vote';
 import calculateWinnerUsingNormal from '../algorithms/normal';
 import calculateWinnerUsingSTV from '../algorithms/stv';
 import crypto from 'crypto';
-import {
-  ElectionSystems,
+import { ElectionSystems } from '../types/types';
+import type {
   AlternativeType,
   IElectionMethods,
   ElectionModel,

@@ -1,5 +1,5 @@
 import mongoose, { Schema } from 'mongoose';
-import { VoteType } from '../types/types';
+import type { VoteType } from '../types/types';
 
 const voteSchema = new Schema<VoteType>({
   hash: {

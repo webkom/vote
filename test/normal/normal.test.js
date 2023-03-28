@@ -56,7 +56,7 @@ describe('Normal Logic', () => {
       useStrict: false,
       result: {
         status: 'UNRESOLVED',
-        winners: undefined,
+        winners: [],
       },
       log: {
         Ja: 65,
