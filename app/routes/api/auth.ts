@@ -10,6 +10,11 @@ const stripUsername: RequestHandler = (req, res, next) => {
   next();
 };
 
+router.get('/token', (req, res) => {
+  const csrfToken = req.csrfToken();
+  res.json({ csrfToken });
+});
+
 router.post(
   '/login',
   stripUsername,

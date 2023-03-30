@@ -1,6 +1,11 @@
-import express from 'express';
+import express, {
+  type NextFunction,
+  type Request,
+  type Response,
+} from 'express';
 import mongoose from 'mongoose';
 import cookieParser from 'cookie-parser';
+import { csrfSync } from 'csrf-sync';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -13,6 +18,7 @@ import User from './app/models/user';
 import env from './env';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import type { HTTPError } from './app/errors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,10 +58,13 @@ if (['development', 'protractor'].includes(env.NODE_ENV)) {
 const publicPath = `${__dirname}/public`;
 app.use(favicon(`${publicPath}/favicon.ico`));
 app.use('/static', express.static(publicPath));
+
 app.use(express.json());
 app.use(express.json({ type: 'application/vnd.api+json' }));
 app.use(express.urlencoded({ extended: true }));
+
 app.use(cookieParser());
+
 app.use(flash());
 
 if (env.NODE_ENV === 'production' && !env.COOKIE_SECRET) {
@@ -71,6 +80,22 @@ app.use(
     resave: false,
   })
 );
+
+const { csrfSynchronisedProtection, invalidCsrfTokenError } = csrfSync({
+  getTokenFromRequest: (req) => req.header('X-XSRF-TOKEN'),
+});
+
+/* istanbul ignore if */
+if (env.NODE_ENV !== 'test') {
+  app.use(csrfSynchronisedProtection);
+
+  // Only used by old frontend
+  app.use((req, res, next) => {
+    res.cookie('XSRF-TOKEN', req.csrfToken());
+    next();
+  });
+}
+
 const { ICON_SRC, NODE_ENV, RELEASE } = env;
 app.locals = Object.assign({}, app.locals, {
   NODE_ENV,
@@ -114,5 +139,14 @@ if (env.NODE_ENV === 'production') {
 }
 
 app.use(raven.errorHandler());
+
+app.use((err: HTTPError, req: Request, res: Response, next: NextFunction) => {
+  if (err.code !== invalidCsrfTokenError.code) return next(err);
+  res.status(403).json({
+    type: 'InvalidCSRFTokenError',
+    message: 'Invalid or missing CSRF token',
+    status: 403,
+  });
+});
 
 export default app;

@@ -4,6 +4,7 @@
   import QRCode from 'qrcode';
   import { onMount } from 'svelte';
   import type { EventHandler } from 'svelte/elements';
+  import callApi, { generateXSRFToken } from '$lib/callApi';
 
   let username: string = '';
   let password: string = '';
@@ -23,15 +24,13 @@
     | keyof typeof feedbackMessage
     | null;
 
-  const handleLogin: EventHandler<SubmitEvent> = async (e) => {
+  const handleLogin: EventHandler<SubmitEvent, HTMLFormElement> = async (e) => {
     e.preventDefault();
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
-    });
+    const res = await callApi(
+      '/auth/login',
+      'POST',
+      Object.fromEntries(new FormData(e.currentTarget))
+    );
 
     if (res.status == 200) {
       window.location.assign('/');
@@ -72,6 +71,7 @@
   };
 
   onMount(() => {
+    generateXSRFToken();
     // Check if credentials is given by a token from url or qrcode
     const token = $page.url.searchParams.get('token');
 
