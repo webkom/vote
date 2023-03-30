@@ -131,7 +131,7 @@ passport.deserializeUser<string>(async (username, cb) => {
 
 app.use('/', router);
 
-if (env.NODE_ENV === 'production') {
+if (env.NODE_ENV !== 'development') {
   // eslint-disable-next-line
   // @ts-ignore
   const { handler } = await import('./build/handler');
