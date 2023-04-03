@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import { VitePluginNode as vitePluginNode } from 'vite-plugin-node';
 import yaml from '@rollup/plugin-yaml';
+import copy from 'rollup-plugin-copy';
 
 export default defineConfig({
   server: {
@@ -16,6 +17,10 @@ export default defineConfig({
       tsCompiler: 'esbuild',
     }),
     yaml(),
+    copy({
+      targets: [{ src: 'build/client', dest: 'dist/assets' }],
+      hook: 'writeBundle',
+    }),
   ],
   optimizeDeps: {
     exclude: ['nib'],

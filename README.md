@@ -12,7 +12,9 @@ vote assumes you have a MongoDB-server running on `mongodb://localhost:27017/vot
 # Start MongoDB and Redis, both required for development and production
 $ docker-compose up -d
 # Install all dependencies
-$ yarn && yarn start
+$ yarn
+$ yarn dev # terminal 1, backend and old frontend
+$ yarn dev:client # terminal 2, new frontend
 ```
 
 ## Usage
@@ -67,6 +69,8 @@ $ yarn start
   - An SMTP connection string of the form `smtps://username:password@smtp.example.com/?pool=true`
 - `GOOGLE_AUTH`
   - A base64 encoded string with the json data of a service account that can send mail.
+- `NODE_ENV`
+  - Node environment. `development`, `test` or `production`
 
 See `app.js` and `env.js` for the rest
 
@@ -91,7 +95,7 @@ When using the card readers on a linux based system there can be permission prob
 1. Run google-chrome as `root`
 
 > NOTE: This has stopped working on modern versions of ubuntu-based distros, most likely due to the
-use of flatpak.
+> use of flatpak.
 
 ```sh
 $ sudo google-chrome

@@ -74,17 +74,40 @@
     color: var(--abakus-dark);
     text-decoration: none;
   }
-  /* h2,
-  h3,
-  .btn {
-    font-weight: 300;
-  }
-  hr {
-    margin: 10px 0;
-  }
-  .alert {
+  :global(.alert) {
     margin: 15px auto;
     max-width: 90%;
+  }
+  :global(h2, h3, .btn) {
+    font-weight: 300;
+  }
+
+  :global(.btn) {
+    font-size: 20px;
+    margin: 20px;
+  }
+  :global(.btn:active:focus) {
+    outline: none;
+  }
+  :global(.btn:focus) {
+    outline: none;
+  }
+
+  :global(label) {
+    font-weight: 300;
+    font-size: 20px;
+    letter-spacing: 0.1em;
+  }
+
+  :global(.center) {
+    max-width: 750px;
+    margin: 0 auto;
+    font-size: 21px;
+  }
+
+  /* 
+  hr {
+    margin: 10px 0;
   }
   .text-danger {
     font-size: 18px;
@@ -92,32 +115,13 @@
   .container {
     width: 100%;
   }
-  .center {
-    max-width: 750px;
-    margin: 0 auto;
-    font-size: 21px;
-  }
   .mono {
     font-family: 'Cutive Mono', monospace;
     font-size: 16px;
   }
-  label {
-    font-weight: 300;
-    font-size: 20px;
-    letter-spacing: 0.1em;
-  }
   .fade {
     transition: opacity 0.5s;
     opacity: 0;
-  }
-  .btn {
-    font-size: 20px;
-  }
-  .btn:active:focus {
-    outline: none;
-  }
-  .btn:focus {
-    outline: none;
   }
   .vote-result-form {
     margin: 0 auto;
@@ -132,10 +136,6 @@
   }
   .vote-result-feedback p {
     font-size: 18px;
-  }
-  .form-control {
-    font-size: 18px;
-    height: 40px;
   }*/
   @media (max-width: 1000px) {
     /* .vote-result-form input {
@@ -145,11 +145,13 @@
       padding-top: 0;
     }
   }
-  /* .usage-flex {
+  :global(.usage-flex) {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin: 0 10px;
   }
+  /* 
   .usage-flex a {
     align-self: flex-end;
   }

@@ -38,12 +38,7 @@ describe('Auth API', () => {
   });
 
   test('should be able to authenticate users', async () => {
-    const { header } = await request(app)
-      .post('/auth/login')
-      .send(testUser)
-      .expect(302);
-
-    header.location.should.equal('/');
+    await request(app).post('/api/auth/login').send(testUser).expect(200);
   });
 
   test('should make sure usernames are case-insensitive', async () => {
@@ -51,39 +46,22 @@ describe('Auth API', () => {
       username: testUser.username.toUpperCase(),
     });
 
-    const { header } = await request(app)
-      .post('/auth/login')
-      .send(newUser)
-      .expect(302);
-
-    header.location.should.equal('/');
+    await request(app).post('/api/auth/login').send(newUser).expect(200);
   });
 
   test('should strip spaces on login', async () => {
-    const { header } = await request(app)
-      .post('/auth/login')
+    await request(app)
+      .post('/api/auth/login')
       .send({
         username: `${testUser.username}    `,
         password: testUser.password,
       })
-      .expect(302);
-
-    header.location.should.equal('/');
+      .expect(200);
   });
 
   test('should redirect to login with flash on bad auth', async () => {
     const agent = request.agent(app);
-    const { header } = await agent
-      .post('/auth/login')
-      .send(badTestUser)
-      .expect(302);
-    header.location.should.equal('/auth/login');
-
-    const { text } = await agent
-      .get('/auth/login')
-      .expect(200)
-      .expect('Content-Type', /text\/html/);
-    text.should.include('Brukernavn og/eller passord er feil.');
+    await agent.post('/api/auth/login').send(badTestUser).expect(401);
   });
 
   test('should be possible to logout', () =>
@@ -102,15 +80,15 @@ describe('Auth API', () => {
 
       function logout(err, agent) {
         if (err) return done(err);
-        agent.post('/auth/logout').expect(302).end(checkSessions);
+        agent.post('/api/auth/logout').expect(302).end(checkSessions);
       }
 
       function login(err) {
         if (err) return done(err);
         const agent = request.agent(app);
         agent
-          .post('/auth/login')
-          .expect(302)
+          .post('/api/auth/login')
+          .expect(200)
           .send(testUser)
           .end((newErr) => logout(newErr, agent));
       }

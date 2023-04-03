@@ -3,8 +3,6 @@ import errors, { handleError } from '../errors';
 
 export const checkAuthOrRedirect: RequestHandler = (req, res, next) => {
   if (req.isAuthenticated()) return next();
-  // Store the original path so we can redirect there after login
-  req.session.originalPath = req.path;
   res.redirect('/auth/login');
 };
 
