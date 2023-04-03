@@ -44,7 +44,7 @@
     "angular-route": "1.7.5",
     "angular1-ui-bootstrap4": "2.4.22",
     "bcryptjs": "2.4.3",
-    "chalk": "2.4.2",
+    "chalk": "5.2.0",
     "commander": "9.5.0",
     "connect-flash": "0.1.1",
     "connect-mongo": "4.6.0",
