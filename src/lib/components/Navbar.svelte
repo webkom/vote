@@ -49,7 +49,7 @@
 </nav>
 
 <style lang="scss">
-  @import '../../global.scss';
+  @import '../../variables.scss';
   nav ul {
     padding-top: 10px;
     padding-bottom: 20px;

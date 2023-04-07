@@ -1,5 +1,5 @@
 import { get } from 'svelte/store';
-import { xsrf } from './stores';
+import { xsrf } from '../stores';
 
 const callApi = async <
   ResBody = Record<string, unknown>,
@@ -8,9 +8,13 @@ const callApi = async <
   input: string,
   method: RequestInit['method'] = 'GET',
   body?: ReqBody,
-  headers?: Request['headers']
+  headers?: RequestInit['headers']
 ): Promise<{ status: number; body: ResBody }> => {
-  const xsrfToken = get(xsrf);
+  let xsrfToken = get(xsrf);
+  if (!xsrfToken && method.toUpperCase() !== 'GET') {
+    await generateXSRFToken();
+    xsrfToken = get(xsrf);
+  }
 
   const res = await fetch('/api' + input, {
     headers: {
@@ -31,7 +35,11 @@ const callApi = async <
 
 export const generateXSRFToken = async () => {
   const res = await callApi<{ csrfToken: string }>('/auth/token');
-  xsrf.set(res.body.csrfToken);
+  if (res.status === 200) {
+    xsrf.set(res.body.csrfToken);
+  } else {
+    console.error('Could not retrieve csrf-token');
+  }
 };
 
 export default callApi;

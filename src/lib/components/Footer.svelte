@@ -1,13 +1,19 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import callApi from '$lib/utils/callApi';
 
   const showLogout = !$page.url.pathname.includes('login');
+
+  const logout = async () => {
+    await callApi('/auth/logout', 'POST');
+    window.location.assign('/');
+  };
 </script>
 
 <footer>
   <div class="container text-center">
     {#if showLogout}
-      <a href="#top" tabindex="-1">Logg ut</a>
+      <a href="#top" tabindex="-1" on:click={logout}>Logg ut</a>
       | Laget av
     {/if}
     <a href="http://github.com/webkom/vote">Webkom</a>

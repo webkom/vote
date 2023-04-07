@@ -2,6 +2,7 @@
   import logo from '$lib/assets/Abakule.jpg';
   import Footer from '$lib/components/Footer.svelte';
   import NavBar from '$lib/components/Navbar.svelte';
+  import Alerts from '$lib/components/Alerts.svelte';
 </script>
 
 <header>
@@ -16,6 +17,7 @@
     </div>
   </div>
 </header>
+<Alerts />
 <slot />
 <Footer />
 
