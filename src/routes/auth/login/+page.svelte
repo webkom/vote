@@ -167,8 +167,4 @@
   video {
     width: 100%;
   }
-  .form-control {
-    font-size: 18px;
-    height: 40px;
-  }
 </style>

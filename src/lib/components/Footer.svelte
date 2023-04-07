@@ -1,7 +1,7 @@
 <script lang="ts">
   import { page } from '$app/stores';
 
-  let showLogout = !$page.url.pathname.includes('login');
+  const showLogout = !$page.url.pathname.includes('login');
 </script>
 
 <footer>
@@ -21,7 +21,9 @@
   </div>
 </footer>
 
-<style type="text/css">
+<style lang="scss">
+  @import '../../variables.scss';
+
   footer {
     position: absolute;
     width: 100%;
@@ -29,10 +31,10 @@
     bottom: 0;
   }
   footer a {
-    color: var(--abakus-light);
+    color: $abakus-light;
   }
   footer a:hover {
-    color: var(--abakus-dark);
+    color: $abakus-dark;
   }
 
   @media (max-width: 1000px) {

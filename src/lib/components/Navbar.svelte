@@ -48,7 +48,8 @@
   {/if}
 </nav>
 
-<style type="text/css">
+<style lang="scss">
+  @import '../../global.scss';
   nav ul {
     padding-top: 10px;
     padding-bottom: 20px;
@@ -64,10 +65,10 @@
   }
   nav ul li a {
     font-size: 20px;
-    color: var(--font-gray);
+    color: $font-gray;
     text-decoration: none;
   }
   nav ul li a:hover {
-    color: var(--abakus-light);
+    color: $abakus-light;
   }
 </style>
