@@ -84,7 +84,7 @@
     "@babel/core": "^7.21.4",
     "@babel/plugin-transform-runtime": "7.15.8",
     "@babel/preset-env": "7.20.2",
-    "@babel/preset-typescript": "7.15.0",
+    "@babel/preset-typescript": "7.21.4",
     "@babel/register": "^7.7.4",
     "@babel/runtime": "7.15.4",
     "@cucumber/cucumber": "^8.2.0",
