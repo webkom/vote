@@ -137,7 +137,7 @@
     "stylus-loader": "3.0.2",
     "supertest": "6.3.3",
     "svelte": "3.55.1",
-    "svelte-check": "3.0.3",
+    "svelte-check": "3.3.1",
     "ts-loader": "9.2.6",
     "tslib": "2.4.1",
     "typescript": "5.0.4",
