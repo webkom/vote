@@ -38,6 +38,7 @@
   "dependencies": {
     "@types/node": "18.15.3",
     "@types/qrcode": "1.5.0",
+    "@types/sortablejs": "1.15.1",
     "angular": "1.8.0",
     "angular-animate": "1.7.9",
     "angular-local-storage": "0.7.1",
@@ -130,8 +131,10 @@
     "protractor-cucumber-framework": "^9.2.0",
     "pug": "3.0.1",
     "rollup-plugin-copy": "3.4.0",
+    "sass": "1.60.0",
     "sinon": "7.2.2",
     "sinon-chai": "3.7.0",
+    "socket.io-client": "4.6.1",
     "style-loader": "0.23.1",
     "stylus": "0.54.5",
     "stylus-loader": "3.0.2",

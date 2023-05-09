@@ -4,7 +4,8 @@
   import QRCode from 'qrcode';
   import { onMount } from 'svelte';
   import type { EventHandler } from 'svelte/elements';
-  import callApi, { generateXSRFToken } from '$lib/callApi';
+  import callApi, { generateXSRFToken } from '$lib/utils/callApi';
+  import { alerts } from '$lib/stores';
 
   let username: string = '';
   let password: string = '';
@@ -65,7 +66,7 @@
         }
       }
     } catch (e) {
-      alert('Det skjedde en feil. Prøv på nytt');
+      alerts.push('Det skjedde en feil. Prøv på nytt', 'ERROR');
       console.warn('Unable to decode token: ', e);
     }
   };
@@ -108,6 +109,7 @@
           <input
             class="form-control"
             name="username"
+            id="username"
             type="text"
             required
             style={`text-align: ${readonlyCredentials ? 'center' : 'initial'}`}
@@ -121,6 +123,7 @@
           <input
             class="form-control"
             name="password"
+            id="password"
             type={readonlyCredentials ? 'text' : 'password'}
             required
             style={`text-align: ${readonlyCredentials ? 'center' : 'initial'}`}
@@ -166,9 +169,5 @@
 <style type="text/css">
   video {
     width: 100%;
-  }
-  .form-control {
-    font-size: 18px;
-    height: 40px;
   }
 </style>

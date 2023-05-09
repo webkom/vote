@@ -13,6 +13,7 @@ if (import.meta.env.PROD) {
   const server = app.listen(app.get('port'), hostname, () => {
     console.info(`Server listening on port ${app.get('port')}`);
   });
+  // io-server in development is in vite.config.ts
   app.set('io', new Server(server));
 }
 

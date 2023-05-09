@@ -9,6 +9,7 @@ import {
   checkModeratorPartial,
 } from './helpers';
 import env from '../../env';
+import { URLSearchParams } from 'url';
 let usage = { test: '2023-01-02' };
 if (['production', 'development'].includes(process.env.NODE_ENV)) {
   import('../../usage.yml').then((usage_yml) => (usage = usage_yml.default));
@@ -19,31 +20,23 @@ router.get('/', checkAuthOrRedirect, (req, res, next) => {
   if (req.user.admin) return res.redirect('/admin');
   if (req.user.moderator) return res.redirect('/moderator');
 
-  if (env.NODE_ENV !== 'development') {
-    // Remove when migration is finished
-    return res.render('index');
-  }
-
   next();
 });
 
 // Make sure all admin routes are secure
 router.get('/admin*', checkAdmin, (req, res, next) => {
-  if (env.NODE_ENV === 'development') {
-    return res.redirect(env.FRONTEND_URL + req.path);
-  } else {
+  if (env.NODE_ENV !== 'development') {
     return res.render('adminIndex'); // Remove when migration is finished
   }
-  // next();
+  next();
 });
 
 // Make sure all moderator routes are secure
 router.get('/moderator*', checkModerator, (req, res, next) => {
-  if (env.NODE_ENV === 'development') {
-    return res.redirect(env.FRONTEND_URL + req.path);
-  } else {
+  if (env.NODE_ENV !== 'development') {
     return res.render('moderatorIndex'); // Remove when migration is finished
   }
+  next();
 });
 
 // Make sure usage is a open page
@@ -80,7 +73,10 @@ router.get('/healthz', (req, res) => {
 // or a 404, but we let the frontend handle it
 router.get('*', (req, res, next) => {
   if (env.NODE_ENV === 'development') {
-    return res.redirect(env.FRONTEND_URL + req.url);
+    // Prevent proxy recursion
+    const p = new URLSearchParams(req.params);
+    p.append('devproxy', '1');
+    return res.redirect(env.FRONTEND_URL + req.path + '?' + p.toString());
   }
   next();
 });

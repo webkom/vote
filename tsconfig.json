@@ -8,12 +8,14 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "module": "esnext"
+    "module": "esnext",
+    "paths": {
+      "$backend*": ["./app*"],
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"],
+    }
   },
   "include": ["**/*"],
-  "exclude": [
-    "node_modules",
-    "public"
-  ],
-  "extends" : "./.svelte-kit/tsconfig.json"
+  "exclude": ["node_modules", "public"],
+  "extends": "./.svelte-kit/tsconfig.json"
 }

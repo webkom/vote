@@ -1,7 +1,8 @@
 <script lang="ts">
   import logo from '$lib/assets/Abakule.jpg';
-  import Footer from '$lib/Footer.svelte';
-  import NavBar from '$lib/Navbar.svelte';
+  import Footer from '$lib/components/Footer.svelte';
+  import NavBar from '$lib/components/Navbar.svelte';
+  import Alerts from '$lib/components/Alerts.svelte';
 </script>
 
 <header>
@@ -16,30 +17,12 @@
     </div>
   </div>
 </header>
+<Alerts />
 <slot />
 <Footer />
 
-<style type="text/css">
-  @import url('https://fonts.googleapis.com/css?family=Raleway:300,200,100');
-  @import url('https://fonts.googleapis.com/css2?family=Cutive+Mono&display=swap');
-
-  /*  @import url('https://fonts.googleapis.com/css?family=Oxygen:400,700');
-   @media screen {
-      /* Thanks Outlook 2013! * /
-     * {
-       font-family: 'Oxygen', 'Helvetica Neue', 'Arial', 'sans-serif' !important;
-     }
-   } */
-
-  :global(:root) {
-    --font-gray: #666c77;
-    --alternative-background: darken(var(--font-gray), 20%);
-    --dark-gray: #333;
-    --abakus-light: #cc0000;
-    --abakus-dark: #bd0005;
-    --red: #b11b11;
-    --white: #fdfdfd;
-  }
+<style lang="scss">
+  @import '../variables.scss';
 
   :global(html) {
     min-height: 100%;
@@ -50,7 +33,7 @@
     font-weight: 300;
     word-break: break-word;
     margin-bottom: 30px;
-    color: var(--font-gray);
+    color: $font-gray;
   }
   header {
     width: 100%;
@@ -68,10 +51,10 @@
     width: 35px;
   }
   :global(a) {
-    color: var(--abakus-light);
+    color: $abakus-light;
   }
   :global(a:hover, a:focus) {
-    color: var(--abakus-dark);
+    color: $abakus-dark;
     text-decoration: none;
   }
   :global(.alert) {
@@ -104,6 +87,10 @@
     margin: 0 auto;
     font-size: 21px;
   }
+  :global(.form-control) {
+    font-size: 18px;
+    height: 40px;
+  }
 
   /* 
   hr {
@@ -122,25 +109,8 @@
   .fade {
     transition: opacity 0.5s;
     opacity: 0;
-  }
-  .vote-result-form {
-    margin: 0 auto;
-  }
-  .vote-result-form input {
-    margin: 10px auto;
-    text-align: center;
-    width: 70%;
-  }
-  .vote-result-feedback {
-    margin-top: 30px;
-  }
-  .vote-result-feedback p {
-    font-size: 18px;
   }*/
   @media (max-width: 1000px) {
-    /* .vote-result-form input {
-      width: 100%;
-    } */
     .header {
       padding-top: 0;
     }

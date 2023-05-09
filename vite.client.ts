@@ -1,5 +1,6 @@
 import { sveltekit, vitePreprocess } from '@sveltejs/kit/vite';
 import env from './env';
+import path from 'path';
 
 const config = {
   plugins: [sveltekit()],
@@ -7,10 +8,22 @@ const config = {
   test: {
     include: ['src/**/*.{test,spec}.{ts}'],
   },
+  resolve: {
+    alias: {
+      $backend: path.resolve('./app'),
+    },
+  },
   server: {
+    fs: {
+      allow: ['app'],
+    },
     proxy: {
       '^/$': `http://${env.HOST}:${env.PORT}/`,
-      '/api': `http://${env.HOST}:${env.PORT}/`,
+      '/api': `http://${env.HOST}:${env.PORT}`,
+      '/socket.io': {
+        target: `ws://${env.HOST}:${env.PORT}`,
+        ws: true,
+      },
     },
   },
 };
