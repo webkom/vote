@@ -19,12 +19,10 @@
   const handleRetrieveVote: EventHandler<SubmitEvent, HTMLFormElement> = async (
     e
   ) => {
-    e.preventDefault();
-
     const res = await callApi<typeof vote>('/vote', 'GET', null, {
       'Vote-Hash': voteHash,
     });
-    if (res.status === 200) {
+    if (res.result === 'success') {
       vote = res.body;
     }
   };

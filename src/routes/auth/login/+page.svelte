@@ -26,16 +26,15 @@
     | null;
 
   const handleLogin: EventHandler<SubmitEvent, HTMLFormElement> = async (e) => {
-    e.preventDefault();
     const res = await callApi(
       '/auth/login',
       'POST',
       Object.fromEntries(new FormData(e.currentTarget))
     );
 
-    if (res.status == 200) {
+    if (res.result === 'success') {
       window.location.assign('/');
-    } else if (res.status == 401) {
+    } else if (res.status === 401) {
       feedback = 'authfailed';
     } else {
       feedback = 'unknownError';
@@ -103,11 +102,7 @@
     <div class="col-md-6 text-center">
       <video class="center" bind:this={camera} muted playsinline />
       <br />
-      <form
-        action="/auth/login"
-        method="POST"
-        on:submit|preventDefault={handleLogin}
-      >
+      <form name="loginForm" on:submit|preventDefault={handleLogin}>
         <label class="form-label" for="username">Brukernavn:</label>
         <div class="input-group mb-3">
           <input

@@ -33,9 +33,6 @@ router.get('/admin*', checkAdmin, (req, res, next) => {
 
 // Make sure all moderator routes are secure
 router.get('/moderator*', checkModerator, (req, res, next) => {
-  if (env.NODE_ENV !== 'development') {
-    return res.render('moderatorIndex'); // Remove when migration is finished
-  }
   next();
 });
 

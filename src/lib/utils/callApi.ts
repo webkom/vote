@@ -8,34 +8,58 @@ const callApi = async <
   input: string,
   method: RequestInit['method'] = 'GET',
   body?: ReqBody,
-  headers?: RequestInit['headers']
-): Promise<{ status: number; body: ResBody }> => {
+  headers?: RequestInit['headers'],
+  fetchFunc = fetch
+): Promise<
+  | {
+      result: 'success';
+      status: number;
+      body: ResBody;
+    }
+  | {
+      result: 'failure';
+      status: number;
+      body: {
+        message: string;
+        name: string;
+      };
+    }
+> => {
   let xsrfToken = get(xsrf);
   if (!xsrfToken && method.toUpperCase() !== 'GET') {
     await generateXSRFToken();
     xsrfToken = get(xsrf);
   }
 
-  const res = await fetch('/api' + input, {
+  const res = await fetchFunc('/api' + input, {
     headers: {
       ...headers,
-      'Content-Type': body ? 'application/json' : undefined,
+      'content-type': body ? 'application/json' : undefined,
       'X-XSRF-TOKEN': xsrfToken,
     },
     method,
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  let resBody: ResBody;
+  let resBody: ResBody & { message: string; name: string };
   if (res.headers.get('Content-Type')?.includes('application/json')) {
     resBody = await res.json();
   }
-  return { status: res.status, body: resBody };
+
+  if (res.status < 400) {
+    return { result: 'success', status: res.status, body: resBody };
+  } else {
+    return {
+      result: 'failure',
+      status: res.status,
+      body: resBody,
+    };
+  }
 };
 
 export const generateXSRFToken = async () => {
   const res = await callApi<{ csrfToken: string }>('/auth/token');
-  if (res.status === 200) {
+  if (res.result === 'success') {
     xsrf.set(res.body.csrfToken);
   } else {
     console.error('Could not retrieve csrf-token');

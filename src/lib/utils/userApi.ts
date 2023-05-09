@@ -1,7 +1,10 @@
 import callApi from './callApi';
 
 export const toggleUser = (cardKey: number | string) => {
-  return callApi('/user/' + cardKey + '/toggle_active', 'POST');
+  return callApi<{ active: boolean }>(
+    '/user/' + cardKey + '/toggle_active',
+    'POST'
+  );
 };
 
 export const createUser = (user: Record<string, unknown>) => {
@@ -9,7 +12,11 @@ export const createUser = (user: Record<string, unknown>) => {
 };
 
 export const generateUser = (user: Record<string, unknown>) => {
-  return callApi('/user/generate', 'POST', user);
+  return callApi<{ status: string; user: string }>(
+    '/user/generate',
+    'POST',
+    user
+  );
 };
 
 export const changeCard = (user: Record<string, unknown>) => {
@@ -17,7 +24,7 @@ export const changeCard = (user: Record<string, unknown>) => {
 };
 
 export const countActiveUsers = () => {
-  return callApi('/user/count?active=true');
+  return callApi<{ users: number }>('/user/count?active=true');
 };
 
 export const deactivateNonAdminUsers = () => {

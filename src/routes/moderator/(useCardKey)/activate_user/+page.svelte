@@ -19,7 +19,7 @@
     if (firstCall || !cardKey) return (firstCall = false);
     const res = await userApi.toggleUser(cardKey);
 
-    if (res.status === 200) {
+    if (res.result === 'success') {
       const lastAlert = alerts.getLastAlert();
 
       if (dingAudio) dingAudio.play();

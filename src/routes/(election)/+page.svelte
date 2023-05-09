@@ -21,30 +21,23 @@
 
   let priorities: IAlternative[] = [];
 
-  type ErrorCode = {
-    name: string;
-  };
-  type ErrorMessage = {
-    message: string;
-  };
-
   const getActiveElection = async (accessCode: string = '') => {
-    const res = await callApi<PopulatedElection & ErrorCode & ErrorMessage>(
+    const res = await callApi<PopulatedElection>(
       '/election/active?accessCode=' + accessCode
     );
 
-    if (res.status === 200) {
+    if (res.result === 'success') {
       priorities = [];
       electionExists = true;
       activeElection = res.body;
       errorCode = '';
     } else {
       errorCode = res.body.name;
-      if (res.status == 404) {
+      if (res.status === 404) {
         electionExists = false;
         activeElection = null;
         accessCode = '';
-      } else if (res.status == 403) {
+      } else if (res.status === 403) {
         electionExists = true;
         activeElection = null;
         accessCode = '';
@@ -62,7 +55,7 @@
       election,
       priorities,
     });
-    if (res.status === 201) {
+    if (res.result === 'success') {
       activeElection = null;
       priorities = [];
       electionExists = false;
@@ -203,10 +196,10 @@
       <div class="access-code">
         <form
           class="form-group enter-code-form"
+          name="enterCodeForm"
           on:submit|preventDefault={() => {
             getActiveElection(accessCode);
           }}
-          name="enterCodeForm"
         >
           <div class="form-group access-code">
             <label for="accessCode">Kode</label>

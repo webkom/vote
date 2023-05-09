@@ -36,7 +36,7 @@
       cardKey: cardKeyString,
     });
 
-    if (res.status === 201) {
+    if (res.result === 'success') {
       goto(
         `/moderator/showqr/?token=${username}:${password}:${code}&cardKey=${cardKeyString}`
       );
