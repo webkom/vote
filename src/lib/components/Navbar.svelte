@@ -15,25 +15,27 @@
   {:else if $page.url.pathname.includes('moderator')}
     <ul class="list-unstyled">
       <li>
-        <a href="/moderator/create_user">Registrer bruker</a>
+        <a href="/moderator/create_user{$page.url.search}">Registrer bruker</a>
       </li>
       <li>
-        <a href="/moderator/generate_user">Generer bruker</a>
+        <a href="/moderator/generate_user{$page.url.search}">Generer bruker</a>
       </li>
       <li>
-        <a href="/moderator/qr">QR</a>
+        <a href="/moderator/qr{$page.url.search}">QR</a>
       </li>
       <li>
-        <a href="/moderator/activate_user">Aktiver bruker</a>
+        <a href="/moderator/activate_user{$page.url.search}">Aktiver bruker</a>
       </li>
       <li>
-        <a href="/moderator/change_card">Mistet kort</a>
+        <a href="/moderator/change_card{$page.url.search}">Mistet kort</a>
       </li>
       <li>
-        <a href="/moderator/manage_register">Register</a>
+        <a href="/moderator/manage_register{$page.url.search}">Register</a>
       </li>
       <li>
-        <a href="/moderator/deactivate_users">Deaktiver brukere</a>
+        <a href="/moderator/deactivate_users{$page.url.search}">
+          Deaktiver brukere
+        </a>
       </li>
     </ul>
   {:else if !$page.url.pathname.includes('login')}

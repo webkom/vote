@@ -79,8 +79,7 @@ export interface IUserMethods {
 }
 export type UserType = IUser;
 
-export interface UserModel
-  extends Model<UserType, Record<string, never>, IUserMethods> {
+export type UserModel = Model<UserType, Record<string, never>, IUserMethods> & {
   // statics
   authenticate(
     username: string,
@@ -93,7 +92,7 @@ export interface UserModel
     body: IUser,
     password: string
   ): Promise<HydratedDocument<IUser, IUserMethods>>;
-}
+};
 
 interface IVote {
   _id: string;

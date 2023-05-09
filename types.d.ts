@@ -10,4 +10,8 @@ declare global {
       election?: HydratedDocument<ElectionType, IElectionMethods>;
     }
   }
+
+  interface Window {
+    scanCard?: (cardKey: number) => void;
+  }
 }
