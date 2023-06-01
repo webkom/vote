@@ -175,6 +175,7 @@
                 ElectionSystems.NORMAL
                   ? 'circle'
                   : 'decimal'}
+                data-testid="confirmation"
               >
                 {#each priorities as alternative}
                   <li class="confirm-pri">

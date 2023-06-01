@@ -72,7 +72,7 @@ export const retrieve: RequestHandler = async (req, res) => {
 
   const vote = await Vote.findOne({ hash: hash }).populate([
     { path: 'priorities' },
-    { path: 'election', select: 'title _id' },
+    { path: 'election', select: 'title _id type' },
   ]);
 
   if (!vote) throw new errors.NotFoundError('vote');

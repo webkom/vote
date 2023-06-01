@@ -9,7 +9,6 @@
   );
   const selectAlternative = (alternative: IAlternative) => {
     priorities = [...priorities, alternative];
-    console.log(priorities);
   };
 </script>
 
