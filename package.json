@@ -144,7 +144,7 @@
     "ts-loader": "9.2.6",
     "tslib": "2.4.1",
     "typescript": "5.0.4",
-    "vite": "4.0.4",
+    "vite": "4.0.5",
     "vite-plugin-node": "3.0.2",
     "vitest": "0.28.4",
     "webpack": "5.76.0",
