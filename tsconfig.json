@@ -8,7 +8,7 @@
     "moduleResolution": "node",
     "isolatedModules": true,
     "module": "esnext",
-    "types": ["node", "cypress", "@4tw/cypress-drag-drop"],
+    "types": ["node", "cypress", "@4tw/cypress-drag-drop", "@types/w3c-web-nfc", "@types/dom-serial"],
     "paths": {
       "$backend*": ["./app*"],
       "$lib": ["./src/lib"],

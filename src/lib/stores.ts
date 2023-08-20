@@ -1,10 +1,11 @@
 import short from 'short-uuid';
-import { writable } from 'svelte/store';
+import { get, writable } from 'svelte/store';
 
 const xsrf = writable('');
 
 const createAlerts = () => {
-  const { subscribe, set, update } = writable([]);
+  const alertList = writable([]);
+  const { subscribe, set, update } = alertList;
 
   const FADE_DURATION = 500;
   const CLOSE_DELAY = 5000;
@@ -37,6 +38,9 @@ const createAlerts = () => {
     dismiss,
     removeAll: () => {
       set([]);
+    },
+    getLastAlert: () => {
+      return get(alertList).slice().pop();
     },
     FADE_DURATION,
     CLOSE_DELAY,

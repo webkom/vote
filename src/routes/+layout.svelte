@@ -17,7 +17,9 @@
     </div>
   </div>
 </header>
-<Alerts />
+<span>
+  <Alerts />
+</span>
 <slot />
 <Footer />
 

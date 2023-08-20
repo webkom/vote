@@ -9,7 +9,7 @@ import {
   checkModeratorPartial,
 } from './helpers';
 import env from '../../env';
-import { URLSearchParams } from 'url';
+import QueryString from 'qs';
 let usage = { test: '2023-01-02' };
 if (['production', 'development'].includes(process.env.NODE_ENV)) {
   import('../../usage.yml').then((usage_yml) => (usage = usage_yml.default));
@@ -74,9 +74,12 @@ router.get('/healthz', (req, res) => {
 router.get('*', (req, res, next) => {
   if (env.NODE_ENV === 'development') {
     // Prevent proxy recursion
-    const p = new URLSearchParams(req.params);
-    p.append('devproxy', '1');
-    return res.redirect(env.FRONTEND_URL + req.path + '?' + p.toString());
+    (req.query as any).devproxy = true;
+    return res.redirect(
+      env.FRONTEND_URL +
+        req.path +
+        QueryString.stringify(req.query, { addQueryPrefix: true })
+    );
   }
   next();
 });
