@@ -30,7 +30,7 @@
   });
 </script>
 
-<ul class="list-unstyled numbered" bind:this={list}>
+<ul data-testid="priorities" class="list-unstyled numbered" bind:this={list}>
   {#each priorities as alternative, index (alternative._id)}
     <li>
       <StvPriorityListItem

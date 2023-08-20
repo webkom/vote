@@ -8,13 +8,13 @@
   {index + 1}
 </div>
 <div class="content">
-  <div class="drag"><i class="fa fa-bars" /></div>
+  <div class="drag"><i class="fa fa-bars" data-testid="drag" /></div>
   <div>
     <p>{alternative.description}</p>
   </div>
 </div>
 <div class="icon remove" on:click={onRemove} on:keypress={onRemove}>
-  <i class="fa fa-close" />
+  <i class="fa fa-close" data-testid="remove" />
 </div>
 
 <style lang="scss">

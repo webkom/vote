@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
-    "sourceMap": true,
     "noImplicitAny": true,
-    "target": "esnext",
+    "target": "ESNext",
     "outDir": "./dist",
     "removeComments": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
     "isolatedModules": true,
     "module": "esnext",
+    "types": ["node", "cypress", "@4tw/cypress-drag-drop"],
     "paths": {
       "$backend*": ["./app*"],
       "$lib": ["./src/lib"],

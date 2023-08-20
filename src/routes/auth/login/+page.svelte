@@ -71,7 +71,7 @@
     }
   };
 
-  onMount(() => {
+  onMount(async () => {
     generateXSRFToken();
     // Check if credentials is given by a token from url or qrcode
     const token = $page.url.searchParams.get('token');
@@ -79,21 +79,21 @@
     if (token) {
       useTokenCredentials(token);
     } else {
-      QrScanner.hasCamera();
+      if (await QrScanner.hasCamera()) {
+        const qrScanner = new QrScanner(
+          camera,
+          (result) => {
+            try {
+              useTokenCredentials(getTokenFromURL(result.data));
+            } catch (e) {
+              console.warn('Malformed qr-code: ', result);
+            }
+          },
+          { returnDetailedScanResult: true } // Use new api
+        );
 
-      const qrScanner = new QrScanner(
-        camera,
-        (result) => {
-          try {
-            useTokenCredentials(getTokenFromURL(result.data));
-          } catch (e) {
-            console.warn('Malformed qr-code: ', result);
-          }
-        },
-        { returnDetailedScanResult: true } // Use new api
-      );
-
-      qrScanner.start();
+        qrScanner.start();
+      }
     }
   });
 </script>
@@ -103,7 +103,11 @@
     <div class="col-md-6 text-center">
       <video class="center" bind:this={camera} muted playsinline />
       <br />
-      <form on:submit|preventDefault={handleLogin}>
+      <form
+        action="/auth/login"
+        method="POST"
+        on:submit|preventDefault={handleLogin}
+      >
         <label class="form-label" for="username">Brukernavn:</label>
         <div class="input-group mb-3">
           <input

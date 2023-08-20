@@ -1,5 +1,9 @@
 <script lang="ts">
-  import type { IAlternative, PopulatedElection } from '$backend/types/types';
+  import {
+    ElectionSystems,
+    type IAlternative,
+    type PopulatedElection,
+  } from '$backend/types/types';
   import callApi from '$lib/utils/callApi';
   import { onMount } from 'svelte';
   import type { EventHandler } from 'svelte/elements';
@@ -59,7 +63,11 @@
   </form>
   {#if vote}
     <div class="text-center vote-result-feedback">
-      <h3>Din prioritering på: {vote.election.title}</h3>
+      <h3>
+        {vote.election.type === ElectionSystems.NORMAL
+          ? 'Ditt valg'
+          : 'Din prioritering'} på: {vote.election.title}
+      </h3>
       <div class="confirmVotes">
         <div class="ballot">
           {#if vote.priorities.length === 0}
@@ -69,7 +77,13 @@
               å vinne</i
             >
           {:else}
-            <ol>
+            <ol
+              style:list-style-type={vote.election.type ===
+              ElectionSystems.NORMAL
+                ? 'circle'
+                : 'decimal'}
+              data-testid="confirmation"
+            >
               {#each vote.priorities as alternative}
                 <li class="confirm-pri">
                   <p>{alternative.description}</p>

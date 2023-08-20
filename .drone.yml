@@ -11,6 +11,9 @@ steps:
         - push
     commands:
       - yarn install --frozen-lockfile
+    volumes:
+      - name: cache
+        path: /root/.cache
 
   - name: lint
     image: node:16-alpine
@@ -43,7 +46,6 @@ steps:
     depends_on:
       - build
     commands:
-      - yarn build:cli
       - yarn coverage
     environment:
       MONGO_URL: mongodb://mongodb:27017/vote-test
@@ -83,8 +85,8 @@ steps:
       REDIS_URL: redis
       HOST: 0.0.0.0
 
-  - name: playwright
-    image: mcr.microsoft.com/playwright:v1.30.0-focal
+  - name: cypress
+    image: cypress/base:16.18.1
     when:
       event:
         - push
@@ -92,9 +94,16 @@ steps:
       - build
     commands:
       - ./wait-for-it.sh server:3000 -t 30
-      - yarn playwright test
+      - yarn cypress run --record
     environment:
       BASE_URL: http://server:3000
+      MONGO_URL: mongodb://mongodb:27017/vote-test
+      NODE_ENV: test
+      CYPRESS_RECORD_KEY:
+        from_secret: cypress_record_key
+    volumes:
+      - name: cache
+        path: /root/.cache
 
   - name: docker
     image: plugins/docker
@@ -106,7 +115,7 @@ steps:
     depends_on:
       - lint
       - test
-      - playwright
+      - cypress
       - build
     settings:
       repo: abakus/vote
@@ -150,6 +159,12 @@ services:
   - name: redis
     image: redis:6.0
 
+volumes:
+  - name: cache
+    temp: {}
+
 ---
 kind: signature
-hmac: 3d344951a86035c2f80e867438ae2f3ba3f9369ac1b6425ed2bf3bcf641ad5ed
+hmac: b06d60ecafa46d095a73cc77ed0852ccf069fb70b6c6ebedf77e2cee8331a439
+
+...

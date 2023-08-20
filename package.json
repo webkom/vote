@@ -81,6 +81,7 @@
     "stream-browserify": "3.0.0"
   },
   "devDependencies": {
+    "@4tw/cypress-drag-drop": "2.2.4",
     "@babel/cli": "^7.7.4",
     "@babel/core": "^7.21.4",
     "@babel/plugin-transform-runtime": "7.15.8",
@@ -89,7 +90,6 @@
     "@babel/register": "^7.7.4",
     "@babel/runtime": "7.15.4",
     "@cucumber/cucumber": "^8.2.0",
-    "@playwright/test": "1.30.0",
     "@prettier/plugin-pug": "1.10.1",
     "@rollup/plugin-yaml": "4.0.1",
     "@sveltejs/adapter-node": "1.1.4",
@@ -120,6 +120,7 @@
     "copy-webpack-plugin": "11.0.0",
     "core-js": "3.31.1",
     "coveralls": "3.1.1",
+    "cypress": "12.13.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.7.0",
     "eslint-plugin-svelte3": "4.0.0",
