@@ -4,7 +4,10 @@
   import QRCode from 'qrcode';
   import { onMount } from 'svelte';
   import type { EventHandler } from 'svelte/elements';
-  import callApi, { generateXSRFToken } from '$lib/utils/callApi';
+  import callApi, {
+    ResponseResult,
+    generateXSRFToken,
+  } from '$lib/utils/callApi';
   import { alerts } from '$lib/stores';
 
   let username: string = '';
@@ -26,13 +29,15 @@
     | null;
 
   const handleLogin: EventHandler<SubmitEvent, HTMLFormElement> = async (e) => {
+    e.preventDefault();
+
     const res = await callApi(
       '/auth/login',
       'POST',
       Object.fromEntries(new FormData(e.currentTarget))
     );
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       window.location.assign('/');
     } else if (res.status === 401) {
       feedback = 'authfailed';

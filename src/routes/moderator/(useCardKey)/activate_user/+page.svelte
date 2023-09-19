@@ -5,6 +5,7 @@
   import { onDestroy, onMount } from 'svelte';
   import ding from '$lib/assets/ding.mp3';
   import error from '$lib/assets/error.mp3';
+  import { ResponseResult } from '$lib/utils/callApi';
 
   let dingAudio: HTMLAudioElement;
   let errorAudio: HTMLAudioElement;
@@ -19,7 +20,7 @@
     if (firstCall || !cardKey) return (firstCall = false);
     const res = await userApi.toggleUser(cardKey);
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       const lastAlert = alerts.getLastAlert();
 
       if (dingAudio) dingAudio.play();

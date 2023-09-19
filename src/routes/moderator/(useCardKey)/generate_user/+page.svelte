@@ -1,5 +1,6 @@
 <script lang="ts">
   import { alerts } from '$lib/stores';
+  import { ResponseResult } from '$lib/utils/callApi';
   import userApi from '$lib/utils/userApi';
   import type { EventHandler } from 'svelte/elements';
 
@@ -14,7 +15,7 @@
       Object.fromEntries(new FormData(e.currentTarget))
     );
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       alerts.push(`Bruker ${res.body.user} ble ${res.body.status}!`, 'SUCCESS');
       form.reset();
     } else {

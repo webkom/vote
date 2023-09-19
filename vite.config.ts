@@ -28,7 +28,10 @@ export default defineConfig({
     }),
     yaml(),
     copy({
-      targets: [{ src: 'build/client', dest: 'dist/assets' }],
+      targets: [
+        { src: 'build/client', dest: 'dist/assets' },
+        { src: 'app/digital/template.html', dest: 'dist/.' },
+      ],
       hook: 'writeBundle',
     }),
   ],

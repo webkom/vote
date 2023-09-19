@@ -1,5 +1,6 @@
 <script lang="ts">
   import { alerts } from '$lib/stores';
+  import { ResponseResult } from '$lib/utils/callApi';
   import { cardKeyScanStore } from '$lib/utils/cardKeyScanStore';
   import userApi from '$lib/utils/userApi';
   import type { EventHandler } from 'svelte/elements';
@@ -13,8 +14,8 @@
       cardKey: $cardKeyScanStore.cardKey,
     });
 
-    if (res.result === 'success') {
-      alerts.push('Det nye kortet er nå registert.', 'SUCCESS');
+    if (res.result === ResponseResult.SUCCESS) {
+      alerts.push('Det nye kortet er nå registrert.', 'SUCCESS');
       form.reset();
     } else {
       switch (res.body.name) {
