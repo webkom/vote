@@ -5,6 +5,7 @@ import Election from '../../app/models/election';
 import Vote from '../../app/models/vote';
 import User from '../../app/models/user';
 import Register from '../../app/models/register';
+import { getLatestEmail } from '../plugins/smtp-test-server';
 
 const activeSTVElectionData = {
   title: 'activeElectionSTV',
@@ -38,6 +39,7 @@ const testAlternative3 = {
 };
 
 const cypressTasks: Cypress.Tasks = {
+  getLatestEmail,
   async clearCollections() {
     await Promise.all(
       [Alternative, Register, Election, Vote, User].map((collection) =>

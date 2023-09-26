@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { RegisterType } from '$backend/types/types';
   import { alerts } from '$lib/stores';
-  import callApi from '$lib/utils/callApi';
+  import callApi, { ResponseResult } from '$lib/utils/callApi';
   import { onMount } from 'svelte';
 
   let registers: RegisterType[] = [];
@@ -10,7 +10,7 @@
   const getRegisteredEntries = async () => {
     const res = await callApi<RegisterType[]>(`/register`);
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       registers = res.body;
     } else {
       alerts.push(res.body.message, 'ERROR');
@@ -23,7 +23,7 @@
       'DELETE'
     );
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       alerts.push(res.body.message, 'SUCCESS');
       getRegisteredEntries();
     } else {

@@ -33,6 +33,8 @@ router.get('/admin*', checkAdmin, (req, res, next) => {
 
 // Make sure all moderator routes are secure
 router.get('/moderator*', checkModerator, (req, res, next) => {
+  if (['/moderator', '/moderator/'].includes(req.path))
+    return res.redirect('/moderator/activate_user');
   next();
 });
 

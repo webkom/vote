@@ -4,7 +4,7 @@
     type IAlternative,
     type PopulatedElection,
   } from '$backend/types/types';
-  import callApi from '$lib/utils/callApi';
+  import callApi, { ResponseResult } from '$lib/utils/callApi';
   import { onMount } from 'svelte';
   import type { EventHandler } from 'svelte/elements';
 
@@ -22,7 +22,7 @@
     const res = await callApi<typeof vote>('/vote', 'GET', null, {
       'Vote-Hash': voteHash,
     });
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       vote = res.body;
     }
   };

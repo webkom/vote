@@ -1,5 +1,6 @@
 <script lang="ts">
   import { alerts } from '$lib/stores';
+  import { ResponseResult } from '$lib/utils/callApi';
   import { cardKeyScanStore } from '$lib/utils/cardKeyScanStore';
   import userApi from '$lib/utils/userApi';
   import type { EventHandler } from 'svelte/elements';
@@ -25,13 +26,12 @@
   const handleCreateUser: EventHandler<SubmitEvent, HTMLFormElement> = async (
     e
   ) => {
-    e.preventDefault();
     const res = await userApi.createUser({
       ...Object.fromEntries(new FormData(e.currentTarget)),
       cardKey: $cardKeyScanStore.cardKey,
     });
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       alerts.push('Bruker registrert!', 'SUCCESS');
       form.reset();
     } else {

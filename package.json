@@ -21,8 +21,8 @@
     "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
     "lint:svelte": "svelte-kit sync && svelte-check",
     "prettier": "prettier '**/*.{js,ts,pug,svelte}' --write",
-    "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} vitest run",
-    "coverage": "yarn test --coverage",
+    "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} SMTP_URL=smtp://127.0.0.1:7777 cypress run --browser chrome",
+    "coverage": "yarn test",
     "postinstall": "yarn build:cli"
   },
   "prettier": {
@@ -123,7 +123,7 @@
     "copy-webpack-plugin": "11.0.0",
     "core-js": "3.31.1",
     "coveralls": "3.1.1",
-    "cypress": "12.13.0",
+    "cypress": "12.15.0",
     "eslint": "7.32.0",
     "eslint-config-prettier": "8.7.0",
     "eslint-plugin-svelte3": "4.0.0",
@@ -138,6 +138,7 @@
     "sass": "1.60.0",
     "sinon": "7.2.2",
     "sinon-chai": "3.7.0",
+    "smtp-tester": "2.1.0",
     "socket.io-client": "4.6.1",
     "style-loader": "0.23.1",
     "stylus": "0.54.5",

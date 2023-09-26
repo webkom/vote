@@ -5,7 +5,7 @@
     type IAlternative,
     type PopulatedElection,
   } from '$backend/types/types';
-  import callApi from '../../lib/utils/callApi';
+  import callApi, { ResponseResult } from '../../lib/utils/callApi';
   import ToggleList from './ToggleList.svelte';
   import { onMount } from 'svelte';
   import socketIOService from '$lib/socketIOService';
@@ -26,7 +26,7 @@
       '/election/active?accessCode=' + accessCode
     );
 
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       priorities = [];
       electionExists = true;
       activeElection = res.body;
@@ -55,7 +55,7 @@
       election,
       priorities,
     });
-    if (res.result === 'success') {
+    if (res.result === ResponseResult.SUCCESS) {
       activeElection = null;
       priorities = [];
       electionExists = false;

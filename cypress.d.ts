@@ -17,6 +17,7 @@ declare global {
         extension: string,
         args?: any
       ): Chainable<JQuery<HTMLElement>>;
+      waitForJs(): Chainable<void>;
       login(username: string, password: string): Chainable<Element>;
       loginAsUser(): Chainable<Element>;
       loginAsModerator(): Chainable<Element>;

@@ -1,51 +1,78 @@
-<script>
+<script lang="ts">
   import { page } from '$app/stores';
+
+  type NavGroup = {
+    path: string;
+    name: string;
+  };
+
+  const navGroups: Record<string, NavGroup[]> = {
+    admin: [
+      {
+        name: 'Avstemninger',
+        path: '/admin',
+      },
+      {
+        name: 'Lag avstemning',
+        path: '/admin/create_election',
+      },
+    ],
+    moderator: [
+      {
+        name: 'Registrer bruker',
+        path: '/moderator/create_user',
+      },
+      {
+        name: 'Generer bruker',
+        path: '/moderator/generate_user',
+      },
+      {
+        name: 'QR',
+        path: '/moderator/qr',
+      },
+      {
+        name: 'Aktiver bruker',
+        path: '/moderator/activate_user',
+      },
+      {
+        name: 'Mistet kort',
+        path: '/moderator/change_card',
+      },
+      {
+        name: 'Register',
+        path: '/moderator/manage_register',
+      },
+      {
+        name: 'Deaktiver brukere',
+        path: '/moderator/deactivate_users',
+      },
+    ],
+    default: [
+      { name: 'Stem', path: '/' },
+      { name: 'Valider stemme', path: '/retrieve' },
+    ],
+  };
+
+  $: pathname = $page.url.pathname;
+  $: isLogin = pathname.includes('login');
+
+  $: navGroupName =
+    Object.keys(navGroups).find((ngId) => pathname.includes(ngId)) ?? 'default';
+
+  $: navGroup = !isLogin ? navGroups[navGroupName] : [];
 </script>
 
 <nav>
-  {#if $page.url.pathname.includes('admin')}
+  {#if !isLogin}
     <ul class="list-unstyled">
-      <li>
-        <a href="/admin">Avstemninger</a>
-      </li>
-      <li>
-        <a href="/admin/create_election">Lag avstemning</a>
-      </li>
-    </ul>
-  {:else if $page.url.pathname.includes('moderator')}
-    <ul class="list-unstyled">
-      <li>
-        <a href="/moderator/create_user{$page.url.search}">Registrer bruker</a>
-      </li>
-      <li>
-        <a href="/moderator/generate_user{$page.url.search}">Generer bruker</a>
-      </li>
-      <li>
-        <a href="/moderator/qr{$page.url.search}">QR</a>
-      </li>
-      <li>
-        <a href="/moderator/activate_user{$page.url.search}">Aktiver bruker</a>
-      </li>
-      <li>
-        <a href="/moderator/change_card{$page.url.search}">Mistet kort</a>
-      </li>
-      <li>
-        <a href="/moderator/manage_register{$page.url.search}">Register</a>
-      </li>
-      <li>
-        <a href="/moderator/deactivate_users{$page.url.search}">
-          Deaktiver brukere
-        </a>
-      </li>
-    </ul>
-  {:else if !$page.url.pathname.includes('login')}
-    <ul class="list-unstyled">
-      <li>
-        <a href="/">Stem</a>
-      </li>
-      <li>
-        <a href="/retrieve">Valider stemme</a>
-      </li>
+      {#each navGroup as nav (nav.name)}
+        <li>
+          <a
+            class:active={pathname === nav.path}
+            href="{nav.path}{$page.url.search}">{nav.name}</a
+          >
+        </li>
+      {/each}
     </ul>
   {/if}
 </nav>
@@ -70,7 +97,8 @@
     color: $font-gray;
     text-decoration: none;
   }
-  nav ul li a:hover {
+  nav ul li a:hover,
+  nav ul li .active {
     color: $abakus-light;
   }
 </style>
