@@ -13,7 +13,7 @@ COPY . /app
 # Build image
 RUN yarn --ignore-scripts
 ENV NODE_ENV production
-RUN yarn build
+RUN yarn build && yarn build:cli
 
 FROM node:16-alpine
 
