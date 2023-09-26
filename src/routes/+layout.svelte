@@ -3,6 +3,11 @@
   import Footer from '$lib/components/Footer.svelte';
   import NavBar from '$lib/components/Navbar.svelte';
   import Alerts from '$lib/components/Alerts.svelte';
+  import { onMount } from 'svelte';
+
+  onMount(async () => {
+    window.Ready = true;
+  });
 </script>
 
 <header>

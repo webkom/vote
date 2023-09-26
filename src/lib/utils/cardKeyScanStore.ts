@@ -114,11 +114,11 @@ export const cardKeyScanStore = writable<{ cardKey: number; time: number }>(
             };
           }
         } catch (e) {
+          console.error(e);
           if (window.navigator.userAgent.includes('Android')) {
             alerts.push(e, 'ERROR');
           }
           window.location.assign('/moderator/serial_error');
-          console.error(e);
         }
       }
 

@@ -13,7 +13,7 @@
 <footer>
   <div class="container text-center">
     {#if showLogout}
-      <a href="#top" tabindex="-1" on:click={logout}>Logg ut</a>
+      <a tabindex="-1" on:click={logout}>Logg ut</a>
       | Laget av
     {/if}
     <a href="http://github.com/webkom/vote">Webkom</a>

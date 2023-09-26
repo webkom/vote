@@ -1,6 +1,11 @@
 import { get } from 'svelte/store';
 import { xsrf } from '../stores';
 
+export enum ResponseResult {
+  SUCCESS = 'success',
+  FAILURE = 'failure',
+}
+
 const callApi = async <
   ResBody = Record<string, unknown>,
   ReqBody = Record<string, unknown>
@@ -9,7 +14,21 @@ const callApi = async <
   method: RequestInit['method'] = 'GET',
   body?: ReqBody,
   headers?: RequestInit['headers']
-): Promise<{ status: number; body: ResBody }> => {
+): Promise<
+  | {
+      result: ResponseResult.SUCCESS;
+      status: number;
+      body: ResBody;
+    }
+  | {
+      result: ResponseResult.FAILURE;
+      status: number;
+      body: {
+        message: string;
+        name: string;
+      };
+    }
+> => {
   let xsrfToken = get(xsrf);
   if (!xsrfToken && method.toUpperCase() !== 'GET') {
     await generateXSRFToken();
@@ -19,23 +38,36 @@ const callApi = async <
   const res = await fetch('/api' + input, {
     headers: {
       ...headers,
-      'Content-Type': body ? 'application/json' : undefined,
+      'content-type': body ? 'application/json' : undefined,
       'X-XSRF-TOKEN': xsrfToken,
     },
     method,
     body: body ? JSON.stringify(body) : undefined,
   });
 
-  let resBody: ResBody;
+  let resBody: ResBody & { message: string; name: string };
   if (res.headers.get('Content-Type')?.includes('application/json')) {
     resBody = await res.json();
   }
-  return { status: res.status, body: resBody };
+
+  if (res.status < 400) {
+    return {
+      result: ResponseResult.SUCCESS,
+      status: res.status,
+      body: resBody,
+    };
+  } else {
+    return {
+      result: ResponseResult.FAILURE,
+      status: res.status,
+      body: resBody,
+    };
+  }
 };
 
 export const generateXSRFToken = async () => {
   const res = await callApi<{ csrfToken: string }>('/auth/token');
-  if (res.status === 200) {
+  if (res.result === ResponseResult.SUCCESS) {
     xsrf.set(res.body.csrfToken);
   } else {
     console.error('Could not retrieve csrf-token');

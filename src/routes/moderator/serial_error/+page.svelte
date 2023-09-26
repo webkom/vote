@@ -37,7 +37,9 @@
     <h5>Dummy card reader</h5>
     <h6>
       devtools and click
-      <a href="/moderator/create_user?dummyReader">here</a>
+      <a href="/moderator/create_user?dummyReader" data-testid="dummyReader">
+        here
+      </a>
     </h6>
   </div>
 </div>

@@ -7,11 +7,12 @@
   import { goto } from '$app/navigation';
 
   import { cardKeyScanStore } from '$lib/utils/cardKeyScanStore';
+  import { ResponseResult } from '$lib/utils/callApi';
 
   onMount(() => {
     const register = $page.url.searchParams.get('status');
 
-    if (register === 'success')
+    if (register === ResponseResult.SUCCESS)
       alerts.push('Bruker har blitt registrert.', 'SUCCESS');
     else if (register === 'fail')
       alerts.push(
@@ -36,7 +37,7 @@
       cardKey: cardKeyString,
     });
 
-    if (res.status === 201) {
+    if (res.result === ResponseResult.SUCCESS) {
       goto(
         `/moderator/showqr/?token=${username}:${password}:${code}&cardKey=${cardKeyString}`
       );

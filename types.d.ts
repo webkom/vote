@@ -13,5 +13,6 @@ declare global {
 
   interface Window {
     scanCard?: (cardKey: number) => void;
+    Ready?: boolean;
   }
 }

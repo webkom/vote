@@ -41,6 +41,11 @@ Cypress.Commands.add(
   }
 );
 
+Cypress.Commands.add('waitForJs', function () {
+  cy.window().its('Cypress').should('be.an', 'object');
+  cy.window().should('have.property', 'Ready', true);
+});
+
 Cypress.Commands.add('login', function (username, password) {
   cy.session(
     username,
@@ -51,14 +56,18 @@ Cypress.Commands.add('login', function (username, password) {
         cy.intercept('*/auth/token').as('token'); // Avoid undefined behavior during dev
         cy.wait('@token');
       }
+      cy.waitForJs();
       cy.get('input#username').type(username);
       cy.get('input#password').type(password);
       cy.get('button[type=submit]').click();
+      cy.url().should('not.match', /.*\/auth\/login/);
     },
     {
       validate: () => {
-        cy.url().should('not.match', /.*\/auth\/login/);
+        cy.visit('/');
+        cy.waitForJs();
         cy.getCookie('connect.sid').should('exist');
+        cy.url().should('not.match', /.*\/auth\/login/);
       },
     }
   );

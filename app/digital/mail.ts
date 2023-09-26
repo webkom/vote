@@ -4,6 +4,10 @@ import path from 'path';
 import handlebars from 'handlebars';
 import env from '../../env';
 import type { SentMessageInfo } from 'nodemailer/lib/smtp-transport';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 type TemplateVars = {
   from: string;

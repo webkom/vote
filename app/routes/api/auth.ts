@@ -4,6 +4,7 @@ const router = routerFactory();
 import passport from 'passport';
 import { handleError } from '../../errors';
 import Register from '../../models/register';
+import env from '../../../env';
 
 const stripUsername: RequestHandler = (req, res, next) => {
   req.body.username = req.body.username.trim();
@@ -11,7 +12,12 @@ const stripUsername: RequestHandler = (req, res, next) => {
 };
 
 router.get('/token', (req, res) => {
-  const csrfToken = req.csrfToken();
+  let csrfToken;
+  if (env.NODE_ENV !== 'test') {
+    csrfToken = req.csrfToken();
+  } else {
+    csrfToken = 'supernicetoken';
+  }
   res.json({ csrfToken });
 });
 

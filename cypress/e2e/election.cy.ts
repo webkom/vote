@@ -1,4 +1,4 @@
-describe('election', () => {
+describe('Election', () => {
   it('Should be able to manipulate, vote, and confirm vote on stv election', function () {
     cy.loginAsUser();
     cy.visit('/');
