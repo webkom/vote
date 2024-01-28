@@ -28,9 +28,6 @@ router.get('/', checkAuthOrRedirect, (req, res, next) => {
 
 // Make sure all admin routes are secure
 router.get('/admin*', checkAdmin, (req, res, next) => {
-  if (env.NODE_ENV !== 'development') {
-    return res.render('adminIndex'); // Remove when migration is finished
-  }
   next();
 });
 

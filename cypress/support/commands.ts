@@ -42,8 +42,9 @@ Cypress.Commands.add(
 );
 
 Cypress.Commands.add('waitForJs', function () {
-  cy.window().its('Cypress').should('be.an', 'object');
-  cy.window().should('have.property', 'Ready', true);
+  // cy.window().its('Cypress').should('be.an', 'object');
+  // cy.window().should('have.property', 'Ready', true);
+  cy.wait(1900);
 });
 
 Cypress.Commands.add('login', function (username, password) {

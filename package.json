@@ -22,7 +22,10 @@
     "lint:svelte": "svelte-kit sync && svelte-check",
     "prettier": "prettier '**/*.{js,ts,pug,svelte}' --write",
     "types": "tsc --noEmit",
-    "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://0.0.0.0:27017/vote-test'} SMTP_URL=smtp://127.0.0.1:7777 cypress run --browser chrome",
+    "test": "yarn test:backend && yarn test:frontend-headless",
+    "test:frontend-headless": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} SMTP_URL=smtp://127.0.0.1:7777 cypress run --browser chrome",
+    "test:backend": "vitest run",
+    "test:frontend": "NODE_ENV=test SMTP_URL=smtp://127.0.0.1:7777 cypress open --browser chrome",
     "coverage": "yarn test",
     "postinstall": "yarn build:cli"
   },

@@ -1,3 +1,4 @@
+import type { ElectionSystems } from '$backend/types/types';
 import type { STVEvent } from './stv';
 
 export type Count = { [key: string]: number };
@@ -22,14 +23,23 @@ export enum Status {
 }
 
 export type ElectionResult = {
-  result: STVResult | NormalResult;
   thr: number;
   seats: number;
   voteCount: number;
   blankVoteCount: number;
   useStrict: boolean;
-  log: STVEvent[] | Count;
-};
+} & (
+  | {
+      type: ElectionSystems.NORMAL;
+      result: NormalResult;
+      log: Count;
+    }
+  | {
+      type: ElectionSystems.STV;
+      result: STVResult;
+      log: STVEvent[];
+    }
+);
 
 export interface STVResult {
   status: Status;
