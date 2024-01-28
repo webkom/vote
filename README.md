@@ -121,12 +121,13 @@ $ sudo google-chrome
 
 ## Tests
 
-vote uses mocha for the backend tests and cucumber.js/protractor for the frontend tests. To run them all you can do:
+vote uses vitest for backend cypress for the frontent tests. To run them all you can do:
 
 ```bash
+# Frontend (headless) and backend
 $ yarn test
-# To run in headless mode:
-$ HEADLESS=true yarn test
+# Frontend with gui
+$ yarn test:frontend
 ```
 
 ## Vote Occasion

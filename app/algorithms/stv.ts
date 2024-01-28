@@ -3,7 +3,7 @@ import { Status } from './types';
 import type { Vote, Alternative, ElectionResult, Count } from './types';
 import type { PopulatedVote, AlternativeType } from '../../app/types/types';
 
-enum Action {
+export enum Action {
   iteration = 'ITERATION',
   win = 'WIN',
   eliminate = 'ELIMINATE',

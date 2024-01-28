@@ -15,7 +15,7 @@ const config = {
   },
   server: {
     fs: {
-      allow: ['app'],
+      allow: ['app', 'build'],
     },
     proxy: {
       '^/$': `http://${env.HOST}:${env.PORT}/`,

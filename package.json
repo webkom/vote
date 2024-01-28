@@ -21,7 +21,10 @@
     "lint:yaml": "yarn yamllint docker-compose.yml usage.yml deployment/docker-compose.yml",
     "lint:svelte": "svelte-kit sync && svelte-check",
     "prettier": "prettier '**/*.{js,ts,pug,svelte}' --write",
-    "test": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} SMTP_URL=smtp://127.0.0.1:7777 cypress run --browser chrome",
+    "test": "yarn test:backend && yarn test:frontend-headless",
+    "test:frontend-headless": "NODE_ENV=test MONGO_URL=${MONGO_URL:-'mongodb://localhost:27017/vote-test'} SMTP_URL=smtp://127.0.0.1:7777 cypress run --browser chrome",
+    "test:backend": "vitest run",
+    "test:frontend": "NODE_ENV=test SMTP_URL=smtp://127.0.0.1:7777 cypress open --browser chrome",
     "coverage": "yarn test",
     "postinstall": "yarn build:cli"
   },
