@@ -13,7 +13,13 @@
   <hr />
   <h6>
     1) Make sure you have enabled Experimental Web Platform features and are
-    using Google Chrome. Learn how to enable this feature by going to <a
+    using Google Chrome. You can enable this feature flag <a
+      href="chrome://flags/#enable-experimental-web-platform-features"
+      target="_blank"
+      rel="noreferrer">here</a
+    >
+    , or read more on how to enable this feature by going to
+    <a
       href="https://github.com/webkom/vote#using-the-card-readers"
       target="_blank"
       rel="noreferrer">README.md</a
