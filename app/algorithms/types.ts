@@ -49,5 +49,4 @@ export interface STVResult {
 export interface NormalResult extends STVResult {
   status: Status;
   winners: Alternative[];
-  count: number;
 }
