@@ -1,6 +1,16 @@
 import isEmpty from 'lodash/isEmpty';
-import type { AlternativeType, PopulatedVote } from '../types/types';
-import type { Vote, Alternative, ElectionResult, Count } from './types';
+import {
+  ElectionSystems,
+  type AlternativeType,
+  type PopulatedVote,
+} from '../types/types';
+import type {
+  Vote,
+  Alternative,
+  ElectionResult,
+  Count,
+  NormalResult,
+} from './types';
 import { Status } from './types';
 
 /**
@@ -92,6 +102,7 @@ const calculateWinnerUsingNormal = (
     blankVoteCount: count['blank'],
     useStrict,
     log: count,
+    type: ElectionSystems.NORMAL,
   };
 };
 
