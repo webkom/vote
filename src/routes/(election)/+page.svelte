@@ -101,7 +101,7 @@
       {#if !confirmVote}
         <div class="election-info">
           <h2>{activeElection.title}</h2>
-          <p>{activeElection.description}</p>
+          <p>{activeElection.description || ''}</p>
         </div>
         {#if activeElection.type === 'stv'}
           <!-- --------------------------------------------------------------------->

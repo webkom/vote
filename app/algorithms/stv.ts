@@ -1,9 +1,13 @@
 import cloneDeep from 'lodash/cloneDeep';
 import { Status } from './types';
 import type { Vote, Alternative, ElectionResult, Count } from './types';
-import type { PopulatedVote, AlternativeType } from '../../app/types/types';
+import {
+  type PopulatedVote,
+  type AlternativeType,
+  ElectionSystems,
+} from '../../app/types/types';
 
-enum Action {
+export enum Action {
   iteration = 'ITERATION',
   win = 'WIN',
   eliminate = 'ELIMINATE',
@@ -226,6 +230,7 @@ const calculateWinnerUsingSTV = (
           voteCount: inputVotes.length,
           blankVoteCount,
           useStrict,
+          type: ElectionSystems.STV,
         };
       }
 
@@ -377,6 +382,7 @@ const calculateWinnerUsingSTV = (
     voteCount: inputVotes.length,
     blankVoteCount,
     useStrict,
+    type: ElectionSystems.STV,
   };
 };
 
