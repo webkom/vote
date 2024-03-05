@@ -62,7 +62,7 @@
     "ioredis": "5.2.4",
     "lodash": "4.17.21",
     "method-override": "3.0.0",
-    "mongoose": "6.11.5",
+    "mongoose": "8.2.1",
     "nib": "1.1.2",
     "nodemailer": "6.8.0",
     "nyc": "15.1.0",
