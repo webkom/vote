@@ -64,7 +64,7 @@
     "method-override": "3.0.0",
     "mongoose": "6.11.5",
     "nib": "1.1.2",
-    "nodemailer": "6.8.0",
+    "nodemailer": "6.9.9",
     "nyc": "15.1.0",
     "object-assign": "4.1.1",
     "passport": "0.4.0",
