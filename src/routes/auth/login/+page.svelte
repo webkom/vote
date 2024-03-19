@@ -9,6 +9,7 @@
     generateXSRFToken,
   } from '$lib/utils/callApi';
   import { alerts } from '$lib/stores';
+  import p72 from '$lib/assets/72.png';
 
   let username: string = '';
   let password: string = '';
@@ -103,6 +104,7 @@
 </script>
 
 <div class="container">
+  <img src={p72} />
   <div class="row justify-content-center">
     <div class="col-md-6 text-center">
       <video class="center" bind:this={camera} muted playsinline />
