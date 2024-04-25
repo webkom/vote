@@ -1,21 +1,22 @@
 {
   "compilerOptions": {
+    "skipLibCheck": true,
     "noImplicitAny": true,
     "target": "ESNext",
     "outDir": "./dist",
     "removeComments": true,
     "esModuleInterop": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "isolatedModules": true,
     "module": "esnext",
     "types": ["node", "cypress", "@4tw/cypress-drag-drop", "@types/w3c-web-nfc", "@types/dom-serial"],
     "paths": {
       "$backend*": ["./app*"],
       "$lib": ["./src/lib"],
-      "$lib/*": ["./src/lib/*"],
+      "$lib/*": ["./src/lib/*"]
     }
   },
-  "include": ["**/*"],
-  "exclude": ["node_modules", "public"],
+  "include": ["**/*", "global.d.ts"],
+  "exclude": ["node_modules", "public", "dist"],
   "extends": "./.svelte-kit/tsconfig.json"
 }
