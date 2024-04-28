@@ -1,6 +1,6 @@
 import type { RequestHandler } from 'express';
 import Client from 'ioredis';
-import Redlock from 'redlock';
+import { Redlock } from '@sesamecare-oss/redlock';
 
 import Election from '../models/election';
 import Vote from '../models/vote';

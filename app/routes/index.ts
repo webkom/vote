@@ -10,8 +10,11 @@ import {
 } from './helpers';
 import env from '../../env';
 import QueryString from 'qs';
+
 let usage = { test: '2023-01-02' };
 if (['production', 'development'].includes(process.env.NODE_ENV)) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   import('../../usage.yml').then((usage_yml) => (usage = usage_yml.default));
 }
 
