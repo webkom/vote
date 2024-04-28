@@ -46,7 +46,7 @@ $ yarn start
 
 - `MONGO_URL`
   - Url to the database connection
-  - `default`: `mongodb://localhost:27017/vote`
+  - `default`: `mongodb://0.0.0.0:27017/vote`
 - `REDIS_URL`
   - Hostname of the redis server
   - `default`: `localhost`

@@ -10,7 +10,7 @@ const env = {
   PORT: process.env.PORT || 3000,
   // Host used when binding. Use 0.0.0.0 to bind all interfaces
   HOST: process.env.HOST || 'localhost',
-  MONGO_URL: process.env.MONGO_URL || 'mongodb://localhost:27017/vote',
+  MONGO_URL: process.env.MONGO_URL || 'mongodb://0.0.0.0:27017/vote',
   MONGO_DB:
     process.env.NODE_ENV == 'test' && process.env.VITEST_WORKER_ID
       ? `vote-test-${process.env.VITEST_WORKER_ID}`
