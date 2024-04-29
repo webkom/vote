@@ -36,7 +36,7 @@ program
   .option('-p, --password <password>', 'password for user')
   .description('create a new user')
   .action(async (username, cardKey, options) => {
-    const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/vote';
+    const mongoURL = process.env.MONGO_URL || 'mongodb://0.0.0.0:27017/vote';
 
     const mongoDbName =
       process.env.NODE_ENV == 'test' && process.env.VITEST_WORKER_ID
