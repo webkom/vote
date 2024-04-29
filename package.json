@@ -141,7 +141,7 @@
     "sinon-chai": "3.7.0",
     "smtp-tester": "2.1.0",
     "socket.io-client": "4.6.1",
-    "style-loader": "0.23.1",
+    "style-loader": "4.0.0",
     "stylus": "0.54.5",
     "stylus-loader": "3.0.2",
     "supertest": "6.3.3",
