@@ -1,9 +1,10 @@
 import { sveltekit, vitePreprocess } from '@sveltejs/kit/vite';
 import env from './env';
 import path from 'path';
+import yaml from '@rollup/plugin-yaml';
 
 const config = {
-  plugins: [sveltekit()],
+  plugins: [sveltekit(), yaml()],
   preprocess: vitePreprocess(),
   test: {
     include: ['src/**/*.{test,spec}.{ts}'],
@@ -15,7 +16,7 @@ const config = {
   },
   server: {
     fs: {
-      allow: ['app', 'build'],
+      allow: ['app', 'build', 'usage.yml'],
     },
     proxy: {
       '^/$': `http://${env.HOST}:${env.PORT}/`,

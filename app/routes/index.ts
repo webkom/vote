@@ -39,9 +39,8 @@ router.get('/moderator*', checkModerator, (req, res, next) => {
 });
 
 // Make sure usage is a open page
-router.get('/usage', (req, res) => {
-  return res.render('usage', { usage }); // Remove when migration is finished
-  // next();
+router.get('/usage', (req, res, next) => {
+  next();
 });
 
 // Extra check in case someone tries to request an admin partial directly
