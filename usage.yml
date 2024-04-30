@@ -135,10 +135,10 @@
   who: PR
   what: Ledervalg
   users: ~20
-- when: 08.feb 2022
+- when: 25.feb 2022
   who: Abakus
-  what: Generalforsamling
-  users: 130
+  what: Ordinær Generalforsamling
+  users: 128
 - when: 30.mar 2022
   who: XCOM data
   what: Styrevalg
@@ -153,7 +153,7 @@
   users: ~20
 - when: 28.okt 2022
   who: Abakus
-  what: Generalforsamling
+  what: Sekundær Generalforsamling
   users: 111
 - when: 01.feb 2023
   who: Webkom
@@ -173,7 +173,7 @@
   users: ~20
 - when: 17.feb 2023
   who: Abakus
-  what: Generalforsamling
+  what: Ordinær Generalforsamling
   users: 162
 - when: 12.apr 2023
   who: Revyen
@@ -213,7 +213,7 @@
   users: ~25
 - when: 31.okt 2023
   who: Abakus
-  what: Generalforsamling
+  what: Sekundær Generalforsamling
   users: 134
 - when: 10.okt 2023
   who: itDAGENE
@@ -245,11 +245,11 @@
   users: ~25
 - when: 13.feb 2024
   who: Abakus
-  what: Generalforsamling
+  what: Ordinær Generalforsamling
   users: 191
 - when: 14.feb 2024
   who: Fagkom
-  what: Utviklingsansvarlig
+  what: Valg av utviklingsansvarlig
   users: ~25
 - when: 13.mar 2024
   who: Revyen
@@ -259,3 +259,7 @@
   who: backup
   what: Ledervalg
   users: ~35
+- when: 30.apr 2024
+  who: Webkom
+  what: Valg av opptaksansvarlig
+  users: 10
