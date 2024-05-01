@@ -103,15 +103,15 @@
   who: NTNUI
   what: Generalforsamling
   users: 105
-- when: 04.oct 2021
+- when: 04.okt 2021
   who: Revystyret
   what: Valg av baksidakontakt
   users: 13
-- when: 05.oct 2021
+- when: 05.okt 2021
   who: Webkom
   what: Nestledervalg
   users: 11
-- when: 29.oct 2021
+- when: 29.okt 2021
   who: Abakus
   what: Ekstraordinær generalforsamling
   users: 106
@@ -135,10 +135,10 @@
   who: PR
   what: Ledervalg
   users: ~20
-- when: 08.feb 2022
+- when: 25.feb 2022
   who: Abakus
-  what: Generalforsamling
-  users: 130
+  what: Ordinær Generalforsamling
+  users: 128
 - when: 30.mar 2022
   who: XCOM data
   what: Styrevalg
@@ -153,12 +153,16 @@
   users: ~20
 - when: 28.okt 2022
   who: Abakus
-  what: Generalforsamling
+  what: Sekundær Generalforsamling
   users: 111
 - when: 01.feb 2023
   who: Webkom
   what: Ledervalg
   users: 20
+- when: 01.feb 2023
+  who: Fagkom
+  what: Ledervalg
+  users: ~20
 - when: 03.feb 2023
   who: Koskom
   what: Ledervalg
@@ -169,5 +173,93 @@
   users: ~20
 - when: 17.feb 2023
   who: Abakus
-  what: Generalforsamling
+  what: Ordinær Generalforsamling
   users: 162
+- when: 12.apr 2023
+  who: Revyen
+  what: Allmøte
+  users: ~30
+- when: 13.apr 2023
+  who: Backup
+  what: Ledervalg
+  users: ~40
+- when: 19.apr 2023
+  who: AbaTek
+  what: Ledervalg
+  users: ~6
+- when: 20.sep 2023
+  who: Bedkom
+  what: Nestledervalg
+  users: ~35
+- when: 27.sep 2023
+  who: Bedkom
+  what: Stillingsvalg
+  users: ~35
+- when: 27.sep 2023
+  who: Koskom
+  what: Nestleder- og økansvalg
+  users: ~25
+- when: 2.okt 2023
+  who: Arrkom
+  what: Stillingsvalg
+  users: ~30
+- when: 3.okt 2023
+  who: Fagkom
+  what: Stillingsvalg
+  users: ~25
+- when: 4.okt 2023
+  who: PR
+  what: Nestledervalg
+  users: ~25
+- when: 31.okt 2023
+  who: Abakus
+  what: Sekundær Generalforsamling
+  users: 134
+- when: 10.okt 2023
+  who: itDAGENE
+  what: Opptak
+  users: ~40
+- when: 7.nov 2023
+  who: Fagkom
+  what: Årets komitemedlem
+  users: ~25
+- when: 29.jan 2024
+  who: Bedkom
+  what: Ledervalg
+  users: ~35
+- when: 31.jan 2024
+  who: Fagkom
+  what: Ledervalg
+  users: ~25
+- when: 31.jan 2024
+  who: PR
+  what: Ledervalg
+  users: ~25
+- when: 1.feb 2024
+  who: readme
+  what: Ledervalg
+  users: ~20
+- when: 2.feb 2024
+  who: Koskom
+  what: Ledervalg
+  users: ~25
+- when: 13.feb 2024
+  who: Abakus
+  what: Ordinær Generalforsamling
+  users: 191
+- when: 14.feb 2024
+  who: Fagkom
+  what: Valg av utviklingsansvarlig
+  users: ~25
+- when: 13.mar 2024
+  who: Revyen
+  what: Allmøte
+  users: ~50
+- when: 11.apr 2024
+  who: backup
+  what: Ledervalg
+  users: ~35
+- when: 30.apr 2024
+  who: Webkom
+  what: Valg av opptaksansvarlig
+  users: 10
