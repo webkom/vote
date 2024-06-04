@@ -14,9 +14,9 @@ export enum Status {
 export type Count = { [key: string]: number };
 
 export interface IAlternative {
-  _id: string;
+  _id?: string;
   description: string;
-  election: Types.ObjectId;
+  election?: Types.ObjectId;
 }
 export type AlternativeType = IAlternative;
 export type AlternativeModel = Model<IAlternative>;
@@ -27,7 +27,7 @@ export interface IElection {
   description: string;
   active: boolean;
   hasVotedUsers: Types.ObjectId[];
-  alternatives: Types.ObjectId[];
+  alternatives: IAlternative[];
   seats: number;
   votes: Types.ObjectId[];
   type: ElectionSystems;
@@ -52,6 +52,17 @@ export type ElectionModel = Model<
   IElection,
   Record<string, never>,
   IElectionMethods
+>;
+
+export type CreateElectionType = Pick<
+  ElectionType,
+  | 'title'
+  | 'description'
+  | 'seats'
+  | 'type'
+  | 'useStrict'
+  | 'physical'
+  | 'alternatives'
 >;
 
 interface IRegister {

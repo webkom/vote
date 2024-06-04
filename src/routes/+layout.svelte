@@ -5,7 +5,7 @@
   import Alerts from '$lib/components/Alerts.svelte';
   import { onMount } from 'svelte';
 
-  onMount(async () => {
+  onMount(() => {
     window.Ready = true;
   });
 </script>

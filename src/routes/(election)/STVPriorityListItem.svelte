@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let alternative: { description: string; _id: string };
+  export let alternative: { description: string };
   export let index = 0;
   export let onRemove: () => void = () => {};
 </script>
