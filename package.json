@@ -113,7 +113,7 @@
     "@types/raven": "2.5.4",
     "@types/serve-favicon": "2.5.3",
     "@types/socket.io": "3.0.2",
-    "@types/w3c-web-nfc": "1.0.0",
+    "@types/w3c-web-nfc": "1.0.4",
     "@types/webpack": "5.28.0",
     "@types/yaml": "1.9.7",
     "@typescript-eslint/eslint-plugin": "5.50.0",
