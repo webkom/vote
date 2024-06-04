@@ -137,7 +137,7 @@
     "prettier-plugin-svelte": "2.9.0",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "^9.2.0",
-    "pug": "3.0.1",
+    "pug": "3.0.3",
     "rollup-plugin-copy": "3.4.0",
     "sass": "1.60.0",
     "sinon": "7.2.2",
