@@ -2667,10 +2667,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/dom-serial@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@types/dom-serial/-/dom-serial-1.0.3.tgz#d4eae01b547a3f05f260fac194d79d0ccb365dd9"
-  integrity sha512-iuuXTHSUQfosDJTN3AxTHfYtDZVehzAc07P0d6Y6/D0mNMoAzSQcAB8cf3glzH8MfMpZx8JDQv9C+PBpILVI3g==
+"@types/dom-serial@1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@types/dom-serial/-/dom-serial-1.0.6.tgz#48462122c0e943195d0611027ff9de979f04f43f"
+  integrity sha512-eUHKbc6mdMgMm75/oBLocs3wkOQkPQ/oNCT+b5OgUT6mLgIvDTp3wCCE9tYZNvDPPh6Cj9lVg2IguWfS/mDrrQ==
 
 "@types/eslint-scope@^3.7.3":
   version "3.7.4"
