@@ -60,7 +60,7 @@
     "crypto-random-string": "5.0.0",
     "csrf-sync": "4.0.3",
     "css-loader": "7.1.2",
-    "express": "4.19.2",
+    "express": "4.21.0",
     "express-promise-router": "4.1.1",
     "express-session": "1.18.0",
     "handlebars": "4.7.7",
