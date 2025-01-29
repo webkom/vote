@@ -27,7 +27,7 @@ The vote-CLI allows you to create **admin**, **moderator** and **normal** users.
 
 ```bash
 # Replace <username> with the username, and <card-key> with a random value
-$ docker-compose exec vote ./bin/users create-user <username> <card-key>
+$ docker exec -it vote ./bin/users create-user <username> <card-key>
 
 # You will then be promted to select the type of user you want to create
 Usermode:
