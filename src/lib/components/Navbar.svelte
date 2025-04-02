@@ -47,6 +47,7 @@
         path: '/moderator/deactivate_users',
       },
     ],
+    usage: [],
     default: [
       { name: 'Stem', path: '/' },
       { name: 'Valider stemme', path: '/retrieve' },
