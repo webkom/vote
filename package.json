@@ -134,7 +134,7 @@
     "file-loader": "6.2.0",
     "mkdirp": "^3.0.1",
     "prettier": "2.8.3",
-    "prettier-plugin-svelte": "2.9.0",
+    "prettier-plugin-svelte": "3.3.3",
     "protractor": "7.0.0",
     "protractor-cucumber-framework": "^9.2.0",
     "pug": "3.0.3",
