@@ -106,7 +106,7 @@ $ sudo google-chrome
 2. Add your user to the `dialout` group.
    - Check what group the tty(USBPORT) is:
    ```
-   $ ls -al /dev/ttyUSB* | cut -d ' ' -f 2`
+   $ ls -al /dev/ttyUSB* | cut -d ' ' -f 2
    ```
    - Check what groups your user is added to:
    ```sh
@@ -114,7 +114,7 @@ $ sudo google-chrome
    ```
    - Normally the `tty` is in the `dialout` group, so add your user to that group with:
    ```sh
-   $ sudo usrmod -a -G dialout $USER
+   $ sudo usermod -a -G dialout $USER
    ```
 
 > You need to sign in and out to get the new privileges!
