@@ -82,7 +82,7 @@
     "raven": "2.6.4",
     "serve-favicon": "2.5.0",
     "short-uuid": "4.1.0",
-    "socket.io": "4.5.4",
+    "socket.io": "4.8.1",
     "sortablejs": "1.15.1",
     "stream-browserify": "3.0.0"
   },
