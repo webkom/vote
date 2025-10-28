@@ -104,9 +104,9 @@ $ sudo google-chrome
 **OR**
 
 2. Add your user to the `dialout` group.
-   - Check what group the tty(USBPORT) is:
+   - Check what group the USB device is (has the form /tty/USB...):
    ```
-   $ ls -al /dev/ttyUSB* | cut -d ' ' -f 2
+   $ ls -al /dev/ttyUSB*
    ```
    - Check what groups your user is added to:
    ```sh
