@@ -73,10 +73,11 @@ router.get('*', (req, res, next) => {
   if (env.NODE_ENV === 'development') {
     // Prevent proxy recursion
     (req.query as any).devproxy = true;
+    const frontendUrl = `http://${req.hostname}:5173`;
     return res.redirect(
-      env.FRONTEND_URL +
-        req.path +
-        QueryString.stringify(req.query, { addQueryPrefix: true })
+      frontendUrl +
+      req.path +
+      QueryString.stringify(req.query, { addQueryPrefix: true })
     );
   }
   next();

@@ -19,11 +19,18 @@ const config = {
       allow: ['app', 'build', 'usage.yml'],
     },
     proxy: {
-      '^/$': `http://${env.HOST}:${env.PORT}/`,
-      '/api': `http://${env.HOST}:${env.PORT}`,
+      '^/$': {
+        target: `http://${env.HOST}:${env.PORT}/`,
+        changeOrigin: false,
+      },
+      '/api': {
+        target: `http://${env.HOST}:${env.PORT}`,
+        changeOrigin: false,
+      },
       '/socket.io': {
         target: `ws://${env.HOST}:${env.PORT}`,
         ws: true,
+        changeOrigin: false,
       },
     },
   },

@@ -36,6 +36,6 @@ export default defineConfig({
     }),
   ],
   optimizeDeps: {
-    exclude: ['nib'],
+    exclude: ['nib', 'webpack', 'webpack-dev-middleware'],
   },
 });
