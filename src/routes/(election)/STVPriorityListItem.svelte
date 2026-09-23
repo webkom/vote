@@ -9,7 +9,7 @@
 </div>
 <div class="content">
   <div class="drag"><i class="fa fa-bars" data-testid="drag" /></div>
-  <div>
+  <div class="text-wrapper">
     <p>{alternative.description}</p>
   </div>
 </div>
@@ -21,9 +21,15 @@
   @import '../../variables.scss';
 
   .content {
-    line-height: 60px;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
     text-align: center;
-    flex-grow: 1;
+
+    .text-wrapper {
+      flex: 1;
+    }
 
     p {
       color: darken($font-gray, 20%);
@@ -52,7 +58,7 @@
     justify-content: center;
     border-radius: 2px;
     height: 100%;
-    width: 15%;
+    width: 50px;
     transition: box-shadow 0.2s ease-in-out;
 
     &:hover {
@@ -86,11 +92,6 @@
     }
   }
   .drag {
-    position: absolute;
-    height: 100%;
-    line-height: 60px;
-    width: 10%;
-    height: 100%;
-    vertical-align: middle;
+    margin-left: 10px;
   }
 </style>

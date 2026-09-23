@@ -71,11 +71,12 @@
 
     .icon {
       display: flex;
+      flex-shrink: 0;
       align-items: center;
       justify-content: center;
       border-radius: 2px;
       height: 100%;
-      width: 15%;
+      width: 50px;
       transition: box-shadow 0.2s ease-in-out;
 
       &:hover {
