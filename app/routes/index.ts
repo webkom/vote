@@ -76,8 +76,8 @@ router.get('*', (req, res, next) => {
     const frontendUrl = `http://${req.hostname}:5173`;
     return res.redirect(
       frontendUrl +
-      req.path +
-      QueryString.stringify(req.query, { addQueryPrefix: true })
+        req.path +
+        QueryString.stringify(req.query, { addQueryPrefix: true })
     );
   }
   next();
